@@ -99,9 +99,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     final plan = exerciseAndRoutineController.planWhere(id: template.planId);
 
-    final numberOfSets = template.exerciseTemplates.expand((exerciseTemplate) => exerciseTemplate.sets);
-    final setsSummary = "${numberOfSets.length} ${pluralize(word: "Set", count: numberOfSets.length)}";
-
     final muscleGroupFamilyFrequencies = muscleGroupFrequency(exerciseLogs: template.exerciseTemplates);
 
     final allLogsForTemplate = exerciseAndRoutineController
@@ -264,14 +261,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                       'icons/dumbbells.png',
                                       fit: BoxFit.contain,
                                       color: vibrantGreen, // Adjust the height as needed
-                                    )),
-                                ChipOne(
-                                    label: setsSummary,
-                                    color: vibrantBlue,
-                                    child: FaIcon(
-                                      FontAwesomeIcons.hashtag,
-                                      color: vibrantBlue,
-                                      size: 14,
                                     )),
                               ],
                             ),

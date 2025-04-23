@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../colors.dart';
@@ -22,32 +21,24 @@ class RoutinePlanGridItemWidget extends StatelessWidget {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final routineTemplates =
-    exerciseAndRoutineController.templates.where((template) => template.planId == plan.id).toList();
+        exerciseAndRoutineController.templates.where((template) => template.planId == plan.id).toList();
 
     final exerciseTemplates = routineTemplates.expand((routineTemplate) => routineTemplate.exerciseTemplates);
     return GestureDetector(
       onTap: () => navigateToRoutinePlanPreview(context: context, plan: plan),
       child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(5)),
-          child: Column(spacing: 8, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
+          child: Column(spacing: 12, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Spacer(),
             Text(
               plan.name,
               style: Theme.of(context).textTheme.titleMedium,
               overflow: TextOverflow.ellipsis,
               maxLines: 3,
             ),
-            Text(plan.notes,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: GoogleFonts.ubuntu(
-                    fontSize: 12,
-                    color: isDarkMode ? Colors.white70 : Colors.black,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400)),
-            const Spacer(),
             Column(
               spacing: 6,
               crossAxisAlignment: CrossAxisAlignment.start,

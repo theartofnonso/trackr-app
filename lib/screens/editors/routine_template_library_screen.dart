@@ -150,7 +150,7 @@ class _RoutineTemplateLibraryScreenState extends State<RoutineTemplateLibraryScr
                       child: GridView.count(
                           shrinkWrap: true,
                           crossAxisCount: 2,
-                          childAspectRatio: 0.8,
+                          childAspectRatio: 1,
                           mainAxisSpacing: 10.0,
                           crossAxisSpacing: 10.0,
                           children: children),

@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
@@ -66,11 +65,16 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
     final routineTemplates =
         exerciseAndRoutineController.templates.where((template) => template.planId == plan.id).toList();
 
-    final logs = routineTemplates.map((template) =>  exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id)).expand((logs) => logs).toList();
+    final logs = routineTemplates
+        .map((template) => exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id))
+        .expand((logs) => logs)
+        .toList();
 
     final children = routineTemplates
         .mapIndexed(
-          (index, template) => RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes), onTap: () => navigateToRoutineTemplatePreview(context: context, template: template)),
+          (index, template) => RoutineTemplateGridItemWidget(
+              template: template.copyWith(notes: template.notes),
+              onTap: () => navigateToRoutineTemplatePreview(context: context, template: template)),
         )
         .toList();
 
@@ -122,37 +126,12 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                         )),
                   ]),
                 ),
-                Text(plan.notes,
+                Text(plan.notes.isNotEmpty ? plan.notes : "No notes",
                     style: GoogleFonts.ubuntu(
                         fontSize: 14,
                         color: isDarkMode ? Colors.white70 : Colors.black,
                         height: 1.8,
                         fontWeight: FontWeight.w400)),
-                SingleChildScrollView(
-                  child: Row(
-                    spacing: 8,
-                    children: [
-                      OpacityButtonWidget(
-                          label: "Week 1",
-                          trailing: FaIcon(
-                            FontAwesomeIcons.solidSquareCheck,
-                            size: 14,
-                          )),
-                      OpacityButtonWidget(
-                          label: "Week 2",
-                          trailing: FaIcon(
-                            FontAwesomeIcons.solidSquareCheck,
-                            size: 14,
-                          )),
-                      OpacityButtonWidget(
-                          label: "Week 3",
-                          trailing: FaIcon(
-                            FontAwesomeIcons.solidSquareCheck,
-                            size: 14,
-                          )),
-                    ],
-                  ),
-                ),
                 Calendar(
                   onSelectDate: (_) {},
                   logs: logs,
@@ -161,7 +140,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
-                    childAspectRatio: 0.8,
+                    childAspectRatio: 1,
                     mainAxisSpacing: 10.0,
                     crossAxisSpacing: 10.0,
                     children: children),

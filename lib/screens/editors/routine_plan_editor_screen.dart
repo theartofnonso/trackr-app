@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
-import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
@@ -54,14 +53,11 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   }
 
   bool _validateRoutinePlanInputs() {
-    final exerciseProviders = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = exerciseProviders.exerciseLogs;
-
     if (_planNameController.text.isEmpty) {
       _showSnackbar('Please provide a name for this plan');
       return false;
     }
-    if (exercises.isEmpty) {
+    if (_routineTemplates.isEmpty) {
       _showSnackbar("Plan must have workout template(s)");
       return false;
     }
@@ -101,7 +97,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   void _updateRoutinePlan() {
     if (!_validateRoutinePlanInputs()) return;
     final plan = widget.plan;
-    if (plan != null ) {
+    if (plan != null) {
       showBottomSheetWithMultiActions(
           context: context,
           description: "Do you want to update plan?",
@@ -120,7 +116,6 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   }
 
   RoutinePlanDto _getUpdatedRoutinePlan({required RoutinePlanDto plan}) {
-
     final planToBeUpdated = plan.copyWith(
         name: _planNameController.text.trim(), notes: _planNotesController.text.trim(), updatedAt: DateTime.now());
 
@@ -128,10 +123,15 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   }
 
   void _doUpdateRoutinePlan({required RoutinePlanDto planToBeUpdated}) async {
-
     final planProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     await planProvider.updatePlan(planDto: planToBeUpdated);
+
+      for (final template in _routineTemplates) {
+        final templateWithPlanId = template.copyWith(planId: planToBeUpdated.id);
+        await planProvider.saveTemplate(templateDto: templateWithPlanId);
+      }
+
   }
 
   void _dismissKeyboard() {
@@ -224,7 +224,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                         child: GridView.count(
                             shrinkWrap: true,
                             crossAxisCount: 2,
-                            childAspectRatio: 0.8,
+                            childAspectRatio: 1,
                             mainAxisSpacing: 10.0,
                             crossAxisSpacing: 10.0,
                             children: children),
@@ -259,10 +259,11 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   @override
   void initState() {
     super.initState();
-    _planNameController = TextEditingController();
-    _planNotesController = TextEditingController();
 
     final plan = widget.plan;
+
+    _planNameController = TextEditingController(text: plan?.name);
+    _planNotesController = TextEditingController(text: plan?.notes);
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
