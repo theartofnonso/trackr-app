@@ -36,6 +36,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Holds a list of [ExerciseDto] when filtering through a search
   List<ExerciseDto> _filteredExercises = [];
 
+  /// Holds a list of [ExerciseDto] that has been recently logged
+  late List<ExerciseDto> _recentExercises; // injected
+
   bool _shouldShowOwnerExercises = false;
 
   /// Search through the list of exercises
@@ -174,9 +177,29 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
 
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-    final recentExercises = exerciseAndRoutineController.logs.expand((log) => log.exerciseLogs).map((exerciseLog) => exerciseLog.exercise).toList();
-    final exercisesToShow = _sortByRecency(all: _filteredExercises, recent: recentExercises);
+    // —— Partition list into segments ——
+    final (recents, others) = _partitionExercises();
+
+    // Build the child list with headers
+    final listChildren = <Widget>[];
+    if (recents.isNotEmpty) {
+      listChildren
+        ..add(_buildHeader('Recent', isDarkMode: isDarkMode))
+        ..addAll(recents.map((e) => ExerciseWidget(
+              exerciseDto: e,
+              onNavigateToExercise: _navigateToExerciseHistory,
+              onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise,
+            )));
+    }
+    if (others.isNotEmpty) {
+      listChildren
+        ..add(_buildHeader('All Exercises', isDarkMode: isDarkMode))
+        ..addAll(others.map((e) => ExerciseWidget(
+              exerciseDto: e,
+              onNavigateToExercise: _navigateToExerciseHistory,
+              onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise,
+            )));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -227,23 +250,25 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     ...muscleGroups.sublist(muscleGroupScrollViewHalf),
                   ])),
               const SizedBox(height: 18),
-              exercisesToShow.isNotEmpty
+              listChildren.isNotEmpty
                   ? Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: ListView.separated(
                             padding: const EdgeInsets.only(bottom: 250),
                             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                            itemBuilder: (BuildContext context, int index) => ExerciseWidget(
-                                exerciseDto: exercisesToShow[index],
-                                onNavigateToExercise: _navigateToExerciseHistory,
-                                onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
-                            separatorBuilder: (BuildContext context, int index) => Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                                  child:
-                                      Divider(height: 0.5, color: isDarkMode ? sapphireLighter : Colors.grey.shade200),
-                                ),
-                            itemCount: exercisesToShow.length),
+                            itemBuilder: (ctx, idx) => listChildren[idx],
+                            separatorBuilder: (ctx, idx) => (listChildren[idx] is ExerciseWidget)
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 14.0),
+                                    child: Divider(
+                                      height: 0.5,
+                                      color: isDarkMode ? sapphireLighter : Colors.grey.shade200,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                            // no separator after headers
+                            itemCount: listChildren.length),
                       ),
                     )
                   : Expanded(
@@ -260,27 +285,33 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     );
   }
 
-  /// Sorts exercises so that any appearing in [recent] are listed first.
-  List<ExerciseDto> _sortByRecency({
-    required List<ExerciseDto> all,
-    required List<ExerciseDto> recent,
-  }) {
-    if (recent.isEmpty) return all;
+  // ────────────────────────────────────────────────────────────────────
+  // Helpers
+  // ────────────────────────────────────────────────────────────────────
+  /// Returns two lists: `recent` and `others` (order preserved inside each).
+  (List<ExerciseDto> recents, List<ExerciseDto> others) _partitionExercises() {
+    if (_recentExercises.isEmpty) return (<ExerciseDto>[], _filteredExercises);
 
-    // Create lookup set for constant‑time membership checks
-    final recentIds = recent.map((e) => e.id).toSet();
+    final recentIds = _recentExercises.map((e) => e.id).toSet();
 
-    final sorted = List<ExerciseDto>.from(all);
+    final recent = <ExerciseDto>[];
+    final others = <ExerciseDto>[];
 
-    sorted.sort((a, b) {
-      final aIsRecent = recentIds.contains(a.id);
-      final bIsRecent = recentIds.contains(b.id);
-      if (aIsRecent == bIsRecent) return 0; // keep original order if both recent or both not
-      return aIsRecent ? -1 : 1; // recent first
-    });
-
-    return sorted;
+    for (final ex in _filteredExercises) {
+      (recentIds.contains(ex.id) ? recent : others).add(ex);
+    }
+    return (recent, others);
   }
+
+  Widget _buildHeader(String label, {required bool isDarkMode}) => Padding(
+        padding: const EdgeInsets.only(top: 10, bottom: 20.0),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16).copyWith(
+            color: isDarkMode ? Colors.white70 : Colors.blueGrey,
+          ),
+        ),
+      );
 
   void _loadOrSyncExercises() {
     final exerciseType = widget.type;
@@ -322,6 +353,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     super.initState();
     _searchController = TextEditingController();
     _loadOrSyncExercises();
+
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    _recentExercises = exerciseAndRoutineController.logs
+        .expand((log) => log.exerciseLogs)
+        .map((exerciseLog) => exerciseLog.exercise)
+        .toList();
   }
 
   @override
