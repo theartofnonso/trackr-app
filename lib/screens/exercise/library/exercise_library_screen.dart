@@ -174,6 +174,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     final muscleGroupScrollViewHalf = MuscleGroup.values.length ~/ 2;
 
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
+    final recentExercises = exerciseAndRoutineController.logs.expand((log) => log.exerciseLogs).map((exerciseLog) => exerciseLog.exercise).toList();
+    final exercisesToShow = _sortByRecency(all: _filteredExercises, recent: recentExercises);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -223,7 +227,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     ...muscleGroups.sublist(muscleGroupScrollViewHalf),
                   ])),
               const SizedBox(height: 18),
-              _filteredExercises.isNotEmpty
+              exercisesToShow.isNotEmpty
                   ? Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -231,7 +235,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                             padding: const EdgeInsets.only(bottom: 250),
                             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                             itemBuilder: (BuildContext context, int index) => ExerciseWidget(
-                                exerciseDto: _filteredExercises[index],
+                                exerciseDto: exercisesToShow[index],
                                 onNavigateToExercise: _navigateToExerciseHistory,
                                 onSelect: widget.readOnly ? null : _navigateBackWithSelectedExercise),
                             separatorBuilder: (BuildContext context, int index) => Padding(
@@ -239,7 +243,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                                   child:
                                       Divider(height: 0.5, color: isDarkMode ? sapphireLighter : Colors.grey.shade200),
                                 ),
-                            itemCount: _filteredExercises.length),
+                            itemCount: exercisesToShow.length),
                       ),
                     )
                   : Expanded(
@@ -254,6 +258,28 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         ),
       ),
     );
+  }
+
+  /// Sorts exercises so that any appearing in [recent] are listed first.
+  List<ExerciseDto> _sortByRecency({
+    required List<ExerciseDto> all,
+    required List<ExerciseDto> recent,
+  }) {
+    if (recent.isEmpty) return all;
+
+    // Create lookup set for constant‑time membership checks
+    final recentIds = recent.map((e) => e.id).toSet();
+
+    final sorted = List<ExerciseDto>.from(all);
+
+    sorted.sort((a, b) {
+      final aIsRecent = recentIds.contains(a.id);
+      final bIsRecent = recentIds.contains(b.id);
+      if (aIsRecent == bIsRecent) return 0; // keep original order if both recent or both not
+      return aIsRecent ? -1 : 1; // recent first
+    });
+
+    return sorted;
   }
 
   void _loadOrSyncExercises() {

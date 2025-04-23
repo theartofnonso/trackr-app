@@ -166,6 +166,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
+    /// We listen for [_routineTemplates] have been updated i.e. Have their planId removed
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     final children = _routineTemplates
