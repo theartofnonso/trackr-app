@@ -21,6 +21,7 @@ import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chip_one.dart';
+import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/routine/preview/routine_template_grid_item.dart';
 
@@ -100,32 +101,28 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
           child: SafeArea(
             minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
             bottom: false,
-            child: SingleChildScrollView(
-              child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(plan.name, style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
-                SingleChildScrollView(
-                  child: Row(spacing: 12, children: [
-                    ChipOne(
-                      label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
-                      color: vibrantGreen,
-                      child: Image.asset(
-                        'icons/dumbbells.png',
-                        fit: BoxFit.contain,
-                        height: 16,
-                        color: vibrantGreen, // Adjust the height as needed
-                      ),
+                Row(spacing: 12, children: [
+                  ChipOne(
+                    label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
+                    color: vibrantGreen,
+                    child: Image.asset(
+                      'icons/dumbbells.png',
+                      fit: BoxFit.contain,
+                      height: 16,
+                      color: vibrantGreen, // Adjust the height as needed
                     ),
-                    ChipOne(
-                        label:
-                            '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
+                  ),
+                  ChipOne(
+                      label: '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
+                      color: vibrantBlue,
+                      child: FaIcon(
+                        FontAwesomeIcons.hashtag,
                         color: vibrantBlue,
-                        child: FaIcon(
-                          FontAwesomeIcons.hashtag,
-                          color: vibrantBlue,
-                          size: 14,
-                        )),
-                  ]),
-                ),
+                        size: 14,
+                      )),
+                ]),
                 Text(plan.notes.isNotEmpty ? plan.notes : "No notes",
                     style: GoogleFonts.ubuntu(
                         fontSize: 14,
@@ -136,16 +133,19 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                   onSelectDate: (_) {},
                   logs: logs,
                 ),
-                GridView.count(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    childAspectRatio: 1,
-                    mainAxisSpacing: 10.0,
-                    crossAxisSpacing: 10.0,
-                    children: children),
+                routineTemplates.isNotEmpty
+                    ? GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                        children: children)
+                    : Expanded(
+                        child: const NoListEmptyState(
+                            message: "It might feel quiet now, but your workout templates will soon appear here."),
+                      ),
               ]),
-            ),
           ),
         ));
   }
