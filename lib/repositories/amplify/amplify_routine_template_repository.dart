@@ -33,7 +33,7 @@ class AmplifyRoutineTemplateRepository {
     Posthog()
         .capture(eventName: PostHogAnalyticsEvent.createRoutineTemplate.displayName, properties: templateDto.toJson());
 
-    logger.i("save template: $templateDto");
+    logger.i("save template: ${templateDto.name}");
 
     final updatedWithId = templateDto.copyWith(id: templateToCreate.id);
 
@@ -50,7 +50,7 @@ class AmplifyRoutineTemplateRepository {
       final oldTemplate = result.first;
       final newTemplate = oldTemplate.copyWith(data: jsonEncode(template));
       await Amplify.DataStore.save<RoutineTemplate>(newTemplate);
-      logger.i("update template: $template");
+      logger.i("update template: ${template.name}");
     }
   }
 
@@ -63,7 +63,7 @@ class AmplifyRoutineTemplateRepository {
     if (result.isNotEmpty) {
       final oldTemplate = result.first;
       await Amplify.DataStore.delete<RoutineTemplate>(oldTemplate);
-      logger.i("remove template: $template");
+      logger.i("remove template: ${template.name}");
     }
   }
 

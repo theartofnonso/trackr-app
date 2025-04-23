@@ -403,7 +403,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           spacing: 6,
                           children: [
-                            const SizedBox(height: 6),
                             CupertinoSlidingSegmentedControl<_OriginalNewValues>(
                               backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
                               thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
@@ -756,7 +755,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   showBottomSheetWithMultiActions(
                       context: context,
                       title: "Delete workout?",
-                      description: "Are you sure you want to delete this workout?",
+                      description: planDto != null ? "Are you sure you want to delete this workout and remove it from ${planDto.name}?":  "Are you sure you want to delete this workout?",
                       leftAction: Navigator.of(context).pop,
                       rightAction: () {
                         context.pop();
@@ -815,6 +814,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       final updatedRoutineTemplate = template.copyWith(planId: "");
 
       await templateProvider.updateTemplate(template: updatedRoutineTemplate);
+
+      setState(() {
+        _template = updatedRoutineTemplate;
+      });
     }
   }
 

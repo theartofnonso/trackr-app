@@ -173,6 +173,7 @@ class _RoutineTemplateLibraryScreenState extends State<RoutineTemplateLibraryScr
     _filteredTemplates = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .templates
         .where((template) => !widget.excludeTemplates.contains(template))
+        .where((template) => template.planId.isEmpty)
         .toList();
 
     _runSearch();

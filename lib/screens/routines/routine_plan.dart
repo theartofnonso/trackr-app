@@ -48,7 +48,11 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final plan = _plan;
+
+    if (plan == null) return const NotFound();
+
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -58,10 +62,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
             message: exerciseAndRoutineController.errorMessage);
       });
     }
-
-    final plan = _plan;
-
-    if (plan == null) return const NotFound();
 
     final routineTemplates =
         exerciseAndRoutineController.templates.where((template) => template.planId == plan.id).toList();
@@ -134,13 +134,15 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                   logs: logs,
                 ),
                 routineTemplates.isNotEmpty
-                    ? GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 2,
-                        childAspectRatio: 1,
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        children: children)
+                    ? Expanded(
+                      child: GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 2,
+                          childAspectRatio: 1,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
+                          children: children),
+                    )
                     : Expanded(
                         child: const NoListEmptyState(
                             message: "It might feel quiet now, but your workout templates will soon appear here."),

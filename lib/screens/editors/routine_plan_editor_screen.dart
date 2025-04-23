@@ -146,6 +146,21 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     context.pop(plan);
   }
 
+  void _removeTemplate({required RoutineTemplateDto templateToBeRemoved}) async {
+
+    final plan = widget.plan;
+
+    if(plan != null) {
+      final templateProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+      final templateWithoutIdPlanId = templateToBeRemoved.copyWith(planId: "");
+      await templateProvider.updateTemplate(template: templateWithoutIdPlanId);
+
+      setState(() {
+        _routineTemplates.removeWhere((template) => template.id == templateToBeRemoved.id);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -155,7 +170,19 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     final children = _routineTemplates
         .mapIndexed(
-          (index, template) => RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes)),
+          (index, template) => GestureDetector(
+            onTap: () {
+              _removeTemplate(templateToBeRemoved: template);
+            },
+            child: Badge(
+              backgroundColor: Colors.transparent,
+                label: FaIcon(FontAwesomeIcons.squareXmark),
+                alignment: Alignment.topRight,
+                smallSize: 12,
+                isLabelVisible: true,
+                offset: Offset(-6, 0),
+                child: RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes))),
+          ),
         )
         .toList();
 
