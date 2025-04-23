@@ -59,7 +59,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       //If you want to reward startsWith more strongly, you could do:
       for (final part in exerciseNameParts) {
         if (part.startsWith(queryPart)) {
-          score += 0.5;  // for instance, half a point for startsWith
+          score += 0.5; // for instance, half a point for startsWith
         }
       }
     }
@@ -90,9 +90,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
     // Filter by muscle groups if any are selected
     if (_selectedMuscleGroups.isNotEmpty) {
-      filteredExercises = filteredExercises
-          .where((ex) => _selectedMuscleGroups.contains(ex.primaryMuscleGroup))
-          .toList();
+      filteredExercises =
+          filteredExercises.where((ex) => _selectedMuscleGroups.contains(ex.primaryMuscleGroup)).toList();
     }
 
     // Filter to owner exercises if needed
@@ -113,9 +112,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     // Compute a relevance score for each exercise, then sort descending by score
     final rankedList = filteredExercises
         .map((ex) {
-      final score = _calculateRelevanceScore(ex, queryParts);
-      return (exercise: ex, score: score);
-    })
+          final score = _calculateRelevanceScore(ex, queryParts);
+          return (exercise: ex, score: score);
+        })
         .where((tuple) => tuple.score > 0) // optional: only keep those with some match
         .toList();
 
@@ -183,11 +182,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         ),
         title: Text("Exercise Library".toUpperCase()),
         centerTitle: true,
-      ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: "fab_exercise_library_screen",
-        onPressed: _navigateToExerciseEditor,
-        child: const FaIcon(FontAwesomeIcons.plus, size: 28),
+        actions: [
+          IconButton(onPressed: _navigateToExerciseEditor, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
