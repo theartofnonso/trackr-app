@@ -304,7 +304,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   Widget _buildHeader(String label, {required bool isDarkMode}) => Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 20.0),
+        padding: const EdgeInsets.only(bottom: 20.0),
         child: Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16).copyWith(

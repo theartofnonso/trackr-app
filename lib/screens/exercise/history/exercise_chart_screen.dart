@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
@@ -198,6 +199,8 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
       ]);
     }).toList();
 
+    final exercise = widget.exercise;
+
     return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.only(top: 20, right: 10.0, bottom: 10, left: 10),
@@ -230,6 +233,21 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               ),
             ],
           ),
+          if (exercise.description != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  exercise.description != null ? "${exercise.description}." : "No notes",
+                  style: GoogleFonts.ubuntu(
+                      fontSize: 14,
+                      color: isDarkMode ? Colors.white70 : Colors.black,
+                      height: 1.8,
+                      fontWeight: FontWeight.w400),
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
           Padding(
             padding: const EdgeInsets.only(right: 20, bottom: 20),
             child: Column(
