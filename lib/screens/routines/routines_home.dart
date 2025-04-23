@@ -29,7 +29,10 @@ class _RoutinesHomeScreenState extends State<RoutinesHomeScreen> with SingleTick
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
               onPressed: context.pop,
             ),
-            actions: [IconButton(onPressed: _showMenuBottomSheet, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 28))],
+            actions: [
+              IconButton(
+                  onPressed: _showMenuBottomSheet, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 28))
+            ],
           ),
           body: SafeArea(
             bottom: false,

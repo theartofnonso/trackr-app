@@ -66,9 +66,11 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
     final routineTemplates =
         exerciseAndRoutineController.templates.where((template) => template.planId == plan.id).toList();
 
+    final logs = routineTemplates.map((template) =>  exerciseAndRoutineController.whereLogsWithTemplateId(templateId: template.id)).expand((logs) => logs).toList();
+
     final children = routineTemplates
         .mapIndexed(
-          (index, template) => RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes)),
+          (index, template) => RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes), onTap: () => navigateToRoutineTemplatePreview(context: context, template: template)),
         )
         .toList();
 
@@ -153,12 +155,13 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 ),
                 Calendar(
                   onSelectDate: (_) {},
+                  logs: logs,
                 ),
                 GridView.count(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
-                    childAspectRatio: 1,
+                    childAspectRatio: 0.8,
                     mainAxisSpacing: 10.0,
                     crossAxisSpacing: 10.0,
                     children: children),

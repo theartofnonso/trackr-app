@@ -76,7 +76,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                 ? Expanded(
                     child: GridView.count(
                         crossAxisCount: 2,
-                        childAspectRatio: 1,
+                        childAspectRatio: 0.8,
                         mainAxisSpacing: 10.0,
                         crossAxisSpacing: 10.0,
                         children: children),

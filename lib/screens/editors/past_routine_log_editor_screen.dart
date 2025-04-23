@@ -50,7 +50,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     showExercisesInLibrary(
         context: context,
-        excludeExercises: excludeExercises,
+        exercisesToExclude: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           final onlyExercise = selectedExercises.first;
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
@@ -84,7 +84,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     showExercisesInLibrary(
         context: context,
-        excludeExercises: excludeExercises,
+        exercisesToExclude: excludeExercises,
         onSelected: (List<ExerciseDto> selectedExercises) {
           final pastSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
               .whereRecentSetsForExercise(exercise: selectedExercises.first);

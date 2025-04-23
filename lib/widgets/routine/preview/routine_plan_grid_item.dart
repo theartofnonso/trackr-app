@@ -37,11 +37,11 @@ class RoutinePlanGridItemWidget extends StatelessWidget {
               plan.name,
               style: Theme.of(context).textTheme.titleMedium,
               overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+              maxLines: 3,
             ),
             Text(plan.notes,
                 overflow: TextOverflow.ellipsis,
-                maxLines: 3,
+                maxLines: 2,
                 style: GoogleFonts.ubuntu(
                     fontSize: 12,
                     color: isDarkMode ? Colors.white70 : Colors.black,

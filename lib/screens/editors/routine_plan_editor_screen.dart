@@ -11,7 +11,9 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import '../../colors.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
+import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/routine_editors_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/preview/routine_template_grid_item.dart';
@@ -30,6 +32,26 @@ class RoutinePlanEditorScreen extends StatefulWidget {
 class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   late TextEditingController _planNameController;
   late TextEditingController _planNotesController;
+
+  List<RoutineTemplateDto> _routineTemplates = [];
+
+  void _selectTemplatesInLibrary() async {
+    final plan = widget.plan;
+
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final routineTemplates =
+        exerciseAndRoutineController.templates.where((template) => template.planId == plan?.id).toList();
+
+    showTemplatesInLibrary(
+        context: context,
+        templatesToExclude: routineTemplates,
+        onSelected: (List<RoutineTemplateDto> templates) async {
+          setState(() {
+            _routineTemplates.addAll(templates);
+          });
+        });
+  }
 
   bool _validateRoutinePlanInputs() {
     final exerciseProviders = Provider.of<ExerciseLogController>(context, listen: false);
@@ -53,35 +75,42 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   void _createRoutinePlan() async {
     if (!_validateRoutinePlanInputs()) return;
 
-    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-    final exercises = exerciseLogController.exerciseLogs;
+    final newPlan = RoutinePlanDto(
+      id: "",
+      name: _planNameController.text,
+      notes: _planNotesController.text,
+      owner: SharedPrefs().userId,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
 
-    final template = RoutineTemplateDto(
-        id: "",
-        name: _planNameController.text,
-        exerciseTemplates: exercises,
-        notes: _planNotesController.text,
-        owner: "",
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now());
+    final templateController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    await Provider.of<ExerciseAndRoutineController>(context, listen: false).saveTemplate(templateDto: template);
+    final createdPlan = await templateController.savePlan(planDto: newPlan);
+
+    if (createdPlan != null) {
+      for (final template in _routineTemplates) {
+        final templateWithPlanId = template.copyWith(planId: createdPlan.id);
+        await templateController.saveTemplate(templateDto: templateWithPlanId);
+      }
+    }
+
     _navigateBack();
   }
 
   void _updateRoutinePlan() {
     if (!_validateRoutinePlanInputs()) return;
-    final template = widget.plan;
-    if (template != null) {
+    final plan = widget.plan;
+    if (plan != null ) {
       showBottomSheetWithMultiActions(
           context: context,
-          description: "Do you want to update workout?",
+          description: "Do you want to update plan?",
           leftAction: _closeDialog,
           rightAction: () {
             _closeDialog();
-            // final updatedTemplate = _getUpdatedRoutineTemplate(template: template);
-            // _doUpdateRoutinePlan(updatedPlan: updatedTemplate);
-            //_navigateBack(plan: updatedTemplate);
+            final updatedTemplate = _getUpdatedRoutinePlan(plan: plan);
+            _doUpdateRoutinePlan(planToBeUpdated: updatedTemplate);
+            _navigateBack(plan: updatedTemplate);
           },
           leftActionLabel: 'Cancel',
           rightActionLabel: 'Update',
@@ -90,17 +119,19 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     }
   }
 
-  void _doUpdateRoutinePlan() async {
-    final plan = widget.plan;
+  RoutinePlanDto _getUpdatedRoutinePlan({required RoutinePlanDto plan}) {
 
-    if (plan != null) {
-      final planProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final planToBeUpdated = plan.copyWith(
+        name: _planNameController.text.trim(), notes: _planNotesController.text.trim(), updatedAt: DateTime.now());
 
-      final planToBeUpdated = plan.copyWith(
-          name: _planNameController.text.trim(), notes: _planNotesController.text.trim(), updatedAt: DateTime.now());
+    return planToBeUpdated;
+  }
 
-      await planProvider.updatePlan(planDto: planToBeUpdated);
-    }
+  void _doUpdateRoutinePlan({required RoutinePlanDto planToBeUpdated}) async {
+
+    final planProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    await planProvider.updatePlan(planDto: planToBeUpdated);
   }
 
   void _dismissKeyboard() {
@@ -120,18 +151,15 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final plan = widget.plan;
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-    final routineTemplates =
-        exerciseAndRoutineController.templates.where((template) => template.planId == plan?.id).toList();
-
-    final children = routineTemplates
+    final children = _routineTemplates
         .mapIndexed(
           (index, template) => RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes)),
         )
         .toList();
+
+    final plan = widget.plan;
 
     if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -145,9 +173,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
           appBar: AppBar(
               leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong), onPressed: context.pop),
               actions: [
-                IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
-                if (routineTemplates.length > 1)
-                  IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.barsStaggered)),
+                IconButton(onPressed: _selectTemplatesInLibrary, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
               ]),
           body: Container(
             decoration: BoxDecoration(
@@ -193,17 +219,17 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                         ),
                       ],
                     ),
-                    if (routineTemplates.isNotEmpty)
+                    if (_routineTemplates.isNotEmpty)
                       Expanded(
                         child: GridView.count(
                             shrinkWrap: true,
                             crossAxisCount: 2,
-                            childAspectRatio: 1,
+                            childAspectRatio: 0.8,
                             mainAxisSpacing: 10.0,
                             crossAxisSpacing: 10.0,
                             children: children),
                       ),
-                    if (routineTemplates.isNotEmpty)
+                    if (_routineTemplates.isNotEmpty)
                       SafeArea(
                         minimum: EdgeInsets.all(10),
                         child: SizedBox(
@@ -214,7 +240,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                                 label: plan != null ? "Update Plan" : "Create Plan",
                                 onPressed: plan != null ? _updateRoutinePlan : _createRoutinePlan)),
                       ),
-                    if (routineTemplates.isEmpty)
+                    if (_routineTemplates.isEmpty)
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -235,6 +261,13 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     super.initState();
     _planNameController = TextEditingController();
     _planNotesController = TextEditingController();
+
+    final plan = widget.plan;
+
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    _routineTemplates =
+        exerciseAndRoutineController.templates.where((template) => template.planId == plan?.id).toList();
   }
 
   @override

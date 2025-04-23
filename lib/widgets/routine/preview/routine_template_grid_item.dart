@@ -6,13 +6,13 @@ import 'package:provider/provider.dart';
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/routine_template_dto.dart';
-import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
 
 class RoutineTemplateGridItemWidget extends StatelessWidget {
   final RoutineTemplateDto template;
+  final void Function()? onTap;
 
-  const RoutineTemplateGridItemWidget({super.key, required this.template});
+  const RoutineTemplateGridItemWidget({super.key, required this.template, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
     final exercises = template.exerciseTemplates;
     final sets = template.exerciseTemplates.expand((exercise) => exercise.sets);
     return GestureDetector(
-      onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+      onTap: onTap,
       child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16),
@@ -40,7 +40,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
                   template.name,
                   style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                  maxLines: 3,
                 ),
                 if(plan != null)
                   Text(

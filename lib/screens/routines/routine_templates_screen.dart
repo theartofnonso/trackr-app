@@ -21,7 +21,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
       final templates = List<RoutineTemplateDto>.from(provider.templates);
 
-      final children = templates.map((template) => RoutineTemplateGridItemWidget(template: template)).toList();
+      final children = templates.map((template) => RoutineTemplateGridItemWidget(template: template, onTap: () => navigateToRoutineTemplatePreview(context: context, template: template))).toList();
 
       return Scaffold(
           body: Container(
@@ -51,7 +51,7 @@ class RoutineTemplatesScreen extends StatelessWidget {
                 ? Expanded(
                     child: GridView.count(
                         crossAxisCount: 2,
-                        childAspectRatio: 1,
+                        childAspectRatio: 0.8,
                         mainAxisSpacing: 10.0,
                         crossAxisSpacing: 10.0,
                         children: children),

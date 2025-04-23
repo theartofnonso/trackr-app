@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 class _DateViewModel {
@@ -20,10 +21,12 @@ const int _kMonthOrigin = 1000;
 /// A plug‑and‑play calendar widget that shows the current week by default and toggles
 /// to a month grid on tap of the header. No external [DateTime] dependency required.
 class Calendar extends StatefulWidget {
-  const Calendar({super.key, this.onSelectDate});
+  const Calendar({super.key, this.onSelectDate, this.logs});
 
   /// Fired whenever the user selects a day.
   final void Function(DateTime dateTime)? onSelectDate;
+
+  final List<RoutineLogDto>? logs;
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -118,7 +121,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   Widget _buildWeekGrid(bool isDark) {
     final monday = _mondayOf(_anchor); // always anchor‑week
     final days = List.generate(7, (i) => monday.add(Duration(days: i)));
-    final logs = context.read<ExerciseAndRoutineController>().logs;
+    final logs = widget.logs ?? context.read<ExerciseAndRoutineController>().logs;
 
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(), // <— not scrollable
@@ -174,7 +177,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   List<_DateViewModel?> _generateMonthDates(DateTime monthStart) {
     final first = DateTime(monthStart.year, monthStart.month, 1);
     final last = DateTime(monthStart.year, monthStart.month + 1, 0);
-    final logs = context
+    final logs = widget.logs ?? context
         .read<ExerciseAndRoutineController>()
         .logs
         .where((l) => l.createdAt.isBetweenInclusive(from: first, to: last));
