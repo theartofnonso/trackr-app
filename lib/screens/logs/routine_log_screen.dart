@@ -634,7 +634,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       return TrendSummary(
         trend: Trend.none,
         average: volumes.first,
-        summary: "You've logged your first session's volume (${volumes.first.toStringAsFixed(1)}). "
+        summary: "You've logged your first session's volume. "
             "Great job! Keep logging more data to see trends over time.",
       );
     }

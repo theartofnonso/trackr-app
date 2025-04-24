@@ -126,13 +126,12 @@ class VolumeChart extends StatelessWidget {
     // 2. If there's only one volume, we can’t calculate “previous average”.
     //    So just return a simple summary here.
     if (volumes.length == 1) {
-      final singleVolume = volumes.first;
       // Here, “averageOfPrevious” doesn’t exist because there is no previous session.
       // So we can safely set it to 0 or the same singleVolume—whichever you prefer.
       return TrendSummary(
         trend: Trend.none,
         average: 0, // No previous sessions
-        summary: "🌟 You've logged your first week's volume ($singleVolume). "
+        summary: "🌟 You've logged your first week's volume. "
             "Great job! Keep logging more data to see trends over time.",
       );
     }
