@@ -42,7 +42,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
               template.name,
               style: Theme.of(context).textTheme.titleMedium,
               overflow: TextOverflow.ellipsis,
-              maxLines: 3,
+              maxLines: plan != null ? 1 : 3,
             ),
             Wrap(
               children: [
