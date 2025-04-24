@@ -1013,6 +1013,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  sahha_flutter:
+    dependency: "direct main"
+    description:
+      name: sahha_flutter
+      sha256: de3e280c709eb83c9fa6d136ba9f713db6887df8c84335e9a8f152baff7c2a14
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   sentry:
     dependency: transitive
     description:

@@ -44,6 +44,10 @@ PODS:
     - Flutter
     - FlutterMacOS
     - PostHog (~> 3.19)
+  - Sahha (1.1.3)
+  - sahha_flutter (1.1.4):
+    - Flutter
+    - Sahha (= 1.1.3)
   - Sentry/HybridSDK (8.46.0)
   - sentry_flutter (8.14.1):
     - Flutter
@@ -74,6 +78,7 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - posthog_flutter (from `.symlinks/plugins/posthog_flutter/ios`)
+  - sahha_flutter (from `.symlinks/plugins/sahha_flutter/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -82,6 +87,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - PostHog
+    - Sahha
     - Sentry
     - SQLite.swift
     - Starscream
@@ -111,6 +117,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   posthog_flutter:
     :path: ".symlinks/plugins/posthog_flutter/ios"
+  sahha_flutter:
+    :path: ".symlinks/plugins/sahha_flutter/ios"
   sentry_flutter:
     :path: ".symlinks/plugins/sentry_flutter/ios"
   share_plus:
@@ -134,6 +142,8 @@ SPEC CHECKSUMS:
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PostHog: 8394fade16f5cfd92fe2a9d34c29dd9e5304da03
   posthog_flutter: c7cc14a5f1b0759dfdfd63dd31a9a9a1af5caf96
+  Sahha: c7c704e4894d4c82879decba18f2cca8db86fbcf
+  sahha_flutter: dc86199d3835674721d4d293a5c1161056859967
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   sentry_flutter: 942017adbe00f963061cb11ec260414a990b7a42
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
@@ -142,6 +152,6 @@ SPEC CHECKSUMS:
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
 
-PODFILE CHECKSUM: e7d0b7db4f4de7b0c6cdb4bf2f20ca1ec40c1b4a
+PODFILE CHECKSUM: 35349b6b7f6e3e259572f8f552dbeaa658459f53
 
 COCOAPODS: 1.16.2

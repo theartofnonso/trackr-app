@@ -1,0 +1,4 @@
+enum SahhaEnvironment {
+  sandbox,
+  production
+}

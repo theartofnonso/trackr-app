@@ -11,6 +11,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -326,6 +327,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
+          _deAuthenticateSahhaUser();
           _showLoadingScreen();
           _clearAppData();
           await Amplify.Auth.signOut();
@@ -352,6 +354,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         rightAction: () async {
           Navigator.of(context).pop();
           _showLoadingScreen();
+
+          _deAuthenticateSahhaUser();
+
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
           final deletedRoutineTemplates = await batchDeleteUserData(
@@ -375,6 +380,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
+  }
+
+  void _deAuthenticateSahhaUser() {
+    SahhaFlutter.deauthenticate()
+        .then((success) => {
+      debugPrint(success.toString())
+    })
+        .catchError((error, stackTrace) => {
+      debugPrint(error.toString())
+    });
   }
 
   void _getAppVersion() async {

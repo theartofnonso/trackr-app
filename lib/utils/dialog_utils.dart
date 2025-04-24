@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/calendar/calendar_logs.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
+import '../controllers/exercise_and_routine_controller.dart';
 import '../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/timers/time_picker.dart';
@@ -34,12 +36,18 @@ void showSnackbar({required BuildContext context, required String message}) {
 }
 
 void showLogsBottomSheet({required BuildContext context, required DateTime dateTime}) {
-  displayBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      child: SafeArea(
-        child: CalendarLogs(dateTime: dateTime),
-      ));
+
+  final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+  final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
+
+  if(routineLogsForCurrentDate.isNotEmpty) {
+    displayBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        child: SafeArea(
+          child: CalendarLogs(logs: routineLogsForCurrentDate),
+        ));
+  }
 }
 
 Future<void> displayBottomSheet(

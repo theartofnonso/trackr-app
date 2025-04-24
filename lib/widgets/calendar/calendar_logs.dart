@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
-import '../../controllers/exercise_and_routine_controller.dart';
 import '../routine/preview/routine_log_widget.dart';
 
 class CalendarLogs extends StatelessWidget {
-  final DateTime dateTime;
+  final List<RoutineLogDto> logs;
 
-  const CalendarLogs({super.key, required this.dateTime});
+  const CalendarLogs({super.key, required this.logs});
 
   @override
   Widget build(BuildContext context) {
-    /// Routine Logs
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-    final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
-
-    final children = routineLogsForCurrentDate.map((log) {
+    final children = logs.map((log) {
       Widget widget;
 
       widget = RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog());

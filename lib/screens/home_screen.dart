@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
+import 'package:tracker_app/sahha_credentials.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
 import 'package:tracker_app/screens/onboarding/onboarding_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -125,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final signInDetails = authUser.signInDetails.toJson();
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = (signInDetails["username"]?.toString() ?? '');
+    Posthog().identify(userId: SharedPrefs().userId);
   }
 
   void _loadCachedLog() {
@@ -142,14 +145,29 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _authenticateSahhaUser() {
+    final userId = SharedPrefs().userId;
+    SahhaFlutter.authenticate(appId: sahhaAppId, appSecret: sahhaAppSecret, externalId: userId)
+        .then((success) => {
+      debugPrint(success.toString())
+    })
+        .catchError((error, stackTrace) => {
+      debugPrint(error.toString())
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     if (SharedPrefs().firstLaunch) {
       _cacheUser();
+    } else {
+      Posthog().identify(userId: SharedPrefs().userId);
+      _authenticateSahhaUser();
     }
+
     _loadAppData();
-    Posthog().identify(userId: SharedPrefs().userId);
+
     if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin()
           .cancelAll(); // Cancel all notifications including pending workout sessions and regular training reminders

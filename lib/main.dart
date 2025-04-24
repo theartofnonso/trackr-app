@@ -12,6 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -330,8 +331,6 @@ final _router = GoRouter(
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  //get analytics => analytics;
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -363,6 +362,15 @@ class _MyAppState extends State<MyApp> {
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');
     }
+  }
+
+  void _configureSahha() {
+    // Use custom values
+    SahhaFlutter.configure(
+      environment: SahhaEnvironment.sandbox,
+    ) // Required - .sandbox for testing
+        .then((success) => {debugPrint(success.toString())})
+        .catchError((error, stackTrace) => {debugPrint(error.toString())});
   }
 
   void _completeIntro() {

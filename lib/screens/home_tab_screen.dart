@@ -21,6 +21,10 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     final routineUserController = Provider.of<RoutineUserController>(context, listen: true);
@@ -38,6 +42,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
           leading: IconButton(
             onPressed: () => navigateToSettings(context: context),
             icon: FaIcon(FontAwesomeIcons.gear),
+          ),
+          title: Image.asset(
+            'images/trkr.png',
+            fit: BoxFit.contain,
+            color: isDarkMode ? Colors.white70 : Colors.black,
+            height: 8, // Adjust the height as needed
           ),
           actions: [
             IconButton(
