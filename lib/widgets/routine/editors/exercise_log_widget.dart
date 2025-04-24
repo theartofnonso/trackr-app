@@ -33,6 +33,7 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../../ai_widgets/trkr_coach_widget.dart';
 import '../../empty_states/no_list_empty_state.dart';
 import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
@@ -215,7 +216,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
-    if (setDto.isEmpty()) return;
+    if (setDto.isEmpty()) {
+      showSnackbar(context: context, icon: TRKRCoachWidget(), message: "Mind taking a look at the set values and confirming they’re correct?");
+      return;
+    }
 
     final checked = !setDto.checked;
     final updatedSet = setDto.copyWith(checked: checked);
@@ -742,7 +746,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           ),
                       }
                     : SetsListview(type: exerciseType, sets: sets),
-                if (_errorMessages.isNotEmpty) _DepthStack(children: errorWidgets),
+                if (_errorMessages.isNotEmpty && _errorMessages.length > 1) _DepthStack(children: errorWidgets),
+                if (_errorMessages.isNotEmpty && _errorMessages.length == 1) errorWidgets.first,
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
                     if (withReps(type: exerciseType) &&

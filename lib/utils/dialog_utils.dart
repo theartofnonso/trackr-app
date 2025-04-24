@@ -5,10 +5,11 @@ import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
+import '../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
 import '../widgets/timers/time_picker.dart';
 
-void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
+void showSnackbar({required BuildContext context, required Widget? icon, required String message}) {
   Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
   final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -17,14 +18,14 @@ void showSnackbar({required BuildContext context, required Widget icon, required
       behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
-          icon,
+          icon ?? TRKRCoachWidget(),
           const SizedBox(
             width: 10,
           ),
           Expanded(
             child: Text(
               message,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
             ),
           ),
         ],
