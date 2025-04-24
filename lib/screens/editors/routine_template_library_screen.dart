@@ -15,10 +15,9 @@ import '../../widgets/routine/preview/routine_template_grid_item.dart';
 class RoutineTemplateLibraryScreen extends StatefulWidget {
   final bool readOnly;
   final List<RoutineTemplateDto> excludeTemplates;
-  final RoutinePlanDto? planDto;
 
   const RoutineTemplateLibraryScreen(
-      {super.key, this.readOnly = false, this.excludeTemplates = const [], required this.planDto});
+      {super.key, this.readOnly = false, this.excludeTemplates = const []});
 
   @override
   State<RoutineTemplateLibraryScreen> createState() => _RoutineTemplateLibraryScreenState();
@@ -69,6 +68,7 @@ class _RoutineTemplateLibraryScreenState extends State<RoutineTemplateLibraryScr
     final filteredTemplates = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .templates
         .where((template) => !widget.excludeTemplates.contains(template))
+        .where((template) => template.planId.isEmpty)
         .toList();
 
     // If the user typed nothing, you can simply show the entire filtered list
@@ -116,7 +116,7 @@ class _RoutineTemplateLibraryScreenState extends State<RoutineTemplateLibraryScr
         .mapIndexed(
           (index, template) => GestureDetector(
               onTap: () => _navigateBackWithSelectedExercise(template),
-              child: RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes))),
+              child: RoutineTemplateGridItemWidget(template: template)),
         )
         .toList();
 

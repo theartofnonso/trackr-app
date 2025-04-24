@@ -295,7 +295,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     _routineTemplates =
-        exerciseAndRoutineController.templates.where((template) => template.planId == plan?.id || template.planId.isEmpty).toList();
+        exerciseAndRoutineController.templates.where((template) => template.planId == plan?.id).toList();
   }
 
   @override

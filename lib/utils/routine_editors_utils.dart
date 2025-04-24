@@ -49,7 +49,7 @@ void showTemplatesInLibrary(
       required List<RoutineTemplateDto> templatesToExclude,
       required void Function(List<RoutineTemplateDto> selectedTemplates) onSelected}) async {
   final selectedTemplates = await Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(excludeTemplates: templatesToExclude, planDto: planDto)))
+      .push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(excludeTemplates: templatesToExclude)))
   as List<RoutineTemplateDto>?;
 
   if (context.mounted) {
