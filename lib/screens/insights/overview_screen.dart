@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/daily_readiness.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
@@ -27,7 +26,6 @@ import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/volume_chart.dart';
-import '../../widgets/routine/preview/routine_log_widget.dart';
 import '../AI/trkr_coach_chat_screen.dart';
 import '../routines/readiness_screen.dart';
 
@@ -125,8 +123,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     return SingleChildScrollView(
       child: Column(spacing: 12, children: [
-        Calendar(
-          onSelectDate: _onSelectCalendarDateTime),
+        Calendar(onSelectDate: (date) => _onSelectCalendarDateTime(date: date)),
         StaggeredGrid.count(
           crossAxisCount: 2,
           mainAxisSpacing: 10,
@@ -291,15 +288,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ));
   }
 
-  void _showLogsBottomSheet({required DateTime dateTime}) {
-    displayBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        child: SafeArea(
-          child: _LogsListView(dateTime: dateTime),
-        ));
-  }
-
   void _switchToAIContext() async {
     final result =
         await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
@@ -321,8 +309,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
     }
   }
 
-  void _onSelectCalendarDateTime(DateTime date) {
-    _showLogsBottomSheet(dateTime: date);
+  void _onSelectCalendarDateTime({required DateTime date}) {
+    showLogsBottomSheet(dateTime: date, context: context);
   }
 }
 
@@ -574,35 +562,5 @@ class _ProfileTile extends StatelessWidget {
         ),
       ]),
     );
-  }
-}
-
-class _LogsListView extends StatelessWidget {
-  final DateTime dateTime;
-
-  const _LogsListView({required this.dateTime});
-
-  @override
-  Widget build(BuildContext context) {
-    /// Routine Logs
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-    final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
-
-    final children = routineLogsForCurrentDate.map((log) {
-      Widget widget;
-
-      widget = RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog());
-
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: widget,
-      );
-    }).toList();
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.center, spacing: 16, children: [
-      Text("Training Logs".toUpperCase(),
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-      ...children
-    ]);
   }
 }

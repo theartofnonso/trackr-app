@@ -44,7 +44,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     showTemplatesInLibrary(
         context: context,
-        templatesToExclude: routineTemplates,
+        templatesToExclude: [...routineTemplates, ..._routineTemplates],
         onSelected: (List<RoutineTemplateDto> templates) async {
           setState(() {
             _routineTemplates.addAll(templates);
@@ -87,7 +87,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     if (createdPlan != null) {
       for (final template in _routineTemplates) {
         final templateWithPlanId = template.copyWith(planId: createdPlan.id);
-        await templateController.saveTemplate(templateDto: templateWithPlanId);
+        await templateController.updateTemplate(template: templateWithPlanId);
       }
     }
 
@@ -129,7 +129,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     for (final template in _routineTemplates) {
       final templateWithPlanId = template.copyWith(planId: planToBeUpdated.id);
-      await planProvider.saveTemplate(templateDto: templateWithPlanId);
+      await planProvider.updateTemplate(template: templateWithPlanId);
     }
   }
 

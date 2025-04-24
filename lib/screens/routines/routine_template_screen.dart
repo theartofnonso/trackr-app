@@ -36,6 +36,7 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
+import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/not_found.dart';
@@ -273,6 +274,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             )
                           ],
                         ),
+                        Calendar(
+                          onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
+                          logs: allLogsForTemplate,
+                        ),
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
                             description:
@@ -454,6 +459,10 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         _loading = false;
       });
     }
+  }
+
+  void _onSelectCalendarDateTime({required DateTime date}) {
+    showLogsBottomSheet(dateTime: date, context: context);
   }
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {

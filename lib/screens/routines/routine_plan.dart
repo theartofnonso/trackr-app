@@ -130,7 +130,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                         height: 1.8,
                         fontWeight: FontWeight.w400)),
                 Calendar(
-                  onSelectDate: (_) {},
+                  onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
                   logs: logs,
                 ),
                 routineTemplates.isNotEmpty
@@ -158,6 +158,10 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         _loading = false;
       });
     }
+  }
+
+  void _onSelectCalendarDateTime({required DateTime date}) {
+    showLogsBottomSheet(dateTime: date, context: context);
   }
 
   void _deleteRoutinePlan({required RoutinePlanDto plan}) async {

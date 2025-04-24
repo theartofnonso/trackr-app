@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/utils/general_utils.dart';
+import 'package:tracker_app/widgets/calendar/calendar_logs.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
@@ -30,6 +31,15 @@ void showSnackbar({required BuildContext context, required String message}) {
           ),
         ],
       )));
+}
+
+void showLogsBottomSheet({required BuildContext context, required DateTime dateTime}) {
+  displayBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      child: SafeArea(
+        child: CalendarLogs(dateTime: dateTime),
+      ));
 }
 
 Future<void> displayBottomSheet(
