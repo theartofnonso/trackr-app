@@ -180,7 +180,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                 smallSize: 12,
                 isLabelVisible: true,
                 offset: Offset(-6, 0),
-                child: RoutineTemplateGridItemWidget(template: template.copyWith(notes: template.notes))),
+                child: RoutineTemplateGridItemWidget(template: template)),
           ),
         )
         .toList();
