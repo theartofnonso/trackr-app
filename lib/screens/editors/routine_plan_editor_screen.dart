@@ -165,10 +165,9 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     /// We listen for [_routineTemplates] have been updated i.e. Have their planId removed
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final children = _routineTemplates
-        .where((template) => template.planId.isEmpty)
         .mapIndexed(
           (index, template) => GestureDetector(
             onTap: () {
@@ -296,7 +295,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     _routineTemplates =
-        exerciseAndRoutineController.templates.where((template) => template.planId == plan?.id).toList();
+        exerciseAndRoutineController.templates.where((template) => template.planId == plan?.id || template.planId.isEmpty).toList();
   }
 
   @override
