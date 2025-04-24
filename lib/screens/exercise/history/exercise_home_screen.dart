@@ -41,7 +41,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
       if (context.mounted) {
         showSnackbar(
             context: context,
-            icon: const Icon(Icons.info_outline),
             message: "Oops, we are unable delete this exercise");
       }
     }

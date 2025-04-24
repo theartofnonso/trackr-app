@@ -337,7 +337,7 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
   }
 
   void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
+    showSnackbar(context: context, message: message);
   }
 
   void _selectDate() {
@@ -463,7 +463,6 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     if (name.isEmpty) {
       showSnackbar(
         context: context,
-        icon: const FaIcon(FontAwesomeIcons.triangleExclamation),
         message: "name must not be empty",
       );
       return false;
@@ -474,7 +473,6 @@ class _UserEditorScreenState extends State<UserEditorScreen> {
     if (!regex.hasMatch(name)) {
       showSnackbar(
         context: context,
-        icon: const FaIcon(FontAwesomeIcons.triangleExclamation),
         message: "$name must not contain symbols or spaces",
       );
       return false;

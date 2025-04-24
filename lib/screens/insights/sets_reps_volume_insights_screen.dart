@@ -414,7 +414,7 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
 
     if (exerciseLogsForMuscleGroups.isEmpty) {
       showSnackbar(
-          context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: "You don't have any logs");
+          context: context, message: "You don't have any logs");
 
       return;
     }
@@ -472,7 +472,6 @@ class _SetsAndRepsVolumeInsightsScreenState extends State<SetsAndRepsVolumeInsig
       if (mounted) {
         showSnackbar(
             context: context,
-            icon: TRKRCoachWidget(),
             message: "Oops! I am unable to generate your ${selectedMuscleGroup.name} report");
       }
     });

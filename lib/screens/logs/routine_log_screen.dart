@@ -38,7 +38,6 @@ import '../../utils/readiness_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
-import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
@@ -76,7 +75,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSnackbar(
             context: context,
-            icon: const FaIcon(FontAwesomeIcons.circleInfo),
             message: exerciseAndRoutineController.errorMessage);
       });
     }
@@ -381,7 +379,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
       if (mounted) {
         showSnackbar(
             context: context,
-            icon: TRKRCoachWidget(),
             message: "Oops! I am unable to generate your ${log.name} report");
       }
     });
@@ -572,7 +569,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         if (mounted) {
           showSnackbar(
               context: context,
-              icon: const Icon(Icons.info_outline),
               message: "Oops, we are unable to create template");
         }
       } finally {
@@ -593,7 +589,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         if (mounted) {
           showSnackbar(
               context: context,
-              icon: const Icon(Icons.info_outline),
               message: "Oops, we are unable to delete this log");
         }
       } finally {

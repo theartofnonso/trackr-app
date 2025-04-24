@@ -241,7 +241,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSnackbar(
             context: context,
-            icon: const FaIcon(FontAwesomeIcons.circleInfo),
             message: routineLogEditorController.errorMessage);
       });
     }

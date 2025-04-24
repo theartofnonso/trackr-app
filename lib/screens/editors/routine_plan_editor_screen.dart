@@ -65,7 +65,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   }
 
   void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: message);
+    showSnackbar(context: context, message: message);
   }
 
   void _createRoutinePlan() async {

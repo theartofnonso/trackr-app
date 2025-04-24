@@ -368,7 +368,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             if (mounted) {
               showSnackbar(
                   context: context,
-                  icon: const Icon(Icons.info_outline_rounded),
                   message: "Something went wrong. Please try again.");
             }
           }

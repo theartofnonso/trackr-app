@@ -171,7 +171,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
           Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogSummary.displayName);
           if (mounted) {
             showSnackbar(
-                context: context, icon: const FaIcon(FontAwesomeIcons.solidSquareCheck), message: "Content Shared");
+                context: context, message: "Content Shared");
           }
         }
       }
@@ -219,7 +219,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                     Navigator.of(context).pop();
                     showSnackbar(
                         context: context,
-                        icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
                         message: "Workout log link copied");
                   }
                 });
@@ -243,7 +242,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
                     Navigator.of(context).pop();
                     showSnackbar(
                         context: context,
-                        icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
                         message: "Workout log copied");
                   }
                 });

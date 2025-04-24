@@ -108,7 +108,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
   }
 
   void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: message);
+    showSnackbar(context: context, message: message);
   }
 
   void _createRoutineTemplate() async {

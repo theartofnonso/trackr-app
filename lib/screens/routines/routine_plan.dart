@@ -58,7 +58,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSnackbar(
             context: context,
-            icon: const FaIcon(FontAwesomeIcons.circleInfo),
             message: exerciseAndRoutineController.errorMessage);
       });
     }
@@ -169,7 +168,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
       }
     } catch (e) {
       if (mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove plan");
+        showSnackbar(context: context, message: "Unable to remove plan");
       }
     } finally {
       _toggleLoadingState();

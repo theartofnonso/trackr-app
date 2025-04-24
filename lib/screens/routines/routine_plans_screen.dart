@@ -110,7 +110,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
   }
 
   void _showSnackbar(String message, {Widget? icon}) {
-    showSnackbar(context: context, icon: icon ?? const Icon(Icons.info_outline), message: message);
+    showSnackbar(context: context, message: message);
   }
 
   void _runMessage() async {

@@ -88,7 +88,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSnackbar(
             context: context,
-            icon: const FaIcon(FontAwesomeIcons.circleInfo),
             message: exerciseAndRoutineController.errorMessage);
       });
     }
@@ -465,7 +464,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       }
     } catch (e) {
       if (mounted) {
-        showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: "Unable to remove workout");
+        showSnackbar(context: context, message: "Unable to remove workout");
       }
     } finally {
       _toggleLoadingState();
@@ -541,7 +540,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         if (mounted) {
           showSnackbar(
               context: context,
-              icon: const Icon(Icons.info_outline),
               message: "Oops, we are unable to create your template");
         }
       } finally {
@@ -616,7 +614,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       Navigator.of(context).pop();
                       showSnackbar(
                           context: context,
-                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
                           message: "Workout link copied");
                     }
                   });
@@ -640,7 +637,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       Navigator.of(context).pop();
                       showSnackbar(
                           context: context,
-                          icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
                           message: "Workout copied");
                     }
                   });
@@ -796,7 +792,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             if (mounted) {
               showSnackbar(
                   context: context,
-                  icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
                   message: "Add ${template.name} to ${selectedPlan.name}");
             }
           },

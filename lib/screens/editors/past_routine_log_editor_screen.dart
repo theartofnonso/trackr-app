@@ -109,7 +109,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
   }
 
   void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const FaIcon(FontAwesomeIcons.circleInfo), message: message);
+    showSnackbar(context: context, message: message);
   }
 
   void _createLog() async {

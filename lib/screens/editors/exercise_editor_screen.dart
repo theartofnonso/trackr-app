@@ -82,9 +82,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
             ),
             child: SafeArea(
               minimum: const EdgeInsets.all(10),
-              child: Column(
-                  spacing: 20,
-                  crossAxisAlignment: CrossAxisAlignment.start, children: [
+              child: Column(spacing: 20, crossAxisAlignment: CrossAxisAlignment.start, children: [
                 TextField(
                   controller: _exerciseNameController,
                   decoration: InputDecoration(
@@ -128,7 +126,6 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     ),
                   ],
                 ),
-
                 if (exercise == null)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +177,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   }
 
   void _showSnackbar(String message) {
-    showSnackbar(context: context, icon: const Icon(Icons.info_outline), message: message);
+    showSnackbar(context: context, message: message);
   }
 
   void _selectPrimaryMuscleGroup() {
@@ -202,10 +199,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
 
   void _navigateToExerciseTypeScreen() async {
     if (widget.exercise != null) {
-      showSnackbar(
-          context: context,
-          icon: FaIcon(FontAwesomeIcons.circleInfo),
-          message: "Exercise type cannot be changed after creation.");
+      showSnackbar(context: context, message: "Exercise type cannot be changed after creation.");
       return;
     }
 

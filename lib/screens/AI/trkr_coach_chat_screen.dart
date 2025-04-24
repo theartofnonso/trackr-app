@@ -13,7 +13,6 @@ import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/new_routine_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
-import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
@@ -143,7 +142,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                           height: 50,
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen.withValues(alpha: 0.4),
+                            color:
+                                isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen.withValues(alpha: 0.4),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Center(
@@ -177,8 +177,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     }
   }
 
-  void _showSnackbar(String message, {Widget? icon}) {
-    showSnackbar(context: context, icon: icon ?? const Icon(Icons.info_outline), message: message);
+  void _showSnackbar(String message) {
+    showSnackbar(context: context, message: message);
   }
 
   @override
@@ -200,7 +200,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
   }
 
   Future<void> _runFunctionMessage({required String userInstruction}) async {
-
     _showLoadingScreen();
 
     try {
@@ -225,10 +224,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         ).exercises;
 
         await _recommendExercises(
-            tool: tool,
-            systemInstruction: createRoutinePrompt,
-            userInstruction: userInstruction,
-            exercises: exercises);
+            tool: tool, systemInstruction: createRoutinePrompt, userInstruction: userInstruction, exercises: exercises);
       }
     } catch (e) {
       _handleError();
@@ -239,7 +235,6 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     _hideLoadingScreen();
     _showSnackbar(
       "Oops, I can only assist you with workouts.",
-      icon: TRKRCoachWidget(),
     );
   }
 

@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -57,10 +56,7 @@ void onShare(
               captureImage(key: globalKey, pixelRatio: 5).then((result) {
                 if (context.mounted) {
                   if (result.status == ShareResultStatus.success) {
-                    showSnackbar(
-                        context: context,
-                        icon: const FaIcon(FontAwesomeIcons.solidSquareCheck),
-                        message: "Content Shared");
+                    showSnackbar(context: context, message: "Content Shared");
                   }
                 }
               });
