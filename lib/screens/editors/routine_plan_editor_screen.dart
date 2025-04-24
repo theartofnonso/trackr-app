@@ -127,11 +127,10 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
 
     await planProvider.updatePlan(planDto: planToBeUpdated);
 
-      for (final template in _routineTemplates) {
-        final templateWithPlanId = template.copyWith(planId: planToBeUpdated.id);
-        await planProvider.saveTemplate(templateDto: templateWithPlanId);
-      }
-
+    for (final template in _routineTemplates) {
+      final templateWithPlanId = template.copyWith(planId: planToBeUpdated.id);
+      await planProvider.saveTemplate(templateDto: templateWithPlanId);
+    }
   }
 
   void _dismissKeyboard() {
@@ -147,10 +146,9 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
   }
 
   void _removeTemplate({required RoutineTemplateDto templateToBeRemoved}) async {
-
     final plan = widget.plan;
 
-    if(plan != null) {
+    if (plan != null) {
       final templateProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
       final templateWithoutIdPlanId = templateToBeRemoved.copyWith(planId: "");
       await templateProvider.updateTemplate(template: templateWithoutIdPlanId);
@@ -170,13 +168,14 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     final children = _routineTemplates
+        .where((template) => template.planId.isEmpty)
         .mapIndexed(
           (index, template) => GestureDetector(
             onTap: () {
               _removeTemplate(templateToBeRemoved: template);
             },
             child: Badge(
-              backgroundColor: Colors.transparent,
+                backgroundColor: Colors.transparent,
                 label: FaIcon(FontAwesomeIcons.squareXmark),
                 alignment: Alignment.topRight,
                 smallSize: 12,
@@ -250,7 +249,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                     if (_routineTemplates.isNotEmpty)
                       Expanded(
                         child: GridView.count(
-                          padding: const EdgeInsets.all(4),
+                            padding: const EdgeInsets.all(4),
                             shrinkWrap: true,
                             crossAxisCount: 2,
                             childAspectRatio: 1,
