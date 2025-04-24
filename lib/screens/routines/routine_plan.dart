@@ -75,6 +75,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         .mapIndexed(
           (index, template) => RoutineTemplateGridItemWidget(
               template: template.copyWith(notes: template.notes),
+
               onTap: () => navigateToRoutineTemplatePreview(context: context, template: template)),
         )
         .toList();
@@ -207,7 +208,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                   FontAwesomeIcons.penToSquare,
                   size: 18,
                 ),
-                horizontalTitleGap: 10,
+                horizontalTitleGap: 6,
                 title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
                 onTap: () {
                   Navigator.of(context).pop();

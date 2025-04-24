@@ -364,7 +364,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       ),
                     if (exerciseLogs.isNotEmpty)
                       SafeArea(
-                        minimum: EdgeInsets.all(20),
+                        minimum: EdgeInsets.symmetric(horizontal: 20),
                         child: SizedBox(
                             width: double.infinity,
                             child: OpacityButtonWidget(

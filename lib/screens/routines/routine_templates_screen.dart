@@ -14,8 +14,7 @@ import '../../widgets/information_containers/information_container_with_backgrou
 import '../../widgets/routine/preview/routine_template_grid_item.dart';
 
 enum _AllOrOrphanTemplate {
-  allTemplates(
-      name: "All Templates", description: "Showing all workout templates."),
+  allTemplates(name: "All Templates", description: "Showing all workout templates."),
   orphanTemplates(name: "Orphan Templates", description: "Showing all workout templates not included in a plan.");
 
   const _AllOrOrphanTemplate({required this.name, required this.description});
@@ -34,12 +33,10 @@ class RoutineTemplatesScreen extends StatefulWidget {
 }
 
 class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
-
   _AllOrOrphanTemplate _allOrOrphanTemplate = _AllOrOrphanTemplate.orphanTemplates;
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -48,12 +45,17 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
 
       final orphanTemplates = allTemplates.where((template) => template.planId.isEmpty);
 
-      final templates = switch(_allOrOrphanTemplate) {
+      final templates = switch (_allOrOrphanTemplate) {
         _AllOrOrphanTemplate.allTemplates => allTemplates,
         _AllOrOrphanTemplate.orphanTemplates => orphanTemplates,
       };
 
-      final children = templates.map((template) => RoutineTemplateGridItemWidget(template: template, onTap: () => navigateToRoutineTemplatePreview(context: context, template: template))).toList();
+      final children = templates.map((template) {
+        final plan = provider.planWhere(id: template.planId);
+
+        return RoutineTemplateGridItemWidget(
+            template: template, onTap: () => navigateToRoutineTemplatePreview(context: context, template: template), plan: plan,);
+      }).toList();
 
       return Scaffold(
           body: Container(
@@ -106,8 +108,10 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
                   },
                 ),
                 Text(_allOrOrphanTemplate.description,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
               ],
             ),
             allTemplates.isNotEmpty

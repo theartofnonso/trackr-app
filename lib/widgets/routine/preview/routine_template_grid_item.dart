@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/appsync/routine_template_dto.dart';
@@ -6,9 +8,10 @@ import '../../../utils/string_utils.dart';
 
 class RoutineTemplateGridItemWidget extends StatelessWidget {
   final RoutineTemplateDto template;
+  final RoutinePlanDto? plan;
   final void Function()? onTap;
 
-  const RoutineTemplateGridItemWidget({super.key, required this.template, this.onTap});
+  const RoutineTemplateGridItemWidget({super.key, required this.template, this.onTap, this.plan});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,15 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
           decoration: BoxDecoration(
               color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
           child: Column(spacing: 14, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (plan != null)
+              Text("In ${plan?.name}",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: GoogleFonts.ubuntu(
+                      fontSize: 12,
+                      color: isDarkMode ? Colors.white70 : Colors.black,
+                      height: 1.5,
+                      fontWeight: FontWeight.w400)),
             const Spacer(),
             Text(
               template.name,

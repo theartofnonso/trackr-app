@@ -213,7 +213,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
               child: GestureDetector(
                 onTap: _dismissKeyboard,
                 child: Column(
-                  spacing: 20,
+                  spacing: 10,
                   children: [
                     Column(
                       spacing: 10,
@@ -250,6 +250,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                     if (_routineTemplates.isNotEmpty)
                       Expanded(
                         child: GridView.count(
+                          padding: const EdgeInsets.all(4),
                             shrinkWrap: true,
                             crossAxisCount: 2,
                             childAspectRatio: 1,
@@ -259,7 +260,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
                       ),
                     if (_routineTemplates.isNotEmpty)
                       SafeArea(
-                        minimum: EdgeInsets.all(10),
+                        minimum: EdgeInsets.symmetric(horizontal: 4),
                         child: SizedBox(
                             width: double.infinity,
                             child: OpacityButtonWidget(

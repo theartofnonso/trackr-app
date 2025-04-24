@@ -315,7 +315,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                       ),
                     if (exerciseLogs.isNotEmpty)
                       SafeArea(
-                        minimum: EdgeInsets.all(10),
+                        minimum: EdgeInsets.symmetric(horizontal: 20),
                         child: SizedBox(
                             width: double.infinity,
                             child: OpacityButtonWidget(
