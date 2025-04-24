@@ -15,7 +15,7 @@ import '../../widgets/routine/preview/routine_template_grid_item.dart';
 
 enum _AllOrOrphanTemplate {
   allTemplates(name: "All Templates", description: "Showing all workout templates."),
-  orphanTemplates(name: "Orphan Templates", description: "Showing all workout templates not included in a plan.");
+  orphanTemplates(name: "Not in a plan", description: "Showing workout templates not included in a plan.");
 
   const _AllOrOrphanTemplate({required this.name, required this.description});
 
@@ -95,7 +95,7 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
                         child: Text(_AllOrOrphanTemplate.orphanTemplates.name,
                             style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                     _AllOrOrphanTemplate.allTemplates: SizedBox(
-                        width: 80,
+                        width: 120,
                         child: Text(_AllOrOrphanTemplate.allTemplates.name,
                             style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                   },
