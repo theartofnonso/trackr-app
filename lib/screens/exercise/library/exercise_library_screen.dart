@@ -184,7 +184,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     final listChildren = <Widget>[];
     if (recents.isNotEmpty) {
       listChildren
-        ..add(_buildHeader('Recent', isDarkMode: isDarkMode))
+        ..add(_buildHeader('Found in recent logs', isDarkMode: isDarkMode))
         ..addAll(recents.map((e) => ExerciseWidget(
               exerciseDto: e,
               onNavigateToExercise: _navigateToExerciseHistory,
