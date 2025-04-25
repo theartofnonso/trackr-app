@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
+import 'package:tracker_app/widgets/icons/apple_health_icon.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -193,7 +194,12 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
+    final deviceIcon = Platform.isIOS ? AppleHealthIcon(isDarkMode: isDarkMode, height: 80) : AppleHealthIcon(isDarkMode: isDarkMode, height: 80) ;
 
     return Scaffold(
       appBar: AppBar(
@@ -210,10 +216,7 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FaIcon(
-                FontAwesomeIcons.personWalking,
-                size: 50,
-              ),
+              deviceIcon,
               const SizedBox(height: 50),
               Text(
                 "Connect to $deviceOS",
