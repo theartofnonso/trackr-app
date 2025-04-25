@@ -72,9 +72,9 @@ enum ExerciseSelectionArchetype {
 
 /// Primary **muscle-group focus** shown across recent workouts.
 enum MuscleFocusArchetype {
-  upperBodyFocus(name: 'upper_body_focus', description: 'Emphasises chest, back, shoulders and arms'),
-  lowerBodyFocus(name: 'lower_body_focus', description: 'Emphasises quads, hamstrings and glutes'),
-  fullBodyBalanced(name: 'full_body_balanced', description: 'Distributes volume evenly across all muscle groups');
+  upperBodyFocus(name: 'upper_body_focus', description: 'Trains upper body'),
+  lowerBodyFocus(name: 'lower_body_focus', description: 'Trains lower body'),
+  fullBodyBalanced(name: 'full_body_balanced', description: 'Trains upper and lower body');
 
   const MuscleFocusArchetype({required this.name, required this.description});
 

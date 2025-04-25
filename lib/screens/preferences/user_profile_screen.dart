@@ -18,6 +18,7 @@ import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/readiness_utils.dart';
+import '../../utils/training_archetype_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 
 class UserProfileScreen extends StatelessWidget {
@@ -94,6 +95,10 @@ class UserProfileScreen extends StatelessWidget {
     final sleepPattern = _generateSleepSummary(averageSleepScore: averageSleep.toInt());
 
     final readinessPattern = getTrainingGuidance(readinessScore: averageReadiness.toInt());
+
+    final archetypes = TrainingArchetypeClassifier.classify(logs: logs);
+
+    print(archetypes);
 
     return Scaffold(
       appBar: AppBar(
