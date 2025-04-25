@@ -195,45 +195,47 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: themeGradient(context: context)
-      ),
-      child: SafeArea(
-        minimum: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            FaIcon(
-              FontAwesomeIcons.personWalking,
-              size: 50,
-            ),
-            const SizedBox(height: 50),
-            Text(
-              "Connect to $deviceOS",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              "We’d like to connect to $deviceOS to better understand your health and provide a more personalized training experience.",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 26.0),
-              child: SizedBox(
-                  height: 45,
-                  width: double.infinity,
-                  child: OpacityButtonWidget(
-                    label: "Connect for better training",
-                    buttonColor: vibrantGreen,
-                    onPressed: onPress,
-                  )),
-            ),
-          ],
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: themeGradient(context: context)
+        ),
+        child: SafeArea(
+          minimum: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FaIcon(
+                FontAwesomeIcons.personWalking,
+                size: 50,
+              ),
+              const SizedBox(height: 50),
+              Text(
+                "Connect to $deviceOS",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "We’d like to connect to $deviceOS to better understand your health and provide a more personalized training experience.",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 50),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 26.0),
+                child: SizedBox(
+                    height: 45,
+                    width: double.infinity,
+                    child: OpacityButtonWidget(
+                      label: "Connect for better training",
+                      buttonColor: vibrantGreen,
+                      onPressed: onPress,
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
     );
