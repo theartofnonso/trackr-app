@@ -45,12 +45,12 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
 
       final orphanTemplates = allTemplates.where((template) => template.planId.isEmpty);
 
-      final templates = switch (_allOrOrphanTemplate) {
+      final templatesToShow = switch (_allOrOrphanTemplate) {
         _AllOrOrphanTemplate.allTemplates => allTemplates,
         _AllOrOrphanTemplate.orphanTemplates => orphanTemplates,
       };
 
-      final children = templates.map((template) {
+      final children = templatesToShow.map((template) {
         final plan = provider.planWhere(id: template.planId);
 
         return RoutineTemplateGridItemWidget(
@@ -81,7 +81,8 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
                 ctaContent: 'Describe your workout',
               ),
             ),
-            Column(
+            if(templatesToShow.isNotEmpty)
+              Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 6,
               children: [
@@ -114,7 +115,7 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
                         ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
               ],
             ),
-            allTemplates.isNotEmpty
+            templatesToShow.isNotEmpty
                 ? Expanded(
                     child: GridView.count(
                         crossAxisCount: 2,
