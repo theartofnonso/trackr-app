@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
@@ -13,6 +14,7 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/icons/google_health_icon.dart';
 
 class NotificationsScreenScreen extends StatefulWidget {
   static const routeName = '/notifications_screen';
@@ -145,7 +147,6 @@ class _NotificationsScreenScreenState extends State<NotificationsScreenScreen> {
   void _getSahhaSensorStatus() {
     // Get status of `steps` and `sleep` sensors
     SahhaFlutter.getSensorStatus(_sensors).then((value) {
-
       setState(() {
         _sensorStatus = value;
       });
@@ -161,8 +162,8 @@ class _NotificationsScreenScreenState extends State<NotificationsScreenScreen> {
     });
   }
 
-  void _enableSahhaSensors() {
-    navigateWithSlideTransition(
+  void _enableSahhaSensors() async {
+    await navigateWithSlideTransition(
         context: context,
         child: _SahhaSensorsRequestScreen(onPress: () {
           SahhaFlutter.enableSensors(_sensors).then((value) {
@@ -178,6 +179,9 @@ class _NotificationsScreenScreenState extends State<NotificationsScreenScreen> {
             debugPrint(error.toString());
           });
         }));
+    if (mounted) {
+      context.pop();
+    }
   }
 
   @override
@@ -194,12 +198,17 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
-    final deviceIcon = Platform.isIOS ? AppleHealthIcon(isDarkMode: isDarkMode, height: 80) : AppleHealthIcon(isDarkMode: isDarkMode, height: 80) ;
+    final deviceIcon = Platform.isIOS
+        ? AppleHealthIcon(isDarkMode: isDarkMode, height: 80)
+        : GoogleHealthIcon(
+            isDarkMode: isDarkMode,
+            height: 80,
+            elevation: isDarkMode,
+          );
 
     return Scaffold(
       appBar: AppBar(
@@ -207,9 +216,7 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: themeGradient(context: context)
-        ),
+        decoration: BoxDecoration(gradient: themeGradient(context: context)),
         child: SafeArea(
           minimum: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
@@ -225,7 +232,7 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                "We’d like to connect to $deviceOS to better understand your health and provide a more personalized training experience.",
+                "We’d like to connect to ${deviceOS.toLowerCase()} to better understand your health and provide a more personalized training experience.",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
@@ -236,7 +243,7 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
                     height: 45,
                     width: double.infinity,
                     child: OpacityButtonWidget(
-                      label: "Connect for better training",
+                      label: "Connect to train better",
                       buttonColor: vibrantGreen,
                       onPressed: onPress,
                     )),
