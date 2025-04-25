@@ -196,12 +196,16 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
     final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: themeGradient(context: context)
         ),
         child: SafeArea(
-          minimum: const EdgeInsets.all(10),
+          minimum: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
