@@ -370,7 +370,7 @@ class _MyAppState extends State<MyApp> {
     SahhaFlutter.configure(
       environment: SahhaEnvironment.sandbox,
     ) // Required - .sandbox for testing
-        .then((success) => {debugPrint(success.toString())})
+        .then((success) => {debugPrint("Is Sahha configured: ${success.toString()}")})
         .catchError((error, stackTrace) => {debugPrint(error.toString())});
   }
 

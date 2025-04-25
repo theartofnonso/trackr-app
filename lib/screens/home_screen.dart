@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final userId = SharedPrefs().userId;
     SahhaFlutter.authenticate(appId: sahhaAppId, appSecret: sahhaAppSecret, externalId: userId)
         .then((success) => {
-      debugPrint(success.toString())
+      debugPrint("Is Sahha user authenticated: ${success.toString()}")
     })
         .catchError((error, stackTrace) => {
       debugPrint(error.toString())
