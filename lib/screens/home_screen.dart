@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
 import 'package:tracker_app/screens/notifications/notifications_screen.dart';
@@ -19,6 +21,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
 
+  SahhaSensorStatus _sensorStatus = SahhaSensorStatus.unavailable;
+
+  final _sensors = [
+    SahhaSensor.steps,
+    SahhaSensor.sleep,
+    SahhaSensor.exercise,
+    SahhaSensor.heart_rate_variability_rmssd,
+    SahhaSensor.heart_rate_variability_sdnn,
+    SahhaSensor.resting_heart_rate
+  ];
+
   @override
   Widget build(BuildContext context) {
 
@@ -32,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
     final routineTemplates = exerciseAndRoutineController.templates;
 
-    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || user == null;
+    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || user == null || _sensorStatus == SahhaSensorStatus.pending;
 
     return Scaffold(
       appBar: AppBar(
@@ -64,6 +77,31 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   void _navigateToNotificationHome() {
     navigateWithSlideTransition(context: context, child: NotificationsScreenScreen());
+  }
+
+  void _getSahhaSensorStatus() {
+    // Get status of `steps` and `sleep` sensors
+    SahhaFlutter.getSensorStatus(_sensors).then((value) {
+
+      setState(() {
+        _sensorStatus = value;
+      });
+      if (_sensorStatus == SahhaSensorStatus.pending) {
+        // Sensors are NOT enabled and ready - Show your custom UI before asking for user permission
+      } else if (_sensorStatus == SahhaSensorStatus.enabled) {
+        // Sensors are enabled and ready
+      } else {
+        // Sensors are disabled or unavailable
+      }
+    }).catchError((error, stackTrace) {
+      debugPrint(error.toString());
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getSahhaSensorStatus();
   }
 
 }
