@@ -13,7 +13,7 @@ import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/sahha_credentials.dart';
 import 'package:tracker_app/screens/home_tab_screen.dart';
-import 'package:tracker_app/screens/onboarding/onboarding_screen.dart';
+import 'package:tracker_app/screens/notifications/onboarding_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../controllers/routine_user_controller.dart';

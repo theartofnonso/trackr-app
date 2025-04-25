@@ -10,10 +10,10 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../utils/general_utils.dart';
 
-class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
-  static const routeName = '/onboarding_checklist_screen';
+class NotificationsScreenScreen extends StatelessWidget {
+  static const routeName = '/notifications_screen';
 
-  const OnboardingChecklistNotificationsScreenScreen({super.key});
+  const NotificationsScreenScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

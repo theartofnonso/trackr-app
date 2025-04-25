@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/screens/insights/overview_screen.dart';
-import 'package:tracker_app/screens/onboarding/onboarding_checklist_notifications_screen.dart';
+import 'package:tracker_app/screens/notifications/notifications_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
@@ -64,7 +64,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> with SingleTickerProvider
   }
 
   void _navigateToNotificationHome() {
-    navigateWithSlideTransition(context: context, child: OnboardingChecklistNotificationsScreenScreen());
+    navigateWithSlideTransition(context: context, child: NotificationsScreenScreen());
   }
 
 }
