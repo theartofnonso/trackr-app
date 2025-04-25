@@ -23,6 +23,7 @@ import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/icons/custom_icon.dart';
 import '../../widgets/routine/preview/routine_template_grid_item.dart';
 
 class RoutinePlanScreen extends StatefulWidget {
@@ -104,21 +105,12 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 ChipOne(
                   label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
                   color: vibrantGreen,
-                  child: Image.asset(
-                    'icons/dumbbells.png',
-                    fit: BoxFit.contain,
-                    height: 16,
-                    color: vibrantGreen, // Adjust the height as needed
-                  ),
+                  child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen),
                 ),
                 ChipOne(
                     label: '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
                     color: vibrantBlue,
-                    child: FaIcon(
-                      FontAwesomeIcons.hashtag,
-                      color: vibrantBlue,
-                      size: 14,
-                    )),
+                    child: CustomIcon(FontAwesomeIcons.hashtag, color: vibrantBlue)),
               ]),
               Text(plan.notes.isNotEmpty ? plan.notes : "No notes",
                   style: GoogleFonts.ubuntu(

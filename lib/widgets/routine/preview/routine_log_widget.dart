@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/appsync/routine_log_dto.dart';
@@ -16,25 +17,16 @@ class RoutineLogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final completedExerciseLogsAndSets = loggedExercises(exerciseLogs: log.exerciseLogs);
 
     return ThemeListTile(
       child: ListTile(
         onTap: () => navigateToRoutineLogPreview(context: context, log: log, isEditable: isEditable),
-        leading: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          width: 55,
-          height: 40,
-          decoration: BoxDecoration(
-            color: vibrantGreen.withValues(alpha: 0.1), // Background color
-            borderRadius: BorderRadius.circular(5), // Rounded corners
-          ),
-          child: Image.asset(
-            'icons/dumbbells.png',
-            fit: BoxFit.contain,
-            height: 30,
-            color: vibrantGreen, // Adjust the height as needed
-          ),
+        leading: FaIcon(
+          FontAwesomeIcons.personWalking,
+          color: vibrantGreen,
+          size: 28,
         ),
         title: Text(log.name, overflow: TextOverflow.ellipsis),
         subtitle: Text(

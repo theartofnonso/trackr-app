@@ -40,6 +40,7 @@ import '../../widgets/calendar/calendar.dart';
 import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/icons/custom_icon.dart';
 import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -257,11 +258,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                                     label:
                                         "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
                                     color: vibrantGreen,
-                                    child: Image.asset(
-                                      'icons/dumbbells.png',
-                                      fit: BoxFit.contain,
-                                      color: vibrantGreen, // Adjust the height as needed
-                                    )),
+                                    child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen)),
                               ],
                             ),
                             Text(

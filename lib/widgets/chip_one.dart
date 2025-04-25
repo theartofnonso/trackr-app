@@ -12,18 +12,7 @@ class ChipOne extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 30,
-          height: 30,
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Center(
-            child: child,
-          ),
-        ),
+        child,
         const SizedBox(
           width: 6,
         ),

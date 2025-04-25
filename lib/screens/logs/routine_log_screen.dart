@@ -40,6 +40,7 @@ import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/icons/custom_icon.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
 import '../AI/routine_log_report_screen.dart';
@@ -153,22 +154,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.deepOrange.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.calendarDay,
-                                color: Colors.deepOrange,
-                                size: 14,
-                              ),
-                            ),
-                          ),
+                          CustomIcon(FontAwesomeIcons.calendarDay, color: Colors.deepOrange),
                           const SizedBox(
                             width: 6,
                           ),
@@ -181,22 +167,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.yellow.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.solidNoteSticky,
-                                color: Colors.yellow,
-                                size: 14,
-                              ),
-                            ),
-                          ),
+                          CustomIcon(FontAwesomeIcons.solidNoteSticky, color: Colors.yellow, iconSize: 14),
                           const SizedBox(
                             width: 6,
                           ),
@@ -330,7 +301,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                           ),
                         if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
                           TRKRInformationContainer(
-                            color: vibrantGreen,
                               ctaLabel: "Ask for feedback",
                               description:
                                   "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
