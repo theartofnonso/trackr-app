@@ -56,9 +56,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
 
     if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(
-            context: context,
-            message: exerciseAndRoutineController.errorMessage);
+        showSnackbar(context: context, message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -74,7 +72,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         .mapIndexed(
           (index, template) => RoutineTemplateGridItemWidget(
               template: template.copyWith(notes: template.notes),
-
               onTap: () => navigateToRoutineTemplatePreview(context: context, template: template)),
         )
         .toList();
@@ -102,39 +99,39 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
             minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
             bottom: false,
             child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(plan.name, style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
-                Row(spacing: 12, children: [
-                  ChipOne(
-                    label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
-                    color: vibrantGreen,
-                    child: Image.asset(
-                      'icons/dumbbells.png',
-                      fit: BoxFit.contain,
-                      height: 16,
-                      color: vibrantGreen, // Adjust the height as needed
-                    ),
+              Text(plan.name, style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
+              Row(spacing: 12, children: [
+                ChipOne(
+                  label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
+                  color: vibrantGreen,
+                  child: Image.asset(
+                    'icons/dumbbells.png',
+                    fit: BoxFit.contain,
+                    height: 16,
+                    color: vibrantGreen, // Adjust the height as needed
                   ),
-                  ChipOne(
-                      label: '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
-                      color: vibrantBlue,
-                      child: FaIcon(
-                        FontAwesomeIcons.hashtag,
-                        color: vibrantBlue,
-                        size: 14,
-                      )),
-                ]),
-                Text(plan.notes.isNotEmpty ? plan.notes : "No notes",
-                    style: GoogleFonts.ubuntu(
-                        fontSize: 14,
-                        color: isDarkMode ? Colors.white70 : Colors.black,
-                        height: 1.8,
-                        fontWeight: FontWeight.w400)),
-                Calendar(
-                  onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
-                  logs: logs,
                 ),
-                routineTemplates.isNotEmpty
-                    ? Expanded(
+                ChipOne(
+                    label: '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
+                    color: vibrantBlue,
+                    child: FaIcon(
+                      FontAwesomeIcons.hashtag,
+                      color: vibrantBlue,
+                      size: 14,
+                    )),
+              ]),
+              Text(plan.notes.isNotEmpty ? plan.notes : "No notes",
+                  style: GoogleFonts.ubuntu(
+                      fontSize: 14,
+                      color: isDarkMode ? Colors.white70 : Colors.black,
+                      height: 1.8,
+                      fontWeight: FontWeight.w400)),
+              Calendar(
+                onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
+                logs: logs,
+              ),
+              routineTemplates.isNotEmpty
+                  ? Expanded(
                       child: GridView.count(
                           shrinkWrap: true,
                           crossAxisCount: 2,
@@ -143,11 +140,11 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                           crossAxisSpacing: 10.0,
                           children: children),
                     )
-                    : Expanded(
-                        child: const NoListEmptyState(
-                            message: "It might feel quiet now, but your workout templates will soon appear here."),
-                      ),
-              ]),
+                  : Expanded(
+                      child: const NoListEmptyState(
+                          message: "It might feel quiet now, but your workout templates will soon appear here."),
+                    ),
+            ]),
           ),
         ));
   }
@@ -166,7 +163,18 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
 
   void _deleteRoutinePlan({required RoutinePlanDto plan}) async {
     try {
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false).removePlan(planDto: plan);
+      final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+      final routineTemplates =
+          exerciseAndRoutineController.templates.where((template) => template.planId == plan.id).toList();
+
+      await exerciseAndRoutineController.removePlan(planDto: plan);
+
+      for (final template in routineTemplates) {
+        final templateWithoutPlanId = template.copyWith(planId: "");
+        await exerciseAndRoutineController.updateTemplate(template: templateWithoutPlanId);
+      }
+
       if (mounted) {
         context.pop();
       }

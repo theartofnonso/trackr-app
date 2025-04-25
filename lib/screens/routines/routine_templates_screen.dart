@@ -54,7 +54,10 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
         final plan = provider.planWhere(id: template.planId);
 
         return RoutineTemplateGridItemWidget(
-            template: template, onTap: () => navigateToRoutineTemplatePreview(context: context, template: template), plan: plan,);
+          template: template,
+          onTap: () => navigateToRoutineTemplatePreview(context: context, template: template),
+          plan: plan,
+        );
       }).toList();
 
       return Scaffold(
@@ -81,8 +84,7 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
                 ctaContent: 'Describe your workout',
               ),
             ),
-            if(templatesToShow.isNotEmpty)
-              Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 6,
               children: [
@@ -129,7 +131,7 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: const NoListEmptyState(
                           message:
-                              "It might feel quiet now, but tap the + button to create a workout or ask TRKR coach for help."),
+                              "It might feel quiet now, but tap the + button to create a workout template or ask TRKR coach for help."),
                     ),
                   ),
           ]),

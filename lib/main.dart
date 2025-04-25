@@ -342,6 +342,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _configureAmplify();
+    _configureSahha();
   }
 
   Future<void> _configureAmplify() async {

@@ -46,6 +46,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
       final plans = List<RoutinePlanDto>.from(provider.plans);
 
+      final logs = provider.logs;
+
       final children = plans.map((plan) => RoutinePlanGridItemWidget(plan: plan)).toList();
 
       return Scaffold(
@@ -69,7 +71,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                   fontWeight: FontWeight.w400,
                   color: Colors.white.withValues(alpha: 0.9),
                 ),
-                ctaContent: 'Get a personalised plan',
+                ctaContent: logs.isNotEmpty ? 'Get a personalised plan' : "Get a plan to start training",
               ),
             ),
             plans.isNotEmpty
@@ -128,25 +130,27 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
 
     final stringBuffer = StringBuffer();
 
-    for (final week in weeksInLastQuarter) {
-      final startOfWeek = week.start;
-      final endOfWeek = week.end;
-      final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+    if(logs.isNotEmpty) {
+      for (final week in weeksInLastQuarter) {
+        final startOfWeek = week.start;
+        final endOfWeek = week.end;
+        final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
 
-      stringBuffer.writeln("For the week starting ${startOfWeek.withoutTime()} to ${endOfWeek.withoutTime()}");
-
-      stringBuffer.writeln();
-
-      for (final (index, log) in logsForTheWeek.indexed) {
-        stringBuffer.writeln("Session ${index + 1} (${log.name}):");
-
-        stringBuffer.writeln("I did with the following exercises:");
-
-        for (final exerciseLog in log.exerciseLogs) {
-          stringBuffer.writeln("${exerciseLog.exercise.name} [${exerciseLog.exercise.id}]");
-        }
+        stringBuffer.writeln("For the week starting ${startOfWeek.withoutTime()} to ${endOfWeek.withoutTime()}");
 
         stringBuffer.writeln();
+
+        for (final (index, log) in logsForTheWeek.indexed) {
+          stringBuffer.writeln("Session ${index + 1} (${log.name}):");
+
+          stringBuffer.writeln("I did with the following exercises:");
+
+          for (final exerciseLog in log.exerciseLogs) {
+            stringBuffer.writeln("${exerciseLog.exercise.name} [${exerciseLog.exercise.id}]");
+          }
+
+          stringBuffer.writeln();
+        }
       }
     }
 
@@ -157,7 +161,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     try {
       final json = await runMessageWithTools(
         systemInstruction: createRoutinePlanPrompt,
-        userInstruction: userInstruction,
+        userInstruction: userInstruction.isNotEmpty ? userInstruction : "I am a new user with no training history or preference.",
       );
 
       if (json == null) {
