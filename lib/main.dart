@@ -12,7 +12,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
-import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -35,7 +34,7 @@ import 'package:tracker_app/screens/editors/routine_plan_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/editors/user_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
-import 'package:tracker_app/screens/home_screen.dart';
+import 'package:tracker_app/screens/home.dart';
 import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
@@ -48,6 +47,7 @@ import 'package:tracker_app/screens/routines/routine_template_screen.dart';
 import 'package:tracker_app/screens/routines/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
+import 'package:tracker_app/utils/sahha_utils.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
 
 import 'amplifyconfiguration.dart';
@@ -170,7 +170,7 @@ final _router = GoRouter(
   routes: [
     GoRoute(
         path: "/", // Define the path for Home Screen
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => const Home(),
         routes: [
           GoRoute(
             path: "shared-workout/:id",
@@ -291,8 +291,8 @@ final _router = GoRouter(
       builder: (context, state) => const UserProfileScreen(),
     ),
     GoRoute(
-      path: HomeScreen.routeName,
-      builder: (context, state) => const HomeScreen(),
+      path: Home.routeName,
+      builder: (context, state) => const Home(),
     ),
     GoRoute(
       path: ReadinessScreen.routeName,
@@ -342,7 +342,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _configureAmplify();
-    _configureSahha();
+    configureSahha();
   }
 
   Future<void> _configureAmplify() async {
@@ -363,15 +363,6 @@ class _MyAppState extends State<MyApp> {
     } on Exception catch (e) {
       debugPrint('Could not configure Amplify: $e');
     }
-  }
-
-  void _configureSahha() {
-    // Use custom values
-    SahhaFlutter.configure(
-      environment: SahhaEnvironment.sandbox,
-    ) // Required - .sandbox for testing
-        .then((success) => { debugPrint('Sahha configured: $success')})
-        .catchError((error, stackTrace) => {debugPrint('Sahha configuration error: $error')});
   }
 
   void _completeIntro() {

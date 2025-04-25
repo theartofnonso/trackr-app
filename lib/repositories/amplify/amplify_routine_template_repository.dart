@@ -19,7 +19,7 @@ class AmplifyRoutineTemplateRepository {
   UnmodifiableListView<RoutineTemplateDto> get templates => UnmodifiableListView(_templates);
 
   void loadTemplatesStream({required List<RoutineTemplate> templates}) {
-    //_templates = templates.map((log) => RoutineTemplateDto.toDto(log)).toList();
+    _templates = templates.map((log) => RoutineTemplateDto.toDto(log)).toList();
   }
 
   Future<RoutineTemplateDto> saveTemplate({required RoutineTemplateDto templateDto}) async {

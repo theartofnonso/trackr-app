@@ -19,7 +19,7 @@ class AmplifyRoutinePlanRepository {
   UnmodifiableListView<RoutinePlanDto> get plans => UnmodifiableListView(_plans);
 
   void loadPlansStream({required List<RoutinePlan> plans}) {
-    //_plans = plans.map((plan) => RoutinePlanDto.toDto(plan)).toList();
+    _plans = plans.map((plan) => RoutinePlanDto.toDto(plan)).toList();
   }
 
   Future<RoutinePlanDto> savePlan({required RoutinePlanDto planDto}) async {
