@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/dtos/daily_readiness.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -125,6 +128,22 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // SahhaFlutter.getScores(
+    //     types: [SahhaScoreType.readiness],
+    //     startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
+    //     endDateTime: DateTime.now())
+    //     .then((value) {
+    //   List<dynamic> data = jsonDecode(value);
+    //   debugPrint(data.toString());
+    // }).catchError((error, stackTrace) {          // <-- block body
+    //   debugPrint(error.toString());
+    //   // return null; // optional – but explicitly returning null also satisfies the signature
+    // });
   }
 }
 

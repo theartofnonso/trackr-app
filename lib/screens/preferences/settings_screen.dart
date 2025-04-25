@@ -101,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   onTap: _openStoreListing,
                   child: BackgroundInformationContainer(
                       image: 'images/boy_and_girl.jpg',
-                      containerColor: sapphireDark,
+                      containerColor: Colors.deepOrange,
                       content: "Loving TRKR? Your feedback helps us grow and improve.",
                       textStyle: GoogleFonts.ubuntu(
                         fontSize: 16,

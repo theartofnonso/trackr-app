@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -64,7 +65,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
               onTap: _runMessage,
               child: BackgroundInformationContainer(
                 image: 'images/lace.jpg',
-                containerColor: Colors.green.shade800,
+                containerColor: vibrantGreen,
                 content: "We analyze your training history to recommend plans tailored to your style.",
                 textStyle: GoogleFonts.ubuntu(
                   fontSize: 16,

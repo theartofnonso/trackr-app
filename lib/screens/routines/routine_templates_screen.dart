@@ -74,7 +74,7 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
               onTap: () => _switchToAIContext(context: context),
               child: BackgroundInformationContainer(
                 image: 'images/lace.jpg',
-                containerColor: Colors.blue.shade900,
+                containerColor: vibrantBlue,
                 content: "Need a head start on what to train? We’ve got you covered.",
                 textStyle: GoogleFonts.ubuntu(
                   fontSize: 16,
