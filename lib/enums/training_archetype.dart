@@ -1,0 +1,83 @@
+// ──────────────────────────────────────────────────────────────
+//  ORDINAL ARCHETYPES
+//  Ordinal archetypes represent a ranked scale, where values move from lower to higher states in a meaningful order.
+//  Each level in the archetype reflects an increase in the measured behavior.
+// ──────────────────────────────────────────────────────────────
+
+/// This determines the training frequency of users
+enum TrainingFrequencyArchetype {
+  rarelyTrains(name: "rarely_trains", description: "Trains 1 to 2 times a week"),
+  oftenTrains(name: "often_trains", description: "Trains 3 to 4 times a week"),
+  alwaysTrains(name: "always_trains", description: "Trains over 4 times a week");
+
+  const TrainingFrequencyArchetype({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}
+
+/// This determines the length of a users training session
+enum TrainingDurationArchetype {
+  shortSession(name: "short_training_session", description: "Short training session (<30 min)"),
+  standardSession(name: "standard_training_session", description: "Standard training Session (30–59 min)"),
+  extendedSession(name: "extended_training_session", description: "Extended training session (> 60 min)");
+
+  const TrainingDurationArchetype({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}
+
+/// This determines of users train to failure or not
+enum RpeArchetype {
+  rarelyPushesToFailure(name: "rarely_pushes_to_failure", description: "Rarely pushes sets to failure"),
+  occasionallyPushesToFailure(name: "quick_training_session", description: "Occasionally pushes sets to failure"),
+  alwaysPushesToFailure(name: "always_pushes_to_failure", description: "Always pushes sets to failure");
+
+  const RpeArchetype({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}
+
+/// This determines if users always stick to training plan or not
+enum ExerciseNoveltyArchetype {
+  fixedExercises(name: "fixed_exercises", description: "Always trains with same exercises"),
+  plannedExercises(name: "planned_exercises", description: "Often trains with same exercises with occasional changes."),
+  randomExercises(name: "random_exercises", description: "Always changing exercises");
+
+  const ExerciseNoveltyArchetype({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}
+
+// ──────────────────────────────────────────────────────────────
+//  CATEGORICAL ARCHETYPES
+//  Categorical archetypes group users into distinct categories without any hierarchical ranking.
+//  Unlike ordinal archetypes, these categories are independent of each other and do not imply a progression.
+// ──────────────────────────────────────────────────────────────
+
+/// User’s bias in **exercise TYPES** (compound vs accessory / isolation).
+enum ExerciseSelectionArchetype {
+  compoundDominant(name: 'compound_dominant', description: 'Mostly uses compound, multi-joint lifts'),
+  balancedMix(name: 'balanced_mix', description: 'Mixes compound and accessory / isolation work'),
+  isolationDominant(name: 'isolation_dominant', description: 'Prefers accessory or isolation movements');
+
+  const ExerciseSelectionArchetype({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}
+
+/// Primary **muscle-group focus** shown across recent workouts.
+enum MuscleFocusArchetype {
+  upperBodyFocus(name: 'upper_body_focus', description: 'Emphasises chest, back, shoulders and arms'),
+  lowerBodyFocus(name: 'lower_body_focus', description: 'Emphasises quads, hamstrings and glutes'),
+  fullBodyBalanced(name: 'full_body_balanced', description: 'Distributes volume evenly across all muscle groups');
+
+  const MuscleFocusArchetype({required this.name, required this.description});
+
+  final String name;
+  final String description;
+}

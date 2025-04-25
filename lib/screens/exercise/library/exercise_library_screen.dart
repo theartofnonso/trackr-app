@@ -171,7 +171,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               child: OpacityButtonWidget(
                   onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
                   buttonColor: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : null,
-                  label: muscleGroup.name.toUpperCase()),
+                  label: muscleGroup.displayName.toUpperCase()),
             ))
         .toList();
 

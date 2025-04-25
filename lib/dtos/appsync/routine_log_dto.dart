@@ -4,29 +4,23 @@ import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 
-import '../../enums/activity_type_enums.dart';
 import '../../models/RoutineLog.dart';
-import '../abstract_class/log_class.dart';
 import '../exercise_log_dto.dart';
 
-class RoutineLogDto extends Log {
-  @override
+class RoutineLogDto {
+
   final String id;
 
   final String templateId;
 
-  @override
   final String name;
 
-  @override
   final String notes;
 
   final String? summary;
 
-  @override
   final DateTime startTime;
 
-  @override
   final DateTime endTime;
 
   final List<ExerciseLogDto> exerciseLogs;
@@ -39,10 +33,8 @@ class RoutineLogDto extends Log {
 
   final int sleepLevel;
 
-  @override
   final DateTime createdAt;
 
-  @override
   final DateTime updatedAt;
 
   RoutineLogDto({
@@ -62,7 +54,6 @@ class RoutineLogDto extends Log {
     required this.updatedAt,
   });
 
-  @override
   Duration duration() {
     return endTime.difference(startTime);
   }
@@ -161,7 +152,6 @@ class RoutineLogDto extends Log {
     );
   }
 
-  @override
   RoutineLogDto copyWith({
     String? id,
     String? templateId,
@@ -204,12 +194,6 @@ class RoutineLogDto extends Log {
   String toString() {
     return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, fatigueLevel: $fatigueLevel, sorenessLevel: $sorenessLevel, sleepLevel: $sleepLevel, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
-
-  @override
-  LogType get logType => LogType.routine;
-
-  @override
-  ActivityType get activityType => ActivityType.weightlifting;
 
   double get volume => exerciseLogs.expand((exerciseLog) => exerciseLog.sets).map((set) {
         return switch (set.type) {

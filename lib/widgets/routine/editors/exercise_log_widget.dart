@@ -17,6 +17,7 @@ import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/icons/custom_icon.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
@@ -623,7 +624,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
           IconButton(
             onPressed: _addSet,
-            icon: const FaIcon(FontAwesomeIcons.plus, size: 18),
+            icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),
             tooltip: 'Add new set',
           ),
         ],
@@ -667,7 +668,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           bottom: false,
           minimum: EdgeInsets.symmetric(horizontal: 10),
           child: SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: 100),
+            padding: EdgeInsets.only(bottom: 50),
             child: Column(
               spacing: 20,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -771,23 +772,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Container(
-                                        width: 25,
-                                        height: 25,
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: isDarkMode
-                                              ? progressionColor.withValues(alpha: 0.1)
-                                              : Colors.black.withValues(alpha: 0.4),
-                                          borderRadius: BorderRadius.circular(3),
-                                        ),
-                                        child: Center(
-                                          child: FaIcon(
-                                            FontAwesomeIcons.boltLightning,
-                                            color: isDarkMode ? progressionColor : Colors.white,
-                                            size: 14,
-                                          ),
-                                        ))
+                                    CustomIcon(FontAwesomeIcons.boltLightning, color: progressionColor),
                                   ],
                                 ),
                               ]),
@@ -838,21 +823,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Container(
-                                      width: 25,
-                                      height: 25,
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Center(
-                                        child: FaIcon(
-                                          FontAwesomeIcons.w,
-                                          color: isDarkMode ? vibrantGreen : Colors.black,
-                                          size: 12,
-                                        ),
-                                      ))
+                                  CustomIcon(FontAwesomeIcons.w, color: vibrantGreen),
                                 ],
                               ),
                             ]),
@@ -909,21 +880,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Container(
-                                      width: 25,
-                                      height: 25,
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withValues(alpha: 0.4),
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Center(
-                                        child: FaIcon(
-                                          FontAwesomeIcons.r,
-                                          color: Colors.white,
-                                          size: 12,
-                                        ),
-                                      ))
+                                  CustomIcon(FontAwesomeIcons.r, color: vibrantGreen),
                                 ],
                               ),
                             ]),
@@ -1292,7 +1249,7 @@ class _DepthStack extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.35), // shadow color
+                    color: Colors.black.withValues(alpha: 0.45), // shadow color
                     offset: const Offset(0, 8), // x, y
                     blurRadius: 10, // soften the edge
                     spreadRadius: 1, // extend the shadow

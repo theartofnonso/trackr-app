@@ -109,6 +109,28 @@ enum MuscleGroup {
     );
   }
 
+  static const upper = <MuscleGroup>{
+    MuscleGroup.chest,
+    MuscleGroup.back,
+    MuscleGroup.lats,
+    MuscleGroup.shoulders,
+    MuscleGroup.frontShoulder,
+    MuscleGroup.backShoulder,
+    MuscleGroup.biceps,
+    MuscleGroup.triceps,
+    MuscleGroup.traps,
+    MuscleGroup.abs,
+  };
+
+  static const lower = <MuscleGroup>{
+    MuscleGroup.quadriceps,
+    MuscleGroup.hamstrings,
+    MuscleGroup.glutes,
+    MuscleGroup.calves,
+    MuscleGroup.adductors,
+    MuscleGroup.abductors,
+  };
+
   /// Returns the user-friendly [displayName] instead of the enum's default `name`.
   @override
   String toString() => displayName;
