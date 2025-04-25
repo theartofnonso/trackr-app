@@ -47,14 +47,17 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
         ),
         child: SafeArea(
           bottom: false,
-          minimum: const EdgeInsets.symmetric(horizontal: 20),
+          //  minimum: const EdgeInsets.symmetric(horizontal: 20),
           child: hasPendingActions
               ? Column(
                   children: [
                     if (routineTemplates.isEmpty)
                       ListTile(
                         onTap: () => navigateToRoutineHome(context: context),
-                        contentPadding: EdgeInsets.zero,
+                        leading: FaIcon(
+                          FontAwesomeIcons.solidBell,
+                          size: 20,
+                        ),
                         title: Text("Create A Workout Template"),
                         subtitle: Text("Design your first routine"),
                         trailing: FaIcon(
@@ -66,7 +69,10 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
                     if (routinePlans.isEmpty)
                       ListTile(
                         onTap: () => navigateToRoutineHome(context: context),
-                        contentPadding: EdgeInsets.zero,
+                        leading: FaIcon(
+                          FontAwesomeIcons.solidBell,
+                          size: 20,
+                        ),
                         title: Text("Create A Workout Plan"),
                         subtitle: Text("Organise your workouts into a plan"),
                         trailing: FaIcon(
@@ -76,9 +82,27 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
                         ),
                       ),
                     ListTile(
-                      contentPadding: EdgeInsets.zero,
+                      leading: FaIcon(
+                        FontAwesomeIcons.solidBell,
+                        size: 20,
+                      ),
                       title: Text("Sync with $deviceOS"),
-                      subtitle: Text("Connect your health data to improve your training"),
+                      subtitle: Text("Connect to improve your training"),
+                      trailing: FaIcon(
+                        FontAwesomeIcons.chevronRight,
+                        size: 12,
+                        color: isDarkMode ? Colors.white70 : Colors.grey.shade400,
+                      ),
+                    ),
+                    if (user == null)
+                    ListTile(
+                      onTap: () => navigateToProfile(context: context),
+                      title: Text("Set up your profile"),
+                      leading: FaIcon(
+                        FontAwesomeIcons.solidBell,
+                        size: 20,
+                      ),
+                      subtitle: Text("Visit settings to create a profile"),
                       trailing: FaIcon(
                         FontAwesomeIcons.chevronRight,
                         size: 12,

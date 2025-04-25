@@ -44,13 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (SharedPrefs().firstLaunch) {
-      if (Platform.isIOS) {
-        return OnboardingScreen(onComplete: () {
-          setState(() {
-            SharedPrefs().firstLaunch = false;
-          });
+      return OnboardingScreen(onComplete: () {
+        setState(() {
+          SharedPrefs().firstLaunch = false;
         });
-      }
+      });
     }
 
     return HomeTabScreen();
@@ -148,12 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _authenticateSahhaUser() {
     final userId = SharedPrefs().userId;
     SahhaFlutter.authenticate(appId: sahhaAppId, appSecret: sahhaAppSecret, externalId: userId)
-        .then((success) => {
-      debugPrint('Sahha user authenticated: $success')
-    })
-        .catchError((error, stackTrace) => {
-      debugPrint('Sahha user authentication error: $error')
-    });
+        .then((success) => {debugPrint('Sahha user authenticated: $success')})
+        .catchError((error, stackTrace) => {debugPrint('Sahha user authentication error: $error')});
   }
 
   @override

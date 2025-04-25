@@ -68,7 +68,7 @@ Future<void> navigateToRoutineLogEditor({required BuildContext context, required
   }
 }
 
-Future<RoutineLogDto?> navigateAndEditLog(
+Future<RoutineLogDto?> navigateToRoutineEditorAndReturnLog(
     {required BuildContext context, required RoutineLogArguments arguments}) async {
   final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
   return log;

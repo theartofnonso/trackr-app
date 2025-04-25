@@ -499,7 +499,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     if (log != null) {
       final copyOfLog = log.copyWith();
       final arguments = RoutineLogArguments(log: copyOfLog, editorMode: RoutineEditorMode.edit);
-      final updatedLog = await navigateAndEditLog(context: context, arguments: arguments);
+      final updatedLog = await navigateToRoutineEditorAndReturnLog(context: context, arguments: arguments);
       if (updatedLog != null) {
         setState(() {
           _log = updatedLog;
