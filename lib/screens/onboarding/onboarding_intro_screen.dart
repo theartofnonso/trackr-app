@@ -4,13 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/widgets/monitors/log_streak_monitor.dart';
 
 import '../../colors.dart';
 import '../../utils/theme/theme.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
-import '../../widgets/custom_drawings/streak_face.dart';
-import '../../widgets/dividers/label_divider.dart';
 
 class OnboardingIntroScreen extends StatefulWidget {
   static const routeName = "/intro_screen";
@@ -28,14 +25,7 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    final pages = [
-      _LogStreakMonitorOnboardingScreen(isDarkMode: isDarkMode),
-      _TRKRCoachOnboardingScreen(isDarkMode: isDarkMode),
-      if (SharedPrefs().firstLaunch) _EndOnboardingScreen(onPress: widget.onComplete ?? () {})
-    ];
+    final pages = [_EndOnboardingScreen(onPress: widget.onComplete ?? () {})];
 
     return MaterialApp(
       themeMode: ThemeMode.system,
@@ -81,145 +71,6 @@ class _OnboardingIntroScreenState extends State<OnboardingIntroScreen> {
   }
 }
 
-class _LogStreakMonitorOnboardingScreen extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _LogStreakMonitorOnboardingScreen({required this.isDarkMode});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Spacer(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Wrap(
-            runSpacing: 40,
-            spacing: 40,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakWidget(value: 2, width: 120, height: 120, strokeWidth: 8),
-                  ClipOval(
-                    child: SizedBox(
-                      width: 90,
-                      height: 90,
-                      child: CustomPaint(
-                        painter: StreakFace(color: logStreakColor(2), result: 0.2),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakWidget(value: 4, width: 120, height: 120, strokeWidth: 8),
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakWidget(value: 7, width: 120, height: 120, strokeWidth: 8),
-                  ClipOval(
-                    child: SizedBox(
-                      width: 90,
-                      height: 90,
-                      child: CustomPaint(
-                        painter: StreakFace(color: logStreakColor(7), result: 0.7),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  LogStreakWidget(value: 12, width: 120, height: 120, strokeWidth: 8),
-                  ClipOval(
-                    child: SizedBox(
-                      width: 90,
-                      height: 90,
-                      child: CustomPaint(
-                        painter: StreakFace(color: logStreakColor(12), result: 1),
-                      ),
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-        const Spacer(),
-        LabelDivider(
-          label: "LOG Streak".toUpperCase(),
-          labelColor: isDarkMode ? Colors.white70 : Colors.black,
-          dividerColor: sapphireLighter,
-          fontSize: 14,
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        Text(
-            "Your goal is to keep those months consistently green. Just 12 sessions per month are all you need to close the ring and maintain your momentum. Make it a habit, keep pushing, and enjoy watching your streaks grow!",
-            style: Theme.of(context).textTheme.bodyLarge),
-      ],
-    );
-  }
-}
-
-class _TRKRCoachOnboardingScreen extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _TRKRCoachOnboardingScreen({required this.isDarkMode});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Spacer(),
-        Container(
-            width: 100,
-            height: 100,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-            decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    vibrantBlue,
-                    vibrantBlue,
-                    vibrantGreen,
-                    vibrantGreen // End color
-                  ],
-                  begin: Alignment.topLeft, // Gradient starts from top-left
-                  end: Alignment.bottomRight, // Gradient ends at bottom-right
-                ),
-                borderRadius: BorderRadius.circular(8)),
-            child: Image.asset(
-              'images/trkr_single_icon.png',
-              fit: BoxFit.contain,
-              height: 12, // Adjust the height as needed
-            )),
-        Spacer(),
-        LabelDivider(
-          label: "TRKR COACH".toUpperCase(),
-          labelColor: isDarkMode ? Colors.white70 : Colors.black,
-          dividerColor: sapphireLighter,
-          fontSize: 14,
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        Text(
-            "We know starting (or revamping) a training routine can feel overwhelming, so we’ve introduced TRKR Coach—your personal AI assistant. Need guidance on form, a new workout idea, or feedback on your progress? Just ask TRKR Coach, and you’ll have instant, expert insight at your fingertips.",
-            style: Theme.of(context).textTheme.bodyLarge),
-      ],
-    );
-  }
-}
-
 class _EndOnboardingScreen extends StatelessWidget {
   final VoidCallback onPress;
 
@@ -254,7 +105,7 @@ class _EndOnboardingScreen extends StatelessWidget {
               height: 45,
               width: double.infinity,
               child: OpacityButtonWidget(
-                  label: "Start training better",
+                label: "Start training better",
                 buttonColor: vibrantGreen,
                 onPressed: onPress,
               )),

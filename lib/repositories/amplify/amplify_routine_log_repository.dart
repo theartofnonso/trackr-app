@@ -49,7 +49,7 @@ class AmplifyRoutineLogRepository {
   }
 
   void loadLogStream({required List<RoutineLog> logs}) {
-    _logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
+    //_logs = logs.map((log) => RoutineLogDto.toDto(log)).toList();
     _syncTrainingReminders();
     _groupExerciseLogsById();
     _groupExerciseLogsByMuscleGroup();

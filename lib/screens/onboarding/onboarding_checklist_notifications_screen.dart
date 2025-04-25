@@ -1,12 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../utils/general_utils.dart';
-import '../../widgets/list_tile.dart';
 
 class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
   static const routeName = '/onboarding_checklist_screen';
@@ -24,15 +26,17 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
 
     final user = routineUserController.user;
 
-    final routineLogs = exerciseAndRoutineController.logs;
-
     final routineTemplates = exerciseAndRoutineController.templates;
 
-    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || user == null;
+    final routinePlans = exerciseAndRoutineController.plans;
+
+    final hasPendingActions = routineTemplates.isEmpty || routinePlans.isEmpty || user == null;
+
+    final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("TRKR Notificatons".toUpperCase()),
+        title: Text("TRKR Notifications".toUpperCase()),
         leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
       ),
@@ -43,57 +47,44 @@ class OnboardingChecklistNotificationsScreenScreen extends StatelessWidget {
         ),
         child: SafeArea(
           bottom: false,
-          minimum: const EdgeInsets.all(10.0),
+          minimum: const EdgeInsets.symmetric(horizontal: 20),
           child: hasPendingActions
               ? Column(
-                  spacing: 10,
                   children: [
                     if (routineTemplates.isEmpty)
-                      ThemeListTile(
-                        child: ListTile(
-                          title: Text("Create A Workout Template"),
-                          leading: Image.asset(
-                            'icons/dumbbells.png',
-                            fit: BoxFit.contain,
-                            color: isDarkMode ? Colors.white : Colors.black,
-                            height: 24, // Adjust the height as needed
-                          ),
-                          subtitle: Text("Design your first routine"),
-                          trailing: FaIcon(
-                            FontAwesomeIcons.solidBell,
-                            size: 18,
-                          ),
+                      ListTile(
+                        onTap: () => navigateToRoutineHome(context: context),
+                        contentPadding: EdgeInsets.zero,
+                        title: Text("Create A Workout Template"),
+                        subtitle: Text("Design your first routine"),
+                        trailing: FaIcon(
+                          FontAwesomeIcons.chevronRight,
+                          size: 12,
+                          color: isDarkMode ? Colors.white70 : Colors.grey.shade400,
                         ),
                       ),
-                    if (routineLogs.isEmpty)
-                      ThemeListTile(
-                        child: ListTile(
-                          title: Text("Log A Workout Session"),
-                          leading: Image.asset(
-                            'icons/dumbbells.png',
-                            fit: BoxFit.contain,
-                            color: isDarkMode ? Colors.white : Colors.black,
-                            height: 24, // Adjust the height as needed
-                          ),
-                          subtitle: Text("Start your fitness journey with a session"),
-                          trailing: FaIcon(
-                            FontAwesomeIcons.solidBell,
-                            size: 18,
-                          ),
+                    if (routinePlans.isEmpty)
+                      ListTile(
+                        onTap: () => navigateToRoutineHome(context: context),
+                        contentPadding: EdgeInsets.zero,
+                        title: Text("Create A Workout Plan"),
+                        subtitle: Text("Organise your workouts into a plan"),
+                        trailing: FaIcon(
+                          FontAwesomeIcons.chevronRight,
+                          size: 12,
+                          color: isDarkMode ? Colors.white70 : Colors.grey.shade400,
                         ),
                       ),
-                    if (user == null)
-                      ThemeListTile(
-                        child: ListTile(
-                          title: Text("Set up your profile"),
-                          leading: FaIcon(FontAwesomeIcons.personWalking),
-                          subtitle: Text("Visit settings to create a profile"),
-                          trailing: FaIcon(
-                            FontAwesomeIcons.solidBell,
-                            size: 18,
-                          ),
-                        ),
-                      )
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text("Sync with $deviceOS"),
+                      subtitle: Text("Connect your health data to improve your training"),
+                      trailing: FaIcon(
+                        FontAwesomeIcons.chevronRight,
+                        size: 12,
+                        color: isDarkMode ? Colors.white70 : Colors.grey.shade400,
+                      ),
+                    ),
                   ],
                 )
               : Center(
