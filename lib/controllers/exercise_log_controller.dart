@@ -89,6 +89,12 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void overwriteSets({required String exerciseLogId, required List<SetDto> newSets}) {
+    _exerciseLogRepository.overwriteSets(exerciseLogId: exerciseLogId, sets: newSets);
+    _cache();
+    notifyListeners();
+  }
+
   void removeSetForExerciseLog({required String exerciseLogId, required int index}) {
     _exerciseLogRepository.removeSet(exerciseLogId: exerciseLogId, index: index);
     _cache();

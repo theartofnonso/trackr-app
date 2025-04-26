@@ -74,8 +74,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   List<_ErrorMessage> _errorMessages = [];
 
-  List<SetDto> _reducedSets = [];
-
   void _show1RMRecommendations() {
     final pastExerciseLogs =
         Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByExerciseId[_exerciseLog.id] ??
@@ -104,7 +102,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final exerciseLog = Provider.of<ExerciseLogController>(context, listen: false)
         .whereExerciseLog(exerciseId: _exerciseLog.exercise.id);
 
-    final sets = _reducedSets.isNotEmpty ? _reducedSets : exerciseLog.sets;
+    final sets = exerciseLog.sets;
 
     if (withDurationOnly(type: exerciseLog.exercise.type)) {
       _loadDurationControllers(sets: sets);
@@ -118,13 +116,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _clearControllers() {
-    if (withDurationOnly(type: _exerciseLog.exercise.type)) {
+    final exerciseLog = _exerciseLog;
+
+    if (withDurationOnly(type: exerciseLog.exercise.type)) {
       _durationControllers = [];
     }
-    if (withWeightsOnly(type: _exerciseLog.exercise.type)) {
+    if (withWeightsOnly(type: exerciseLog.exercise.type)) {
       _weightAndRepsControllers = [];
     }
-    if (withRepsOnly(type: _exerciseLog.exercise.type)) {
+    if (withRepsOnly(type: exerciseLog.exercise.type)) {
       _repsControllers = [];
     }
 
@@ -132,16 +132,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _disposeControllers() {
-    if (withDurationOnly(type: _exerciseLog.exercise.type)) {
+    final exerciseLog = _exerciseLog;
+
+    if (withDurationOnly(type: exerciseLog.exercise.type)) {
       // Duration does not have any controller to dispose
     }
-    if (withWeightsOnly(type: _exerciseLog.exercise.type)) {
+    if (withWeightsOnly(type: exerciseLog.exercise.type)) {
       for (final controllerPair in _weightAndRepsControllers) {
         controllerPair.$1.dispose();
         controllerPair.$2.dispose();
       }
     }
-    if (withRepsOnly(type: _exerciseLog.exercise.type)) {
+    if (withRepsOnly(type: exerciseLog.exercise.type)) {
       for (final controller in _repsControllers) {
         controller.dispose();
       }
@@ -296,8 +298,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
       _checkRepsRange(reps: reps, index: index);
 
-      final weightController = TextEditingController(text: (set).weight.toString());
-      final repsController = TextEditingController(text: set.reps.toString());
+      final weightController = TextEditingController(text: weight.toString());
+      final repsController = TextEditingController(text: reps.toString());
       controllers.add((weightController, repsController));
     }
     setState(() {
@@ -334,7 +336,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
       _checkRepsRange(reps: reps, index: index);
 
-      final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
+      final repsController = TextEditingController(text: reps.toString());
       controllers.add(repsController);
     }
     setState(() {
@@ -468,7 +470,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final readinessScore = 68; //SharedPrefs().readinessScore;
 
-    final reducedSets = calculateDeload(original: exerciseLog, recoveryScore: readinessScore);
+    final deloadSets = calculateDeload(original: exerciseLog, recoveryScore: readinessScore);
 
     displayBottomSheet(
         context: context,
@@ -496,39 +498,24 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
                 ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
               },
-              SetsListview(type: type, sets: reducedSets),
+              SetsListview(type: type, sets: deloadSets),
             ],
           ),
           const SizedBox(
             height: 16,
           ),
-          _reducedSets.isEmpty
-              ? SizedBox(
-                  height: 45,
-                  width: double.infinity,
-                  child: OpacityButtonWidget(
-                      label: "Train with this plan".toUpperCase(),
-                      buttonColor: vibrantGreen,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        setState(() {
-                          _reducedSets = reducedSets;
-                          _loadControllers();
-                        });
-                      }))
-              : SizedBox(
-                  height: 45,
-                  width: double.infinity,
-                  child: OpacityButtonWidget(
-                      label: "Train with original plan".toUpperCase(),
-                      buttonColor: vibrantGreen,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        setState(() {
-                          _reducedSets = [];
-                          _loadControllers();
-                        });
-                      }))
+          SizedBox(
+              height: 45,
+              width: double.infinity,
+              child: OpacityButtonWidget(
+                  label: "Train with this plan".toUpperCase(),
+                  buttonColor: vibrantGreen,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Provider.of<ExerciseLogController>(context, listen: false)
+                        .overwriteSets(exerciseLogId: _exerciseLog.id, newSets: deloadSets);
+                    _loadControllers();
+                  }))
         ]));
   }
 
@@ -539,10 +526,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
-    final exerciseLog =
-        Provider.of<ExerciseLogController>(context, listen: true).whereExerciseLog(exerciseId: widget.exerciseLogId);
+    final exerciseLog = Provider.of<ExerciseLogController>(context, listen: false)
+        .whereExerciseLog(exerciseId: _exerciseLog.exercise.id);
 
-    final currentSets = _reducedSets.isNotEmpty ? _reducedSets : exerciseLog.sets;
+    final currentSets = exerciseLog.sets;
 
     final recentSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
@@ -678,7 +665,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final readinessScore = 68; //SharedPrefs().readinessScore;
 
     final shouldShowDeloadFab = tierForScore(score: readinessScore / 100) != RecoveryTier.optimal;
-    
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -841,7 +828,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 if (_errorMessages.isNotEmpty && _errorMessages.length == 1) errorWidgets.first,
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
-                    if (_reducedSets.isEmpty && withReps(type: exerciseType) &&
+                    if (withReps(type: exerciseType) &&
                         trainingProgression != null &&
                         rpeTrendSummary.isNotEmpty &&
                         progressionSummary.isNotEmpty)
@@ -871,7 +858,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       ),
 
                     /// Only show for exercises that measure Weights, Reps and Duration
-                    if (_reducedSets.isEmpty && workingSet != null)
+                    if (workingSet != null)
                       StaggeredGridTile.count(
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
