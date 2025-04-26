@@ -391,31 +391,67 @@ RoutineLogDto routineWithLoggedExercises({required RoutineLogDto log}) {
   return log.copyWith(exerciseLogs: loggedExerciseLogs);
 }
 
+/// Deload Logic
+/// Tier selection < 0.30 = poor, 0.30 â€“ 0.49 = good, 0.50 â€“ 0.69 = great, â‰¥ 0.70 = optimal
+/// Volume scaling - Keeps sets.length x volumeFactor, rounded, minus 1
+/// Intensity scaling - Multiplies each set's weight and rpeRating by intensityFactor
+
+class DeloadConfig {
+  const DeloadConfig(this.volumeFactor, this.intensityFactor);
+
+  /// Percentage of the original *sets* you keep (0–1).
+  final double volumeFactor;
+
+  /// Multiplier applied to the original weight (0–1).
+  final double intensityFactor;
+}
+
+enum RecoveryTier { poor, good, great, optimal }
+
+RecoveryTier _tierForScore({required int score}) {
+  if (score < 30) return RecoveryTier.poor;
+  if (score < 50) return RecoveryTier.good;
+  if (score < 70) return RecoveryTier.great;
+  return RecoveryTier.optimal;
+}
+
+// Lookup table that defines *how much* we scale at each tier
+const _rules = {
+  RecoveryTier.poor: DeloadConfig(0.30, 0.60), // heavy deload
+  RecoveryTier.good: DeloadConfig(0.50, 0.70), // moderate deload
+  RecoveryTier.great: DeloadConfig(0.75, 0.80), // light deload
+  RecoveryTier.optimal: DeloadConfig(1.00, 1.00), // no deload
+};
+
 /// Returns a *new* exercise map with volume / intensity adjusted.
-// List<SetDto> calculateDeload({required
-//   ExerciseLogDto original,
-//   required int recoveryScore, // 0‒1  (if 0‒100 pass /100)
-// }) {
-//   // 1. Find the tier
-//   final tier = _tierForScore(recoveryScore.clamp(0, 1).toDouble());
-//   final rule = _rules[tier]!;
-//
-//   // 2. Decide how many sets to keep
-//   final List sets = List.castFrom(original['sets'] as List);
-//   final keepCount = (sets.length * rule.volumeFactor).round().clamp(1, sets.length);
-//
-//   // 3. Clone the first [keepCount] sets & scale weight / RPE
-//   final newSets = sets.take(keepCount).map<SetEntry>((s) {
-//     final weight = (s['weight'] as num) * rule.intensityFactor;
-//     final rpe    = (s['rpeRating'] as num) * rule.intensityFactor;
-//
-//     return {
-//       ...s,
-//       'weight'    : (weight * 100).round() / 100,   // round to 2 dp
-//       'rpeRating' : rpe.clamp(1, 10).toStringAsFixed(1),
-//     };
-//   }).toList();
-//
-//   // 4. Return a new Map so the original stays untouched
-//   return [];
-// }
+List<SetDto> calculateDeload({required ExerciseLogDto original, required int recoveryScore}) {
+  // 1. Find the tier
+  final tier = _tierForScore(score: recoveryScore.clamp(0, 1));
+  final rule = _rules[tier]!;
+
+  // 2. Decide how many sets to keep
+  final sets = original.sets;
+  final keepCount = (sets.length * rule.volumeFactor).round().clamp(1, sets.length);
+
+  // 3. Clone the first [keepCount] sets & scale weight / RPE
+  final reducedSets = sets.take(keepCount).map((set) {
+    final rpe = set.rpeRating * rule.intensityFactor;
+
+    switch (original.exercise.type) {
+      case ExerciseType.weights:
+        final weight = (set as WeightAndRepsSetDto).weight * rule.intensityFactor;
+        final reducedWeight = (weight * 100).round() / 100;
+        final reducedRpe = rpe.clamp(1, 10);
+        return set.copyWith(weight: reducedWeight, rpeRating: reducedRpe.toInt());
+      case ExerciseType.bodyWeight:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+      case ExerciseType.duration:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+    }
+  }).toList();
+
+  // 4. Return a new Map so the original stays untouched
+  return reducedSets;
+}
