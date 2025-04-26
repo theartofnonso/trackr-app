@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/screens/insights/overview_screen.dart';
+import 'package:tracker_app/screens/overview_screen.dart';
 import 'package:tracker_app/screens/notifications/notifications_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
