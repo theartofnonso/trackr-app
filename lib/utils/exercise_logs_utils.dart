@@ -436,19 +436,19 @@ List<SetDto> calculateDeload({required ExerciseLogDto original, required int rec
   // 3. Clone the first [keepCount] sets & scale weight / RPE
   final reducedSets = sets.take(keepCount).map((set) {
     final rpe = set.rpeRating * rule.intensityFactor;
+    final reducedRpe = rpe.clamp(1, 10);
 
     switch (original.exercise.type) {
       case ExerciseType.weights:
         final weight = (set as WeightAndRepsSetDto).weight * rule.intensityFactor;
         final reducedWeight = (weight * 100).round() / 100;
-        final reducedRpe = rpe.clamp(1, 10);
         return set.copyWith(weight: reducedWeight, rpeRating: reducedRpe.toInt());
       case ExerciseType.bodyWeight:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        final reps = (set as RepsSetDto).reps * rule.intensityFactor;
+        final reducedReps = reps.round().clamp(1, set.reps);
+        return set.copyWith(reps: reducedReps, rpeRating: reducedRpe.toInt());
       case ExerciseType.duration:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return set.copyWith(rpeRating: reducedRpe.toInt());
     }
   }).toList();
 
