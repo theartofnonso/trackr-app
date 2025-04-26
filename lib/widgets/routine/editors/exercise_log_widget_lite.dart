@@ -6,6 +6,7 @@ import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../colors.dart';
+import '../../../utils/dialog_utils.dart';
 import '../editors/exercise_log_widget.dart';
 
 class ExerciseLogLiteWidget extends StatelessWidget {
@@ -29,7 +30,8 @@ class ExerciseLogLiteWidget extends StatelessWidget {
       required this.onSuperSet,
       required this.onRemoveSuperSet,
       required this.onRemoveLog,
-      required this.onReplaceLog, this.isPastRoutine = false});
+      required this.onReplaceLog,
+      this.isPastRoutine = false});
 
   @override
   Widget build(BuildContext context) {
@@ -87,46 +89,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
                       ),
                   ],
                 ),
-                MenuAnchor(
-                    builder: (BuildContext context, MenuController controller, Widget? child) {
-                      return IconButton(
-                        onPressed: () {
-                          if (controller.isOpen) {
-                            controller.close();
-                          } else {
-                            FocusScope.of(context).unfocus();
-                            controller.open();
-                          }
-                        },
-                        icon: const Icon(Icons.more_horiz_rounded),
-                        tooltip: 'Show menu',
-                      );
-                    },
-                    menuChildren: [
-                      MenuItemButton(
-                        onPressed: onReplaceLog,
-                        child: Text(
-                          "Replace",
-                          style: GoogleFonts.ubuntu(),
-                        ),
-                      ),
-                      exerciseLogDto.superSetId.isNotEmpty
-                          ? MenuItemButton(
-                              onPressed: () => onRemoveSuperSet(exerciseLogDto.superSetId),
-                              child: Text("Remove Super-set", style: GoogleFonts.ubuntu(color: Colors.red)),
-                            )
-                          : MenuItemButton(
-                              onPressed: onSuperSet,
-                              child: Text("Super-set", style: GoogleFonts.ubuntu()),
-                            ),
-                      MenuItemButton(
-                        onPressed: onRemoveLog,
-                        child: Text(
-                          "Remove",
-                          style: GoogleFonts.ubuntu(color: Colors.red),
-                        ),
-                      ),
-                    ])
+                IconButton(onPressed: () => _showBottomSheet(context: context), icon: FaIcon(Icons.more_horiz_rounded))
               ],
             ),
             Wrap(
@@ -137,5 +100,48 @@ class ExerciseLogLiteWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _showBottomSheet({required BuildContext context}) {
+    displayBottomSheet(
+        context: context,
+        child: SafeArea(
+          child: Column(children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),
+              horizontalTitleGap: 6,
+              title: Text("Replace"),
+              onTap: () {
+                Navigator.of(context).pop();
+                onReplaceLog();
+              },
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(FontAwesomeIcons.link, size: 18),
+              horizontalTitleGap: 6,
+              title: Text("Superset"),
+              onTap: () {
+                Navigator.of(context).pop();
+                onSuperSet();
+              },
+            ),
+            ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const FaIcon(
+                  FontAwesomeIcons.trash,
+                  size: 18,
+                  color: Colors.red,
+                ),
+                horizontalTitleGap: 6,
+                title: Text("Remove",
+                    style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onRemoveLog();
+                }),
+          ]),
+        ));
   }
 }
