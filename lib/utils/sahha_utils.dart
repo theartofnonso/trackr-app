@@ -23,17 +23,17 @@ void authenticateSahhaUser() {
       .catchError((error, stackTrace) => {debugPrint('Sahha user authentication error: $error')});
 }
 
-double extractReadinessScore({required String jsonString}) {
+int extractReadinessScore({required String jsonString}) {
   final List<dynamic> decoded = jsonDecode(jsonString);
 
   if (decoded.isEmpty || decoded.first is! Map) {
-   return 0.0;
+   return 0;
   }
 
   final Map<String, dynamic> first = decoded.first as Map<String, dynamic>;
   if (!first.containsKey('score')) {
-    return 0.0;
+    return 0;
   }
 
-  return (first['score'] as num).toDouble();
+  return (first['score'] as num).toInt();
 }

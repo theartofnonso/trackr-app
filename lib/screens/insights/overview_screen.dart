@@ -53,7 +53,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
 
-  double _readiness = 0.0;
+  int _readiness = 0;
 
   String _predictTemplate({required List<RoutineLogDto> logs}) {
     if (logs.isEmpty) {
@@ -139,10 +139,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
-              child: AnimatedGauge(
-                value: 134,
-                min: 0,
-                max: 200,        // tweak as needed
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: AnimatedGauge(
+                  value: _readiness * 100,
+                  min: 0,
+                  max: 100, // tweak as needed
+                ),
               ),
             ),
             StaggeredGridTile.count(
@@ -333,14 +336,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     SahhaFlutter.getScores(
-        types: [SahhaScoreType.readiness],
-        startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
-        endDateTime: DateTime.now())
+            types: [SahhaScoreType.readiness],
+            startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
+            endDateTime: DateTime.now())
         .then((value) {
-     setState(() {
-       _readiness = extractReadinessScore(jsonString: value);
-     });
-    }).catchError((error, stackTrace) {          // <-- block body
+      setState(() {
+        _readiness = extractReadinessScore(jsonString: value);
+      });
+    }).catchError((error, stackTrace) {
+      // <-- block body
       debugPrint(error.toString());
       // return null; // optional – but explicitly returning null also satisfies the signature
     });
