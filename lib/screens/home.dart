@@ -9,12 +9,10 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/Exercise.dart';
-import 'package:tracker_app/models/RoutineUser.dart';
 import 'package:tracker_app/screens/home_screen.dart';
 import 'package:tracker_app/screens/notifications/onboarding_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
-import '../controllers/routine_user_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
@@ -34,7 +32,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  StreamSubscription<QuerySnapshot<RoutineUser>>? _routineUserStream;
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
   StreamSubscription<QuerySnapshot<RoutinePlan>>? _routinePlanStream;
@@ -54,22 +51,10 @@ class _HomeState extends State<Home> {
   }
 
   void _loadAppData() {
-    _observeRoutineUserQuery();
     _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
     _observeRoutinePlanQuery();
-  }
-
-  void _observeRoutineUserQuery() {
-    _routineUserStream = Amplify.DataStore.observeQuery(
-      RoutineUser.classType,
-      sortBy: [RoutineUser.CREATEDAT.ascending()],
-    ).listen((QuerySnapshot<RoutineUser> snapshot) {
-      if (mounted) {
-        Provider.of<RoutineUserController>(context, listen: false).streamUsers(users: snapshot.items);
-      }
-    });
   }
 
   void _observeExerciseQuery() async {
@@ -168,7 +153,6 @@ class _HomeState extends State<Home> {
     _routineTemplateStream?.cancel();
     _routinePlanStream?.cancel();
     _routineLogStream?.cancel();
-    _routineUserStream?.cancel();
     super.dispose();
   }
 }

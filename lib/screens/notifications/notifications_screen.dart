@@ -11,7 +11,6 @@ import 'package:tracker_app/widgets/icons/apple_health_icon.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/icons/google_health_icon.dart';
@@ -44,16 +43,12 @@ class _NotificationsScreenScreenState extends State<NotificationsScreenScreen> {
 
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: true);
-
-    final user = routineUserController.user;
-
     final routineTemplates = exerciseAndRoutineController.templates;
 
     final routinePlans = exerciseAndRoutineController.plans;
 
     final hasPendingActions =
-        routineTemplates.isEmpty || routinePlans.isEmpty || user == null || _sensorStatus == SahhaSensorStatus.pending;
+        routineTemplates.isEmpty || routinePlans.isEmpty || _sensorStatus == SahhaSensorStatus.pending;
 
     final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
 
@@ -112,21 +107,6 @@ class _NotificationsScreenScreenState extends State<NotificationsScreenScreen> {
                         ),
                         title: Text("Sync with $deviceOS"),
                         subtitle: Text("Connect to improve your training"),
-                        trailing: FaIcon(
-                          FontAwesomeIcons.chevronRight,
-                          size: 12,
-                          color: isDarkMode ? Colors.white70 : Colors.grey.shade400,
-                        ),
-                      ),
-                    if (user == null)
-                      ListTile(
-                        onTap: () => navigateToProfile(context: context),
-                        title: Text("Set up your profile"),
-                        leading: FaIcon(
-                          FontAwesomeIcons.solidBell,
-                          size: 20,
-                        ),
-                        subtitle: Text("Visit settings to create a profile"),
                         trailing: FaIcon(
                           FontAwesomeIcons.chevronRight,
                           size: 12,

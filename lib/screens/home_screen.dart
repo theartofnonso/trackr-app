@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +8,6 @@ import 'package:tracker_app/screens/notifications/notifications_screen.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
-import '../controllers/routine_user_controller.dart';
 import '../utils/general_utils.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
-
   SahhaSensorStatus _sensorStatus = SahhaSensorStatus.unavailable;
 
   final _sensors = [
@@ -34,43 +31,39 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-
-    final routineUserController = Provider.of<RoutineUserController>(context, listen: true);
-
-    final user = routineUserController.user;
 
     final routineLogs = exerciseAndRoutineController.logs;
 
     final routineTemplates = exerciseAndRoutineController.templates;
 
-    final hasPendingActions = routineTemplates.isEmpty || routineLogs.isEmpty || user == null || _sensorStatus == SahhaSensorStatus.pending;
+    final hasPendingActions =
+        routineTemplates.isEmpty || routineLogs.isEmpty || _sensorStatus == SahhaSensorStatus.pending;
 
     return Scaffold(
-      appBar: AppBar(
-          actions: [
-            IconButton(
-              onPressed: _navigateToNotificationHome,
-              icon: Badge(
-                  smallSize: 8,
-                  backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
-                  child: FaIcon(FontAwesomeIcons.solidBell)),
-            ),
-            IconButton(
-              onPressed: () => navigateToSettings(context: context),
-              icon: FaIcon(FontAwesomeIcons.gear),
-            )
-          ]),
+      appBar: AppBar(actions: [
+        IconButton(
+          onPressed: _navigateToNotificationHome,
+          icon: Badge(
+              smallSize: 8,
+              backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
+              child: FaIcon(FontAwesomeIcons.solidBell)),
+        ),
+        IconButton(
+          onPressed: () => navigateToSettings(context: context),
+          icon: FaIcon(FontAwesomeIcons.gear),
+        )
+      ]),
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: themeGradient(context: context),
         ),
         child: SafeArea(
-            minimum: const EdgeInsets.all(10),
-            bottom: false,
-            child: OverviewScreen(),),
+          minimum: const EdgeInsets.all(10),
+          bottom: false,
+          child: OverviewScreen(),
+        ),
       ),
     );
   }
@@ -82,7 +75,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   void _getSahhaSensorStatus() {
     // Get status of `steps` and `sleep` sensors
     SahhaFlutter.getSensorStatus(_sensors).then((value) {
-
       setState(() {
         _sensorStatus = value;
       });
@@ -103,5 +95,4 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     super.initState();
     _getSahhaSensorStatus();
   }
-
 }
