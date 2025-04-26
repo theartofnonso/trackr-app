@@ -34,7 +34,6 @@ import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/readiness_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
@@ -114,7 +113,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final trendSummary = _analyzeWeeklyTrends(volumes: allLoggedVolumesForTemplate);
 
-    final readiness = calculateReadinessScore(fatigue: log.fatigueLevel, soreness: log.sorenessLevel);
+    final readiness = 0;
 
     return Scaffold(
         appBar: AppBar(

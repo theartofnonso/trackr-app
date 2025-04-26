@@ -27,7 +27,6 @@ import '../../openAI/open_ai_response_format.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/notifications_utils.dart';
-import '../../utils/readiness_utils.dart';
 import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
@@ -251,7 +250,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final log = widget.log;
 
-    final readiness = calculateReadinessScore(fatigue: log.fatigueLevel, soreness: log.sorenessLevel);
+    final readiness = 0;
 
     return PopScope(
         canPop: false,
@@ -327,7 +326,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                     if (readiness > 0)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text(getTrainingGuidance(readinessScore: readiness),
+                        child: Text("",
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w400,
                                 color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
