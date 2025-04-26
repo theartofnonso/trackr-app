@@ -149,19 +149,6 @@ Future<bool> _requestAndroidNotificationPermission() async {
       false;
 }
 
-Color logStreakColor(num value) {
-  final result = value / 12;
-  if (result < 0.3) {
-    return Colors.red;
-  } else if (result < 0.5) {
-    return Colors.yellow;
-  } else if (result < 0.8) {
-    return vibrantBlue;
-  } else {
-    return vibrantGreen;
-  }
-}
-
 /// Higher values now get a "better" color (green)
 Color lowToHighIntensityColor(double score) {
   if (score < 0.3) {
@@ -169,10 +156,42 @@ Color lowToHighIntensityColor(double score) {
     return Colors.red;
   } else if (score < 0.5) {
     return Colors.yellow;
-  } else if (score < 0.8) {
+  } else if (score < 0.7) {
     return vibrantBlue;
   } else {
     return vibrantGreen;
+  }
+}
+
+List<Color> lowToHighIntensityColors(double score) {
+  if (score < 0.3) {
+    return const [
+      Color(0xFFFF5722), // strong orange
+      Color(0xFFFF3945), // reddish-orange
+      Color(0xFFEA004E), // crimson-red
+      Color(0xFFFF5722),
+    ];
+  } else if (score < 0.5) {
+    return const [
+      Color(0xFFFFC107), // sunflower
+      Color(0xFFFF9F1C), // deep yellow-orange
+      Color(0xFFFF7538), // orange
+      Color(0xFFFFC107),
+    ];
+  } else if (score < 0.7) {
+    return const [
+      Color(0xFF3763FF), // royal blue
+      vibrantBlue, // teal-green
+      Color(0xFF78FF5C), // lime-green
+      Color(0xFF3763FF),
+    ];
+  } else {
+    return const [
+      Color(0xFF4CAF50), // medium green
+      vibrantGreen, // yellow-green
+      vibrantGreen, // soft yellow
+      vibrantGreen,
+    ];
   }
 }
 
@@ -182,7 +201,7 @@ Color highToLowIntensityColor(double score) {
     return vibrantGreen;
   } else if (score < 0.5) {
     return vibrantBlue;
-  } else if (score < 0.8) {
+  } else if (score < 0.7) {
     return Colors.yellow;
   } else {
     // Higher recovery values now get a "worse" color (red)

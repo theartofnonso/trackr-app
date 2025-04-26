@@ -42,7 +42,7 @@ class LogStreakMonitor extends StatelessWidget {
               value:
                   "${routineLogsByDay.length} ${pluralize(word: "DAY", count: routineLogsByDay.length).toUpperCase()}",
               title: "Log Streak",
-              color: logStreakColor(monthlyProgress),
+              color: lowToHighIntensityColor(monthlyProgress / 12),
               crossAxisAlignment: CrossAxisAlignment.end,
               forceDarkMode: isDarkMode),
         ),
@@ -125,7 +125,7 @@ class LogStreakWidget extends StatelessWidget {
         strokeWidth: strokeWidth,
         strokeCap: StrokeCap.butt,
         backgroundColor: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200,
-        valueColor: AlwaysStoppedAnimation<Color>(logStreakColor(value)),
+        valueColor: AlwaysStoppedAnimation<Color>(lowToHighIntensityColor(value / 12)),
       ),
     );
   }

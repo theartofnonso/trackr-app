@@ -2,7 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/colors.dart';
+
+import '../../utils/general_utils.dart';
 
 /// A semicircular gauge whose gradient colors rotate slowly with the gauge
 /// positioned above the label.
@@ -55,45 +56,52 @@ class _AnimatedGaugeState extends State<AnimatedGauge> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Stack(
       alignment: Alignment.center,
       children: [
-      Center(                    // ⟵ 1. forces the whole gauge to sit in
-        child: SizedBox(                //    the middle of whatever parent it’s in
-          width: double.infinity,           // ⟵ 2. explicit width instead of Infinity
-          height: 100 / 2 + widget.stroke,
-          child: AnimatedBuilder(
-            animation: _ctrl,
-            builder: (context, _) {
-              return CustomPaint(
-                painter: _GaugePainter(
-                  value: widget.value,
-                  min: widget.min,
-                  max: widget.max,
-                  stroke: widget.stroke,
-                  gradientRotation: _ctrl.value,
-                ),
-              );
-            },
+        Center(
+          // ⟵ 1. forces the whole gauge to sit in
+          child: SizedBox(
+            //    the middle of whatever parent it’s in
+            width: double.infinity, // ⟵ 2. explicit width instead of Infinity
+            height: 100 / 2 + widget.stroke,
+            child: AnimatedBuilder(
+              animation: _ctrl,
+              builder: (context, _) {
+                return CustomPaint(
+                  painter: _GaugePainter(
+                    value: widget.value,
+                    min: widget.min,
+                    max: widget.max,
+                    stroke: widget.stroke,
+                    gradientRotation: _ctrl.value,
+                  ),
+                );
+              },
+            ),
           ),
         ),
-      ),
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20,),
-          Text("${widget.value}",
-              style: GoogleFonts.ubuntu(fontSize: 30, height: 1.5, fontWeight: FontWeight.w900)),
-          Text(widget.value > 0 ? "Readiness" : "Calculating",
-              style: GoogleFonts.ubuntu(fontSize: 14, height: 1.5, fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
-        ],
-      )
-    ],);
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Text("${widget.value}", style: GoogleFonts.ubuntu(fontSize: 30, height: 1.5, fontWeight: FontWeight.w900)),
+            Text(widget.value > 0 ? "Readiness" : "Calculating",
+                style: GoogleFonts.ubuntu(
+                    fontSize: 14,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
+          ],
+        )
+      ],
+    );
   }
 }
 
@@ -136,7 +144,7 @@ class _GaugePainter extends CustomPainter {
       startAngle: math.pi, // left-most point
       endAngle: math.pi * 3, // completes full circle
       transform: GradientRotation(gradientRotation * 2 * math.pi),
-      colors: _gradientForScore(score: value),
+      colors: lowToHighIntensityColors(value / 100),
     ).createShader(sweepRect);
 
     final trackPaint = Paint()
@@ -198,50 +206,4 @@ class _GaugePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _GaugePainter old) =>
       old.gradientRotation != gradientRotation || old.value != value || old.min != min || old.max != max;
-}
-
-
-/// Score is expected in the range 0.0 → 1.0
-List<Color> _gradientForScore({required int score}) {
-  if (score >= 85) {
-    // ── EXCELLENT ──  purple ➜ cyan
-    return const [
-      Color(0xFF4CAF50), // medium green
-      vibrantGreen, // yellow-green
-      vibrantGreen, // soft yellow
-      vibrantGreen,
-    ];
-  } else if (score >= 70) {
-    // ── GOOD ──  blue ➜ green
-    return const [
-      Color(0xFF4CAF50), // medium green
-      Color(0xFFB5D836), // yellow-green
-      Color(0xFFFFE74C), // soft yellow
-      Color(0xFF4CAF50),
-    ];
-  } else if (score >= 50) {
-    // ── MODERATE ──  green ➜ yellow
-    return const [
-      Color(0xFF3763FF), // royal blue
-      vibrantBlue, // teal-green
-      Color(0xFF78FF5C), // lime-green
-      Color(0xFF3763FF),
-    ];
-  } else if (score >= 30) {
-    // ── LOW ──  yellow ➜ orange
-    return const [
-      Color(0xFFFFC107), // sunflower
-      Color(0xFFFF9F1C), // deep yellow-orange
-      Color(0xFFFF7538), // orange
-      Color(0xFFFFC107),
-    ];
-  } else {
-    // ── VERY LOW ── orange ➜ red
-    return const [
-      Color(0xFFFF5722), // strong orange
-      Color(0xFFFF3945), // reddish-orange
-      Color(0xFFEA004E), // crimson-red
-      Color(0xFFFF5722),
-    ];
-  }
 }
