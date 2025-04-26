@@ -12,24 +12,24 @@ import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart'
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 
-import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
-import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/routine_editor_type_enums.dart';
-import '../../shared_prefs.dart';
-import '../../utils/general_utils.dart';
-import '../../utils/navigation_utils.dart';
-import '../../utils/sahha_utils.dart';
-import '../../utils/string_utils.dart';
-import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
-import '../../widgets/backgrounds/trkr_loading_screen.dart';
-import '../../widgets/calendar/calendar.dart';
-import '../../widgets/dividers/label_divider.dart';
-import '../../widgets/monitors/animated_gauge.dart';
-import '../../widgets/monthly_insights/log_streak_chart.dart';
-import '../../widgets/monthly_insights/volume_chart.dart';
-import '../AI/trkr_coach_chat_screen.dart';
+import '../controllers/exercise_and_routine_controller.dart';
+import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/viewmodels/routine_log_arguments.dart';
+import '../enums/routine_editor_type_enums.dart';
+import '../shared_prefs.dart';
+import '../utils/general_utils.dart';
+import '../utils/navigation_utils.dart';
+import '../utils/sahha_utils.dart';
+import '../utils/string_utils.dart';
+import '../widgets/ai_widgets/trkr_coach_text_widget.dart';
+import '../widgets/backgrounds/trkr_loading_screen.dart';
+import '../widgets/calendar/calendar.dart';
+import '../widgets/dividers/label_divider.dart';
+import '../widgets/monitors/animated_gauge.dart';
+import '../widgets/monthly_insights/log_streak_chart.dart';
+import '../widgets/monthly_insights/volume_chart.dart';
+import 'AI/trkr_coach_chat_screen.dart';
 
 enum TrainingAndVolume {
   training,
