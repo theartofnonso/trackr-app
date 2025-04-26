@@ -507,7 +507,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   height: 45,
                   width: double.infinity,
                   child: OpacityButtonWidget(
-                      label: "Train with this plan",
+                      label: "Train with this plan".toUpperCase(),
                       buttonColor: vibrantGreen,
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -520,7 +520,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   height: 45,
                   width: double.infinity,
                   child: OpacityButtonWidget(
-                      label: "Train with original plan",
+                      label: "Train with original plan".toUpperCase(),
                       buttonColor: vibrantGreen,
                       onPressed: () {
                         Navigator.of(context).pop();
