@@ -24,6 +24,7 @@ import '../screens/logs/routine_log_screen.dart';
 import '../screens/routines/routine_plan.dart';
 import '../screens/routines/routine_template_screen.dart';
 import '../screens/routines/routines_home.dart';
+import '../shared_prefs.dart';
 
 Future<RoutineUserDto?> navigateToUserEditor(
     {required BuildContext context, RoutineUserDto? user}) async {
@@ -62,7 +63,9 @@ Future<void> navigateToRoutineLogEditor({required BuildContext context, required
   final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
   if (log != null) {
     if (context.mounted) {
-      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true, "isEditable": true});
+      final readiness = SharedPrefs().readinessScore;
+      final logWithReadiness = log.copyWith(readinessScore: readiness);
+      context.push(RoutineLogScreen.routeName, extra: {"log": logWithReadiness, "showSummary": true, "isEditable": true});
     }
   }
 }

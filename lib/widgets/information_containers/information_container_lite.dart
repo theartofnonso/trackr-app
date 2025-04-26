@@ -7,14 +7,14 @@ class InformationContainerLite extends StatelessWidget {
   final Color? color;
   final RichText? richText;
   final void Function()? onTap;
-  final bool forceDarkMode;
+  final bool useOpacity;
 
-  const InformationContainerLite({super.key, required this.content, required this.color, this.richText, this.onTap, this.forceDarkMode = false});
+  const InformationContainerLite({super.key, required this.content, required this.color, this.richText, this.onTap, this.useOpacity = false});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = forceDarkMode && systemBrightness == Brightness.dark;
+    final isDarkMode = useOpacity && systemBrightness == Brightness.dark;
 
     return Container(
       decoration: BoxDecoration(
@@ -27,7 +27,7 @@ class InformationContainerLite extends StatelessWidget {
               child: richText ?? Text(content,
                   style: GoogleFonts.ubuntu(
                       fontSize: 12,
-                      height: 1.4,
+                      height: 1.5,
                       color: isDarkMode ? color : Colors.black,
                       fontWeight: FontWeight.w600))),
           if(onTap != null)

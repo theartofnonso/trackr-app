@@ -14,6 +14,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
 import 'package:tracker_app/widgets/timers/stopwatch_timer.dart';
 
@@ -24,6 +25,7 @@ import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
+import '../../shared_prefs.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/notifications_utils.dart';
@@ -231,16 +233,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
 
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(
-            context: context,
-            message: routineLogEditorController.errorMessage);
+        showSnackbar(context: context, message: routineLogEditorController.errorMessage);
       });
     }
 
@@ -250,7 +248,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final log = widget.log;
 
-    final readiness = 0;
+    final readiness = SharedPrefs().readinessScore;
 
     return PopScope(
         canPop: false,
@@ -325,12 +323,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       }),
                     if (readiness > 0)
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Text("",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
-                      ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: InformationContainerLite(
+                            useOpacity: true,
+                              content: getReadinessSummary(readinessScore: readiness),
+                              color: lowToHighIntensityColor(readiness / 100))),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: ListView.separated(

@@ -58,7 +58,7 @@ double toLbs(double value) {
 String toFtInString(double value) {
   // 1 inch = 2.54 cm, 1 foot = 12 inches
   final double totalInches = value / 2.54;
-  final int feet = totalInches ~/ 12;         // integer division to get whole feet
+  final int feet = totalInches ~/ 12; // integer division to get whole feet
   final double remainderInches = totalInches % 12;
   // Round inches to 2 decimals if desired:
   return '$feet ft ${remainderInches.round()} in';
@@ -67,13 +67,10 @@ String toFtInString(double value) {
 Map<String, num> toFtIn(double value) {
   // 1 inch = 2.54 cm, 1 foot = 12 inches
   final double totalInches = value / 2.54;
-  final int feet = totalInches ~/ 12;         // integer division to get whole feet
+  final int feet = totalInches ~/ 12; // integer division to get whole feet
   final double remainderInches = totalInches % 12;
   // Round inches to 2 decimals if desired:
-  return {
-    'feet': feet,
-    'inches': remainderInches.round()
-  };
+  return {'feet': feet, 'inches': remainderInches.round()};
 }
 
 int toCm({required int feet, required int inches}) {
@@ -396,4 +393,23 @@ List<int> generateNumbers({required int start, required int end}) {
     numbers.add(i);
   }
   return numbers;
+}
+
+String getReadinessSummary({required int readinessScore}) {
+  final score = readinessScore / 100;
+
+  // Ensure the score is within 0–100.
+  if (readinessScore <= 0) {
+    return "Your daily readiness score gives us insight into how rested you feel, so we can suggest workouts that match your energy levels.";
+  }
+
+  if (score < 0.3) {
+    return "🛑 Very poor readiness. High pain, fatigue, or soreness likely. Consider rest, gentle mobility work, or seek medical advice.";
+  } else if (score < 0.5) {
+    return "⚠️ Low readiness. Notable issues like pain, fatigue, or heavy soreness. Reduce intensity and focus on recovery activities.";
+  } else if (score < 0.7) {
+    return "👍 Generally solid readiness. Minor aches or tiredness possible. Proceed with your planned workout but remain mindful of any overstress.";
+  } else {
+    return "💯 Optimal readiness. Minimal pain or fatigue. Suitable for higher intensity or advanced training, if desired.";
+  }
 }

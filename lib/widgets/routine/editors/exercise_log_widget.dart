@@ -591,7 +591,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .mapIndexed((index, error) => InformationContainerLite(
             content: error.message,
             color: Colors.yellow,
-            forceDarkMode: false,
+            useOpacity: false,
             onTap: () {
               setState(() {
                 _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == error.index);

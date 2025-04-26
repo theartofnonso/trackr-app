@@ -95,7 +95,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                 child: errorMessage != null
                     ? Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: InformationContainerLite(content: errorMessage, color: Colors.orange, forceDarkMode: true,),
+                        child: InformationContainerLite(content: errorMessage, color: Colors.orange, useOpacity: true),
                       )
                     : SizedBox(
                         width: double.infinity,
