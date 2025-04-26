@@ -433,25 +433,28 @@ List<SetDto> calculateDeload({required ExerciseLogDto original, required int rec
   final sets = original.sets;
   final keepCount = (sets.length * rule.volumeFactor).round().clamp(1, sets.length);
 
-  // 3. Clone the first [keepCount] sets & scale weight / RPE
+  int clampInt(double value, {required int min, required int max}) => value.round().clamp(min, max);
+
+  // 3. Clone the first [keepCount] sets & scale weight / RPE / reps
   final reducedSets = sets.take(keepCount).map((set) {
-    final rpe = set.rpeRating * rule.intensityFactor;
-    final reducedRpe = rpe.clamp(1, 10);
+    final scaledRpe = (set.rpeRating * rule.intensityFactor).clamp(1, 10).toInt();
 
     switch (original.exercise.type) {
       case ExerciseType.weights:
-        final weight = (set as WeightAndRepsSetDto).weight * rule.intensityFactor;
-        final reducedWeight = (weight * 100).round() / 100;
-        return set.copyWith(weight: reducedWeight, rpeRating: reducedRpe.toInt());
+        final weightSet = set as WeightAndRepsSetDto;
+        final scaledWeight = (weightSet.weight * rule.intensityFactor);
+        final reducedWeight = (scaledWeight * 100).round() / 100;
+        return weightSet.copyWith(weight: reducedWeight, rpeRating: scaledRpe);
       case ExerciseType.bodyWeight:
-        final reps = (set as RepsSetDto).reps * rule.intensityFactor;
-        final reducedReps = reps.round().clamp(1, set.reps);
-        return set.copyWith(reps: reducedReps, rpeRating: reducedRpe.toInt());
+        final repsSet = set as RepsSetDto;
+        final scaledReps = repsSet.reps * rule.intensityFactor;
+        final reducedReps = clampInt(scaledReps, min: 1, max: repsSet.reps);
+        return repsSet.copyWith(reps: reducedReps, rpeRating: scaledRpe);
       case ExerciseType.duration:
-        return set.copyWith(rpeRating: reducedRpe.toInt());
+        return set.copyWith(rpeRating: scaledRpe);
     }
   }).toList();
 
-  // 4. Return a new Map so the original stays untouched
+  // 4. Return a new List so the original stays untouched
   return reducedSets;
 }
