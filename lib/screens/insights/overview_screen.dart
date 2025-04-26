@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
@@ -142,7 +141,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: AnimatedGauge(
-                  value: _readiness * 100,
+                  value: _readiness,
                   min: 0,
                   max: 100, // tweak as needed
                 ),

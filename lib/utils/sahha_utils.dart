@@ -24,6 +24,7 @@ void authenticateSahhaUser() {
 }
 
 int extractReadinessScore({required String jsonString}) {
+
   final List<dynamic> decoded = jsonDecode(jsonString);
 
   if (decoded.isEmpty || decoded.first is! Map) {
@@ -34,6 +35,6 @@ int extractReadinessScore({required String jsonString}) {
   if (!first.containsKey('score')) {
     return 0;
   }
-
-  return (first['score'] as num).toInt();
+  final readiness = (first['score'] * 100) as int;
+  return readiness;
 }
