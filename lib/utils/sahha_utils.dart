@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 
@@ -19,4 +21,19 @@ void authenticateSahhaUser() {
   SahhaFlutter.authenticate(appId: sahhaAppId, appSecret: sahhaAppSecret, externalId: userId)
       .then((success) => {debugPrint('Sahha user authenticated: $success')})
       .catchError((error, stackTrace) => {debugPrint('Sahha user authentication error: $error')});
+}
+
+double extractReadinessScore({required String jsonString}) {
+  final List<dynamic> decoded = jsonDecode(jsonString);
+
+  if (decoded.isEmpty || decoded.first is! Map) {
+   return 0.0;
+  }
+
+  final Map<String, dynamic> first = decoded.first as Map<String, dynamic>;
+  if (!first.containsKey('score')) {
+    return 0.0;
+  }
+
+  return (first['score'] as num).toDouble();
 }

@@ -126,22 +126,6 @@ class _ReadinessScreenState extends State<ReadinessScreen> {
       ),
     );
   }
-
-  @override
-  void initState() {
-    super.initState();
-    // SahhaFlutter.getScores(
-    //     types: [SahhaScoreType.readiness],
-    //     startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
-    //     endDateTime: DateTime.now())
-    //     .then((value) {
-    //   List<dynamic> data = jsonDecode(value);
-    //   debugPrint(data.toString());
-    // }).catchError((error, stackTrace) {          // <-- block body
-    //   debugPrint(error.toString());
-    //   // return null; // optional – but explicitly returning null also satisfies the signature
-    // });
-  }
 }
 
 class _MetricRatingSlider extends StatefulWidget {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/dtos/daily_readiness.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
@@ -19,11 +22,13 @@ import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
+import '../../utils/sahha_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
+import '../../widgets/monitors/monitor_widget.dart';
 import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/volume_chart.dart';
 import '../AI/trkr_coach_chat_screen.dart';
@@ -47,6 +52,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
   bool _loading = false;
 
   TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
+
+  double _readiness = 0.0;
 
   String _predictTemplate({required List<RoutineLogDto> logs}) {
     if (logs.isEmpty) {
@@ -129,6 +136,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
           children: [
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: AnimatedGauge(
+                value: 134,
+                min: 0,
+                max: 200,        // tweak as needed
+              ),
+            ),
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
@@ -311,6 +327,23 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _onSelectCalendarDateTime({required DateTime date}) {
     showLogsBottomSheet(dateTime: date, context: context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SahhaFlutter.getScores(
+        types: [SahhaScoreType.readiness],
+        startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
+        endDateTime: DateTime.now())
+        .then((value) {
+     setState(() {
+       _readiness = extractReadinessScore(jsonString: value);
+     });
+    }).catchError((error, stackTrace) {          // <-- block body
+      debugPrint(error.toString());
+      // return null; // optional – but explicitly returning null also satisfies the signature
+    });
   }
 }
 
