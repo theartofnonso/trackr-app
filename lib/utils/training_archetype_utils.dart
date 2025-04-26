@@ -55,7 +55,7 @@ MuscleFocusArchetype muscleFocusArchetype({required List<RoutineLogDto> logs}) {
 class TrainingArchetypeClassifier {
 
   /// Returns both archetypes for the supplied [logs] (any order).
-  static List<Enum> classify({required List<RoutineLogDto> logs}) {
+  static List<TrainingArchetype> classify({required List<RoutineLogDto> logs}) {
 
     final dateRange = theLastYearDateTimeRange();
 
