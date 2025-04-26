@@ -664,7 +664,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final readinessScore = 68; //SharedPrefs().readinessScore;
 
-    final shouldShowDeloadFab = tierForScore(score: readinessScore / 100) != RecoveryTier.optimal;
+    final inDeload = tierForScore(score: readinessScore / 100) != RecoveryTier.optimal;
 
     return Scaffold(
       appBar: AppBar(
@@ -697,7 +697,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
         ],
       ),
-      floatingActionButtonLocation: !isKeyboardOpen && shouldShowDeloadFab
+      floatingActionButtonLocation: !isKeyboardOpen && inDeload
           ? FloatingActionButtonLocation.endDocked
           : FloatingActionButtonLocation.centerDocked,
       floatingActionButton: isKeyboardOpen
@@ -727,7 +727,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 ],
               ),
             )
-          : shouldShowDeloadFab
+          : inDeload
               ? FloatingActionButton(
                   backgroundColor: lowToHighIntensityColor(readinessScore / 100),
                   heroTag: UniqueKey(),
@@ -828,7 +828,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 if (_errorMessages.isNotEmpty && _errorMessages.length == 1) errorWidgets.first,
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
-                    if (!shouldShowDeloadFab && withReps(type: exerciseType) &&
+                    if (!inDeload && withReps(type: exerciseType) &&
                         trainingProgression != null &&
                         rpeTrendSummary.isNotEmpty &&
                         progressionSummary.isNotEmpty)
