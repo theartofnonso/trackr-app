@@ -52,47 +52,40 @@ MuscleFocusArchetype muscleFocusArchetype({required List<RoutineLogDto> logs}) {
   return MuscleFocusArchetype.fullBodyBalanced;
 }
 
-class TrainingArchetypeClassifier {
+/// Returns both archetypes for the supplied [logs] (any order).
+List<TrainingArchetype> classifyTrainingArchetypes({required List<RoutineLogDto> logs}) {
+  final dateRange = theLastYearDateTimeRange();
 
-  /// Returns both archetypes for the supplied [logs] (any order).
-  static List<TrainingArchetype> classify({required List<RoutineLogDto> logs}) {
+  final weeksInLastQuarter = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
 
-    final dateRange = theLastYearDateTimeRange();
-
-    final weeksInLastQuarter = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
-
-    List<int> trainingSessions = [];
-    List<int> trainingDurations = [];
-    for (final week in weeksInLastQuarter) {
-      final startOfWeek = week.start;
-      final endOfWeek = week.end;
-      final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
-      trainingSessions.add(logsForTheWeek.length);
-      final durationsInMinutes = logsForTheWeek.map((log) => log.duration().inMinutes);
-      trainingDurations.addAll(durationsInMinutes);
-    }
-
-    /// Weekly averages
-    final trainingFrequencyArch = trainingFrequencyArchetype(avgSessions: trainingSessions.average.round());
-    final trainingDurationArch = trainingDurationArchetype(avgDuration: Duration(minutes: trainingDurations.average.round()));
-
-    /// Percentage of high RPE sets
-    final exerciseLogs = logs.expand((log) => log.exerciseLogs);
-    final totalSets = exerciseLogs
-        .expand((ex) => ex.sets);
-
-    final setsNearFail = totalSets
-        .where((s) => s.rpeRating >= 8)
-        .length;
-
-    final failureRatio = setsNearFail / totalSets.length;
-
-    final rpeArch = rpeArchetype(highRpeRatio: failureRatio);
-
-    /// Frequency of [MuscleGroup]
-    final muscleFocusArch = muscleFocusArchetype(logs: logs);
-
-    return [trainingFrequencyArch, trainingDurationArch, rpeArch, muscleFocusArch];
+  List<int> trainingSessions = [];
+  List<int> trainingDurations = [];
+  for (final week in weeksInLastQuarter) {
+    final startOfWeek = week.start;
+    final endOfWeek = week.end;
+    final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+    trainingSessions.add(logsForTheWeek.length);
+    final durationsInMinutes = logsForTheWeek.map((log) => log.duration().inMinutes);
+    trainingDurations.addAll(durationsInMinutes);
   }
 
+  /// Weekly averages
+  final trainingFrequencyArch = trainingFrequencyArchetype(avgSessions: trainingSessions.average.round());
+  final trainingDurationArch =
+      trainingDurationArchetype(avgDuration: Duration(minutes: trainingDurations.average.round()));
+
+  /// Percentage of high RPE sets
+  final exerciseLogs = logs.expand((log) => log.exerciseLogs);
+  final totalSets = exerciseLogs.expand((ex) => ex.sets);
+
+  final setsNearFail = totalSets.where((s) => s.rpeRating >= 8).length;
+
+  final failureRatio = setsNearFail / totalSets.length;
+
+  final rpeArch = rpeArchetype(highRpeRatio: failureRatio);
+
+  /// Frequency of [MuscleGroup]
+  final muscleFocusArch = muscleFocusArchetype(logs: logs);
+
+  return [trainingFrequencyArch, trainingDurationArch, rpeArch, muscleFocusArch];
 }

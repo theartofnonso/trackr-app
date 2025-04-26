@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/utils/training_archetype_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
@@ -153,6 +155,11 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
           stringBuffer.writeln();
         }
       }
+
+      final archetypes = classifyTrainingArchetypes(logs: logs).map((archetype) => archetype.description).toList();
+      final archetypesSummary = listWithAnd(strings: archetypes);
+
+      stringBuffer.writeln("These are my training behaviours: $archetypesSummary");
     }
 
     final userInstruction = stringBuffer.toString();
