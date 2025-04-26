@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ void configureSahha() {
   SahhaFlutter.configure(
     environment: SahhaEnvironment.sandbox,
   ) // Required - .sandbox for testing
-      .then((success) => { debugPrint('Sahha configured: $success')})
+      .then((success) => {debugPrint('Sahha configured: $success')})
       .catchError((error, stackTrace) => {debugPrint('Sahha configuration error: $error')});
 }
 
@@ -24,17 +23,16 @@ void authenticateSahhaUser() {
 }
 
 int extractReadinessScore({required String jsonString}) {
-
   final List<dynamic> decoded = jsonDecode(jsonString);
 
   if (decoded.isEmpty || decoded.first is! Map) {
-   return 0;
+    return 0;
   }
 
   final Map<String, dynamic> first = decoded.first as Map<String, dynamic>;
   if (!first.containsKey('score')) {
     return 0;
   }
-  final readiness = (first['score'] * 100) as int;
+  final readiness = (first['score'] * 100 as num).toInt();
   return readiness;
 }

@@ -27,7 +27,7 @@ import '../../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/dividers/label_divider.dart';
-import '../../widgets/monitors/monitor_widget.dart';
+import '../../widgets/monitors/animated_gauge.dart';
 import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/volume_chart.dart';
 import '../AI/trkr_coach_chat_screen.dart';
@@ -138,14 +138,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
-              child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: AnimatedGauge(
-                  value: _readiness,
-                  min: 0,
-                  max: 100, // tweak as needed
-                ),
-              ),
+              child: _ReadinessTile(readinessScore: _readiness,),
             ),
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
@@ -347,6 +340,30 @@ class _OverviewScreenState extends State<OverviewScreen> {
       debugPrint(error.toString());
       // return null; // optional – but explicitly returning null also satisfies the signature
     });
+  }
+}
+
+class _ReadinessTile extends StatelessWidget {
+
+  final int readinessScore;
+
+  const _ReadinessTile({required this.readinessScore});
+
+  @override
+  Widget build(BuildContext context) {
+    print(readinessScore);
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    final color = readinessScore == 0 ? isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200 : lowToHighIntensityColor(readinessScore / 100);
+
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: isDarkMode ? color.withValues(alpha: 0.1) : color,
+          borderRadius: BorderRadius.circular(5)),
+      child: AnimatedGauge(value: readinessScore, min: 0, max: 100),
+    );
   }
 }
 
