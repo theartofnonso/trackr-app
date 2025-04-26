@@ -74,6 +74,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   List<_ErrorMessage> _errorMessages = [];
 
+  List<SetDto> _reducedSets = [];
+
   void _show1RMRecommendations() {
     final pastExerciseLogs =
         Provider.of<ExerciseAndRoutineController>(context, listen: false).exerciseLogsByExerciseId[_exerciseLog.id] ??
@@ -102,7 +104,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final exerciseLog = Provider.of<ExerciseLogController>(context, listen: false)
         .whereExerciseLog(exerciseId: _exerciseLog.exercise.id);
 
-    final sets = exerciseLog.sets;
+    final sets = _reducedSets.isNotEmpty ? _reducedSets : exerciseLog.sets;
 
     if (withDurationOnly(type: exerciseLog.exercise.type)) {
       _loadDurationControllers(sets: sets);
@@ -457,7 +459,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _showDeloadSets() {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -472,32 +473,62 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     displayBottomSheet(
         context: context,
         isScrollControlled: true,
-        child: Column(
-            spacing: 2,
-            crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(spacing: 2, crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text("Training Intensity", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
-          Text("Based on your readiness score of $readinessScore, we recommend this plan to keep you active, while giving your body time to fully recharge.",
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w400,
-                  color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
-          const SizedBox(height: 16,),
+          Text(
+              "Based on your readiness score of $readinessScore, we recommend this plan to keep you active, while giving your body time to fully recharge.",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
+          const SizedBox(
+            height: 16,
+          ),
           Column(
-              spacing: 20,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 20,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               switch (type) {
                 ExerciseType.weights => DoubleSetHeader(
-                  firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
-                  secondLabel: 'PREVIOUS REPS'.toUpperCase(),
-                ),
+                    firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
+                    secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+                  ),
                 ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
                 ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
               },
               SetsListview(type: type, sets: reducedSets),
             ],
           ),
-          const SizedBox(height: 16,),
-          OpacityButtonWidget(label: "Train with this plan", buttonColor: vibrantGreen,)
+          const SizedBox(
+            height: 16,
+          ),
+          _reducedSets.isEmpty
+              ? SizedBox(
+                  height: 45,
+                  width: double.infinity,
+                  child: OpacityButtonWidget(
+                      label: "Train with this plan",
+                      buttonColor: vibrantGreen,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        setState(() {
+                          _reducedSets = reducedSets;
+                          _loadControllers();
+                        });
+                      }))
+              : SizedBox(
+                  height: 45,
+                  width: double.infinity,
+                  child: OpacityButtonWidget(
+                      label: "Train with original plan",
+                      buttonColor: vibrantGreen,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        setState(() {
+                          _reducedSets = [];
+                          _loadControllers();
+                        });
+                      }))
         ]));
   }
 
@@ -511,7 +542,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final exerciseLog =
         Provider.of<ExerciseLogController>(context, listen: true).whereExerciseLog(exerciseId: widget.exerciseLogId);
 
-    final currentSets = exerciseLog.sets;
+    final currentSets = _reducedSets.isNotEmpty ? _reducedSets : exerciseLog.sets;
 
     final recentSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
         .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
@@ -679,10 +710,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
         ],
       ),
-      floatingActionButtonLocation: shouldShowDeloadFab ? null : FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: !isKeyboardOpen && shouldShowDeloadFab
+          ? FloatingActionButtonLocation.endDocked
+          : FloatingActionButtonLocation.centerDocked,
       floatingActionButton: isKeyboardOpen
           ? Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
