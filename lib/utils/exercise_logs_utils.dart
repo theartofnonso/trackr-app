@@ -390,3 +390,32 @@ RoutineLogDto routineWithLoggedExercises({required RoutineLogDto log}) {
 
   return log.copyWith(exerciseLogs: loggedExerciseLogs);
 }
+
+/// Returns a *new* exercise map with volume / intensity adjusted.
+// List<SetDto> calculateDeload({required
+//   ExerciseLogDto original,
+//   required int recoveryScore, // 0‒1  (if 0‒100 pass /100)
+// }) {
+//   // 1. Find the tier
+//   final tier = _tierForScore(recoveryScore.clamp(0, 1).toDouble());
+//   final rule = _rules[tier]!;
+//
+//   // 2. Decide how many sets to keep
+//   final List sets = List.castFrom(original['sets'] as List);
+//   final keepCount = (sets.length * rule.volumeFactor).round().clamp(1, sets.length);
+//
+//   // 3. Clone the first [keepCount] sets & scale weight / RPE
+//   final newSets = sets.take(keepCount).map<SetEntry>((s) {
+//     final weight = (s['weight'] as num) * rule.intensityFactor;
+//     final rpe    = (s['rpeRating'] as num) * rule.intensityFactor;
+//
+//     return {
+//       ...s,
+//       'weight'    : (weight * 100).round() / 100,   // round to 2 dp
+//       'rpeRating' : rpe.clamp(1, 10).toStringAsFixed(1),
+//     };
+//   }).toList();
+//
+//   // 4. Return a new Map so the original stays untouched
+//   return [];
+// }

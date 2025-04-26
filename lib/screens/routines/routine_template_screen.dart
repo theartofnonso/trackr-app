@@ -86,9 +86,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(
-            context: context,
-            message: exerciseAndRoutineController.errorMessage);
+        showSnackbar(context: context, message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -360,37 +358,54 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   if (template.owner == SharedPrefs().userId)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Muscle Recovery".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
-                          const SizedBox(height: 10),
-                          Text(
-                              "Delayed Onset Muscle Soreness (DOMS) refers to the muscle pain or stiffness experienced after intense physical activity. It typically develops 24 to 48 hours after exercise and can last for several days.",
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                        ],
-                      ),
-                    ),
-                  if (template.owner == SharedPrefs().userId && listOfMuscleAndRecovery.isNotEmpty)
-                    Column(
-                      spacing: 10,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 20, children: [
-                              SizedBox(width: 2),
-                              ...muscleGroupsIllustrations,
-                              SizedBox(width: 2),
-                            ])),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Text(selectedMuscleAndRecovery?.description ?? "",
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black)),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(5)),
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 20,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Muscle Recovery".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                      "Delayed Onset Muscle Soreness (DOMS) refers to the muscle pain or stiffness experienced after intense physical activity. It typically develops 24 to 48 hours after exercise and can last for several days.",
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          color: isDarkMode ? Colors.white70 : Colors.black)),
+                                ],
+                              ),
+                            ),
+                            if (listOfMuscleAndRecovery.isNotEmpty)
+                              Column(
+                                spacing: 10,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 20, children: [
+                                        SizedBox(width: 2),
+                                        ...muscleGroupsIllustrations,
+                                        SizedBox(width: 2),
+                                      ])),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                    child: Text(selectedMuscleAndRecovery?.description ?? "",
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                            fontWeight: FontWeight.w400,
+                                            color: isDarkMode ? Colors.white : Colors.black)),
+                                  ),
+                                ],
+                              ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -534,9 +549,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         }
       } catch (_) {
         if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to create your template");
+          showSnackbar(context: context, message: "Oops, we are unable to create your template");
         }
       } finally {
         _hideLoadingScreen();
@@ -596,8 +609,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 title: Text(
                   "Copy as Link",
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                   maxLines: 1,
                 ),
                 subtitle: Text(workoutLink),
@@ -608,9 +621,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   Clipboard.setData(data).then((_) {
                     if (mounted) {
                       Navigator.of(context).pop();
-                      showSnackbar(
-                          context: context,
-                          message: "Workout link copied");
+                      showSnackbar(context: context, message: "Workout link copied");
                     }
                   });
                 },
@@ -631,9 +642,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   Clipboard.setData(data).then((_) {
                     if (mounted) {
                       Navigator.of(context).pop();
-                      showSnackbar(
-                          context: context,
-                          message: "Workout copied");
+                      showSnackbar(context: context, message: "Workout copied");
                     }
                   });
                 },
@@ -656,10 +665,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 size: 18,
               ),
               horizontalTitleGap: 10,
-              title: Text(
-                "Edit",
-                style: Theme.of(context).textTheme.bodyLarge
-              ),
+              title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
                 _navigateToRoutineTemplateEditor();
@@ -675,7 +681,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
-                _createTemplate(copy: true);},
+                _createTemplate(copy: true);
+              },
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -699,7 +706,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       color: Colors.red,
                     ),
                     horizontalTitleGap: 6,
-                    title: Text("Remove from plan", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+                    title: Text("Remove from plan",
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
                     onTap: () {
                       Navigator.of(context).pop();
                       showBottomSheetWithMultiActions(
@@ -747,7 +755,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   showBottomSheetWithMultiActions(
                       context: context,
                       title: "Delete workout?",
-                      description: planDto != null ? "Are you sure you want to delete this workout and remove it from ${planDto.name}?":  "Are you sure you want to delete this workout?",
+                      description: planDto != null
+                          ? "Are you sure you want to delete this workout and remove it from ${planDto.name}?"
+                          : "Are you sure you want to delete this workout?",
                       leftAction: Navigator.of(context).pop,
                       rightAction: () {
                         context.pop();
@@ -786,9 +796,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             await templateProvider.updateTemplate(template: updatedRoutineTemplate);
 
             if (mounted) {
-              showSnackbar(
-                  context: context,
-                  message: "Add ${template.name} to ${selectedPlan.name}");
+              showSnackbar(context: context, message: "Add ${template.name} to ${selectedPlan.name}");
             }
           },
         ),
