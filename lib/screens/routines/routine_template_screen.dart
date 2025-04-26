@@ -246,17 +246,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           spacing: 12,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              spacing: 10,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                ChipOne(
-                                    label:
-                                        "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                    color: vibrantGreen,
-                                    child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen)),
-                              ],
-                            ),
+                            ChipOne(
+                                label:
+                                "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                color: vibrantGreen,
+                                child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen)),
                             Text(
                               template.notes.isNotEmpty ? "${template.notes}." : "No notes",
                               style: GoogleFonts.ubuntu(

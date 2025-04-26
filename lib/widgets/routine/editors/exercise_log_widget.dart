@@ -457,14 +457,48 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _showDeloadSets() {
-    // switch (exerciseType) {
-    //   ExerciseType.weights => DoubleSetHeader(
-    //     firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
-    //     secondLabel: 'PREVIOUS REPS'.toUpperCase(),
-    //   ),
-    //   ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
-    //   ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
-    // }
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    final exerciseLog = _exerciseLog;
+    final exercise = exerciseLog.exercise;
+    final type = exercise.type;
+
+    final readinessScore = 45; //SharedPrefs().readinessScore;
+
+    final reducedSets = calculateDeload(original: exerciseLog, recoveryScore: readinessScore);
+
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: Column(
+            spacing: 2,
+            crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text("Training Intensity", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
+          Text("Based on your readiness score of $readinessScore, we recommend this plan to keep you active, while giving your body time to fully recharge.",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w400,
+                  color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
+          const SizedBox(height: 16,),
+          Column(
+              spacing: 20,
+              crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              switch (type) {
+                ExerciseType.weights => DoubleSetHeader(
+                  firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
+                  secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+                ),
+                ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
+                ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
+              },
+              SetsListview(type: type, sets: reducedSets),
+            ],
+          ),
+          const SizedBox(height: 16,),
+          OpacityButtonWidget(label: "Train with this plan", buttonColor: vibrantGreen,)
+        ]));
   }
 
   @override
@@ -678,7 +712,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   backgroundColor: lowToHighIntensityColor(readinessScore / 100),
                   heroTag: UniqueKey(),
                   enableFeedback: true,
-                  onPressed: () {},
+                  onPressed: _showDeloadSets,
                   child: FaIcon(FontAwesomeIcons.boltLightning, color: Colors.black),
                 )
               : null,

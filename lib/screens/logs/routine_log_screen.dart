@@ -38,6 +38,7 @@ import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/icons/custom_icon.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
@@ -73,9 +74,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(
-            context: context,
-            message: exerciseAndRoutineController.errorMessage);
+        showSnackbar(context: context, message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -149,35 +148,19 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CustomIcon(FontAwesomeIcons.calendarDay, color: Colors.deepOrange),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(
-                            updatedLog.endTime.formattedDayMonthTime(),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomIcon(FontAwesomeIcons.solidNoteSticky, color: Colors.yellow, iconSize: 14),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Expanded(
-                            child: Text(
-                              updatedLog.notes.isNotEmpty ? "${updatedLog.notes}." : "No notes",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: Column(spacing: 12, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      ChipOne(
+                          label: updatedLog.endTime.formattedDayMonthTime(),
+                          color: vibrantGreen,
+                          child: CustomIcon(FontAwesomeIcons.calendarDay, color: Colors.deepOrange)),
+                      Text(
+                        updatedLog.notes.isNotEmpty ? "${updatedLog.notes}." : "No notes",
+                        style: GoogleFonts.ubuntu(
+                            fontSize: 14,
+                            color: isDarkMode ? Colors.white70 : Colors.black,
+                            height: 1.8,
+                            fontWeight: FontWeight.w400),
+                      )
                     ]),
                   ),
                   SingleChildScrollView(
@@ -232,14 +215,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ),
                         if (readiness > 0)
                           _StatisticWidget(
-                          title: "$readiness%",
-                          subtitle: "Readiness",
-                          icon: FontAwesomeIcons.boltLightning,
-                          information: _StatisticsInformation(
-                              title: "Readiness",
-                              description:
-                              "A readiness check helps you assess how prepared you are for training intensity—helping you train smarter, avoid overtraining, and reduce the risk of injury."),
-                        ),
+                            title: "$readiness%",
+                            subtitle: "Readiness",
+                            icon: FontAwesomeIcons.boltLightning,
+                            information: _StatisticsInformation(
+                                title: "Readiness",
+                                description:
+                                    "A readiness check helps you assess how prepared you are for training intensity—helping you train smarter, avoid overtraining, and reduce the risk of injury."),
+                          ),
                       ],
                     ),
                   ),
@@ -346,9 +329,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }).catchError((e) {
       _hideLoadingScreen();
       if (mounted) {
-        showSnackbar(
-            context: context,
-            message: "Oops! I am unable to generate your ${log.name} report");
+        showSnackbar(context: context, message: "Oops! I am unable to generate your ${log.name} report");
       }
     });
   }
@@ -534,9 +515,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         }
       } catch (_) {
         if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to create template");
+          showSnackbar(context: context, message: "Oops, we are unable to create template");
         }
       } finally {
         _hideLoadingScreen();
@@ -554,9 +533,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         }
       } catch (_) {
         if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to delete this log");
+          showSnackbar(context: context, message: "Oops, we are unable to delete this log");
         }
       } finally {
         _hideLoadingScreen();
