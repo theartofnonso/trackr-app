@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -138,7 +137,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
-              child: _ReadinessTile(readinessScore: _readiness,),
+              child: _ReadinessTile(readinessScore: _readiness),
             ),
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
@@ -203,14 +202,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: GestureDetector(
                 onTap: _showNewBottomSheet,
                 child: _AddTile(),
-              ),
-            ),
-            StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: GestureDetector(
-                onTap: () => navigateToProfile(context: context),
-                child: _ProfileTile(),
               ),
             ),
           ],
@@ -344,7 +335,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 }
 
 class _ReadinessTile extends StatelessWidget {
-
   final int readinessScore;
 
   const _ReadinessTile({required this.readinessScore});
@@ -355,13 +345,16 @@ class _ReadinessTile extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = readinessScore == 0 ? isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200 : lowToHighIntensityColor(readinessScore / 100);
+    final color = readinessScore == 0
+        ? isDarkMode
+            ? Colors.white70.withValues(alpha: 0.1)
+            : Colors.grey.shade200
+        : lowToHighIntensityColor(readinessScore / 100);
 
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: isDarkMode ? color.withValues(alpha: 0.1) : color,
-          borderRadius: BorderRadius.circular(5)),
+          color: isDarkMode ? color.withValues(alpha: 0.1) : color, borderRadius: BorderRadius.circular(5)),
       child: AnimatedGauge(value: readinessScore, min: 0, max: 100),
     );
   }
@@ -565,48 +558,6 @@ class _AddTile extends StatelessWidget {
                 child: FaIcon(
                   FontAwesomeIcons.plus,
                   color: isDarkMode ? Colors.yellow : Colors.white,
-                  size: 20,
-                ),
-              ),
-            )
-          ],
-        ),
-      ]),
-    );
-  }
-}
-
-class _ProfileTile extends StatelessWidget {
-  const _ProfileTile();
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: isDarkMode ? Colors.red.withValues(alpha: 0.1) : Colors.red, borderRadius: BorderRadius.circular(5)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Personalise\nyour fitness profile",
-            style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
-        const Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: isDarkMode ? Colors.red.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Center(
-                child: FaIcon(
-                  FontAwesomeIcons.personWalking,
-                  color: isDarkMode ? Colors.red : Colors.white,
                   size: 20,
                 ),
               ),
