@@ -456,6 +456,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     });
   }
 
+  void _showDeloadSets() {
+    // switch (exerciseType) {
+    //   ExerciseType.weights => DoubleSetHeader(
+    //     firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
+    //     secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+    //   ),
+    //   ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
+    //   ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -599,6 +610,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             }))
         .toList();
 
+    final readinessScore = 45; //SharedPrefs().readinessScore;
+
+    final shouldShowDeloadFab = tierForScore(score: readinessScore) != RecoveryTier.optimal;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -630,7 +645,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: shouldShowDeloadFab ? null : FloatingActionButtonLocation.centerDocked,
       floatingActionButton: isKeyboardOpen
           ? Padding(
               padding: const EdgeInsets.all(10.0),
@@ -658,7 +673,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 ],
               ),
             )
-          : null,
+          : shouldShowDeloadFab
+              ? FloatingActionButton(
+                  backgroundColor: lowToHighIntensityColor(readinessScore / 100),
+                  heroTag: UniqueKey(),
+                  enableFeedback: true,
+                  onPressed: () {},
+                  child: FaIcon(FontAwesomeIcons.boltLightning, color: Colors.black),
+                )
+              : null,
       body: Container(
         padding: const EdgeInsets.only(top: 20),
         height: double.infinity,
@@ -669,7 +692,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           bottom: false,
           minimum: EdgeInsets.symmetric(horizontal: 10),
           child: SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: 50),
+            padding: EdgeInsets.only(bottom: 100),
             child: Column(
               spacing: 20,
               crossAxisAlignment: CrossAxisAlignment.start,

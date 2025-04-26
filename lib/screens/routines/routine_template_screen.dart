@@ -597,78 +597,32 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       displayBottomSheet(
           context: context,
           isScrollControlled: true,
-          child: SafeArea(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.link,
-                  size: 18,
-                ),
-                horizontalTitleGap: 10,
-                title: Text(
-                  "Copy as Link",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                  maxLines: 1,
-                ),
-                subtitle: Text(workoutLink),
-                onTap: () {
-                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
-                  HapticFeedback.heavyImpact();
-                  final data = ClipboardData(text: workoutLink);
-                  Clipboard.setData(data).then((_) {
-                    if (mounted) {
-                      Navigator.of(context).pop();
-                      showSnackbar(context: context, message: "Workout link copied");
-                    }
-                  });
-                },
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.copy,
-                  size: 18,
-                ),
-                horizontalTitleGap: 6,
-                title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text("${template.name}..."),
-                onTap: () {
-                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
-                  HapticFeedback.heavyImpact();
-                  final data = ClipboardData(text: workoutText);
-                  Clipboard.setData(data).then((_) {
-                    if (mounted) {
-                      Navigator.of(context).pop();
-                      showSnackbar(context: context, message: "Workout copied");
-                    }
-                  });
-                },
-              ),
-            ]),
-          ));
-    }
-  }
-
-  void _showMenuBottomSheet({required RoutinePlanDto? planDto}) {
-    displayBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        child: SafeArea(
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
-                FontAwesomeIcons.penToSquare,
+                FontAwesomeIcons.link,
                 size: 18,
               ),
               horizontalTitleGap: 10,
-              title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
+              title: Text(
+                "Copy as Link",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  overflow: TextOverflow.ellipsis,
+                ),
+                maxLines: 1,
+              ),
+              subtitle: Text(workoutLink),
               onTap: () {
-                Navigator.of(context).pop();
-                _navigateToRoutineTemplateEditor();
+                Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
+                HapticFeedback.heavyImpact();
+                final data = ClipboardData(text: workoutLink);
+                Clipboard.setData(data).then((_) {
+                  if (mounted) {
+                    Navigator.of(context).pop();
+                    showSnackbar(context: context, message: "Workout link copied");
+                  }
+                });
               },
             ),
             ListTile(
@@ -678,100 +632,142 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 size: 18,
               ),
               horizontalTitleGap: 6,
-              title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
+              title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
+              subtitle: Text("${template.name}..."),
               onTap: () {
-                Navigator.of(context).pop();
-                _createTemplate(copy: true);
+                Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
+                HapticFeedback.heavyImpact();
+                final data = ClipboardData(text: workoutText);
+                Clipboard.setData(data).then((_) {
+                  if (mounted) {
+                    Navigator.of(context).pop();
+                    showSnackbar(context: context, message: "Workout copied");
+                  }
+                });
               },
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.share,
-                size: 18,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Share", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                _showShareBottomSheet();
-              },
+          ]));
+    }
+  }
+
+  void _showMenuBottomSheet({required RoutinePlanDto? planDto}) {
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.penToSquare,
+              size: 18,
             ),
-            planDto != null
-                ? ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const FaIcon(
-                      FontAwesomeIcons.minus,
-                      size: 18,
-                      color: Colors.red,
-                    ),
-                    horizontalTitleGap: 6,
-                    title: Text("Remove from plan",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      showBottomSheetWithMultiActions(
-                          context: context,
-                          title: "Remove from plan?",
-                          description: "Are you sure you want to remove this workout from ${planDto.name}?",
-                          leftAction: Navigator.of(context).pop,
-                          rightAction: () {
-                            context.pop();
-                            _removeFromPlan();
-                          },
-                          leftActionLabel: 'Cancel',
-                          rightActionLabel: 'Remove',
-                          isRightActionDestructive: true);
-                    },
-                  )
-                : ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const FaIcon(
-                      FontAwesomeIcons.plus,
-                      size: 18,
-                    ),
-                    horizontalTitleGap: 6,
-                    title: Text("Add to plan", style: Theme.of(context).textTheme.bodyLarge),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _showPlanPicker();
-                    },
-                  ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.trash,
-                size: 16,
-                color: Colors.redAccent,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
-              onTap: () {
-                Navigator.of(context).pop();
+            horizontalTitleGap: 10,
+            title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _navigateToRoutineTemplateEditor();
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.copy,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _createTemplate(copy: true);
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.share,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Share", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _showShareBottomSheet();
+            },
+          ),
+          planDto != null
+              ? ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.minus,
+              size: 18,
+              color: Colors.red,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Remove from plan",
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+            onTap: () {
+              Navigator.of(context).pop();
+              showBottomSheetWithMultiActions(
+                  context: context,
+                  title: "Remove from plan?",
+                  description: "Are you sure you want to remove this workout from ${planDto.name}?",
+                  leftAction: Navigator.of(context).pop,
+                  rightAction: () {
+                    context.pop();
+                    _removeFromPlan();
+                  },
+                  leftActionLabel: 'Cancel',
+                  rightActionLabel: 'Remove',
+                  isRightActionDestructive: true);
+            },
+          )
+              : ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.plus,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Add to plan", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _showPlanPicker();
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.trash,
+              size: 16,
+              color: Colors.redAccent,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+            onTap: () {
+              Navigator.of(context).pop();
 
-                final template = _template;
+              final template = _template;
 
-                if (template != null) {
-                  showBottomSheetWithMultiActions(
-                      context: context,
-                      title: "Delete workout?",
-                      description: planDto != null
-                          ? "Are you sure you want to delete this workout and remove it from ${planDto.name}?"
-                          : "Are you sure you want to delete this workout?",
-                      leftAction: Navigator.of(context).pop,
-                      rightAction: () {
-                        context.pop();
-                        _toggleLoadingState();
-                        _deleteRoutine(template: template);
-                      },
-                      leftActionLabel: 'Cancel',
-                      rightActionLabel: 'Delete',
-                      isRightActionDestructive: true);
-                }
-              },
-            )
-          ]),
-        ));
+              if (template != null) {
+                showBottomSheetWithMultiActions(
+                    context: context,
+                    title: "Delete workout?",
+                    description: planDto != null
+                        ? "Are you sure you want to delete this workout and remove it from ${planDto.name}?"
+                        : "Are you sure you want to delete this workout?",
+                    leftAction: Navigator.of(context).pop,
+                    rightAction: () {
+                      context.pop();
+                      _toggleLoadingState();
+                      _deleteRoutine(template: template);
+                    },
+                    leftActionLabel: 'Cancel',
+                    rightActionLabel: 'Delete',
+                    isRightActionDestructive: true);
+              }
+            },
+          )
+        ]));
   }
 
   void _showPlanPicker() {

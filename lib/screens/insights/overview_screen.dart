@@ -223,70 +223,67 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     displayBottomSheet(
         context: context,
-        child: SafeArea(
-          bottom: false,
-          child: Column(children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.play, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Log new session", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                logEmptyRoutine(context: context);
-              },
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Log past session", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                showDatetimeRangePicker(
-                    context: context,
-                    onChangedDateTimeRange: (DateTimeRange datetimeRange) {
-                      Navigator.of(context).pop();
-                      final logName = "${timeOfDay(datetime: datetimeRange.start)} Session";
-                      final log = RoutineLogDto(
-                          id: "",
-                          templateId: '',
-                          name: logName,
-                          exerciseLogs: [],
-                          notes: "",
-                          startTime: datetimeRange.start,
-                          endTime: datetimeRange.end,
-                          owner: "",
-                          createdAt: datetimeRange.start,
-                          updatedAt: datetimeRange.end);
-                      navigateWithSlideTransition(context: context, child: PastRoutineLogEditorScreen(log: log));
-                    });
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            LabelDivider(
-              label: "Don't know what to train?",
-              labelColor: isDarkMode ? Colors.white70 : Colors.black,
-              dividerColor: sapphireLighter,
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const TRKRCoachWidget(),
-              horizontalTitleGap: 10,
-              title: TRKRCoachTextWidget("Describe your workout",
-                  style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
-              onTap: () {
-                Navigator.of(context).pop();
-                _switchToAIContext();
-              },
-            ),
-          ]),
-        ));
+        child: Column(children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.play, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Log new session", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              logEmptyRoutine(context: context);
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Log past session", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              showDatetimeRangePicker(
+                  context: context,
+                  onChangedDateTimeRange: (DateTimeRange datetimeRange) {
+                    Navigator.of(context).pop();
+                    final logName = "${timeOfDay(datetime: datetimeRange.start)} Session";
+                    final log = RoutineLogDto(
+                        id: "",
+                        templateId: '',
+                        name: logName,
+                        exerciseLogs: [],
+                        notes: "",
+                        startTime: datetimeRange.start,
+                        endTime: datetimeRange.end,
+                        owner: "",
+                        createdAt: datetimeRange.start,
+                        updatedAt: datetimeRange.end);
+                    navigateWithSlideTransition(context: context, child: PastRoutineLogEditorScreen(log: log));
+                  });
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          LabelDivider(
+            label: "Don't know what to train?",
+            labelColor: isDarkMode ? Colors.white70 : Colors.black,
+            dividerColor: sapphireLighter,
+          ),
+          const SizedBox(
+            height: 6,
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const TRKRCoachWidget(),
+            horizontalTitleGap: 10,
+            title: TRKRCoachTextWidget("Describe your workout",
+                style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
+            onTap: () {
+              Navigator.of(context).pop();
+              _switchToAIContext();
+            },
+          ),
+        ]));
   }
 
   void _switchToAIContext() async {

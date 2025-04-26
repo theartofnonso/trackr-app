@@ -267,40 +267,38 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void _visitTRKR() {
     displayBottomSheet(
         context: context,
-        child: SafeArea(
-          child: Column(children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("On the web", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                openUrl(url: trackrWebUrl, context: context);
-              },
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
-              horizontalTitleGap: 6,
-              title: Text("On Instagram", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                openUrl(url: instagramUrl, context: context);
-              },
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
-              horizontalTitleGap: 6,
-              title: Text("Join our Whatsapp community", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                openUrl(url: whatsappUrl, context: context);
-              },
-            )
-          ]),
-        ));
+        child: Column(children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("On the web", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              openUrl(url: trackrWebUrl, context: context);
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
+            horizontalTitleGap: 6,
+            title: Text("On Instagram", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              openUrl(url: instagramUrl, context: context);
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
+            horizontalTitleGap: 6,
+            title: Text("Join our Whatsapp community", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              openUrl(url: whatsappUrl, context: context);
+            },
+          )
+        ]));
   }
 
   void _turnOnNotification() async {

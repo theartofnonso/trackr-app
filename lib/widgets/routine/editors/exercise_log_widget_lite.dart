@@ -105,43 +105,41 @@ class ExerciseLogLiteWidget extends StatelessWidget {
   void _showBottomSheet({required BuildContext context}) {
     displayBottomSheet(
         context: context,
-        child: SafeArea(
-          child: Column(children: [
-            ListTile(
+        child: Column(children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),
+            horizontalTitleGap: 6,
+            title: Text("Replace"),
+            onTap: () {
+              Navigator.of(context).pop();
+              onReplaceLog();
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.link, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Superset"),
+            onTap: () {
+              Navigator.of(context).pop();
+              onSuperSet();
+            },
+          ),
+          ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),
+              leading: const FaIcon(
+                FontAwesomeIcons.trash,
+                size: 18,
+                color: Colors.red,
+              ),
               horizontalTitleGap: 6,
-              title: Text("Replace"),
+              title: Text("Remove",
+                  style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
               onTap: () {
                 Navigator.of(context).pop();
-                onReplaceLog();
-              },
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.link, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Superset"),
-              onTap: () {
-                Navigator.of(context).pop();
-                onSuperSet();
-              },
-            ),
-            ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.trash,
-                  size: 18,
-                  color: Colors.red,
-                ),
-                horizontalTitleGap: 6,
-                title: Text("Remove",
-                    style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  onRemoveLog();
-                }),
-          ]),
-        ));
+                onRemoveLog();
+              }),
+        ]));
   }
 }

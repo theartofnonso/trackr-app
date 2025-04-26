@@ -66,36 +66,34 @@ class _RoutinesHomeScreenState extends State<RoutinesHomeScreen> with SingleTick
     displayBottomSheet(
         context: context,
         isScrollControlled: true,
-        child: SafeArea(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.plus,
-                size: 18,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Create new workout template", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                navigateToRoutineTemplateEditor(context: context);
-              },
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.plus,
+              size: 18,
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.plus,
-                size: 18,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Create new workout plan", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                navigateToRoutinePlanEditor(context: context);
-              },
+            horizontalTitleGap: 6,
+            title: Text("Create new workout template", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              navigateToRoutineTemplateEditor(context: context);
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.plus,
+              size: 18,
             ),
-          ]),
-        ));
+            horizontalTitleGap: 6,
+            title: Text("Create new workout plan", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              navigateToRoutinePlanEditor(context: context);
+            },
+          ),
+        ]));
   }
 
   @override

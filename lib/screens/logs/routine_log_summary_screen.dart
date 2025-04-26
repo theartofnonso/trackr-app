@@ -193,62 +193,60 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     displayBottomSheet(
         context: context,
         isScrollControlled: true,
-        child: SafeArea(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.link,
-                size: 18,
-              ),
-              horizontalTitleGap: 10,
-              title: Text(
-                "Copy as Link",
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                maxLines: 1,
-              ),
-              subtitle: Text(workoutLogLink),
-              onTap: () {
-                Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
-                HapticFeedback.heavyImpact();
-                final data = ClipboardData(text: workoutLogLink);
-                Clipboard.setData(data).then((_) {
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                    showSnackbar(
-                        context: context,
-                        message: "Workout log link copied");
-                  }
-                });
-              },
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.link,
+              size: 18,
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.copy,
-                size: 18,
+            horizontalTitleGap: 10,
+            title: Text(
+              "Copy as Link",
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                overflow: TextOverflow.ellipsis,
               ),
-              horizontalTitleGap: 6,
-              title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
-              subtitle: Text("${updatedLog.name}..."),
-              onTap: () {
-                Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsText.displayName);
-                HapticFeedback.heavyImpact();
-                final data = ClipboardData(text: workoutLogText);
-                Clipboard.setData(data).then((_) {
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                    showSnackbar(
-                        context: context,
-                        message: "Workout log copied");
-                  }
-                });
-              },
+              maxLines: 1,
             ),
-          ]),
-        ));
+            subtitle: Text(workoutLogLink),
+            onTap: () {
+              Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
+              HapticFeedback.heavyImpact();
+              final data = ClipboardData(text: workoutLogLink);
+              Clipboard.setData(data).then((_) {
+                if (mounted) {
+                  Navigator.of(context).pop();
+                  showSnackbar(
+                      context: context,
+                      message: "Workout log link copied");
+                }
+              });
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.copy,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text("${updatedLog.name}..."),
+            onTap: () {
+              Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineLogAsText.displayName);
+              HapticFeedback.heavyImpact();
+              final data = ClipboardData(text: workoutLogText);
+              Clipboard.setData(data).then((_) {
+                if (mounted) {
+                  Navigator.of(context).pop();
+                  showSnackbar(
+                      context: context,
+                      message: "Workout log copied");
+                }
+              });
+            },
+          ),
+        ]));
   }
 
   void _showBottomSheet() {
@@ -257,41 +255,39 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
     displayBottomSheet(
         context: context,
-        child: SafeArea(
-          child: Column(children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.camera, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Camera"),
-              onTap: () => _pickFromLibrary(camera: true),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.images, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Library"),
-              onTap: () => _pickFromLibrary(camera: false),
-            ),
-            if (_hasImage)
-              Column(children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                LabelDivider(
-                  label: "Don't like the vibe?",
-                  labelColor: isDarkMode ? Colors.white70 : Colors.black,
-                  dividerColor: sapphireLighter,
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text("Remove Image",
-                      style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-                  onTap: _removeImage,
-                ),
-              ])
-          ]),
-        ));
+        child: Column(children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.camera, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Camera"),
+            onTap: () => _pickFromLibrary(camera: true),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.images, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Library"),
+            onTap: () => _pickFromLibrary(camera: false),
+          ),
+          if (_hasImage)
+            Column(children: [
+              const SizedBox(
+                height: 10,
+              ),
+              LabelDivider(
+                label: "Don't like the vibe?",
+                labelColor: isDarkMode ? Colors.white70 : Colors.black,
+                dividerColor: sapphireLighter,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text("Remove Image",
+                    style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+                onTap: _removeImage,
+              ),
+            ])
+        ]));
   }
 
   void _pickFromLibrary({required bool camera}) async {

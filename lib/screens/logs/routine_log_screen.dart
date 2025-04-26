@@ -396,43 +396,41 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   void _showBottomSheet() {
     displayBottomSheet(
         context: context,
-        child: SafeArea(
-          child: Column(children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Edit Log"),
-              onTap: _editLog,
+        child: Column(children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Edit Log"),
+            onTap: _editLog,
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Edit duration"),
+            onTap: _editDuration,
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.download, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Save as template"),
+            onTap: _createTemplate,
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.trash,
+              size: 18,
+              color: Colors.red,
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Edit duration"),
-              onTap: _editDuration,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.download, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Save as template"),
-              onTap: _createTemplate,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.trash,
-                size: 18,
-                color: Colors.red,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Delete log",
-                  style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-              onTap: _deleteLog,
-            ),
-          ]),
-        ));
+            horizontalTitleGap: 6,
+            title: Text("Delete log",
+                style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+            onTap: _deleteLog,
+          ),
+        ]));
   }
 
   void _onShareLog({required RoutineLogDto log}) {

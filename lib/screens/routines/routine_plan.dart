@@ -203,53 +203,51 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
     displayBottomSheet(
         context: context,
         isScrollControlled: true,
-        child: SafeArea(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.penToSquare,
-                  size: 18,
-                ),
-                horizontalTitleGap: 6,
-                title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _navigateToRoutinePlanEditor();
-                }),
-            ListTile(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
-                FontAwesomeIcons.trash,
-                size: 16,
-                color: Colors.redAccent,
+                FontAwesomeIcons.penToSquare,
+                size: 18,
               ),
               horizontalTitleGap: 6,
-              title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+              title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
+                _navigateToRoutinePlanEditor();
+              }),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.trash,
+              size: 16,
+              color: Colors.redAccent,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+            onTap: () {
+              Navigator.of(context).pop();
 
-                final plan = _plan;
+              final plan = _plan;
 
-                if (plan != null) {
-                  showBottomSheetWithMultiActions(
-                      context: context,
-                      title: "Delete plan?",
-                      description: "Are you sure you want to delete this plan?",
-                      leftAction: Navigator.of(context).pop,
-                      rightAction: () {
-                        context.pop();
-                        _toggleLoadingState();
-                        _deleteRoutinePlan(plan: plan);
-                      },
-                      leftActionLabel: 'Cancel',
-                      rightActionLabel: 'Delete',
-                      isRightActionDestructive: true);
-                }
-              },
-            )
-          ]),
-        ));
+              if (plan != null) {
+                showBottomSheetWithMultiActions(
+                    context: context,
+                    title: "Delete plan?",
+                    description: "Are you sure you want to delete this plan?",
+                    leftAction: Navigator.of(context).pop,
+                    rightAction: () {
+                      context.pop();
+                      _toggleLoadingState();
+                      _deleteRoutinePlan(plan: plan);
+                    },
+                    leftActionLabel: 'Cancel',
+                    rightActionLabel: 'Delete',
+                    isRightActionDestructive: true);
+              }
+            },
+          )
+        ]));
   }
 
   void _loadData() {
