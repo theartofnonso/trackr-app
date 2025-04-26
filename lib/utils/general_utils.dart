@@ -11,10 +11,8 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/daily_readiness.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../screens/routines/readiness_screen.dart';
 import '../shared_prefs.dart';
 import 'data_trend_utils.dart';
 import 'navigation_utils.dart';
@@ -300,11 +298,6 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
-  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ??
-      DailyReadiness.empty();
-  final fatigue = readiness.perceivedFatigue;
-  final soreness = readiness.muscleSoreness;
-  final sleep = readiness.sleepDuration;
   final log = RoutineLogDto(
       id: "",
       templateId: "",
@@ -314,9 +307,6 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",
-      fatigueLevel: fatigue,
-      sorenessLevel: soreness,
-      sleepLevel: sleep,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 

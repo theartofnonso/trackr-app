@@ -35,13 +35,10 @@ import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart'
 import 'package:tracker_app/screens/editors/user_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home.dart';
-import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/notifications/onboarding_intro_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
-import 'package:tracker_app/screens/routines/readiness_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
 import 'package:tracker_app/screens/routines/routine_template_screen.dart';
 import 'package:tracker_app/screens/routines/routines_home.dart';
@@ -287,20 +284,8 @@ final _router = GoRouter(
       builder: (context, state) => const SettingsScreen(),
     ),
     GoRoute(
-      path: UserProfileScreen.routeName,
-      builder: (context, state) => const UserProfileScreen(),
-    ),
-    GoRoute(
       path: Home.routeName,
       builder: (context, state) => const Home(),
-    ),
-    GoRoute(
-      path: ReadinessScreen.routeName,
-      builder: (context, state) => const ReadinessScreen(),
-    ),
-    GoRoute(
-      path: SetsAndRepsVolumeInsightsScreen.routeName,
-      builder: (context, state) => const SetsAndRepsVolumeInsightsScreen(),
     ),
     GoRoute(
       path: OnboardingIntroScreen.routeName,

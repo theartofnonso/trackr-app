@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/dtos/daily_readiness.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -30,7 +29,6 @@ import '../../widgets/monitors/animated_gauge.dart';
 import '../../widgets/monthly_insights/log_streak_chart.dart';
 import '../../widgets/monthly_insights/volume_chart.dart';
 import '../AI/trkr_coach_chat_screen.dart';
-import '../routines/readiness_screen.dart';
 
 enum TrainingAndVolume {
   training,
@@ -295,15 +293,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
         await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (mounted) {
-        final readiness =
-            await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ??
-                DailyReadiness.empty();
-        final fatigue = readiness.perceivedFatigue;
-        final soreness = readiness.muscleSoreness;
-        final sleep = readiness.sleepDuration;
         final log = result.toLog();
-        final logWithReadinessScore = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness, sleepLevel: sleep);
-        final arguments = RoutineLogArguments(log: logWithReadinessScore, editorMode: RoutineEditorMode.log);
+        final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);
         }
@@ -341,7 +332,6 @@ class _ReadinessTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(readinessScore);
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
