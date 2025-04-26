@@ -6,7 +6,7 @@
 
 abstract interface class TrainingArchetype {
   String get name;
-  
+
   String get description;
 }
 

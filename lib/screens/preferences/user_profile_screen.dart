@@ -2,19 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
-import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 import 'package:tracker_app/widgets/icons/user_icon_widget.dart';
 
 import '../../controllers/routine_user_controller.dart';
-import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../utils/training_archetype_utils.dart';
 
 class UserProfileScreen extends StatelessWidget {
   static const routeName = '/user-profile-screen';
@@ -25,9 +20,6 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final user = Provider.of<RoutineUserController>(context, listen: true).user;
 
     if (user == null) {
@@ -50,17 +42,6 @@ class UserProfileScreen extends StatelessWidget {
     final age = _calculateAge(birthDate: dob);
 
     final gender = capitalizeFirstLetter(text: user.gender.display);
-
-    final dateRange = theLastYearDateTimeRange();
-
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-
-    final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange).toList();
-
-    final archetypes = TrainingArchetypeClassifier.classify(logs: logs);
-
-    final children =
-        archetypes.map((archetype) => CustomWordMarkIcon(archetype.description, color: vibrantGreen)).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -85,7 +66,7 @@ class UserProfileScreen extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 100),
             child: Column(
               spacing: 10,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Column(spacing: 36, crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Column(
@@ -132,11 +113,6 @@ class UserProfileScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Wrap(
-                  spacing: 2, // horizontal gap
-                  runSpacing: 14, // vertical gap
-                  children: children,
-                ),
               ],
             ),
           ),
@@ -157,7 +133,6 @@ class UserProfileScreen extends StatelessWidget {
 
     return age;
   }
-
 }
 
 class _StatisticWidget extends StatelessWidget {
