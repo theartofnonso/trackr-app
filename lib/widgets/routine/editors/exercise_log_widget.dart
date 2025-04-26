@@ -466,7 +466,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final exercise = exerciseLog.exercise;
     final type = exercise.type;
 
-    final readinessScore = 45; //SharedPrefs().readinessScore;
+    final readinessScore = 68; //SharedPrefs().readinessScore;
 
     final reducedSets = calculateDeload(original: exerciseLog, recoveryScore: readinessScore);
 
@@ -675,10 +675,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             }))
         .toList();
 
-    final readinessScore = 45; //SharedPrefs().readinessScore;
+    final readinessScore = 68; //SharedPrefs().readinessScore;
 
-    final shouldShowDeloadFab = tierForScore(score: readinessScore) != RecoveryTier.optimal;
-
+    final shouldShowDeloadFab = tierForScore(score: readinessScore / 100) != RecoveryTier.optimal;
+    
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -841,7 +841,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 if (_errorMessages.isNotEmpty && _errorMessages.length == 1) errorWidgets.first,
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
-                    if (withReps(type: exerciseType) &&
+                    if (_reducedSets.isEmpty && withReps(type: exerciseType) &&
                         trainingProgression != null &&
                         rpeTrendSummary.isNotEmpty &&
                         progressionSummary.isNotEmpty)
@@ -871,7 +871,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       ),
 
                     /// Only show for exercises that measure Weights, Reps and Duration
-                    if (workingSet != null)
+                    if (_reducedSets.isEmpty && workingSet != null)
                       StaggeredGridTile.count(
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,

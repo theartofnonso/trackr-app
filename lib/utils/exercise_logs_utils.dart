@@ -408,10 +408,10 @@ class DeloadConfig {
 
 enum RecoveryTier { poor, good, great, optimal }
 
-RecoveryTier tierForScore({required int score}) {
-  if (score < 30) return RecoveryTier.poor;
-  if (score < 50) return RecoveryTier.good;
-  if (score < 70) return RecoveryTier.great;
+RecoveryTier tierForScore({required double score}) {
+  if (score < .30) return RecoveryTier.poor;
+  if (score < .50) return RecoveryTier.good;
+  if (score < .70) return RecoveryTier.great;
   return RecoveryTier.optimal;
 }
 
@@ -426,7 +426,7 @@ const _rules = {
 /// Returns a *new* exercise map with volume / intensity adjusted.
 List<SetDto> calculateDeload({required ExerciseLogDto original, required int recoveryScore}) {
   // 1. Find the tier
-  final tier = tierForScore(score: recoveryScore.clamp(0, 1));
+  final tier = tierForScore(score: (recoveryScore / 100).clamp(0, 1));
   final rule = _rules[tier]!;
 
   // 2. Decide how many sets to keep
