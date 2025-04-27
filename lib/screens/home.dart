@@ -38,15 +38,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with WidgetsBindingObserver {
   SahhaSensorStatus _sensorStatus = SahhaSensorStatus.unavailable;
 
-  final _sensors = [
-    SahhaSensor.steps,
-    SahhaSensor.sleep,
-    SahhaSensor.exercise,
-    SahhaSensor.heart_rate_variability_rmssd,
-    SahhaSensor.heart_rate_variability_sdnn,
-    SahhaSensor.resting_heart_rate
-  ];
-
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
   StreamSubscription<QuerySnapshot<RoutinePlan>>? _routinePlanStream;
@@ -172,30 +163,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _getSahhaSensorStatus() {
-    // Get status of `steps` and `sleep` sensors
-    SahhaFlutter.getSensorStatus(_sensors).then((value) {
-      setState(() {
-        _sensorStatus = value;
-      });
-      if (_sensorStatus == SahhaSensorStatus.pending) {
-        // Sensors are NOT enabled and ready - Show your custom UI before asking for user permission
-      } else if (_sensorStatus == SahhaSensorStatus.enabled) {
-        // Sensors are enabled and ready
-      } else {
-        // Sensors are disabled or unavailable
-      }
-    }).catchError((error, stackTrace) {
-      debugPrint(error.toString());
-    });
-  }
-
   void _getSahhaReadinessScore() {
     Provider.of<ExerciseAndRoutineController>(context, listen: false).getSahhaReadinessScore();
   }
 
   void _navigateToNotificationHome() {
-    navigateWithSlideTransition(context: context, child: NotificationsScreen());
+    navigateWithSlideTransition(context: context, child: NotificationsScreen(onSahhaSensorStatusUpdate: (SahhaSensorStatus sensorStatus) {
+      setState(() {
+        _sensorStatus = sensorStatus;
+      });
+    },));
   }
 
   @override
@@ -216,7 +193,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getSahhaSensorStatus();
       _getSahhaReadinessScore();
     });
 
@@ -238,7 +214,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     /// Uncomment this to enable notifications
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _getSahhaSensorStatus();
         _getSahhaReadinessScore();
       });
     }

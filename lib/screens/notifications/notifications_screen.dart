@@ -16,7 +16,9 @@ import '../../widgets/icons/google_health_icon.dart';
 class NotificationsScreen extends StatefulWidget {
   static const routeName = '/notifications_screen';
 
-  const NotificationsScreen({super.key});
+  final void Function(SahhaSensorStatus sensorStatus) onSahhaSensorStatusUpdate;
+
+  const NotificationsScreen({super.key, required this.onSahhaSensorStatusUpdate});
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
@@ -91,13 +93,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       setState(() {
         _sensorStatus = value;
       });
-      if (_sensorStatus == SahhaSensorStatus.pending) {
-        // Sensors are NOT enabled and ready - Show your custom UI before asking for user permission
-      } else if (_sensorStatus == SahhaSensorStatus.enabled) {
-        // Sensors are enabled and ready
-      } else {
-        // Sensors are disabled or unavailable
-      }
     }).catchError((error, stackTrace) {
       debugPrint(error.toString());
     });
@@ -115,6 +110,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             setState(() {
               _sensorStatus = value;
             });
+
+            widget.onSahhaSensorStatusUpdate(value);
 
             if (mounted) {
               context.pop();
