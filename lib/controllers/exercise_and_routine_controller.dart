@@ -214,6 +214,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Logs
   void streamLogs({required List<RoutineLog> logs}) {
     _amplifyLogRepository.loadLogStream(logs: logs);
+    notifyListeners();
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
