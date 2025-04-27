@@ -48,6 +48,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     final hasPendingActions = _sensorStatus == SahhaSensorStatus.pending;
 
+    print(_sensorStatus);
+
     return Scaffold(
       appBar: AppBar(actions: [
         IconButton(

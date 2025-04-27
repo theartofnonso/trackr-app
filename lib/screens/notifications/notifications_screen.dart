@@ -33,7 +33,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     SahhaSensor.exercise,
     SahhaSensor.heart_rate_variability_rmssd,
     SahhaSensor.heart_rate_variability_sdnn,
-    SahhaSensor.resting_heart_rate
+    SahhaSensor.resting_heart_rate,
+    SahhaSensor.heart_rate,
   ];
 
   @override
