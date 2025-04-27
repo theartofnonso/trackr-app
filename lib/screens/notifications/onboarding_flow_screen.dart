@@ -18,7 +18,9 @@ import '../../utils/theme/theme.dart';
 class OnboardingFlowScreen extends StatefulWidget {
   static const routeName = '/onboarding_flow_screen';
 
-  const OnboardingFlowScreen({super.key});
+  final void Function()? onPressed;
+
+  const OnboardingFlowScreen({super.key, this.onPressed});
 
   @override
   State<OnboardingFlowScreen> createState() => _OnboardingFlowScreenState();
@@ -128,7 +130,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     SizedBox(
                         height: 50,
                         width: double.infinity,
-                        child: OpacityButtonWidget(label: "Start training better", onPressed: () {}, buttonColor: vibrantGreen))
+                        child: OpacityButtonWidget(label: "Start training better", onPressed: widget.onPressed, buttonColor: vibrantGreen))
                   ],
                 ),
               ),

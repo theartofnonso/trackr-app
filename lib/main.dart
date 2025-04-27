@@ -368,7 +368,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     return _isFirstLaunch
-        ? OnboardingFlowScreen()
+        ? OnboardingFlowScreen(onPressed: _completeIntro)
         : Authenticator(
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
