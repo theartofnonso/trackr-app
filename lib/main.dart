@@ -280,10 +280,10 @@ final _router = GoRouter(
       path: Home.routeName,
       builder: (context, state) => const Home(),
     ),
-    GoRoute(
-      path: OnboardingFlowScreen.routeName,
-      builder: (context, state) => OnboardingFlowScreen(),
-    ),
+    // GoRoute(
+    //   path: OnboardingFlowScreen.routeName,
+    //   builder: (context, state) => OnboardingFlowScreen(),
+    // ),
     GoRoute(
       path: RoutineLogSummaryScreen.routeName,
       pageBuilder: (context, state) {
@@ -346,6 +346,7 @@ class _MyAppState extends State<MyApp> {
   void _completeIntro() {
     setState(() {
       _isFirstLaunch = false;
+      SharedPrefs().firstLaunch = false;
     });
   }
 
