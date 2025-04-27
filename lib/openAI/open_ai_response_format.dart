@@ -32,7 +32,7 @@ const newRoutinePlanResponseFormat = {
         },
         "plan_description": {
           "type": "string",
-          "description": "A brief description of the plan including its purpose and goals"
+          "description": "A short explanation of the workout plan"
         },
         "workouts": {
           "type": "array",
@@ -42,11 +42,11 @@ const newRoutinePlanResponseFormat = {
             "properties": {
               "workout_name": {
                 "type": "string",
-                "description": "The descriptive name of the workout"
+                "description": "A short descriptive name of the workout"
               },
               "workout_caption": {
                 "type": "string",
-                "description": "A brief caption that summarises the workout"
+                "description": "A short caption that explains the workout"
               },
               "exercises": {
                 "type": "array",
