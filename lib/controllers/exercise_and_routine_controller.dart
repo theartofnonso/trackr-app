@@ -328,8 +328,8 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyPlanRepository.planWhere(id: id);
   }
 
-  void getSahhaReadinessScore() {
-    _amplifyLogRepository.getSahhaReadinessScore();
+  void getSahhaReadinessScore() async {
+    await _amplifyLogRepository.getSahhaReadinessScore();
     notifyListeners();
   }
 

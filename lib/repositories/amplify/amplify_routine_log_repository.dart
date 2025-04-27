@@ -91,7 +91,7 @@ class AmplifyRoutineLogRepository {
     }
   }
 
-  void getSahhaReadinessScore() async {
+  Future<void> getSahhaReadinessScore() async {
     try {
       final value = await SahhaFlutter.getScores(
           types: [SahhaScoreType.readiness],
