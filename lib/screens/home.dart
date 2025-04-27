@@ -101,7 +101,7 @@ class _HomeState extends State<Home> {
     SharedPrefs().userId = authUser.userId;
     SharedPrefs().userEmail = (signInDetails["username"]?.toString() ?? '');
     Posthog().identify(userId: SharedPrefs().userId);
-    authenticateSahhaUser();
+    authenticateSahhaUser(userId: authUser.userId);
   }
 
   void _loadCachedLog() {
@@ -126,7 +126,7 @@ class _HomeState extends State<Home> {
       _cacheUser();
     } else {
       Posthog().identify(userId: SharedPrefs().userId);
-      authenticateSahhaUser();
+      authenticateSahhaUser(userId: SharedPrefs().userId);
     }
 
     _loadAppData();
