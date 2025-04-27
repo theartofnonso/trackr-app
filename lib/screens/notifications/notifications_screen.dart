@@ -3,14 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/icons/apple_health_icon.dart';
 
 import '../../colors.dart';
-import '../../controllers/exercise_and_routine_controller.dart';
 import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/icons/google_health_icon.dart';
@@ -41,14 +39,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-
-    final routineTemplates = exerciseAndRoutineController.templates;
-
-    final routinePlans = exerciseAndRoutineController.plans;
-
-    final hasPendingActions =
-        routineTemplates.isEmpty || routinePlans.isEmpty || _sensorStatus == SahhaSensorStatus.pending;
+    final hasPendingActions = _sensorStatus == SahhaSensorStatus.pending;
 
     final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
 
@@ -68,36 +59,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: hasPendingActions
               ? Column(
                   children: [
-                    if (routineTemplates.isEmpty)
-                      ListTile(
-                        onTap: () => navigateToRoutineHome(context: context),
-                        leading: FaIcon(
-                          FontAwesomeIcons.solidBell,
-                          size: 20,
-                        ),
-                        title: Text("Create A Workout Template"),
-                        subtitle: Text("Design your first routine"),
-                        trailing: FaIcon(
-                          FontAwesomeIcons.chevronRight,
-                          size: 12,
-                          color: isDarkMode ? Colors.white70 : Colors.grey.shade400,
-                        ),
-                      ),
-                    if (routinePlans.isEmpty)
-                      ListTile(
-                        onTap: () => navigateToRoutineHome(context: context),
-                        leading: FaIcon(
-                          FontAwesomeIcons.solidBell,
-                          size: 20,
-                        ),
-                        title: Text("Create A Workout Plan"),
-                        subtitle: Text("Organise your workouts into a plan"),
-                        trailing: FaIcon(
-                          FontAwesomeIcons.chevronRight,
-                          size: 12,
-                          color: isDarkMode ? Colors.white70 : Colors.grey.shade400,
-                        ),
-                      ),
                     if (_sensorStatus == SahhaSensorStatus.pending)
                       ListTile(
                         onTap: _enableSahhaSensors,
@@ -147,24 +108,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         context: context,
         child: _SahhaSensorsRequestScreen(onPress: () {
           SahhaFlutter.enableSensors(_sensors).then((value) {
-            if(mounted) {
+            if (mounted) {
               Navigator.of(context).pop();
             }
+
             setState(() {
               _sensorStatus = value;
             });
-            if (_sensorStatus == SahhaSensorStatus.enabled) {
-              // Sensors are enabled and ready
-            } else {
-              // Sensors are disabled or unavailable
+
+            if (mounted) {
+              context.pop();
             }
           }).catchError((error, stackTrace) {
             debugPrint(error.toString());
           });
         }));
-    if (mounted) {
-      context.pop();
-    }
   }
 
   @override

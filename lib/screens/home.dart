@@ -54,14 +54,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    final routineLogs = exerciseAndRoutineController.logs;
-
-    final routineTemplates = exerciseAndRoutineController.templates;
-
-    final hasPendingActions =
-        routineTemplates.isEmpty || routineLogs.isEmpty || _sensorStatus == SahhaSensorStatus.pending;
+    final hasPendingActions = _sensorStatus == SahhaSensorStatus.pending;
 
     return Scaffold(
       appBar: AppBar(actions: [
