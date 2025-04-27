@@ -280,10 +280,6 @@ final _router = GoRouter(
       path: Home.routeName,
       builder: (context, state) => const Home(),
     ),
-    // GoRoute(
-    //   path: OnboardingFlowScreen.routeName,
-    //   builder: (context, state) => OnboardingFlowScreen(),
-    // ),
     GoRoute(
       path: RoutineLogSummaryScreen.routeName,
       pageBuilder: (context, state) {

@@ -15,16 +15,16 @@ import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/icons/google_health_icon.dart';
 
-class NotificationsScreenScreen extends StatefulWidget {
+class NotificationsScreen extends StatefulWidget {
   static const routeName = '/notifications_screen';
 
-  const NotificationsScreenScreen({super.key});
+  const NotificationsScreen({super.key});
 
   @override
-  State<NotificationsScreenScreen> createState() => _NotificationsScreenScreenState();
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _NotificationsScreenScreenState extends State<NotificationsScreenScreen> {
+class _NotificationsScreenState extends State<NotificationsScreen> {
   SahhaSensorStatus _sensorStatus = SahhaSensorStatus.unavailable;
 
   final _sensors = [

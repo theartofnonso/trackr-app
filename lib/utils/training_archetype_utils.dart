@@ -59,7 +59,7 @@ List<TrainingArchetype> classifyTrainingArchetypes({
   // Helpers
   // ---------------------------------------------------------------------------
   /// Returns a rounded‐up mean for any list of ints.
-  int _safeAverage(List<int> values) => values.isEmpty ? 0 : (values.reduce((a, b) => a + b) / values.length).round();
+  int safeAverage(List<int> values) => values.isEmpty ? 0 : (values.reduce((a, b) => a + b) / values.length).round();
 
   // ---------------------------------------------------------------------------
   // 1. Collect the last 13 calendar weeks
@@ -86,10 +86,10 @@ List<TrainingArchetype> classifyTrainingArchetypes({
   // ---------------------------------------------------------------------------
   // 3. Weekly-average archetypes (safe even when the lists are empty)
   // ---------------------------------------------------------------------------
-  final trainingFrequencyArch = trainingFrequencyArchetype(avgSessions: _safeAverage(sessionsPerWeek));
+  final trainingFrequencyArch = trainingFrequencyArchetype(avgSessions: safeAverage(sessionsPerWeek));
 
   final trainingDurationArch = trainingDurationArchetype(
-    avgDuration: Duration(minutes: _safeAverage(allDurations)),
+    avgDuration: Duration(minutes: safeAverage(allDurations)),
   );
 
   // ---------------------------------------------------------------------------
