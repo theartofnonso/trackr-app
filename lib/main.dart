@@ -36,7 +36,7 @@ import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
-import 'package:tracker_app/screens/notifications/onboarding_intro_screen.dart';
+import 'package:tracker_app/screens/notifications/onboarding_flow_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
 import 'package:tracker_app/screens/routines/routine_template_screen.dart';
@@ -281,8 +281,8 @@ final _router = GoRouter(
       builder: (context, state) => const Home(),
     ),
     GoRoute(
-      path: OnboardingIntroScreen.routeName,
-      builder: (context, state) => OnboardingIntroScreen(),
+      path: OnboardingFlowScreen.routeName,
+      builder: (context, state) => OnboardingFlowScreen(),
     ),
     GoRoute(
       path: RoutineLogSummaryScreen.routeName,
@@ -368,7 +368,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     return _isFirstLaunch
-        ? OnboardingIntroScreen(onComplete: _completeIntro)
+        ? OnboardingFlowScreen()
         : Authenticator(
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,

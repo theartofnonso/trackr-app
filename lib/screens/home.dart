@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/screens/home_screen.dart';
-import 'package:tracker_app/screens/notifications/onboarding_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../dtos/appsync/routine_log_dto.dart';
@@ -39,14 +38,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    if (SharedPrefs().firstLaunch) {
-      return OnboardingScreen(onComplete: () {
-        setState(() {
-          SharedPrefs().firstLaunch = false;
-        });
-      });
-    }
-
     return HomeScreen();
   }
 
