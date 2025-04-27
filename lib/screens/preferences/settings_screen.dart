@@ -17,7 +17,6 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/sahha_utils.dart';
@@ -260,7 +259,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     await FlutterLocalNotificationsPlugin().cancelAll();
     if (mounted) {
       Provider.of<ExerciseAndRoutineController>(context, listen: false).clear();
-      Provider.of<RoutineUserController>(context, listen: false).clear();
     }
   }
 
@@ -335,14 +333,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         isRightActionDestructive: true);
   }
 
-  Future<void> _deleteRoutineUser() async {
-    final controller = Provider.of<RoutineUserController>(context, listen: false);
-    final user = controller.user;
-    if (user != null) {
-      await controller.removeUser(userDto: user);
-    }
-  }
-
   void _delete() async {
     showBottomSheetWithMultiActions(
         context: context,
@@ -360,7 +350,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           final deletedRoutineLogs =
               await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
           if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
-            await _deleteRoutineUser();
             _hideLoadingScreen();
             _clearAppData();
             deAuthenticateSahhaUser();

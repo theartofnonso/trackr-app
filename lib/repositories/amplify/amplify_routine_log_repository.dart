@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
+import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
@@ -22,6 +23,7 @@ import '../../logger.dart';
 import '../../shared_prefs.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/notifications_utils.dart';
+import '../../utils/sahha_utils.dart';
 
 class AmplifyRoutineLogRepository {
   final logger = getLogger(className: "AmplifyRoutineLogRepository");
@@ -86,6 +88,19 @@ class AmplifyRoutineLogRepository {
       FlutterLocalNotificationsPlugin().cancelAll();
 
       schedulePreferredTrainingReminders(historicDateTimes: historicTrainingTimes);
+    }
+  }
+
+  void getSahhaReadinessScore() async {
+    try {
+      final value = await SahhaFlutter.getScores(
+          types: [SahhaScoreType.readiness],
+          startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
+          endDateTime: DateTime.now());
+      final score = extractReadinessScore(jsonString: value);
+      SharedPrefs().readinessScore = score;
+    } catch (error) {
+      debugPrint(error.toString());
     }
   }
 

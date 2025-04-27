@@ -5,10 +5,10 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
+import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
@@ -18,11 +18,9 @@ import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../shared_prefs.dart';
 import '../utils/date_utils.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
-import '../utils/sahha_utils.dart';
 import '../utils/string_utils.dart';
 import '../utils/training_archetype_utils.dart';
 import '../widgets/ai_widgets/trkr_coach_text_widget.dart';
@@ -48,12 +46,10 @@ class OverviewScreen extends StatefulWidget {
   State<OverviewScreen> createState() => _OverviewScreenState();
 }
 
-class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObserver {
+class _OverviewScreenState extends State<OverviewScreen> {
   bool _loading = false;
 
   TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
-
-  int _readiness = 0;
 
   String _predictTemplate({required List<RoutineLogDto> logs}) {
     if (logs.isEmpty) {
@@ -119,7 +115,10 @@ class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObse
 
     final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange).toList();
 
-    final archetypes = classifyTrainingArchetypes(logs: logs).map((archetype) => archetype.name).map((arch) => CustomWordMarkIcon(arch, color: Colors.white70)).toList();
+    final archetypes = classifyTrainingArchetypes(logs: logs)
+        .map((archetype) => archetype.name)
+        .map((arch) => CustomWordMarkIcon(arch, color: Colors.white70))
+        .toList();
 
     List<RoutineLogDto> routineLogs = [];
     for (final template in templates) {
@@ -134,6 +133,8 @@ class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObse
     final hasTodayScheduleBeenLogged =
         logsForCurrentDay.firstWhereOrNull((log) => log.name == predictedTemplate?.name) != null;
 
+    final readiness = SharedPrefs().readinessScore;
+
     return SingleChildScrollView(
       child: Column(spacing: 12, children: [
         Calendar(onSelectDate: (date) => _onSelectCalendarDateTime(date: date)),
@@ -145,7 +146,7 @@ class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObse
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
-              child: _ReadinessTile(readinessScore: _readiness),
+              child: _ReadinessTile(readinessScore: readiness),
             ),
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
@@ -219,11 +220,17 @@ class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObse
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 10,
                 children: [
-                  Text("Your training tells a story. Based on your training behavior, here’s what we’ve learned about you:", style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, height: 1.6, color: isDarkMode ? Colors.white70 : Colors.grey.shade400)),
+                  Text(
+                      "Your training tells a story. Based on your training behavior, here’s what we’ve learned about you:",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          height: 1.6,
+                          color: isDarkMode ? Colors.white70 : Colors.grey.shade400)),
                   Wrap(
                     runSpacing: 10,
                     spacing: 10,
-                    children: archetypes,),
+                    children: archetypes,
+                  ),
                 ],
               ),
             ),
@@ -327,50 +334,6 @@ class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObse
   void _onSelectCalendarDateTime({required DateTime date}) {
     showLogsBottomSheet(dateTime: date, context: context);
   }
-
-  void _getSahhaReadinessScore () {
-    SahhaFlutter.getScores(
-        types: [SahhaScoreType.readiness],
-        startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
-        endDateTime: DateTime.now())
-        .then((value) {
-      setState(() {
-        final score = extractReadinessScore(jsonString: value);
-        _readiness = score;
-        SharedPrefs().readinessScore = score;
-      });
-    }).catchError((error, stackTrace) {
-      // <-- block body
-      debugPrint(error.toString());
-      // return null; // optional – but explicitly returning null also satisfies the signature
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _getSahhaReadinessScore();
-  }
-
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    /// Uncomment this to enable notifications
-    if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _getSahhaReadinessScore();
-      });
-    }
-  }
-
-
 }
 
 class _ReadinessTile extends StatelessWidget {

@@ -24,7 +24,6 @@ import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dar
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_plan_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
-import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/AI/routine_log_report_screen.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
@@ -47,7 +46,6 @@ import 'package:tracker_app/utils/sahha_utils.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
 
 import 'amplifyconfiguration.dart';
-import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/appsync/routine_plan_dto.dart';
 import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
@@ -144,9 +142,6 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<RoutineUserController>(
-        create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),
-      ),
       ChangeNotifierProvider<ExerciseAndRoutineController>(
         create: (BuildContext context) => ExerciseAndRoutineController(
             amplifyExerciseRepository: AmplifyExerciseRepository(),

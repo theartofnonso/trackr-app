@@ -35,7 +35,7 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   SahhaSensorStatus _sensorStatus = SahhaSensorStatus.unavailable;
 
   final _sensors = [
@@ -145,13 +145,22 @@ class _HomeState extends State<Home> {
   }
 
   ///add user stuff here for analytics instead
-  void _cacheUser() async {
+  void _newUserSetup() async {
     final authUser = await Amplify.Auth.getCurrentUser();
     final signInDetails = authUser.signInDetails.toJson();
-    SharedPrefs().userId = authUser.userId;
+    final userId = authUser.userId;
+    SharedPrefs().userId = userId;
     SharedPrefs().userEmail = (signInDetails["username"]?.toString() ?? '');
-    Posthog().identify(userId: SharedPrefs().userId);
-    authenticateSahhaUser(userId: authUser.userId);
+    Posthog().identify(userId: userId);
+    authenticateSahhaUser(userId: userId);
+    _loadAppData();
+  }
+
+  void _returningUserSetup()  {
+    final userId = SharedPrefs().userId;
+    Posthog().identify(userId: userId);
+    authenticateSahhaUser(userId: userId);
+    _loadAppData();
   }
 
   void _loadCachedLog() {
@@ -187,6 +196,10 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _getSahhaReadinessScore() {
+    Provider.of<ExerciseAndRoutineController>(context, listen: false).getSahhaReadinessScore();
+  }
+
   void _navigateToNotificationHome() {
     navigateWithSlideTransition(context: context, child: NotificationsScreen());
   }
@@ -194,31 +207,46 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    if (SharedPrefs().firstLaunch) {
-      _cacheUser();
-    } else {
-      Posthog().identify(userId: SharedPrefs().userId);
-      authenticateSahhaUser(userId: SharedPrefs().userId);
-    }
 
-    _loadAppData();
+    WidgetsBinding.instance.addObserver(this);
+
+    if (SharedPrefs().firstLaunch) {
+      _newUserSetup();
+    } else {
+      _returningUserSetup();
+    }
 
     if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin()
           .cancelAll(); // Cancel all notifications including pending workout sessions and regular training reminders
     }
 
-    _getSahhaSensorStatus();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getSahhaSensorStatus();
+      _getSahhaReadinessScore();
+    });
 
     _loadCachedLog();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _exerciseStream?.cancel();
     _routineTemplateStream?.cancel();
     _routinePlanStream?.cancel();
     _routineLogStream?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// Uncomment this to enable notifications
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _getSahhaSensorStatus();
+        _getSahhaReadinessScore();
+      });
+    }
   }
 }
