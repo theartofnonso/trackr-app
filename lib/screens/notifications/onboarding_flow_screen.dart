@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:video_player/video_player.dart';
 
@@ -127,7 +128,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     SizedBox(
                         height: 50,
                         width: double.infinity,
-                        child: OpacityButtonWidget(label: "Start training better", onPressed: () {}))
+                        child: OpacityButtonWidget(label: "Start training better", onPressed: () {}, buttonColor: vibrantGreen))
                   ],
                 ),
               ),
