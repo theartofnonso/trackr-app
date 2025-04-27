@@ -60,16 +60,14 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
           children: [
             // ----------------- FULL‑SCREEN VIDEO -----------------
             Positioned.fill(
-              child: _controller.value.isInitialized
-                  ? FittedBox(
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: _controller.value.size.width,
-                        height: _controller.value.size.height,
-                        child: VideoPlayer(_controller),
-                      ),
-                    )
-                  : const Center(child: CircularProgressIndicator()),
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller.value.size.width,
+                  height: _controller.value.size.height,
+                  child: VideoPlayer(_controller),
+                ),
+              ),
             ),
 
             // ----------------- BLUR LAYER ------------------------
@@ -104,10 +102,10 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
             // ----------------- BOTTOM OVERLAY --------------------
             Align(
               alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
+              child: SafeArea(
+                minimum: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.asset(
@@ -130,7 +128,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     SizedBox(
                         height: 50,
                         width: double.infinity,
-                        child: OpacityButtonWidget(label: "Start training better", onPressed: widget.onPressed, buttonColor: vibrantGreen))
+                        child: OpacityButtonWidget(
+                            label: "Start training better", onPressed: widget.onPressed, buttonColor: vibrantGreen))
                   ],
                 ),
               ),
