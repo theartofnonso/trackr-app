@@ -11,7 +11,6 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/shared_prefs.dart';
@@ -21,6 +20,7 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../controllers/routine_user_controller.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/sahha_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/dividers/label_divider.dart';
@@ -325,9 +325,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
-          _deAuthenticateSahhaUser();
           _showLoadingScreen();
           _clearAppData();
+          deAuthenticateSahhaUser();
           await Amplify.Auth.signOut();
         },
         leftActionLabel: 'Cancel',
@@ -353,8 +353,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           Navigator.of(context).pop();
           _showLoadingScreen();
 
-          _deAuthenticateSahhaUser();
-
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
           final deletedRoutineTemplates = await batchDeleteUserData(
@@ -365,6 +363,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             await _deleteRoutineUser();
             _hideLoadingScreen();
             _clearAppData();
+            deAuthenticateSahhaUser();
             await Amplify.Auth.deleteUser();
           } else {
             _hideLoadingScreen();
@@ -378,16 +377,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Delete',
         isRightActionDestructive: true);
-  }
-
-  void _deAuthenticateSahhaUser() {
-    SahhaFlutter.deauthenticate()
-        .then((success) => {
-      debugPrint(success.toString())
-    })
-        .catchError((error, stackTrace) => {
-      debugPrint(error.toString())
-    });
   }
 
   void _getAppVersion() async {

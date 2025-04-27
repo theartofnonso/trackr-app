@@ -665,7 +665,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final readinessScore = SharedPrefs().readinessScore;
 
-    final inDeload = tierForScore(score: readinessScore / 100) != RecoveryTier.optimal;
+    final inDeload = readinessScore > 0 && tierForScore(score: readinessScore / 100) != RecoveryTier.optimal;
 
     return Scaffold(
       appBar: AppBar(

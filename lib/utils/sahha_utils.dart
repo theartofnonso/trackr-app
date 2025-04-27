@@ -22,6 +22,12 @@ void authenticateSahhaUser() {
       .catchError((error, stackTrace) => {debugPrint('Sahha user authentication error: $error')});
 }
 
+void deAuthenticateSahhaUser() {
+  SahhaFlutter.deauthenticate()
+      .then((success) => {debugPrint('Sahha user deAuthenticated: $success')})
+      .catchError((error, stackTrace) => {debugPrint('Sahha user deAuthentication error: $error')});
+}
+
 int extractReadinessScore({required String jsonString}) {
   final List<dynamic> decoded = jsonDecode(jsonString);
 

@@ -48,7 +48,7 @@ class OverviewScreen extends StatefulWidget {
   State<OverviewScreen> createState() => _OverviewScreenState();
 }
 
-class _OverviewScreenState extends State<OverviewScreen> {
+class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObserver {
   bool _loading = false;
 
   TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
@@ -328,13 +328,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
     showLogsBottomSheet(dateTime: date, context: context);
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void _getSahhaReadinessScore () {
     SahhaFlutter.getScores(
-            types: [SahhaScoreType.readiness],
-            startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
-            endDateTime: DateTime.now())
+        types: [SahhaScoreType.readiness],
+        startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
+        endDateTime: DateTime.now())
         .then((value) {
       setState(() {
         final score = extractReadinessScore(jsonString: value);
@@ -346,6 +344,22 @@ class _OverviewScreenState extends State<OverviewScreen> {
       debugPrint(error.toString());
       // return null; // optional – but explicitly returning null also satisfies the signature
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getSahhaReadinessScore();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    /// Uncomment this to enable notifications
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _getSahhaReadinessScore();
+      });
+    }
   }
 }
 
