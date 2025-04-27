@@ -334,6 +334,7 @@ class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObse
         startDateTime: DateTime.now().subtract(const Duration(hours: 24)),
         endDateTime: DateTime.now())
         .then((value) {
+      print(value);
       setState(() {
         final score = extractReadinessScore(jsonString: value);
         _readiness = score;

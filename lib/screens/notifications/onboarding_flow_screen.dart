@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:video_player/video_player.dart';
@@ -118,7 +119,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     Text(
                       "Casual lifters, serious results. We do the thinking, you do the lifting.",
                       textAlign: TextAlign.start,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      style: GoogleFonts.ubuntu(
                             color: Colors.white70,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
