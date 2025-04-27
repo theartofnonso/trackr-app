@@ -17,6 +17,35 @@ DateTimeRange theLastYearDateTimeRange() {
   return DateTimeRange(start: then, end: now);
 }
 
+/// Returns the **previous full calendar quarter** in UTC (e.g., if today is
+/// 27 Apr 2025 (Q2 2025), the range covers **1 Jan → 31 Mar 2025**).
+DateTimeRange lastQuarterDateTimeRange() {
+  // Get current UTC date with time set to midnight UTC
+  final DateTime now = DateTime.now().toUtc();
+  final DateTime nowUtc = DateTime.utc(now.year, now.month, now.day);
+
+  // Determine current quarter (Q1 = 1, Q2 = 2, ...)
+  final int currentQuarter = ((nowUtc.month - 1) ~/ 3) + 1;
+
+  // Calculate start month of the previous quarter
+  int startMonth = ((currentQuarter - 2) * 3) + 1;
+  int startYear = nowUtc.year;
+
+  // Adjust for year wrap-around if necessary
+  if (startMonth <= 0) {
+    startMonth += 12;
+    startYear -= 1;
+  }
+
+  // Start of the previous quarter (midnight UTC)
+  final DateTime start = DateTime.utc(startYear, startMonth, 1);
+
+  // End is the first day of the current quarter (midnight UTC)
+  final DateTime end = DateTime.utc(startYear, startMonth + 3, 1);
+
+  return DateTimeRange(start: start, end: end);
+}
+
 /// Returns a list of DateTimeRange representing each week in the given year.
 List<DateTimeRange> generateWeeksInRange({required DateTimeRange range}) {
   List<DateTimeRange> weeks = [];

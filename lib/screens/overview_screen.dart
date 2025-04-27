@@ -349,7 +349,15 @@ class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _getSahhaReadinessScore();
+  }
+
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -361,6 +369,8 @@ class _OverviewScreenState extends State<OverviewScreen> with WidgetsBindingObse
       });
     }
   }
+
+
 }
 
 class _ReadinessTile extends StatelessWidget {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
@@ -19,18 +18,11 @@ import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_plan_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
-import '../screens/editors/user_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/routines/routine_plan.dart';
 import '../screens/routines/routine_template_screen.dart';
 import '../screens/routines/routines_home.dart';
 import '../shared_prefs.dart';
-
-Future<RoutineUserDto?> navigateToUserEditor(
-    {required BuildContext context, RoutineUserDto? user}) async {
-  final updatedUser = await context.push(UserEditorScreen.routeName, extra: user) as RoutineUserDto?;
-  return updatedUser;
-}
 
 Future<ExerciseDto?> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {
@@ -65,7 +57,8 @@ Future<void> navigateToRoutineLogEditor({required BuildContext context, required
     if (context.mounted) {
       final readiness = SharedPrefs().readinessScore;
       final logWithReadiness = log.copyWith(readinessScore: readiness);
-      context.push(RoutineLogScreen.routeName, extra: {"log": logWithReadiness, "showSummary": true, "isEditable": true});
+      context
+          .push(RoutineLogScreen.routeName, extra: {"log": logWithReadiness, "showSummary": true, "isEditable": true});
     }
   }
 }

@@ -391,6 +391,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _weightUnit = WeightUnit.fromString(SharedPrefs().weightUnit);
     _getAppVersion();
     _checkNotificationPermission();

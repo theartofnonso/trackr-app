@@ -829,7 +829,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 if (_errorMessages.isNotEmpty && _errorMessages.length == 1) errorWidgets.first,
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
-                    if (!inDeload && withReps(type: exerciseType) &&
+                    if (withReps(type: exerciseType) &&
                         trainingProgression != null &&
                         rpeTrendSummary.isNotEmpty &&
                         progressionSummary.isNotEmpty)

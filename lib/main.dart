@@ -32,7 +32,6 @@ import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart'
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_plan_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
-import 'package:tracker_app/screens/editors/user_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
@@ -221,12 +220,6 @@ final _router = GoRouter(
       builder: (context, state) {
         final args = state.extra as ExerciseEditorArguments?;
         return ExerciseEditorScreen(exercise: args?.exercise);
-      },
-    ),
-    GoRoute(
-      path: UserEditorScreen.routeName,
-      builder: (context, state) {
-        return UserEditorScreen();
       },
     ),
     GoRoute(
