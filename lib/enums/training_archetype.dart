@@ -41,7 +41,7 @@ enum TrainingDurationArchetype implements TrainingArchetype {
 /// This determines of users train to failure or not
 enum RpeArchetype implements TrainingArchetype {
   rarelyPushesToFailure(name: "rarely_pushes_to_failure", description: "Rarely pushes sets to failure"),
-  occasionallyPushesToFailure(name: "quick_training_session", description: "Occasionally pushes sets to failure"),
+  occasionallyPushesToFailure(name: "often_pushes_to_failure", description: "Occasionally pushes sets to failure"),
   alwaysPushesToFailure(name: "always_pushes_to_failure", description: "Always pushes sets to failure");
 
   const RpeArchetype({required this.name, required this.description});

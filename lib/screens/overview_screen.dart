@@ -11,6 +11,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
+import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -18,10 +19,12 @@ import '../dtos/appsync/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../shared_prefs.dart';
+import '../utils/date_utils.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../utils/sahha_utils.dart';
 import '../utils/string_utils.dart';
+import '../utils/training_archetype_utils.dart';
 import '../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
@@ -112,6 +115,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final logsForCurrentDay =
         exerciseAndRoutineController.whereLogsIsSameDay(dateTime: DateTime.now().withoutTime()).toList();
 
+    final dateRange = theLastYearDateTimeRange();
+
+    final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange).toList();
+
+    final archetypes = classifyTrainingArchetypes(logs: logs).map((archetype) => archetype.name).map((arch) => CustomWordMarkIcon(arch, color: Colors.white70)).toList();
+
     List<RoutineLogDto> routineLogs = [];
     for (final template in templates) {
       final logs = exerciseAndRoutineController.whereLogsWithTemplateName(templateName: template.name).toList();
@@ -201,6 +210,21 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: GestureDetector(
                 onTap: _showNewBottomSheet,
                 child: _AddTile(),
+              ),
+            ),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 2,
+              mainAxisCellCount: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 10,
+                children: [
+                  Text("Your training tells a story. Based on your training behavior, here’s what we’ve learned about you:", style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, height: 1.6, color: isDarkMode ? Colors.white70 : Colors.grey.shade400)),
+                  Wrap(
+                    runSpacing: 10,
+                    spacing: 10,
+                    children: archetypes,),
+                ],
               ),
             ),
           ],
