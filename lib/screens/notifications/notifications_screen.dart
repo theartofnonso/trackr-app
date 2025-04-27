@@ -147,6 +147,9 @@ class _NotificationsScreenScreenState extends State<NotificationsScreenScreen> {
         context: context,
         child: _SahhaSensorsRequestScreen(onPress: () {
           SahhaFlutter.enableSensors(_sensors).then((value) {
+            if(mounted) {
+              Navigator.of(context).pop();
+            }
             setState(() {
               _sensorStatus = value;
             });
@@ -198,7 +201,7 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(gradient: themeGradient(context: context)),
         child: SafeArea(
-          minimum: const EdgeInsets.symmetric(horizontal: 10),
+          minimum: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
