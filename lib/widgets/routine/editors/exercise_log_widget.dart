@@ -667,7 +667,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final readinessScore = SharedPrefs().readinessScore;
     final readinessTier = tierForScore(score: readinessScore / 100);
-    final lowReadiness = readinessScore > 0 && readinessTier != RecoveryTier.optimal;
+    final isLowReadiness = readinessScore > 0 && readinessTier != RecoveryTier.optimal;
 
     return Scaffold(
       appBar: AppBar(
@@ -700,7 +700,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
         ],
       ),
-      floatingActionButtonLocation: !isKeyboardOpen && lowReadiness ? null : FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: !isKeyboardOpen && isLowReadiness ? null : FloatingActionButtonLocation.centerDocked,
       floatingActionButton: isKeyboardOpen
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -819,7 +819,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     : SetsListview(type: exerciseType, sets: sets),
                 if (_errorMessages.isNotEmpty && _errorMessages.length > 1) DepthStack(children: errorWidgets),
                 if (_errorMessages.isNotEmpty && _errorMessages.length == 1) errorWidgets.first,
-                if (lowReadiness)
+                if (isLowReadiness)
                   TransparentInformationContainerLite(
                       content: "Tap for training recommendations tailored to your readiness.",
                       useOpacity: true,
