@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/enums/routine_editor_type_enums.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
 
 import '../../../colors.dart';
+import '../../../dtos/exercise_log_dto.dart';
+import '../../../enums/routine_editor_type_enums.dart';
 import '../../../utils/dialog_utils.dart';
+import '../../../utils/navigation_utils.dart';
 import '../editors/exercise_log_widget.dart';
 
-class ExerciseLogLiteWidget extends StatelessWidget {
+class ExerciseLogGridItemWidget extends StatelessWidget {
   final RoutineEditorMode editorType;
   final ExerciseLogDto exerciseLogDto;
   final ExerciseLogDto? superSet;
@@ -22,15 +22,15 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
   final bool isPastRoutine;
 
-  const ExerciseLogLiteWidget(
+  const ExerciseLogGridItemWidget(
       {super.key,
-      this.editorType = RoutineEditorMode.edit,
+      required this.editorType,
       required this.exerciseLogDto,
       this.superSet,
-      required this.onSuperSet,
-      required this.onRemoveSuperSet,
       required this.onRemoveLog,
       required this.onReplaceLog,
+      required this.onSuperSet,
+      required this.onRemoveSuperSet,
       this.isPastRoutine = false});
 
   @override
@@ -40,7 +40,7 @@ class ExerciseLogLiteWidget extends StatelessWidget {
 
     final superSetExerciseDto = superSet;
 
-    final checkChildren = exerciseLogDto.sets
+    final children = exerciseLogDto.sets
         .map((setDto) => FaIcon(
               setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
               color: isPastRoutine && setDto.isNotEmpty()
@@ -55,50 +55,51 @@ class ExerciseLogLiteWidget extends StatelessWidget {
       onTap: () {
         navigateWithSlideTransition(
             context: context,
-            child: ExerciseLogWidget(exerciseLogId: exerciseLogDto.exercise.id, editorType: editorType));
+            child: ExerciseLogWidget(
+              exerciseLogId: exerciseLogDto.exercise.id,
+              editorType: editorType,
+            ));
       },
+      onLongPress: () => _showBottomSheet(context: context),
       child: Container(
-        padding: EdgeInsets.only(left: 12, bottom: 12, top: superSetExerciseDto != null ? 5 : 0),
-        decoration: BoxDecoration(
-          color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, // Set the background color
-          borderRadius: BorderRadius.circular(5), // Set the border radius to make it rounded
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
+          child: Column(spacing: 12, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(exerciseLogDto.exercise.name,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                    if (superSetExerciseDto != null)
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.link,
-                            size: 10,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(superSetExerciseDto.exercise.name, style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
-                  ],
-                ),
-                IconButton(onPressed: () => _showBottomSheet(context: context), icon: FaIcon(Icons.more_horiz_rounded))
+                Text(exerciseLogDto.exercise.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                if (superSetExerciseDto != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.link,
+                          size: 10,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                            child: Text(superSetExerciseDto.exercise.name,
+                                overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall)),
+                      ],
+                    ),
+                  ),
               ],
             ),
+            const Spacer(),
             Wrap(
               spacing: 8,
-              children: checkChildren,
+              runSpacing: 8,
+              children: children,
             ),
-          ],
-        ),
-      ),
+          ])),
     );
   }
 

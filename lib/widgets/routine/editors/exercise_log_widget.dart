@@ -819,7 +819,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       }
                     : SetsListview(type: exerciseType, sets: sets),
                 if(_errorMessages.isNotEmpty) DepthStack(children: errorWidgets),
-                if (isLowReadiness)
+                if (isLowReadiness && widget.editorType == RoutineEditorMode.log)
                   TransparentInformationContainerLite(
                       content: "Tap for training recommendations tailored to your readiness.",
                       useOpacity: true,

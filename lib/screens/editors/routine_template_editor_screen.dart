@@ -19,7 +19,7 @@ import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
+import '../../widgets/routine/editors/exercise_log_grid_item.dart';
 import '../../widgets/weight_plate_calculator.dart';
 
 class RoutineTemplateEditorScreen extends StatefulWidget {
@@ -237,6 +237,22 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
+    final children = exerciseTemplates.map((exerciseLog) {
+      return ExerciseLogGridItemWidget(
+        editorType: RoutineEditorMode.edit,
+        exerciseLogDto: exerciseLog,
+        superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseTemplates),
+        onRemoveSuperSet: (String superSetId) {
+          exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+        },
+        onRemoveLog: () {
+          exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+        },
+        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+      );
+    }).toList();
+
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -324,28 +340,14 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
                     ),
                     if (exerciseTemplates.isNotEmpty)
                       Expanded(
-                        child: ListView.separated(
-                          itemBuilder: (BuildContext context, int index) {
-                            final exerciseTemplate = exerciseTemplates[index];
-                            return ExerciseLogLiteWidget(
-                              editorType: RoutineEditorMode.log,
-                              exerciseLogDto: exerciseTemplate,
-                              superSet: whereOtherExerciseInSuperSet(
-                                  firstExercise: exerciseTemplate, exercises: exerciseTemplates),
-                              onRemoveSuperSet: (String superSetId) {
-                                exerciseLogController.removeSuperSet(superSetId: exerciseTemplate.superSetId);
-                              },
-                              onRemoveLog: () {
-                                exerciseLogController.removeExerciseLog(logId: exerciseTemplate.id);
-                              },
-                              onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseTemplate),
-                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseTemplate),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(height: 12);
-                          },
-                          itemCount: exerciseTemplates.length,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: GridView.count(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1,
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                              children: children),
                         ),
                       ),
                     if (exerciseTemplates.isNotEmpty)

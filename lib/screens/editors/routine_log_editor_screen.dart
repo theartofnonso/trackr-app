@@ -14,7 +14,7 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
-import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
+import 'package:tracker_app/widgets/routine/editors/exercise_log_grid_item.dart';
 import 'package:tracker_app/widgets/timers/stopwatch_timer.dart';
 
 import '../../colors.dart';
@@ -249,6 +249,22 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     final readiness = SharedPrefs().readinessScore;
 
+    final children = exerciseLogs.map((exerciseLog) {
+      return ExerciseLogGridItemWidget(
+        editorType: widget.mode,
+        exerciseLogDto: exerciseLog,
+        superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
+        onRemoveSuperSet: (String superSetId) {
+          exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+        },
+        onRemoveLog: () {
+          exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+        },
+        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+      );
+    }).toList();
+
     return PopScope(
         canPop: false,
         child: Scaffold(
@@ -332,31 +348,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
-                        child: ListView.separated(
-                          itemBuilder: (BuildContext context, int index) {
-                            final exerciseLog = exerciseLogs[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: ExerciseLogLiteWidget(
-                                editorType: widget.mode,
-                                exerciseLogDto: exerciseLog,
-                                superSet:
-                                    whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
-                                onRemoveSuperSet: (String superSetId) {
-                                  exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
-                                },
-                                onRemoveLog: () {
-                                  exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                                },
-                                onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                                onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(height: 12);
-                          },
-                          itemCount: exerciseLogs.length,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: GridView.count(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1,
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                              children: children),
                         ),
                       ),
                     if (exerciseLogs.isNotEmpty)

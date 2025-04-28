@@ -20,7 +20,7 @@ import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/routine/editors/exercise_log_widget_lite.dart';
+import '../../widgets/routine/editors/exercise_log_grid_item.dart';
 import '../../widgets/weight_plate_calculator.dart';
 
 class PastRoutineLogEditorScreen extends StatefulWidget {
@@ -200,12 +200,28 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
+    final children = exerciseLogs.map((exerciseLog) {
+      return ExerciseLogGridItemWidget(
+        editorType: RoutineEditorMode.edit,
+        isPastRoutine: true,
+        exerciseLogDto: exerciseLog,
+        superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
+        onRemoveSuperSet: (String superSetId) {
+          exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
+        },
+        onRemoveLog: () {
+          exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
+        },
+        onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
+        onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+      );
+    }).toList();
+
     return PopScope(
       canPop: false,
       child: Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong), onPressed: _checkForUnsavedChanges),
+            leading: IconButton(icon: const FaIcon(FontAwesomeIcons.arrowLeftLong), onPressed: _checkForUnsavedChanges),
             actions: [
               IconButton(onPressed: _selectExercisesInLibrary, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
               if (exerciseLogs.length > 1)
@@ -288,29 +304,14 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                     ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
-                        child: ListView.separated(
-                          itemBuilder: (BuildContext context, int index) {
-                            final exerciseLog = exerciseLogs[index];
-                            return ExerciseLogLiteWidget(
-                              isPastRoutine: true,
-                              editorType: RoutineEditorMode.edit,
-                              exerciseLogDto: exerciseLog,
-                              superSet:
-                                  whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs),
-                              onRemoveSuperSet: (String superSetId) {
-                                exerciseLogController.removeSuperSet(superSetId: exerciseLog.superSetId);
-                              },
-                              onRemoveLog: () {
-                                exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
-                              },
-                              onSuperSet: () => _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
-                              onReplaceLog: () => _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(height: 12);
-                          },
-                          itemCount: exerciseLogs.length,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: GridView.count(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1,
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                              children: children),
                         ),
                       ),
                     if (exerciseLogs.isNotEmpty)
