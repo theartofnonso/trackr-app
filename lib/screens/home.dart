@@ -130,17 +130,46 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void _userSetup() {
-    Amplify.Auth.getCurrentUser().then((authUser) {
-      final signInDetails = authUser.signInDetails.toJson();
-      final userId = authUser.userId;
-      SharedPrefs().userId = userId;
-      SharedPrefs().userEmail = (signInDetails["username"]?.toString() ?? '');
-      Posthog().identify(userId: userId);
-      authenticateSahhaUser(userId: userId);
-      _loadAppData();
-    });
+  Future<void> _userSetup() async {
+    try {
+      // ── 1. Get the signed-in Amplify user ────────────────────────────────
+      final authUser = await Amplify.Auth.getCurrentUser();
+      final userId   = authUser.userId;
+      final email    = authUser.signInDetails.toJson()['username']?.toString() ?? '';
 
+      // ── 2. Persist to SharedPrefs & analytics ─────────────────────────────
+      final prefs = SharedPrefs();
+      prefs
+        ..userId    = userId
+        ..userEmail = email;
+
+      Posthog().identify(userId: userId);
+
+      _handleSahhaAuth(userId);
+
+      _loadAppData();
+    }
+
+    // Amplify-specific failures
+    on AuthException catch (e, st) {
+      debugPrint('[UserSetup] Amplify Auth error: ${e.message}');
+      debugPrintStack(stackTrace: st);
+    }
+
+    // Anything else
+    catch (e, st) {
+      debugPrint('[UserSetup] unexpected error: $e');
+      debugPrintStack(stackTrace: st);
+    }
+  }
+
+  /// Wrapper that authenticates with Sahha and, if successful,
+  /// immediately fetches the readiness score.
+  Future<void> _handleSahhaAuth(String userId) async {
+    final ok = await authenticateSahhaUser(userId: userId);
+    if (ok) {
+      _getSahhaReadinessScore();
+    }
   }
 
   void _loadCachedLog() {
@@ -197,7 +226,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkSahhaSensors();
-      _getSahhaReadinessScore();
     });
 
     _loadCachedLog();

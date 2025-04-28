@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 
 import '../sahha_credentials.dart';
@@ -26,10 +27,39 @@ void configureSahha() {
       .catchError((error, stackTrace) => {debugPrint('Sahha configuration error: $error')});
 }
 
-void authenticateSahhaUser({required String userId}) {
-  SahhaFlutter.authenticate(appId: sahhaAppId, appSecret: sahhaAppSecret, externalId: userId)
-      .then((success) => {debugPrint('Sahha user authenticated: $success')})
-      .catchError((error, stackTrace) => {debugPrint('Sahha user authentication error: $error')});
+/// Authenticates the current user with the Sahha SDK and
+/// returns `true` when the call succeeds *and* the SDK
+/// reports the login as successful.
+///
+/// All failures (network, SDK, platform) are swallowed and
+/// logged; the function then returns `false`.
+Future<bool> authenticateSahhaUser({
+  required String userId,
+}) async {
+  try {
+    final isAuthenticated = await SahhaFlutter.authenticate(
+      appId: sahhaAppId,
+      appSecret: sahhaAppSecret,
+      externalId: userId,
+    );
+
+    debugPrint('[Sahha] authenticate("$userId") → $isAuthenticated');
+    return isAuthenticated;
+  }
+
+  // SDK / channel errors
+  on PlatformException catch (e, st) {
+    debugPrint('[Sahha] PlatformException • ${e.code}: ${e.message}');
+    debugPrintStack(stackTrace: st);
+  }
+
+  // Anything else (network issues, bad config, etc.)
+  catch (e, st) {
+    debugPrint('[Sahha] unexpected error: $e');
+    debugPrintStack(stackTrace: st);
+  }
+
+  return false;
 }
 
 void deAuthenticateSahhaUser() {
