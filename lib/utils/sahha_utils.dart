@@ -5,6 +5,18 @@ import 'package:sahha_flutter/sahha_flutter.dart';
 
 import '../sahha_credentials.dart';
 
+
+final sahhaSensors = [
+  SahhaSensor.steps,
+  SahhaSensor.sleep,
+  SahhaSensor.exercise,
+  SahhaSensor.heart_rate_variability_rmssd,
+  SahhaSensor.heart_rate_variability_sdnn,
+  SahhaSensor.resting_heart_rate,
+  SahhaSensor.heart_rate,
+];
+
+
 void configureSahha() {
   // Use custom values
   SahhaFlutter.configure(

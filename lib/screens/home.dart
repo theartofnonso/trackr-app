@@ -168,6 +168,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     Provider.of<ExerciseAndRoutineController>(context, listen: false).getSahhaReadinessScore();
   }
 
+  void _checkSahhaSensors() async {
+    SahhaFlutter.enableSensors(sahhaSensors).then((value) {
+
+      setState(() {
+        _sensorStatus = value;
+      });
+
+    }).catchError((error, stackTrace) {
+      debugPrint(error.toString());
+    });
+  }
+
   void _navigateToNotificationHome() {
     navigateWithSlideTransition(context: context, child: NotificationsScreen(onSahhaSensorStatusUpdate: (SahhaSensorStatus sensorStatus) {
       setState(() {
@@ -194,6 +206,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkSahhaSensors();
       _getSahhaReadinessScore();
     });
 
@@ -215,6 +228,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     /// Uncomment this to enable notifications
     if (state == AppLifecycleState.resumed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkSahhaSensors();
         _getSahhaReadinessScore();
       });
     }

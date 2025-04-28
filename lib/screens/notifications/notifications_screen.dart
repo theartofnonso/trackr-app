@@ -10,6 +10,7 @@ import 'package:tracker_app/widgets/icons/apple_health_icon.dart';
 
 import '../../colors.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/sahha_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/icons/google_health_icon.dart';
 
@@ -26,16 +27,6 @@ class NotificationsScreen extends StatefulWidget {
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
   SahhaSensorStatus _sensorStatus = SahhaSensorStatus.pending;
-
-  final _sensors = [
-    SahhaSensor.steps,
-    SahhaSensor.sleep,
-    SahhaSensor.exercise,
-    SahhaSensor.heart_rate_variability_rmssd,
-    SahhaSensor.heart_rate_variability_sdnn,
-    SahhaSensor.resting_heart_rate,
-    SahhaSensor.heart_rate,
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +81,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   void _getSahhaSensorStatus() {
     // Get status of `steps` and `sleep` sensors
-    SahhaFlutter.getSensorStatus(_sensors).then((value) {
+    SahhaFlutter.getSensorStatus(sahhaSensors).then((value) {
       setState(() {
         _sensorStatus = value;
       });
@@ -103,7 +94,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     await navigateWithSlideTransition(
         context: context,
         child: _SahhaSensorsRequestScreen(onPress: () {
-          SahhaFlutter.enableSensors(_sensors).then((value) {
+          SahhaFlutter.enableSensors(sahhaSensors).then((value) {
             if (mounted) {
               Navigator.of(context).pop();
             }
