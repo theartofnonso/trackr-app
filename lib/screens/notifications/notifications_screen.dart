@@ -25,7 +25,7 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  SahhaSensorStatus _sensorStatus = SahhaSensorStatus.unavailable;
+  SahhaSensorStatus _sensorStatus = SahhaSensorStatus.pending;
 
   final _sensors = [
     SahhaSensor.steps,
@@ -62,7 +62,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: hasPendingActions
               ? Column(
                   children: [
-                    if (_sensorStatus == SahhaSensorStatus.pending)
+                    if (hasPendingActions)
                       ListTile(
                         onTap: _enableSahhaSensors,
                         leading: FaIcon(
