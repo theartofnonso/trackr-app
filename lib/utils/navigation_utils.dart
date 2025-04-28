@@ -55,10 +55,8 @@ Future<void> navigateToRoutineLogEditor({required BuildContext context, required
   final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
   if (log != null) {
     if (context.mounted) {
-      final readiness = SharedPrefs().readinessScore;
-      final logWithReadiness = log.copyWith(readinessScore: readiness);
       context
-          .push(RoutineLogScreen.routeName, extra: {"log": logWithReadiness, "showSummary": true, "isEditable": true});
+          .push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true, "isEditable": true});
     }
   }
 }

@@ -321,7 +321,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
     if (result != null) {
       if (mounted) {
         final log = result.toLog();
-        final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+        final readiness = SharedPrefs().readinessScore;
+        final logWithReadiness = log.copyWith(readinessScore: readiness);
+        final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);
         }

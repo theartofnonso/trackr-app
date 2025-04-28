@@ -313,7 +313,10 @@ Widget getTrendIcon({required Trend trend}) {
   };
 }
 
-void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
+void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
+
+  final readiness = SharedPrefs().readinessScore;
+
   final log = RoutineLogDto(
       id: "",
       templateId: "",
@@ -323,13 +326,14 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",
+      readinessScore: readiness,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 
-  if (context.mounted) {
+
     final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
     navigateToRoutineLogEditor(context: context, arguments: arguments);
-  }
+
 }
 
 bool isOutsideReasonableRange(List<num> numbers, num newNumber,

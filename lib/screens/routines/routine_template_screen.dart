@@ -248,7 +248,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           children: [
                             ChipOne(
                                 label:
-                                "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                    "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
                                 color: vibrantGreen,
                                 child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen)),
                             Text(
@@ -504,14 +504,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
+  void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) {
     final template = _template;
     if (template != null) {
+      final readiness = SharedPrefs().readinessScore;
       final log = template.toLog();
-      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
-      if (mounted) {
-        navigateToRoutineLogEditor(context: context, arguments: arguments);
-      }
+      final logWithReadiness = log.copyWith(readinessScore: readiness);
+      final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
+      navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
 
@@ -602,8 +602,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               title: Text(
                 "Copy as Link",
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  overflow: TextOverflow.ellipsis,
-                ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                 maxLines: 1,
               ),
               subtitle: Text(workoutLink),
@@ -690,44 +690,44 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ),
           planDto != null
               ? ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.minus,
-              size: 18,
-              color: Colors.red,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Remove from plan",
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
-            onTap: () {
-              Navigator.of(context).pop();
-              showBottomSheetWithMultiActions(
-                  context: context,
-                  title: "Remove from plan?",
-                  description: "Are you sure you want to remove this workout from ${planDto.name}?",
-                  leftAction: Navigator.of(context).pop,
-                  rightAction: () {
-                    context.pop();
-                    _removeFromPlan();
+                  contentPadding: EdgeInsets.zero,
+                  leading: const FaIcon(
+                    FontAwesomeIcons.minus,
+                    size: 18,
+                    color: Colors.red,
+                  ),
+                  horizontalTitleGap: 6,
+                  title: Text("Remove from plan",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    showBottomSheetWithMultiActions(
+                        context: context,
+                        title: "Remove from plan?",
+                        description: "Are you sure you want to remove this workout from ${planDto.name}?",
+                        leftAction: Navigator.of(context).pop,
+                        rightAction: () {
+                          context.pop();
+                          _removeFromPlan();
+                        },
+                        leftActionLabel: 'Cancel',
+                        rightActionLabel: 'Remove',
+                        isRightActionDestructive: true);
                   },
-                  leftActionLabel: 'Cancel',
-                  rightActionLabel: 'Remove',
-                  isRightActionDestructive: true);
-            },
-          )
+                )
               : ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.plus,
-              size: 18,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Add to plan", style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              _showPlanPicker();
-            },
-          ),
+                  contentPadding: EdgeInsets.zero,
+                  leading: const FaIcon(
+                    FontAwesomeIcons.plus,
+                    size: 18,
+                  ),
+                  horizontalTitleGap: 6,
+                  title: Text("Add to plan", style: Theme.of(context).textTheme.bodyLarge),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _showPlanPicker();
+                  },
+                ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const FaIcon(
