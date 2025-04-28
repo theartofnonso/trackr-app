@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
@@ -20,15 +18,10 @@ import 'package:tracker_app/widgets/timers/stopwatch_timer.dart';
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
-import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../openAI/open_ai.dart';
-import '../../openAI/open_ai_response_format.dart';
 import '../../shared_prefs.dart';
-import '../../strings/ai_prompts.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/notifications_utils.dart';
-import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -195,40 +188,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   void _navigateBack({RoutineLogDto? routineLog}) async {
-    if (widget.mode == RoutineEditorMode.log) {
-      final log = routineLog;
-      if (log != null) {
-        if (Platform.isIOS) {
-          _generateReport(routineLog: log);
-        }
-      }
-    }
     context.pop(routineLog);
-  }
-
-  void _generateReport({required RoutineLogDto routineLog}) async {
-    String instruction = prepareLogInstruction(context: context, routineLog: routineLog);
-
-    runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
-        .then((response) {
-      if (response != null) {
-        Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
-
-        FlutterLocalNotificationsPlugin().show(
-            900,
-            "${routineLog.name} report is ready",
-            "Your report is now ready for review",
-            const NotificationDetails(
-              iOS: DarwinNotificationDetails(
-                  presentAlert: true,
-                  presentBadge: false,
-                  presentSound: false,
-                  presentBanner: true,
-                  interruptionLevel: InterruptionLevel.active),
-            ),
-            payload: jsonEncode({"report": response, "log": routineLog.id}));
-      }
-    });
   }
 
   @override

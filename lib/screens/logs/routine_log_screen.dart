@@ -5,12 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/https_utils.dart';
@@ -25,25 +22,19 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
-import '../../openAI/open_ai.dart';
-import '../../strings/ai_prompts.dart';
 import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
-import '../../widgets/ai_widgets/trkr_information_container.dart';
 import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/icons/custom_icon.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../AI/routine_log_report_screen.dart';
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
@@ -281,12 +272,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                       fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                             ],
                           ),
-                        if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
-                          TRKRInformationContainer(
-                              ctaLabel: "Ask for feedback",
-                              description:
-                                  "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                              onTap: () => _generateReport(log: updatedLog)),
                         ExerciseLogListView(
                             exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
                         const SizedBox(
@@ -300,38 +285,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
           ),
         ));
-  }
-
-  void _generateReport({required RoutineLogDto log}) async {
-    _showLoadingScreen();
-
-    String instruction = prepareLogInstruction(context: context, routineLog: log);
-
-    runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
-        .then((response) {
-      _hideLoadingScreen();
-      if (response != null) {
-        Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
-        if (mounted) {
-          // Deserialize the JSON string
-          Map<String, dynamic> json = jsonDecode(response);
-
-          // Create an instance of ExerciseLogsResponse
-          ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
-          navigateWithSlideTransition(
-              context: context,
-              child: RoutineLogReportScreen(
-                report: report,
-                routineLog: log,
-              ));
-        }
-      }
-    }).catchError((e) {
-      _hideLoadingScreen();
-      if (mounted) {
-        showSnackbar(context: context, message: "Oops! I am unable to generate your ${log.name} report");
-      }
-    });
   }
 
   void _loadData() {
