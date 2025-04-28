@@ -304,7 +304,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                           alignmentGeometry: Alignment.center,
                           subtitle: getReadinessSummary(readinessScore: readiness),
                           color: Colors.black,
-                          onTap: () {},
                         ),
                       ),
                     if (exerciseLogs.isNotEmpty)

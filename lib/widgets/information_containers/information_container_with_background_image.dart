@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// ---------------------------------------------------------------------------
 ///  MembershipPromoCard
@@ -14,10 +15,11 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
     super.key,
     required this.image,
     required this.subtitle,
-    required this.onTap,
+    this.onTap,
     required this.color,
     this.height = 160,
-    this.borderRadius = 16, this.alignmentGeometry,
+    this.borderRadius = 16,
+    this.alignmentGeometry,
   });
 
   /// Background image (use AssetImage, NetworkImage, etc.).
@@ -27,7 +29,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
   final String subtitle;
 
   /// Called when the user taps anywhere on the card.
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// Fixed height of the card; width stretches to parent.
   final double height;
@@ -41,6 +43,8 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final callback = onTap;
+
     final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
@@ -76,39 +80,44 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // 3️⃣ Text + arrow
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    // Text column expands; arrow stays fixed size.
-                    Expanded(
-                      child: Text(
-                        subtitle,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.9),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // Text column expands; arrow stays fixed size.
+                      Expanded(
+                        child: Text(
+                          subtitle,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            height: 1.8,
+                            color: Colors.white70,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Circle icon with chevron
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.chevron_right_rounded,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    )
-                  ],
+                      if (callback != null)
+                        Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(width: 12),
+                          // Circle icon with chevron
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const FaIcon(
+                              Icons.chevron_right_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),

@@ -824,10 +824,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       content: "Tap for training recommendations tailored to your readiness.",
                       useOpacity: true,
                       onTap: _showDeloadSets,
-                      trailing: FaIcon(
-                        FontAwesomeIcons.chevronRight,
-                        size: 16,
-                        color: isDarkMode ? Colors.white : Colors.black,
+                      trailing: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const FaIcon(
+                          Icons.chevron_right_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       )),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
