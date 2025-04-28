@@ -22,7 +22,6 @@ import '../screens/logs/routine_log_screen.dart';
 import '../screens/routines/routine_plan.dart';
 import '../screens/routines/routine_template_screen.dart';
 import '../screens/routines/routines_home.dart';
-import '../shared_prefs.dart';
 
 Future<ExerciseDto?> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {
