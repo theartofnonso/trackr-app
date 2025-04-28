@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class InformationContainerLite extends StatelessWidget {
+class TransparentInformationContainerLite extends StatelessWidget {
   final String content;
-  final Color? color;
   final RichText? richText;
   final void Function()? onTap;
   final bool useOpacity;
   final Widget? trailing;
 
-  const InformationContainerLite(
-      {super.key,
-      required this.content,
-      required this.color,
-      this.richText,
-      this.onTap,
-      this.useOpacity = false,
-      this.trailing});
+  const TransparentInformationContainerLite(
+      {super.key, required this.content, this.richText, this.onTap, this.useOpacity = false, this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -29,20 +22,22 @@ class InformationContainerLite extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-            color: isDarkMode ? color?.withValues(alpha: 0.1) : color, borderRadius: BorderRadius.circular(5)),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+            color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(5)),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 20,
           children: [
             Expanded(
                 child: richText ??
                     Text(content,
                         style: GoogleFonts.ubuntu(
-                            fontSize: 12,
+                            fontSize: 14,
                             height: 1.5,
-                            color: isDarkMode ? color : Colors.black,
-                            fontWeight: FontWeight.w600))),
-            if(trailingWidget != null) trailingWidget
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            fontWeight: FontWeight.w400))),
+            if (trailingWidget != null) trailingWidget
           ],
         ),
       ),

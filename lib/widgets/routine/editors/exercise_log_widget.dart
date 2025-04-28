@@ -37,6 +37,7 @@ import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
 import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
+import '../../information_containers/transparent_information_container_lite.dart';
 import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
@@ -660,12 +661,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               setState(() {
                 _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == error.index);
               });
-            }))
+            },
+            trailing: FaIcon(FontAwesomeIcons.squareXmark, color: Colors.black)))
         .toList();
 
     final readinessScore = SharedPrefs().readinessScore;
-
-    final inDeload = readinessScore > 0 && tierForScore(score: readinessScore / 100) != RecoveryTier.optimal;
+    final readinessTier = tierForScore(score: readinessScore / 100);
+    final lowReadiness = readinessScore > 0 && readinessTier != RecoveryTier.optimal;
 
     return Scaffold(
       appBar: AppBar(
@@ -698,9 +700,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           ),
         ],
       ),
-      floatingActionButtonLocation: !isKeyboardOpen && inDeload
-          ? FloatingActionButtonLocation.endDocked
-          : FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: !isKeyboardOpen && lowReadiness ? null : FloatingActionButtonLocation.centerDocked,
       floatingActionButton: isKeyboardOpen
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -728,15 +728,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 ],
               ),
             )
-          : inDeload
-              ? FloatingActionButton(
-                  backgroundColor: lowToHighIntensityColor(readinessScore / 100),
-                  heroTag: UniqueKey(),
-                  enableFeedback: true,
-                  onPressed: _showDeloadSets,
-                  child: FaIcon(FontAwesomeIcons.boltLightning, color: Colors.black),
-                )
-              : null,
+          : null,
       body: Container(
         padding: const EdgeInsets.only(top: 20),
         height: double.infinity,
@@ -827,6 +819,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     : SetsListview(type: exerciseType, sets: sets),
                 if (_errorMessages.isNotEmpty && _errorMessages.length > 1) DepthStack(children: errorWidgets),
                 if (_errorMessages.isNotEmpty && _errorMessages.length == 1) errorWidgets.first,
+                if (lowReadiness)
+                  TransparentInformationContainerLite(
+                      content: "Tap for training recommendations tailored to your readiness.",
+                      useOpacity: true,
+                      onTap: _showDeloadSets,
+                      trailing: FaIcon(
+                        FontAwesomeIcons.chevronRight,
+                        size: 16,
+                        color: isDarkMode ? Colors.white : Colors.black,
+                      )),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
                     if (withReps(type: exerciseType) &&
