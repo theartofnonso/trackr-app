@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/screens/AI/trkr_coach_chat_screen.dart';
 
@@ -70,19 +69,11 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
           minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
           bottom: false,
           child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.center, children: [
-            GestureDetector(
-              onTap: () => _switchToAIContext(context: context),
-              child: BackgroundInformationContainer(
-                image: 'images/lace.jpg',
-                containerColor: vibrantBlue,
-                content: "Need a head start on what to train? We’ve got you covered.",
-                textStyle: GoogleFonts.ubuntu(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withValues(alpha: 0.9),
-                ),
-                ctaContent: 'Describe your workout',
-              ),
+            InformationContainerWithBackgroundImage(
+              image: 'images/lace.jpg',
+              color: vibrantGreen,
+              subtitle: "Need a head start on what to train? We’ve got you covered. Describe your workout.",
+              onTap: _switchToAIContext,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -140,11 +131,11 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
     });
   }
 
-  void _switchToAIContext({required BuildContext context}) async {
+  void _switchToAIContext() async {
     final result =
         await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
-      if (context.mounted) {
+      if (mounted) {
         _saveTemplate(context: context, template: result);
       }
     }

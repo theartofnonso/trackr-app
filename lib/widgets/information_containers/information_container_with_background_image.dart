@@ -1,64 +1,115 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/widgets/buttons/solid_button_widget.dart';
 
-import '../../colors.dart';
+/// ---------------------------------------------------------------------------
+///  MembershipPromoCard
+/// ---------------------------------------------------------------------------
+///  Screenshot‑style promotional banner:
+///    • Background image (full‑bleed) with dark bottom gradient
+///    • Headline + body copy in the foreground (bottom‑left)
+///    • Chevron‑right icon in the foreground (bottom‑right)
+///    • Rounded corners, subtle drop‑shadow, tap callback
+/// ---------------------------------------------------------------------------
+class InformationContainerWithBackgroundImage extends StatelessWidget {
+  const InformationContainerWithBackgroundImage({
+    super.key,
+    required this.image,
+    required this.subtitle,
+    required this.onTap,
+    required this.color,
+    this.height = 160,
+    this.borderRadius = 16,
+  });
 
-class BackgroundInformationContainer extends StatelessWidget {
-  final String content;
-  final Color? containerColor;
-  final TextStyle? textStyle;
+  /// Background image (use AssetImage, NetworkImage, etc.).
   final String image;
-  final String ctaContent;
-  final double? height;
 
-  const BackgroundInformationContainer(
-      {super.key, required this.content, this.containerColor, this.textStyle, required this.image, required this.ctaContent, this.height = 120});
+  /// Descriptive copy under the headline.
+  final String subtitle;
+
+  /// Called when the user taps anywhere on the card.
+  final VoidCallback onTap;
+
+  /// Fixed height of the card; width stretches to parent.
+  final double height;
+
+  /// Corner radius.
+  final double borderRadius;
+
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    final color = containerColor ?? sapphireDark;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5),
-      child: SizedBox(
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
         height: height,
-        child: Stack(children: [
-          Image.asset(
-            image,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            alignment: Alignment.center,
-          ),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  color.withValues(alpha: 0.6),
-                  sapphireLighter.withValues(alpha: 0.5),
-                ],
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // 1️⃣ Background image
+              Image.asset(
+                image,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                alignment: Alignment.center,
               ),
-            ),
+              // 2️⃣ Gradient overlay (transparent → dark)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        color, // semi‑opaque dark
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // 3️⃣ Text + arrow
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Text column expands; arrow stays fixed size.
+                    Expanded(
+                      child: Text(
+                        subtitle,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // Circle icon with chevron
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.chevron_right_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              spacing: 4,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(content,
-                    style: textStyle ??
-                        GoogleFonts.ubuntu(
-                            fontSize: 12, height: 1.4, color: containerColor ?? Colors.white, fontWeight: FontWeight.w500)),
-                  SolidButtonWidget(label: ctaContent, buttonColor: containerColor),
-              ],
-            ),
-          )
-        ]),
+        ),
       ),
     );
   }

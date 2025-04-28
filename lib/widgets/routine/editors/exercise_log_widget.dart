@@ -478,7 +478,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         context: context,
         isScrollControlled: true,
         child: Column(spacing: 2, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text("Training Intensity", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
+          Text("Training Load", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
           Text(
               "Based on your readiness score of $readinessScore, we recommend this plan to keep you active, while giving your body time to fully recharge.",
               style: Theme.of(context)

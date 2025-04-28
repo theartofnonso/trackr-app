@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
@@ -63,19 +62,12 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
           minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
           bottom: false,
           child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            GestureDetector(
+            InformationContainerWithBackgroundImage(
+              image: 'images/lace.jpg',
+              color: vibrantGreen,
+              subtitle:
+                  "We analyze your training history to recommend plans tailored to your style. ${logs.isNotEmpty ? 'Get a personalised plan' : "Get a plan to start training"}",
               onTap: _runMessage,
-              child: BackgroundInformationContainer(
-                image: 'images/lace.jpg',
-                containerColor: vibrantGreen,
-                content: "We analyze your training history to recommend plans tailored to your style.",
-                textStyle: GoogleFonts.ubuntu(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withValues(alpha: 0.9),
-                ),
-                ctaContent: logs.isNotEmpty ? 'Get a personalised plan' : "Get a plan to start training",
-              ),
             ),
             plans.isNotEmpty
                 ? Expanded(
@@ -133,7 +125,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
 
     final stringBuffer = StringBuffer();
 
-    if(logs.isNotEmpty) {
+    if (logs.isNotEmpty) {
       for (final week in weeksInLastQuarter) {
         final startOfWeek = week.start;
         final endOfWeek = week.end;
@@ -169,7 +161,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     try {
       final json = await runMessageWithTools(
         systemInstruction: createRoutinePlanPrompt,
-        userInstruction: userInstruction.isNotEmpty ? userInstruction : "I am a new user with no training history or preference.",
+        userInstruction:
+            userInstruction.isNotEmpty ? userInstruction : "I am a new user with no training history or preference.",
       );
 
       if (json == null) {

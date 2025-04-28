@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
@@ -96,17 +95,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
+                InformationContainerWithBackgroundImage(
+                  image: 'images/boy_and_girl.jpg',
+                  subtitle: "Loving TRKR? Your feedback helps us grow and improve.",
+                  color: Colors.deepOrange,
                   onTap: _openStoreListing,
-                  child: BackgroundInformationContainer(
-                      image: 'images/boy_and_girl.jpg',
-                      containerColor: Colors.deepOrange,
-                      content: "Loving TRKR? Your feedback helps us grow and improve.",
-                      textStyle: GoogleFonts.ubuntu(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ), ctaContent: 'Tap to share the love!'),
                 ),
                 const SizedBox(
                   height: 20,
@@ -154,13 +147,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       WeightUnit.kg: SizedBox(
                           width: 30,
                           child: Text(WeightUnit.kg.display,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center)),
+                              style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                       WeightUnit.lbs: SizedBox(
                           width: 30,
                           child: Text(WeightUnit.lbs.display,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center)),
+                              style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                     },
                     onValueChanged: (WeightUnit? value) {
                       if (value != null) {
@@ -357,9 +348,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           } else {
             _hideLoadingScreen();
             if (mounted) {
-              showSnackbar(
-                  context: context,
-                  message: "Something went wrong. Please try again.");
+              showSnackbar(context: context, message: "Something went wrong. Please try again.");
             }
           }
         },

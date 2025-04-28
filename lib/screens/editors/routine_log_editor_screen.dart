@@ -14,7 +14,6 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_widget_lite.dart';
 import 'package:tracker_app/widgets/timers/stopwatch_timer.dart';
 
@@ -33,6 +32,7 @@ import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
+import '../../widgets/information_containers/information_container_with_background_image.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';
@@ -233,7 +233,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
@@ -323,11 +322,14 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       }),
                     if (readiness > 0)
                       Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: InformationContainerLite(
-                            useOpacity: true,
-                              content: getReadinessSummary(readinessScore: readiness),
-                              color: lowToHighIntensityColor(readiness / 100))),
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: InformationContainerWithBackgroundImage(
+                          image: "images/lace.jpg",
+                          subtitle: getReadinessSummary(readinessScore: readiness),
+                          color: lowToHighIntensityColor(readiness / 100),
+                          onTap: () {},
+                        ),
+                      ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: ListView.separated(
