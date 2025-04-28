@@ -36,7 +36,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
-  SahhaSensorStatus _sensorStatus = SahhaSensorStatus.unavailable;
+
+  SahhaSensorStatus _sensorStatus = SahhaSensorStatus.pending;
 
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
@@ -47,8 +48,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
 
     final hasPendingActions = _sensorStatus == SahhaSensorStatus.pending;
-
-    print(_sensorStatus);
 
     return Scaffold(
       appBar: AppBar(actions: [
