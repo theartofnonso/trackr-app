@@ -65,12 +65,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final latestDates = <String, DateTime>{};
 
     for (final log in logsToConsider) {
-      final name = log.name;
-      counts[name] = (counts[name] ?? 0) + 1;
+      final templateId = log.templateId;
+      counts[templateId] = (counts[templateId] ?? 0) + 1;
 
-      final currentLatest = latestDates[name];
+      final currentLatest = latestDates[templateId];
       if (currentLatest == null || log.createdAt.isAfter(currentLatest)) {
-        latestDates[name] = log.createdAt;
+        latestDates[templateId] = log.createdAt;
       }
     }
 
@@ -106,8 +106,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     /// Be notified of changes
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    final templates = exerciseAndRoutineController.templates;
-
     final logsForCurrentDay =
         exerciseAndRoutineController.whereLogsIsSameDay(dateTime: DateTime.now().withoutTime()).toList();
 
@@ -120,18 +118,18 @@ class _OverviewScreenState extends State<OverviewScreen> {
         .map((arch) => CustomWordMarkIcon(arch, color: Colors.white70))
         .toList();
 
-    List<RoutineLogDto> routineLogs = [];
-    for (final template in templates) {
-      final logs = exerciseAndRoutineController.whereLogsWithTemplateName(templateName: template.name).toList();
-      routineLogs.addAll(logs);
-    }
+    final templates = exerciseAndRoutineController.templates;
 
-    final predictedTemplateName = _predictTemplate(logs: routineLogs);
+    final lastQuarter = lastQuarterDateTimeRange();
 
-    final predictedTemplate = templates.firstWhereOrNull((template) => template.name == predictedTemplateName);
+    final logsInLastQuarter = exerciseAndRoutineController.whereLogsIsWithinRange(range: lastQuarter);
 
-    final hasTodayScheduleBeenLogged =
-        logsForCurrentDay.firstWhereOrNull((log) => log.name == predictedTemplate?.name) != null;
+    final predictedTemplateId = _predictTemplate(logs: logsInLastQuarter);
+
+    final predictedTemplate = templates.firstWhereOrNull((template) => template.id == predictedTemplateId);
+
+    final hasPredictedTemplateBeenLogged =
+        logsForCurrentDay.firstWhereOrNull((log) => log.id == predictedTemplate?.id) != null;
 
     final readiness = SharedPrefs().readinessScore;
 
@@ -152,7 +150,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
               child: predictedTemplate != null
-                  ? _ScheduledTitle(schedule: predictedTemplate, isLogged: hasTodayScheduleBeenLogged)
+                  ? _ScheduledTitle(schedule: predictedTemplate, isLogged: hasPredictedTemplateBeenLogged)
                   : const _NoScheduledTitle(),
             ),
             StaggeredGridTile.count(

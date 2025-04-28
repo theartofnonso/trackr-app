@@ -130,23 +130,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  ///add user stuff here for analytics instead
-  void _newUserSetup() async {
-    final authUser = await Amplify.Auth.getCurrentUser();
-    final signInDetails = authUser.signInDetails.toJson();
-    final userId = authUser.userId;
-    SharedPrefs().userId = userId;
-    SharedPrefs().userEmail = (signInDetails["username"]?.toString() ?? '');
-    Posthog().identify(userId: userId);
-    authenticateSahhaUser(userId: userId);
-    _loadAppData();
-  }
+  void _userSetup() {
+    Amplify.Auth.getCurrentUser().then((authUser) {
+      final signInDetails = authUser.signInDetails.toJson();
+      final userId = authUser.userId;
+      SharedPrefs().userId = userId;
+      SharedPrefs().userEmail = (signInDetails["username"]?.toString() ?? '');
+      Posthog().identify(userId: userId);
+      authenticateSahhaUser(userId: userId);
+      _loadAppData();
+    });
 
-  void _returningUserSetup()  {
-    final userId = SharedPrefs().userId;
-    Posthog().identify(userId: userId);
-    authenticateSahhaUser(userId: userId);
-    _loadAppData();
   }
 
   void _loadCachedLog() {
@@ -194,11 +188,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addObserver(this);
 
-    if (SharedPrefs().firstLaunch) {
-      _newUserSetup();
-    } else {
-      _returningUserSetup();
-    }
+    _userSetup();
 
     if (Platform.isIOS) {
       FlutterLocalNotificationsPlugin()
