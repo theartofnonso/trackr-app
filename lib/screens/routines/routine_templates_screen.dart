@@ -70,9 +70,9 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
           bottom: false,
           child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.center, children: [
             InformationContainerWithBackgroundImage(
-              image: 'images/lace.jpg',
-              color: vibrantGreen,
-              subtitle: "Need a head start on what to train? We’ve got you covered. Describe your workout.",
+              image: 'images/man_pushup.PNG',
+              color: Colors.black,
+              subtitle: "Need a head start on what to train? We’ve got you covered. Tap to describe your workout.",
               onTap: _switchToAIContext,
             ),
             Column(

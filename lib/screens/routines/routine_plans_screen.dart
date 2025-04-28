@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/utils/training_archetype_utils.dart';
@@ -63,10 +62,10 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
           bottom: false,
           child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
             InformationContainerWithBackgroundImage(
-              image: 'images/lace.jpg',
-              color: vibrantGreen,
+              image: 'images/man_coach.PNG',
+              color: Colors.black,
               subtitle:
-                  "We analyze your training history to recommend plans tailored to your style. ${logs.isNotEmpty ? 'Get a personalised plan' : "Get a plan to start training"}",
+                  "We analyze your training history to recommend plans tailored to your style. ${logs.isNotEmpty ? 'Tap to get a personalised plan' : "Tap for a plan to start training"}",
               onTap: _runMessage,
             ),
             plans.isNotEmpty

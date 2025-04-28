@@ -17,7 +17,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
     required this.onTap,
     required this.color,
     this.height = 160,
-    this.borderRadius = 16,
+    this.borderRadius = 16, this.alignmentGeometry,
   });
 
   /// Background image (use AssetImage, NetworkImage, etc.).
@@ -37,6 +37,8 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
 
   final Color color;
 
+  final AlignmentGeometry? alignmentGeometry;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -48,7 +50,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(12),
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -57,7 +59,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
                 image,
                 fit: BoxFit.cover,
                 width: double.infinity,
-                alignment: Alignment.center,
+                alignment: alignmentGeometry ?? Alignment.topCenter,
               ),
               // 2️⃣ Gradient overlay (transparent → dark)
               Positioned.fill(

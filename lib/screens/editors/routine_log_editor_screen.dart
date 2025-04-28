@@ -300,9 +300,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: InformationContainerWithBackgroundImage(
-                          image: "images/lace.jpg",
+                          image: "images/recovery_girl.PNG",
+                          alignmentGeometry: Alignment.center,
                           subtitle: getReadinessSummary(readinessScore: readiness),
-                          color: lowToHighIntensityColor(readiness / 100),
+                          color: Colors.black,
                           onTap: () {},
                         ),
                       ),
