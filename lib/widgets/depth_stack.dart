@@ -20,34 +20,21 @@ class DepthStack extends StatelessWidget {
     ],
   });
 
-  /// The widgets to paint. Must contain **≥ 1** entry.
   final List<Widget> children;
-
-  /// How far (in logical pixels) to drop the last child (positive = down)
   final double depthOffset;
-
-  /// Mirrors the same parameter on [Stack]
   final AlignmentGeometry alignment;
-
-  /// Same as [Stack.clipBehavior]
   final Clip clipBehavior;
-
-  /// Padding applied to all children except the last
   final EdgeInsetsGeometry basePadding;
-
-  /// Background color for the elevated last child
   final Color backgroundColor;
-
-  /// Border radius for the last child's container
   final BorderRadiusGeometry borderRadius;
-
-  /// Box shadows for the last child's container
   final List<BoxShadow> boxShadow;
 
   @override
   Widget build(BuildContext context) {
+    assert(children.isNotEmpty, 'DepthStack requires at least one child');
 
-    final baseChildren = children.sublist(0, children.length - 1);
+    final hasMultipleChildren = children.length > 1;
+    final baseChildren = hasMultipleChildren ? children.sublist(0, children.length - 1) : [];
     final lastChild = children.last;
 
     return Stack(
@@ -59,21 +46,34 @@ class DepthStack extends StatelessWidget {
           padding: basePadding,
           child: child,
         )),
-
-        // Elevated last child
-        Positioned(
-          left: 0,
-          right: 0,
-          top: depthOffset,
-          child: Container(
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: borderRadius,
-              boxShadow: boxShadow,
+        // Handle last child based on number of children
+        if (hasMultipleChildren)
+          Positioned(
+            left: 0,
+            right: 0,
+            top: depthOffset,
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: borderRadius,
+                boxShadow: boxShadow,
+              ),
+              child: lastChild,
             ),
-            child: lastChild,
+          )
+        else
+          Padding(
+            padding: basePadding,
+            child: Container(
+              margin: EdgeInsets.only(top: depthOffset),
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: borderRadius,
+                boxShadow: boxShadow,
+              ),
+              child: lastChild,
+            ),
           ),
-        ),
       ],
     );
   }

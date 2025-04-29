@@ -200,6 +200,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .toList();
 
     final isOutSideOfRange = isOutsideReasonableRange(previousReps, reps);
+
     if (isOutSideOfRange) {
       final message = _repsErrorMessage(reps: reps);
       _errorMessages.add(_ErrorMessage(index: index, message: message));
