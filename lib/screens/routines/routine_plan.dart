@@ -206,6 +206,8 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
   }
 
   void _showMenuBottomSheet() {
+    final plan = _plan;
+
     displayBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -222,7 +224,8 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 Navigator.of(context).pop();
                 //_navigateToRoutinePlanEditor();
               }),
-          ListTile(
+          if(plan?.id != defaultPlanId)
+            ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
                 FontAwesomeIcons.penToSquare,
@@ -234,7 +237,8 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 Navigator.of(context).pop();
                 _navigateToRoutinePlanEditor();
               }),
-          ListTile(
+          if(plan?.id != defaultPlanId)
+            ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const FaIcon(
               FontAwesomeIcons.trash,
@@ -245,8 +249,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
             title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
             onTap: () {
               Navigator.of(context).pop();
-
-              final plan = _plan;
 
               if (plan != null) {
                 showBottomSheetWithMultiActions(
