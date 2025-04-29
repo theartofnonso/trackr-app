@@ -531,6 +531,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             notes: template.notes,
             exerciseTemplates: exercises,
             owner: "",
+            planId: template.planId,
             createdAt: DateTime.now(),
             updatedAt: DateTime.now());
 
