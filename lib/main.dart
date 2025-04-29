@@ -25,7 +25,6 @@ import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.
 import 'package:tracker_app/repositories/amplify/amplify_routine_plan_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
-import 'package:tracker_app/screens/AI/routine_log_report_screen.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
@@ -38,8 +37,8 @@ import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/notifications/onboarding_flow_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
-import 'package:tracker_app/screens/routines/routine_template_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plans_screen.dart';
+import 'package:tracker_app/screens/routines/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/sahha_utils.dart';
@@ -48,7 +47,6 @@ import 'package:tracker_app/utils/theme/theme.dart';
 import 'amplifyconfiguration.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/appsync/routine_plan_dto.dart';
-import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_plan_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
@@ -62,46 +60,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void onDidReceiveNotificationResponse(NotificationResponse response) {
   final String? payload = response.payload;
   if (payload != null) {
-    Map<String, dynamic> json = jsonDecode(payload);
+    Map<String, dynamic> _ = jsonDecode(payload);
 
-    final routineLog = json["log"] as String;
-    final report = jsonDecode(json["report"]);
-
-    // Create an instance of ExerciseLogsResponse
-    ExercisePerformanceReport performanceReport = ExercisePerformanceReport.fromJson(report);
-
-    final context = navigatorKey.currentContext;
-
-    if (context == null) {
-      return;
-    }
-
-    final routineLogFound = Provider.of<ExerciseAndRoutineController>(context, // Prefer this if 'context' is not valid
-            listen: false)
-        .logWhereId(id: routineLog);
-
-    if (routineLogFound == null) {
-      // Handle the case where the routine log isn’t found
-      return;
-    }
-
-    navigatorKey.currentState?.push(PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => RoutineLogReportScreen(
-        report: performanceReport,
-        routineLog: routineLogFound,
-      ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(0.0, 1.0);
-        const end = Offset.zero;
-        const curve = Curves.ease;
-        final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        final offsetAnimation = animation.drive(tween);
-        return SlideTransition(
-          position: offsetAnimation,
-          child: child,
-        );
-      },
-    ));
+    /// Do nothing for now
   }
 }
 

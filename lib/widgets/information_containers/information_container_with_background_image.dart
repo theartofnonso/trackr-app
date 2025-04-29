@@ -17,8 +17,8 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
     required this.subtitle,
     this.onTap,
     required this.color,
-    this.height = 160,
-    this.borderRadius = 16,
+    this.height = 120,
+    this.borderRadius = 12,
     this.alignmentGeometry,
   });
 
@@ -54,7 +54,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(borderRadius),
           child: Stack(
             fit: StackFit.expand,
             children: [
