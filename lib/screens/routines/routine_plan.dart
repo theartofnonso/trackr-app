@@ -132,6 +132,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 routineTemplates.isNotEmpty
                     ? GridView.count(
                     shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
                     childAspectRatio: 1,
                     mainAxisSpacing: 10.0,
