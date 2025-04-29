@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../exercise_log_dto.dart';
@@ -42,7 +43,7 @@ class RoutineTemplateDto {
 
   factory RoutineTemplateDto.fromTemplate({required RoutineTemplate template}) {
     final json = jsonDecode(template.data);
-    final planId = json["planId"] ?? "";
+    final planId = json["planId"] ?? defaultPlanId;
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final exerciseTemplatesInJson = json["exercises"] as List<dynamic>;

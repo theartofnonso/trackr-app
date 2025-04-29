@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+import 'package:tracker_app/shared_prefs.dart';
+
 import '../../models/RoutinePlan.dart';
+
+const defaultPlanId = "DEFAULT_PLAN_ID";
 
 class RoutinePlanDto {
   final String id;
@@ -9,6 +13,8 @@ class RoutinePlanDto {
   final String owner;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  static final defaultPlan = RoutinePlanDto(id: defaultPlanId, name: "Other", notes: "This is your default plan", createdAt: DateTime.now(), updatedAt: DateTime.now(), owner: SharedPrefs().userId);
 
   RoutinePlanDto({
     required this.id,

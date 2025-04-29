@@ -20,8 +20,8 @@ import '../screens/editors/routine_plan_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/routines/routine_plan.dart';
+import '../screens/routines/routine_plans_screen.dart';
 import '../screens/routines/routine_template_screen.dart';
-import '../screens/routines/routines_home.dart';
 
 Future<ExerciseDto?> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {
@@ -87,7 +87,7 @@ void navigateToShareableScreen({required BuildContext context, required RoutineL
 }
 
 void navigateToRoutineHome({required BuildContext context}) {
-  context.push(RoutinesHomeScreen.routeName);
+  context.push(RoutinePlansScreen.routeName);
 }
 
 Future<void> navigateToSettings({required BuildContext context}) async {

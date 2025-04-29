@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
@@ -22,6 +24,7 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -45,13 +48,26 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
+
       final plans = List<RoutinePlanDto>.from(provider.plans);
 
       final logs = provider.logs;
 
-      final children = plans.map((plan) => RoutinePlanGridItemWidget(plan: plan)).toList();
+      final defaultPlanGridItem = RoutinePlanGridItemWidget(plan: RoutinePlanDto.defaultPlan);
+
+      final children = [defaultPlanGridItem, ...plans.map((plan) => RoutinePlanGridItemWidget(plan: plan))];
 
       return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
+              onPressed: context.pop,
+            ),
+            actions: [
+              IconButton(
+                  onPressed: _showMenuBottomSheet, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 28))
+            ],
+          ),
           body: Container(
         height: double.infinity,
         decoration: BoxDecoration(
@@ -107,6 +123,27 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
 
   void _showSnackbar(String message, {Widget? icon}) {
     showSnackbar(context: context, message: message);
+  }
+
+  void _showMenuBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.plus,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Create new workout plan", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              navigateToRoutinePlanEditor(context: context);
+            },
+          ),
+        ]));
   }
 
   void _runMessage() async {

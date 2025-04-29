@@ -39,7 +39,7 @@ import 'package:tracker_app/screens/notifications/onboarding_flow_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
 import 'package:tracker_app/screens/routines/routine_template_screen.dart';
-import 'package:tracker_app/screens/routines/routines_home.dart';
+import 'package:tracker_app/screens/routines/routine_plans_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/sahha_utils.dart';
@@ -225,9 +225,9 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: RoutinesHomeScreen.routeName,
+      path: RoutinePlansScreen.routeName,
       builder: (context, state) {
-        return RoutinesHomeScreen();
+        return RoutinePlansScreen();
       },
     ),
     GoRoute(

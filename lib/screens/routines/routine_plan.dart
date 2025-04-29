@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,12 +9,11 @@ import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
+import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_plan_arguments.dart';
-import '../../models/RoutinePlan.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/https_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -24,7 +21,9 @@ import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/icons/custom_icon.dart';
+import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../../widgets/routine/preview/routine_template_grid_item.dart';
+import '../AI/trkr_coach_chat_screen.dart';
 
 class RoutinePlanScreen extends StatefulWidget {
   static const routeName = '/routine_plan_screen';
@@ -99,44 +98,51 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
           child: SafeArea(
             minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
             bottom: false,
-            child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(plan.name, style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
-              Row(spacing: 12, children: [
-                ChipOne(
-                  label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
-                  color: vibrantGreen,
-                  child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen),
+            child: SingleChildScrollView(
+              child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(plan.name, style: GoogleFonts.ubuntu(fontSize: 20, height: 1.5, fontWeight: FontWeight.w900)),
+                Row(spacing: 12, children: [
+                  ChipOne(
+                    label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
+                    color: vibrantGreen,
+                    child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen),
+                  ),
+                  ChipOne(
+                      label: '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
+                      color: vibrantBlue,
+                      child: CustomIcon(FontAwesomeIcons.hashtag, color: vibrantBlue)),
+                ]),
+                Text(plan.notes.isNotEmpty ? plan.notes : "No notes",
+                    style: GoogleFonts.ubuntu(
+                        fontSize: 14,
+                        color: isDarkMode ? Colors.white70 : Colors.black,
+                        height: 1.8,
+                        fontWeight: FontWeight.w400)),
+                Calendar(
+                  onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
+                  logs: logs,
                 ),
-                ChipOne(
-                    label: '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
-                    color: vibrantBlue,
-                    child: CustomIcon(FontAwesomeIcons.hashtag, color: vibrantBlue)),
+                InformationContainerWithBackgroundImage(
+                  image: 'images/man_pushup.PNG',
+                  color: Colors.black,
+                  subtitle: "Need a head start on what to train? We’ve got you covered. Tap to describe your workout.",
+                  onTap: _switchToAIContext,
+                  alignmentGeometry: Alignment.center,
+                ),
+                routineTemplates.isNotEmpty
+                    ? GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    childAspectRatio: 1,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 10.0,
+                    children: children)
+                    : Expanded(
+                        child: const NoListEmptyState(
+                            message: "It might feel quiet now, but your workout templates will soon appear here."),
+                      ),
               ]),
-              Text(plan.notes.isNotEmpty ? plan.notes : "No notes",
-                  style: GoogleFonts.ubuntu(
-                      fontSize: 14,
-                      color: isDarkMode ? Colors.white70 : Colors.black,
-                      height: 1.8,
-                      fontWeight: FontWeight.w400)),
-              Calendar(
-                onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
-                logs: logs,
-              ),
-              routineTemplates.isNotEmpty
-                  ? Expanded(
-                      child: GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 2,
-                          childAspectRatio: 1,
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 10.0,
-                          children: children),
-                    )
-                  : Expanded(
-                      child: const NoListEmptyState(
-                          message: "It might feel quiet now, but your workout templates will soon appear here."),
-                    ),
-            ]),
+            ),
           ),
         ));
   }
@@ -207,6 +213,18 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
           ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
+                FontAwesomeIcons.solidSquarePlus,
+                size: 18,
+              ),
+              horizontalTitleGap: 6,
+              title: Text("Add new workout", style: Theme.of(context).textTheme.bodyLarge),
+              onTap: () {
+                Navigator.of(context).pop();
+                //_navigateToRoutinePlanEditor();
+              }),
+          ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const FaIcon(
                 FontAwesomeIcons.penToSquare,
                 size: 18,
               ),
@@ -250,29 +268,28 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         ]));
   }
 
+  void _switchToAIContext() async {
+    final result =
+    await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+    if (result != null) {
+      if (mounted) {
+        _saveTemplate(context: context, template: result);
+      }
+    }
+  }
+
+  void _saveTemplate({required BuildContext context, required RoutineTemplateDto template}) async {
+    final routineTemplate = template;
+    final templateController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    await templateController.saveTemplate(templateDto: routineTemplate);
+  }
+
   void _loadData() {
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _plan = exerciseAndRoutineController.planWhere(id: widget.id);
-    if (_plan == null) {
-      _loading = true;
-      getAPI(endpoint: "/routine-plans/${widget.id}").then((data) {
-        if (data.isNotEmpty) {
-          final json = jsonDecode(data);
-          final body = json["data"];
-          final routinePlan = body["getRoutinePlan"];
-          if (routinePlan != null) {
-            final plan = RoutinePlan.fromJson(routinePlan);
-            setState(() {
-              _loading = false;
-              _plan = RoutinePlanDto.toDto(plan);
-            });
-          } else {
-            setState(() {
-              _loading = false;
-            });
-          }
-        }
-      });
+    if (widget.id == defaultPlanId) {
+      _plan = RoutinePlanDto.defaultPlan;
+    } else {
+      final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+      _plan = exerciseAndRoutineController.planWhere(id: widget.id);
     }
   }
 
