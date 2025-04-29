@@ -223,22 +223,28 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateDuration(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet, notify: true);
   }
 
-  void _updateSetCheck({required int index, required SetDto setDto}) {
-    if (setDto.isEmpty()) {
+  void _updateSetCheck({required int index}) {
+
+    // 1. Pull the current version from provider, not from the parameter
+    final currentSet = Provider.of<ExerciseLogController>(context, listen: false)
+        .whereExerciseLog(exerciseId: _exerciseLog.id)
+        .sets[index];
+
+    if (currentSet.isEmpty()) {
       showSnackbar(context: context, message: "Mind taking a look at the set values and confirming they’re correct?");
       return;
     }
 
-    final checked = !setDto.checked;
-    final updatedSet = setDto.copyWith(checked: checked);
+    final checked = !currentSet.checked;
+    final updatedSet = currentSet.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
 
     _loadControllers();
 
-    final maxReps = switch (setDto.type) {
-      ExerciseType.weights => (setDto as WeightAndRepsSetDto).reps,
-      ExerciseType.bodyWeight => (setDto as RepsSetDto).reps,
+    final maxReps = switch (currentSet.type) {
+      ExerciseType.weights => (currentSet as WeightAndRepsSetDto).reps,
+      ExerciseType.bodyWeight => (currentSet as RepsSetDto).reps,
       ExerciseType.duration => 0,
     };
 
@@ -247,7 +253,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           context: context,
           child: _RPERatingSlider(
             maxReps: maxReps,
-            rpeRating: setDto.rpeRating.toDouble(),
+            rpeRating: currentSet.rpeRating.toDouble(),
             onSelectRating: (int rpeRating) {
               final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
               Provider.of<ExerciseLogController>(context, listen: false)
@@ -992,7 +998,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
   final List<WeightAndRepsSetDto> sets;
   final List<(TextEditingController, TextEditingController)> controllers;
   final void Function({required int index}) removeSet;
-  final void Function({required int index, required SetDto setDto}) updateSetCheck;
+  final void Function({required int index}) updateSetCheck;
   final void Function({required int index, required int reps, required SetDto setDto}) updateReps;
   final void Function({required int index, required double weight, required SetDto setDto}) updateWeight;
   final void Function({required SetDto setDto}) onTapWeightEditor;
@@ -1015,7 +1021,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
       return WeightsAndRepsSetRow(
         editorType: editorType,
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onCheck: () => updateSetCheck(index: index),
         onRemoved: () => removeSet(index: index),
         onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
         onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
@@ -1034,7 +1040,7 @@ class _RepsSetListView extends StatelessWidget {
   final List<RepsSetDto> sets;
   final List<TextEditingController> controllers;
   final void Function({required int index}) removeSet;
-  final void Function({required int index, required SetDto setDto}) updateSetCheck;
+  final void Function({required int index}) updateSetCheck;
   final void Function({required int index, required int reps, required SetDto setDto}) updateReps;
   final void Function() onTapRepsEditor;
 
@@ -1053,7 +1059,7 @@ class _RepsSetListView extends StatelessWidget {
       return RepsSetRow(
         editorType: editorType,
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onCheck: () => updateSetCheck(index: index),
         onRemoved: () => removeSet(index: index),
         onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
         onTapRepsEditor: () => onTapRepsEditor(),
@@ -1070,7 +1076,7 @@ class _DurationSetListView extends StatelessWidget {
   final List<DurationSetDto> sets;
   final List<DateTime> controllers;
   final void Function({required int index}) removeSet;
-  final void Function({required int index, required SetDto setDto}) updateSetCheck;
+  final void Function({required int index}) updateSetCheck;
   final void Function(
       {required int index,
       required Duration duration,
@@ -1091,7 +1097,7 @@ class _DurationSetListView extends StatelessWidget {
       return DurationSetRow(
         editorType: editorType,
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onCheck: () => updateSetCheck(index: index),
         onRemoved: () => removeSet(index: index),
         startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
         onUpdateDuration: (Duration duration, bool shouldCheck) =>

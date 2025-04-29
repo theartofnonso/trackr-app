@@ -78,7 +78,7 @@ class RoutineLogDto {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
-    final readinessScore = json["readinessScore"] ?? 0;
+    final readinessScore = json["readiness"] ?? 0;
     List<ExerciseLogDto> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       exerciseLogs = exerciseLogsInJson

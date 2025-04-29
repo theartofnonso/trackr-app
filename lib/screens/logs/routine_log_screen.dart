@@ -104,7 +104,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final trendSummary = _analyzeWeeklyTrends(volumes: allLoggedVolumesForTemplate);
 
-    final readiness = 0;
+    final readiness = log.readinessScore;
 
     return Scaffold(
         appBar: AppBar(
