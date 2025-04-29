@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 
@@ -21,7 +21,8 @@ final sahhaSensors = [
 void configureSahha() {
   // Use custom values
   SahhaFlutter.configure(
-    environment: SahhaEnvironment.sandbox,
+    environment: kReleaseMode
+        ? SahhaEnvironment.production : SahhaEnvironment.sandbox,
   ) // Required - .sandbox for testing
       .then((success) => {debugPrint('Sahha configured: $success')})
       .catchError((error, stackTrace) => {debugPrint('Sahha configuration error: $error')});
