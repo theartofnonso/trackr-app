@@ -14,7 +14,7 @@ class RoutinePlanDto {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  static final defaultPlan = RoutinePlanDto(id: defaultPlanId, name: "Other", notes: "This is your default plan", createdAt: DateTime.now(), updatedAt: DateTime.now(), owner: SharedPrefs().userId);
+  static final defaultPlan = RoutinePlanDto(id: defaultPlanId, name: "Your workouts", notes: "This is your default plan. If you’d like to organize your workouts into different plans, simply create a new one.", createdAt: DateTime.now(), updatedAt: DateTime.now(), owner: SharedPrefs().userId);
 
   RoutinePlanDto({
     required this.id,
