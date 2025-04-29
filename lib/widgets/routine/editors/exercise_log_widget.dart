@@ -224,37 +224,38 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index, required SetDto setDto}) {
-    if (setDto.isEmpty()) {
-      showSnackbar(context: context, message: "Mind taking a look at the set values and confirming they’re correct?");
-      return;
-    }
-
-    final checked = !setDto.checked;
-    final updatedSet = setDto.copyWith(checked: checked);
-    Provider.of<ExerciseLogController>(context, listen: false)
-        .updateSetCheck(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
-
-    _loadControllers();
-
-    final maxReps = switch (setDto.type) {
-      ExerciseType.weights => (setDto as WeightAndRepsSetDto).reps,
-      ExerciseType.bodyWeight => (setDto as RepsSetDto).reps,
-      ExerciseType.duration => 0,
-    };
-
-    if (checked) {
-      displayBottomSheet(
-          context: context,
-          child: _RPERatingSlider(
-            maxReps: maxReps,
-            rpeRating: setDto.rpeRating.toDouble(),
-            onSelectRating: (int rpeRating) {
-              final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
-              Provider.of<ExerciseLogController>(context, listen: false)
-                  .updateRpeRating(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSetWithRpeRating);
-            },
-          ));
-    }
+    displayBottomSheet(context: context, child: _WeightPicker(initial: 34), isScrollControlled: true);
+    // if (setDto.isEmpty()) {
+    //   showSnackbar(context: context, message: "Mind taking a look at the set values and confirming they’re correct?");
+    //   return;
+    // }
+    //
+    // final checked = !setDto.checked;
+    // final updatedSet = setDto.copyWith(checked: checked);
+    // Provider.of<ExerciseLogController>(context, listen: false)
+    //     .updateSetCheck(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
+    //
+    // _loadControllers();
+    //
+    // final maxReps = switch (setDto.type) {
+    //   ExerciseType.weights => (setDto as WeightAndRepsSetDto).reps,
+    //   ExerciseType.bodyWeight => (setDto as RepsSetDto).reps,
+    //   ExerciseType.duration => 0,
+    // };
+    //
+    // if (checked) {
+    //   displayBottomSheet(
+    //       context: context,
+    //       child: _RPERatingSlider(
+    //         maxReps: maxReps,
+    //         rpeRating: setDto.rpeRating.toDouble(),
+    //         onSelectRating: (int rpeRating) {
+    //           final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
+    //           Provider.of<ExerciseLogController>(context, listen: false)
+    //               .updateRpeRating(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSetWithRpeRating);
+    //         },
+    //       ));
+    // }
   }
 
   void _checkWeightRange({required double weight, required int index}) {
@@ -524,7 +525,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    
+
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -1287,3 +1288,141 @@ Map<int, String> _repToRPE = {
   9: "🤯 Near max — serious effort",
   10: "💀 All out — absolute limit",
 };
+
+class _WeightPicker extends StatefulWidget {
+  const _WeightPicker({required this.initial});
+
+  final double initial;
+
+  @override
+  State<_WeightPicker> createState() => _WeightPickerState();
+}
+
+class _WeightPickerState extends State<_WeightPicker> {
+  late String _buffer;
+  double get _current => double.tryParse(_buffer) ?? widget.initial;
+
+  @override
+  void initState() {
+    super.initState();
+    _buffer = widget.initial.toStringAsFixed(1);
+  }
+
+  void _append(String char) {
+    setState(() {
+      if (char == '⌫') {
+        if (_buffer.isNotEmpty) _buffer = _buffer.substring(0, _buffer.length - 1);
+        if (_buffer.isEmpty) _buffer = '0';
+      } else if (char == '-' && !_buffer.startsWith('-')) {
+        _buffer = '-$_buffer';
+      } else if (char == '.' && _buffer.contains('.')) {
+        // ignore duplicate decimal point
+      } else {
+        if (_buffer == '0') {
+          _buffer = char; // replace leading zero
+        } else {
+          _buffer += char;
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: MediaQuery.of(context).viewInsets, // handle keyboard cut-out
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag-handle
+          Container(
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(top: 8, bottom: 16),
+            decoration: BoxDecoration(
+              color: Colors.grey[700],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Minus | value | plus row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _StepperButton(
+                icon: Icons.remove,
+                onPressed: () => setState(() => _buffer =
+                    (_current - 0.5).clamp(0, double.infinity).toStringAsFixed(1)),
+              ),
+              Text(
+                _current.toStringAsFixed(1),
+                style: textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              _StepperButton(
+                icon: Icons.add,
+                onPressed: () =>
+                    setState(() => _buffer = (_current + 0.5).toStringAsFixed(1)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          // Numeric keypad (3×4)
+          GridView.count(
+            crossAxisCount: 3,
+            shrinkWrap: true,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 1.8,
+            children: [
+              ...['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫']
+                  .map(
+                    (key) => _KeypadButton(
+                  label: key,
+                  onTap: () => _append(key),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepperButton extends StatelessWidget {
+  const _StepperButton({required this.icon, required this.onPressed});
+
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => IconButton(
+    iconSize: 32,
+    splashRadius: 24,
+    onPressed: onPressed,
+    icon: Icon(icon),
+  );
+}
+
+class _KeypadButton extends StatelessWidget {
+  const _KeypadButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: Center(
+        child: label == '⌫'
+            ? const Icon(Icons.backspace_outlined, size: 24)
+            : Text(
+          label,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ),
+    );
+  }
+}

@@ -96,7 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InformationContainerWithBackgroundImage(
-                  image: 'images/black_girl.PNG',
+                  image: 'images/girl_green_grass.PNG',
                   subtitle: "Loving TRKR? Your feedback helps us grow and improve.",
                   color: Colors.black,
                   onTap: _openStoreListing,
