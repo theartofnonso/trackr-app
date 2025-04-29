@@ -74,6 +74,7 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
               color: Colors.black,
               subtitle: "Need a head start on what to train? We’ve got you covered. Tap to describe your workout.",
               onTap: _switchToAIContext,
+              alignmentGeometry: Alignment.center,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,

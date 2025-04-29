@@ -65,7 +65,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
               image: 'images/man_coach.PNG',
               color: Colors.black,
               subtitle:
-                  "We analyze your training history to recommend plans tailored to your style. ${logs.isNotEmpty ? 'Tap to get a personalised plan' : "Tap for a plan to start training"}",
+                  "We use your training history to recommend plans. ${logs.isNotEmpty ? 'Tap to get a personalised plan.' : "Tap for a plan to start training."}",
               onTap: _runMessage,
             ),
             plans.isNotEmpty

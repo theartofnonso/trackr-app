@@ -98,6 +98,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
                       if (callback != null)
                         Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           const SizedBox(width: 12),
                           // Circle icon with chevron
