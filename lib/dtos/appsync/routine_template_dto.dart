@@ -43,18 +43,19 @@ class RoutineTemplateDto {
 
   factory RoutineTemplateDto.fromTemplate({required RoutineTemplate template}) {
     final json = jsonDecode(template.data);
-    final planId = json["planId"] ?? defaultPlanId;
+    final String? rawPlanId = json['planId'] as String?;
+    final String planId = (rawPlanId?.isNotEmpty ?? false) ? rawPlanId! : defaultPlanId;
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
-    final exerciseTemplatesInJson = json["exercises"] as List<dynamic>;
+    final rawExerciseTemplates = json["exercises"] as List<dynamic>;
     List<ExerciseLogDto> exerciseTemplates = [];
-    if (exerciseTemplatesInJson.isNotEmpty && exerciseTemplatesInJson.first is String) {
-      exerciseTemplates = exerciseTemplatesInJson
+    if (rawExerciseTemplates.isNotEmpty && rawExerciseTemplates.first is String) {
+      exerciseTemplates = rawExerciseTemplates
           .map((json) => ExerciseLogDto.fromJson(
               routineLogId: template.id, json: jsonDecode(json), createdAt: template.createdAt.getDateTimeInUtc()))
           .toList();
     } else {
-      exerciseTemplates = exerciseTemplatesInJson
+      exerciseTemplates = rawExerciseTemplates
           .map((json) => ExerciseLogDto.fromJson(
               routineLogId: template.id, createdAt: template.createdAt.getDateTimeInUtc(), json: json))
           .toList();
