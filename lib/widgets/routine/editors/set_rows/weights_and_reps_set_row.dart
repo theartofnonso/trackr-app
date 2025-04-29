@@ -5,11 +5,9 @@ import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dar
 
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../set_check_button.dart';
-import '../set_delete_button.dart';
 
 class WeightsAndRepsSetRow extends StatelessWidget {
   final WeightAndRepsSetDto setDto;
-  final VoidCallback onRemoved;
   final VoidCallback onCheck;
   final RoutineEditorMode editorType;
   final void Function(int value) onChangedReps;
@@ -21,13 +19,13 @@ class WeightsAndRepsSetRow extends StatelessWidget {
   const WeightsAndRepsSetRow({
     super.key,
     required this.setDto,
-    required this.onRemoved,
     required this.onCheck,
     required this.onChangedReps,
     required this.onChangedWeight,
     required this.onTapWeightEditor,
     required this.onTapRepsEditor,
-    required this.controllers, required this.editorType,
+    required this.controllers,
+    required this.editorType,
   });
 
   @override
@@ -43,21 +41,17 @@ class WeightsAndRepsSetRow extends StatelessWidget {
           TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.black38, borderRadius: BorderRadius.circular(5)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-        0: const FixedColumnWidth(50),
-        1: const FlexColumnWidth(1),
-        2: const FlexColumnWidth(1),
-      }
+              0: const FixedColumnWidth(50),
+              1: const FlexColumnWidth(1),
+              2: const FlexColumnWidth(1),
+            }
           : <int, TableColumnWidth>{
-        0: const FixedColumnWidth(50),
-        1: const FlexColumnWidth(1),
-        2: const FlexColumnWidth(1),
-        3: const FixedColumnWidth(60),
-      },
+              1: const FlexColumnWidth(),
+              2: const FlexColumnWidth(),
+              3: const FixedColumnWidth(10),
+            },
       children: [
         TableRow(children: [
-          TableCell(
-              verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Center(child: SetDeleteButton(onDelete: onRemoved))),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: DoubleTextField(

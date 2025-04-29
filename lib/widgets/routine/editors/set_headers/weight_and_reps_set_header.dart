@@ -20,17 +20,12 @@ class WeightAndRepsSetHeader extends StatelessWidget {
               2: const FlexColumnWidth(1),
             }
           : <int, TableColumnWidth>{
-              0: const FixedColumnWidth(50),
               1: const FlexColumnWidth(1),
               2: const FlexColumnWidth(1),
               3: const FixedColumnWidth(60),
             },
       children: <TableRow>[
         TableRow(children: [
-          const TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: SizedBox.shrink(),
-          ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Text(firstLabel, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
