@@ -392,11 +392,7 @@ class _LogStreakTile extends StatelessWidget {
 
     final monthlyProgress = routineLogsByDay.length;
 
-    final color = monthlyProgress == 0
-        ? isDarkMode
-        ? Colors.white70.withValues(alpha: 0.1)
-        : Colors.grey.shade200
-        : lowToHighIntensityColor(monthlyProgress / 12);
+    final color = lowToHighIntensityColor(monthlyProgress / 12);
 
     return Container(
       padding: EdgeInsets.all(20),
