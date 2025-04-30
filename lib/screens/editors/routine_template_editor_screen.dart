@@ -26,8 +26,9 @@ class RoutineTemplateEditorScreen extends StatefulWidget {
   static const routeName = '/routine-template-editor';
 
   final RoutineTemplateDto? template;
+  final String planId;
 
-  const RoutineTemplateEditorScreen({super.key, this.template});
+  const RoutineTemplateEditorScreen({super.key, this.template, required this.planId});
 
   @override
   State<RoutineTemplateEditorScreen> createState() => _RoutineTemplateEditorScreenState();
@@ -123,6 +124,7 @@ class _RoutineTemplateEditorScreenState extends State<RoutineTemplateEditorScree
         exerciseTemplates: exercises,
         notes: _templateNotesController.text,
         owner: "",
+        planId: widget.planId,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now());
 

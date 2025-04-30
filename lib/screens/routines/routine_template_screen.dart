@@ -500,7 +500,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final template = _template;
     if (template != null) {
       final copyOfTemplate = template.copyWith();
-      final arguments = RoutineTemplateArguments(template: copyOfTemplate);
+      final arguments = RoutineTemplateArguments(template: copyOfTemplate, planId: copyOfTemplate.planId);
       final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
       if (updatedTemplate != null) {
         setState(() {
@@ -695,46 +695,19 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
               _showShareBottomSheet();
             },
           ),
-          planDto != null
-              ? ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const FaIcon(
-                    FontAwesomeIcons.minus,
-                    size: 18,
-                    color: Colors.red,
-                  ),
-                  horizontalTitleGap: 6,
-                  title: Text("Remove from plan",
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    showBottomSheetWithMultiActions(
-                        context: context,
-                        title: "Remove from plan?",
-                        description: "Are you sure you want to remove this workout from ${planDto.name}?",
-                        leftAction: Navigator.of(context).pop,
-                        rightAction: () {
-                          context.pop();
-                          _removeFromPlan();
-                        },
-                        leftActionLabel: 'Cancel',
-                        rightActionLabel: 'Remove',
-                        isRightActionDestructive: true);
-                  },
-                )
-              : ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const FaIcon(
-                    FontAwesomeIcons.plus,
-                    size: 18,
-                  ),
-                  horizontalTitleGap: 6,
-                  title: Text("Add to plan", style: Theme.of(context).textTheme.bodyLarge),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _showPlanPicker();
-                  },
-                ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.plus,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Move to another plan", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _showPlanPicker();
+            },
+          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const FaIcon(
@@ -781,7 +754,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       displayBottomSheet(
         context: context,
         child: PlanPicker(
-          title: "Add ${template.name} to . . .",
+          title: "Move ${template.name} to . . .",
           plans: plans,
           onSelect: (selectedPlan) async {
             Navigator.of(context).pop();
@@ -798,22 +771,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           },
         ),
       );
-    }
-  }
-
-  void _removeFromPlan() async {
-    final template = _template;
-
-    if (template != null) {
-      final templateProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-      final updatedRoutineTemplate = template.copyWith(planId: "");
-
-      await templateProvider.updateTemplate(template: updatedRoutineTemplate);
-
-      setState(() {
-        _template = updatedRoutineTemplate;
-      });
     }
   }
 

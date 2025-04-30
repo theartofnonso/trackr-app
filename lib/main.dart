@@ -153,8 +153,8 @@ final _router = GoRouter(
     GoRoute(
       path: RoutineTemplateEditorScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as RoutineTemplateArguments?;
-        return RoutineTemplateEditorScreen(template: args?.template);
+        final args = state.extra as RoutineTemplateArguments;
+        return RoutineTemplateEditorScreen(template: args.template, planId: args.planId);
       },
     ),
     GoRoute(

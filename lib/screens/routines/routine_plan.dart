@@ -11,6 +11,7 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_plan_arguments.dart';
+import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
@@ -229,7 +230,8 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
               title: Text("Add new workout", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
-                //_navigateToRoutinePlanEditor();
+                final arguments = RoutineTemplateArguments(planId: plan?.id ?? "");
+                navigateToRoutineTemplateEditor(context: context, arguments: arguments);
               }),
           if(plan?.id != defaultPlanId)
             ListTile(
