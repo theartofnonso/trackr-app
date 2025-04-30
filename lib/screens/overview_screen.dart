@@ -381,9 +381,6 @@ class _LogStreakTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final routineLogs = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: dateTime);
