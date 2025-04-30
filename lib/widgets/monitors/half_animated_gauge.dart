@@ -11,8 +11,8 @@ import '../../utils/general_utils.dart';
 /// ```dart
 /// const AnimatedGauge(value: 134, min: 0, max: 200)
 /// ```
-class AnimatedGauge extends StatefulWidget {
-  const AnimatedGauge({
+class HalfAnimatedGauge extends StatefulWidget {
+  const HalfAnimatedGauge({
     super.key,
     required this.value,
     required this.min,
@@ -20,6 +20,7 @@ class AnimatedGauge extends StatefulWidget {
     this.size = 280,
     this.stroke = 16,
     this.rotationPeriod = const Duration(seconds: 6),
+    required this.label,
   });
 
   final int value;
@@ -35,11 +36,13 @@ class AnimatedGauge extends StatefulWidget {
   /// Time it takes for the gradient to make one full revolution.
   final Duration rotationPeriod;
 
+  final String label;
+
   @override
-  State<AnimatedGauge> createState() => _AnimatedGaugeState();
+  State<HalfAnimatedGauge> createState() => _HalfAnimatedGaugeState();
 }
 
-class _AnimatedGaugeState extends State<AnimatedGauge> with SingleTickerProviderStateMixin {
+class _HalfAnimatedGaugeState extends State<HalfAnimatedGauge> with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
 
   @override
@@ -92,7 +95,7 @@ class _AnimatedGaugeState extends State<AnimatedGauge> with SingleTickerProvider
               height: 20,
             ),
             Text("${widget.value}", style: GoogleFonts.ubuntu(fontSize: 30, height: 1.5, fontWeight: FontWeight.w900)),
-            Text(widget.value > 0 ? "Readiness" : "Calculating",
+            Text(widget.label,
                 style: GoogleFonts.ubuntu(
                     fontSize: 14,
                     height: 1.5,
@@ -144,7 +147,7 @@ class _GaugePainter extends CustomPainter {
       startAngle: math.pi, // left-most point
       endAngle: math.pi * 3, // completes full circle
       transform: GradientRotation(gradientRotation * 2 * math.pi),
-      colors: lowToHighIntensityColors(value / 100),
+      colors: lowToHighIntensityColors(value / max),
     ).createShader(sweepRect);
 
     final trackPaint = Paint()

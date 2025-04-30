@@ -28,7 +28,8 @@ import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
 import '../widgets/calendar/calendar_logs.dart';
 import '../widgets/dividers/label_divider.dart';
-import '../widgets/monitors/animated_gauge.dart';
+import '../widgets/monitors/full_animated_gauge.dart';
+import '../widgets/monitors/half_animated_gauge.dart';
 import '../widgets/monthly_insights/log_streak_chart.dart';
 import '../widgets/monthly_insights/volume_chart.dart';
 import 'AI/trkr_coach_chat_screen.dart';
@@ -148,11 +149,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
-              child: _ReadinessTile(readinessScore: readiness),
-            ),
-            StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
               child: predictedTemplate != null
                   ? _ScheduledTitle(schedule: predictedTemplate, isLogged: hasPredictedTemplateBeenLogged)
                   : const _NoScheduledTitle(),
@@ -160,10 +156,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
-              child: GestureDetector(
-                onTap: () => navigateToRoutineHome(context: context),
-                child: _TemplatesTile(),
-              ),
+              child: _LogStreakTile(dateTime: DateTime.now()),
+            ),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: _ReadinessTile(readinessScore: readiness),
             ),
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
@@ -205,6 +203,14 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     ),
                   ],
                 ),
+              ),
+            ),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: GestureDetector(
+                onTap: () => navigateToRoutineHome(context: context),
+                child: _TemplatesTile(),
               ),
             ),
             StaggeredGridTile.count(
@@ -362,7 +368,41 @@ class _ReadinessTile extends StatelessWidget {
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
-      child: AnimatedGauge(value: readinessScore, min: 0, max: 100),
+      child: HalfAnimatedGauge(value: readinessScore, min: 0, max: 100, label: readinessScore > 0 ? "Readiness" : "Calculating",),
+    );
+  }
+}
+
+class _LogStreakTile extends StatelessWidget {
+  final DateTime dateTime;
+
+  const _LogStreakTile({required this.dateTime});
+
+  @override
+  Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final routineLogs = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: dateTime);
+
+    final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
+
+    final monthlyProgress = routineLogsByDay.length;
+
+    final color = monthlyProgress == 0
+        ? isDarkMode
+        ? Colors.white70.withValues(alpha: 0.1)
+        : Colors.grey.shade200
+        : lowToHighIntensityColor(monthlyProgress / 12);
+
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
+      child: FullAnimatedGauge(value: monthlyProgress, min: 0, max: 12, label: "Streak",),
     );
   }
 }
