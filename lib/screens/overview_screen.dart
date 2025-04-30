@@ -409,7 +409,7 @@ class _LogStreakTile extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        showBottomSheetWithNoAction(context: context, title: "Log Streak", description: "Streak is the number of days you engage in strength training each month, with an ideal target of 12 days. Average rest shows your weekly rest frequency.");
+        showBottomSheetWithNoAction(context: context, title: "Log Streak", description: "Streak is the number of days you engage in strength training each month, with an ideal target of 12 days.");
       },
       child: Container(
         padding: EdgeInsets.all(20),
