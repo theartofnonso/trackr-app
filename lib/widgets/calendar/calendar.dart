@@ -21,10 +21,11 @@ const int _kMonthOrigin = 1000;
 /// A plug‑and‑play calendar widget that shows the current week by default and toggles
 /// to a month grid on tap of the header. No external [DateTime] dependency required.
 class Calendar extends StatefulWidget {
-  const Calendar({super.key, this.onSelectDate, this.logs});
+  const Calendar({super.key, this.onSelectDate, this.logs, this.onMonthChanged});
 
   /// Fired whenever the user selects a day.
   final void Function(DateTime dateTime)? onSelectDate;
+  final void Function(DateTimeRange range)? onMonthChanged; // Add this
 
   final List<RoutineLogDto>? logs;
 
@@ -51,6 +52,13 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
     _focused = _selected;
     _monthCtl = PageController(initialPage: _kMonthOrigin);
     _currentMonthWeeks = _calculateWeeksInMonth(_focused);
+
+    // Trigger initial month range
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final start = DateTime(_focused.year, _focused.month, 1);
+      final end = DateTime(_focused.year, _focused.month + 1, 0);
+      widget.onMonthChanged?.call(DateTimeRange(start: start, end: end));
+    });
   }
 
   // ───────────────────────────  Helpers  ────────────────────────────
@@ -158,6 +166,11 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
           _focused = newMonth;
           _currentMonthWeeks = _calculateWeeksInMonth(newMonth);
         });
+
+        // Calculate month boundaries and trigger callback
+        final start = DateTime(newMonth.year, newMonth.month, 1);
+        final end = DateTime(newMonth.year, newMonth.month + 1, 0);
+        widget.onMonthChanged?.call(DateTimeRange(start: start, end: end));
       },
       itemBuilder: (_, page) {
         final monthStart = _monthByIndex(page);
@@ -177,10 +190,11 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   List<_DateViewModel?> _generateMonthDates(DateTime monthStart) {
     final first = DateTime(monthStart.year, monthStart.month, 1);
     final last = DateTime(monthStart.year, monthStart.month + 1, 0);
-    final logs = widget.logs ?? context
-        .read<ExerciseAndRoutineController>()
-        .logs
-        .where((l) => l.createdAt.isBetweenInclusive(from: first, to: last));
+    final logs = widget.logs ??
+        context
+            .read<ExerciseAndRoutineController>()
+            .logs
+            .where((l) => l.createdAt.isBetweenInclusive(from: first, to: last));
 
     final List<_DateViewModel?> out = [];
     for (int i = 1; i < first.weekday; i++) {

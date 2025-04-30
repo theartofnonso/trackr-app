@@ -53,6 +53,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   DateTime? _selectedCalendarDate;
 
+  DateTimeRange? _calendarDateTimeRange;
+
   TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
 
   String _predictTemplate({required List<RoutineLogDto> logs}) {
@@ -139,7 +141,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     return SingleChildScrollView(
       child: Column(spacing: 12, children: [
-        Calendar(onSelectDate: (date) => _onSelectCalendarDateTime(date: date)),
+        Calendar(onSelectDate: _onSelectCalendarDateTime, onMonthChanged: _onMonthChanged),
         CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
         StaggeredGrid.count(
           crossAxisCount: 2,
@@ -156,7 +158,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
-              child: _LogStreakTile(dateTime: DateTime.now()),
+              child: _LogStreakTile(dateTimeRange: _calendarDateTimeRange ?? thisMonthDateRange()),
             ),
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
@@ -341,9 +343,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
     }
   }
 
-  void _onSelectCalendarDateTime({required DateTime date}) {
+  void _onSelectCalendarDateTime(DateTime date) {
     setState(() {
       _selectedCalendarDate = date;
+    });
+  }
+
+  void _onMonthChanged(DateTimeRange dateRange) {
+    setState(() {
+      _calendarDateTimeRange = dateRange;
     });
   }
 }
@@ -366,24 +374,27 @@ class _ReadinessTile extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
-      child: HalfAnimatedGauge(value: readinessScore, min: 0, max: 100, label: readinessScore > 0 ? "Readiness" : "Calculating",),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
+      child: HalfAnimatedGauge(
+        value: readinessScore,
+        min: 0,
+        max: 100,
+        label: readinessScore > 0 ? "Readiness" : "Calculating",
+      ),
     );
   }
 }
 
 class _LogStreakTile extends StatelessWidget {
-  final DateTime dateTime;
+  final DateTimeRange dateTimeRange;
 
-  const _LogStreakTile({required this.dateTime});
+  const _LogStreakTile({required this.dateTimeRange});
 
   @override
   Widget build(BuildContext context) {
-
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final routineLogs = exerciseAndRoutineController.whereLogsIsSameMonth(dateTime: dateTime);
+    final routineLogs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateTimeRange);
 
     final routineLogsByDay = groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
 
@@ -393,9 +404,13 @@ class _LogStreakTile extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
-      child: FullAnimatedGauge(value: monthlyProgress, min: 0, max: 12, label: "Streak",),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
+      child: FullAnimatedGauge(
+        value: monthlyProgress,
+        min: 0,
+        max: 12,
+        label: "Streak",
+      ),
     );
   }
 }
