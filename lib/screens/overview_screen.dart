@@ -372,14 +372,19 @@ class _ReadinessTile extends StatelessWidget {
             : Colors.grey.shade200
         : lowToHighIntensityColor(readinessScore / 100);
 
-    return Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
-      child: HalfAnimatedGauge(
-        value: readinessScore,
-        min: 0,
-        max: 100,
-        label: readinessScore > 0 ? "Readiness" : "Calculating",
+    return GestureDetector(
+      onTap: () {
+        showBottomSheetWithNoAction(context: context, title: "Daily Readiness", description: "We adjust your training load based on daily readiness. On days you don't feel great, we reduce your load to keep you on track.");
+      },
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
+        child: HalfAnimatedGauge(
+          value: readinessScore,
+          min: 0,
+          max: 100,
+          label: readinessScore > 0 ? "Readiness" : "Calculating",
+        ),
       ),
     );
   }
@@ -402,14 +407,19 @@ class _LogStreakTile extends StatelessWidget {
 
     final color = lowToHighIntensityColor(monthlyProgress / 12);
 
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
-      child: FullAnimatedGauge(
-        value: monthlyProgress,
-        min: 0,
-        max: 12,
-        label: "Streak",
+    return GestureDetector(
+      onTap: () {
+        showBottomSheetWithNoAction(context: context, title: "Log Streak", description: "Streak is the number of days you engage in strength training each month, with an ideal target of 12 days. Average rest shows your weekly rest frequency.");
+      },
+      child: Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
+        child: FullAnimatedGauge(
+          value: monthlyProgress,
+          min: 0,
+          max: 12,
+          label: "Streak",
+        ),
       ),
     );
   }
