@@ -17,6 +17,7 @@ import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
+import '../../widgets/calendar/calendar_logs.dart';
 import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/empty_states/not_found.dart';
@@ -40,6 +41,8 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
   RoutinePlanDto? _plan;
 
   bool _loading = false;
+
+  DateTime? _selectedCalendarDate;
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +125,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                   onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
                   logs: logs,
                 ),
+                CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
                 InformationContainerWithBackgroundImage(
                   image: 'images/man_pushup.PNG',
                   color: Colors.black,
@@ -157,7 +161,9 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
   }
 
   void _onSelectCalendarDateTime({required DateTime date}) {
-    showLogsBottomSheet(dateTime: date, context: context);
+    setState(() {
+      _selectedCalendarDate = date;
+    });
   }
 
   void _deleteRoutinePlan({required RoutinePlanDto plan}) async {

@@ -26,6 +26,7 @@ import '../utils/training_archetype_utils.dart';
 import '../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
+import '../widgets/calendar/calendar_logs.dart';
 import '../widgets/dividers/label_divider.dart';
 import '../widgets/monitors/animated_gauge.dart';
 import '../widgets/monthly_insights/log_streak_chart.dart';
@@ -48,6 +49,8 @@ class OverviewScreen extends StatefulWidget {
 
 class _OverviewScreenState extends State<OverviewScreen> {
   bool _loading = false;
+
+  DateTime? _selectedCalendarDate;
 
   TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
 
@@ -115,7 +118,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final archetypes = classifyTrainingArchetypes(logs: logs)
         .map((archetype) => archetype.name)
-        .map((arch) => CustomWordMarkIcon(arch, color: Colors.white70))
+        .map((arch) => CustomWordMarkIcon(arch, color: isDarkMode ? Colors.white70 : Colors.grey.shade600))
         .toList();
 
     final templates = exerciseAndRoutineController.templates;
@@ -136,6 +139,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     return SingleChildScrollView(
       child: Column(spacing: 12, children: [
         Calendar(onSelectDate: (date) => _onSelectCalendarDateTime(date: date)),
+        CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
         StaggeredGrid.count(
           crossAxisCount: 2,
           mainAxisSpacing: 10,
@@ -223,7 +227,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           height: 1.6,
-                          color: isDarkMode ? Colors.white70 : Colors.grey.shade400)),
+                          color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
                   Wrap(
                     runSpacing: 10,
                     spacing: 10,
@@ -332,7 +336,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _onSelectCalendarDateTime({required DateTime date}) {
-    showLogsBottomSheet(dateTime: date, context: context);
+    setState(() {
+      _selectedCalendarDate = date;
+    });
   }
 }
 
@@ -355,7 +361,7 @@ class _ReadinessTile extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: isDarkMode ? color.withValues(alpha: 0.1) : color, borderRadius: BorderRadius.circular(5)),
+          color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
       child: AnimatedGauge(value: readinessScore, min: 0, max: 100),
     );
   }

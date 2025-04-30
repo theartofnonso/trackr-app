@@ -35,6 +35,7 @@ import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
+import '../../widgets/calendar/calendar_logs.dart';
 import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/not_found.dart';
@@ -74,6 +75,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   RecoveryResult? _selectedMuscleAndRecovery;
 
   _OriginalNewValues _originalNewValues = _OriginalNewValues.newValues;
+
+  DateTime? _selectedCalendarDate;
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +165,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 child: CircularProgressIndicator(
                   value: recovery,
                   strokeWidth: 6,
-                  backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
+                  backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade400,
                   strokeCap: StrokeCap.butt,
                   valueColor: AlwaysStoppedAnimation<Color>(lowToHighIntensityColor(recovery)),
                 ),
@@ -265,6 +268,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
                           logs: allLogsForTemplate,
                         ),
+                        CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
                             description:
@@ -466,7 +470,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _onSelectCalendarDateTime({required DateTime date}) {
-    showLogsBottomSheet(dateTime: date, context: context);
+    setState(() {
+      _selectedCalendarDate = date;
+    });
   }
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
