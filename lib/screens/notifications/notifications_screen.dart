@@ -34,7 +34,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final hasPendingActions = _sensorStatus != SahhaSensorStatus.pending;
+    final hasPendingActions = _sensorStatus == SahhaSensorStatus.pending;
 
     final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
 

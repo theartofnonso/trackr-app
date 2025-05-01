@@ -191,13 +191,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     Provider.of<ExerciseAndRoutineController>(context, listen: false).getSahhaReadinessScore();
   }
 
-  void _checkSahhaSensors() async {
-    SahhaFlutter.enableSensors(sahhaSensors).then((value) {
-
+  void _checkSahhaSensors() {
+    SahhaFlutter.getSensorStatus(sahhaSensors).then((value) {
       setState(() {
         _sensorStatus = value;
       });
-
     }).catchError((error, stackTrace) {
       debugPrint(error.toString());
     });
