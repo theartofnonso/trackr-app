@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -33,7 +34,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final hasPendingActions = _sensorStatus == SahhaSensorStatus.pending;
+    final hasPendingActions = _sensorStatus != SahhaSensorStatus.pending;
 
     final deviceOS = Platform.isIOS ? "Apple Health" : "Google Health";
 
@@ -121,13 +122,22 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 }
 
-class _SahhaSensorsRequestScreen extends StatelessWidget {
+class _SahhaSensorsRequestScreen extends StatefulWidget {
   final VoidCallback onPress;
 
   const _SahhaSensorsRequestScreen({required this.onPress});
 
   @override
+  State<_SahhaSensorsRequestScreen> createState() => _SahhaSensorsRequestScreenState();
+}
+
+class _SahhaSensorsRequestScreenState extends State<_SahhaSensorsRequestScreen> {
+
+  String _androidRelease = "";
+
+  @override
   Widget build(BuildContext context) {
+
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -175,7 +185,7 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
                     child: OpacityButtonWidget(
                       label: "Connect to train better",
                       buttonColor: vibrantGreen,
-                      onPressed: onPress,
+                      onPressed: widget.onPress,
                     )),
               ),
             ],
@@ -183,5 +193,21 @@ class _SahhaSensorsRequestScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _getAndroidVersion() async {
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final release = androidInfo.version.release;
+    setState(() {
+      _androidRelease = release;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _getAndroidVersion();
+    });
   }
 }
