@@ -6,20 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
+import 'package:tracker_app/screens/request_screens/notifications_request.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../controllers/routine_user_controller.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
+import '../../utils/sahha_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/dividers/label_divider.dart';
@@ -96,17 +97,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
+                InformationContainerWithBackgroundImage(
+                  image: 'images/black_girl.PNG',
+                  subtitle: "Loving TRKR? Your feedback helps us grow and improve.",
+                  color: Colors.black,
                   onTap: _openStoreListing,
-                  child: BackgroundInformationContainer(
-                      image: 'images/boy_and_girl.jpg',
-                      containerColor: sapphireDark,
-                      content: "Loving TRKR? Your feedback helps us grow and improve.",
-                      textStyle: GoogleFonts.ubuntu(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ), ctaContent: 'Tap to share the love!'),
+                  height: 160,
+                  alignmentGeometry: Alignment.topCenter,
                 ),
                 const SizedBox(
                   height: 20,
@@ -154,13 +151,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       WeightUnit.kg: SizedBox(
                           width: 30,
                           child: Text(WeightUnit.kg.display,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center)),
+                              style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                       WeightUnit.lbs: SizedBox(
                           width: 30,
                           child: Text(WeightUnit.lbs.display,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center)),
+                              style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center)),
                     },
                     onValueChanged: (WeightUnit? value) {
                       if (value != null) {
@@ -259,55 +254,60 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     await FlutterLocalNotificationsPlugin().cancelAll();
     if (mounted) {
       Provider.of<ExerciseAndRoutineController>(context, listen: false).clear();
-      Provider.of<RoutineUserController>(context, listen: false).clear();
     }
   }
 
   void _visitTRKR() {
     displayBottomSheet(
         context: context,
-        child: SafeArea(
-          child: Column(children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("On the web", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                openUrl(url: trackrWebUrl, context: context);
-              },
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
-              horizontalTitleGap: 6,
-              title: Text("On Instagram", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                openUrl(url: instagramUrl, context: context);
-              },
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
-              horizontalTitleGap: 6,
-              title: Text("Join our Whatsapp community", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                openUrl(url: whatsappUrl, context: context);
-              },
-            )
-          ]),
-        ));
+        child: Column(children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("On the web", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              openUrl(url: trackrWebUrl, context: context);
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
+            horizontalTitleGap: 6,
+            title: Text("On Instagram", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              openUrl(url: instagramUrl, context: context);
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
+            horizontalTitleGap: 6,
+            title: Text("Join our Whatsapp community", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              openUrl(url: whatsappUrl, context: context);
+            },
+          )
+        ]));
   }
 
   void _turnOnNotification() async {
     if (!_notificationEnabled) {
-      final isEnabled = await requestNotificationPermission();
-      setState(() {
-        _notificationEnabled = isEnabled;
-      });
+      await navigateWithSlideTransition(
+          context: context,
+          child: NotificationsRequestScreen(onRequest: () {
+            requestNotificationPermission().then((status) {
+              setState(() {
+                _notificationEnabled = status;
+              });
+              if (mounted) {
+                context.pop();
+              }
+            });
+          }));
     }
   }
 
@@ -328,19 +328,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           Navigator.of(context).pop();
           _showLoadingScreen();
           _clearAppData();
+          deAuthenticateSahhaUser();
           await Amplify.Auth.signOut();
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Logout',
         isRightActionDestructive: true);
-  }
-
-  Future<void> _deleteRoutineUser() async {
-    final controller = Provider.of<RoutineUserController>(context, listen: false);
-    final user = controller.user;
-    if (user != null) {
-      await controller.removeUser(userDto: user);
-    }
   }
 
   void _delete() async {
@@ -352,6 +345,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         rightAction: () async {
           Navigator.of(context).pop();
           _showLoadingScreen();
+
           final deletedExercises =
               await batchDeleteUserData(document: deleteUserExerciseData, documentKey: "deleteUserExerciseData");
           final deletedRoutineTemplates = await batchDeleteUserData(
@@ -359,16 +353,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           final deletedRoutineLogs =
               await batchDeleteUserData(document: deleteUserRoutineLogData, documentKey: "deleteUserRoutineLogData");
           if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
-            await _deleteRoutineUser();
             _hideLoadingScreen();
             _clearAppData();
+            deAuthenticateSahhaUser();
             await Amplify.Auth.deleteUser();
           } else {
             _hideLoadingScreen();
             if (mounted) {
-              showSnackbar(
-                  context: context,
-                  message: "Something went wrong. Please try again.");
+              showSnackbar(context: context, message: "Something went wrong. Please try again.");
             }
           }
         },
@@ -389,6 +381,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _weightUnit = WeightUnit.fromString(SharedPrefs().weightUnit);
     _getAppVersion();
     _checkNotificationPermission();

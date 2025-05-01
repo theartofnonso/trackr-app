@@ -7,6 +7,7 @@ import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/routine_plan_dto.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
+import '../../icons/custom_icon.dart';
 
 class RoutinePlanGridItemWidget extends StatelessWidget {
   final RoutinePlanDto plan;
@@ -45,21 +46,7 @@ class RoutinePlanGridItemWidget extends StatelessWidget {
               children: [
                 Wrap(
                   children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: vibrantGreen.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Image.asset(
-                        'icons/dumbbells.png',
-                        fit: BoxFit.contain,
-                        height: 14,
-                        color: vibrantGreen, // Adjust the height as needed
-                      ),
-                    ),
+                    CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen, width: 20, height: 20, iconSize: 10.5,),
                     const SizedBox(
                       width: 6,
                     ),
@@ -73,22 +60,7 @@ class RoutinePlanGridItemWidget extends StatelessWidget {
                 ),
                 Wrap(
                   children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: vibrantBlue.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.hashtag,
-                          color: vibrantBlue,
-                          size: 11,
-                        ),
-                      ),
-                    ),
+                    CustomIcon(FontAwesomeIcons.hashtag, color: vibrantBlue, width: 20, height: 20, iconSize: 10.5,),
                     const SizedBox(
                       width: 6,
                     ),

@@ -11,14 +11,12 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/screens/routines/readiness_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/daily_readiness.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/chart_unit_enum.dart';
@@ -37,9 +35,11 @@ import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
+import '../../widgets/calendar/calendar_logs.dart';
 import '../../widgets/chart/line_chart_widget.dart';
 import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/icons/custom_icon.dart';
 import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -76,6 +76,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
   _OriginalNewValues _originalNewValues = _OriginalNewValues.newValues;
 
+  DateTime? _selectedCalendarDate;
+
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -87,9 +89,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(
-            context: context,
-            message: exerciseAndRoutineController.errorMessage);
+        showSnackbar(context: context, message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -165,7 +165,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 child: CircularProgressIndicator(
                   value: recovery,
                   strokeWidth: 6,
-                  backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade200,
+                  backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade400,
                   strokeCap: StrokeCap.butt,
                   valueColor: AlwaysStoppedAnimation<Color>(lowToHighIntensityColor(recovery)),
                 ),
@@ -249,21 +249,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           spacing: 12,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              spacing: 10,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                ChipOne(
-                                    label:
-                                        "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                    color: vibrantGreen,
-                                    child: Image.asset(
-                                      'icons/dumbbells.png',
-                                      fit: BoxFit.contain,
-                                      color: vibrantGreen, // Adjust the height as needed
-                                    )),
-                              ],
-                            ),
+                            ChipOne(
+                                label:
+                                    "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
+                                color: vibrantGreen,
+                                child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen)),
                             Text(
                               template.notes.isNotEmpty ? "${template.notes}." : "No notes",
                               style: GoogleFonts.ubuntu(
@@ -278,6 +268,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                           onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
                           logs: allLogsForTemplate,
                         ),
+                        CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
                         MuscleGroupSplitChart(
                             title: "Muscle Groups Split",
                             description:
@@ -365,37 +356,54 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   if (template.owner == SharedPrefs().userId)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Muscle Recovery".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
-                          const SizedBox(height: 10),
-                          Text(
-                              "Delayed Onset Muscle Soreness (DOMS) refers to the muscle pain or stiffness experienced after intense physical activity. It typically develops 24 to 48 hours after exercise and can last for several days.",
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                        ],
-                      ),
-                    ),
-                  if (template.owner == SharedPrefs().userId && listOfMuscleAndRecovery.isNotEmpty)
-                    Column(
-                      spacing: 10,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 20, children: [
-                              SizedBox(width: 2),
-                              ...muscleGroupsIllustrations,
-                              SizedBox(width: 2),
-                            ])),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Text(selectedMuscleAndRecovery?.description ?? "",
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white : Colors.black)),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(5)),
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 20,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Muscle Recovery".toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                      "Delayed Onset Muscle Soreness (DOMS) refers to the muscle pain or stiffness experienced after intense physical activity. It typically develops 24 to 48 hours after exercise and can last for several days.",
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          color: isDarkMode ? Colors.white70 : Colors.black)),
+                                ],
+                              ),
+                            ),
+                            if (listOfMuscleAndRecovery.isNotEmpty)
+                              Column(
+                                spacing: 10,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 20, children: [
+                                        SizedBox(width: 2),
+                                        ...muscleGroupsIllustrations,
+                                        SizedBox(width: 2),
+                                      ])),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                    child: Text(selectedMuscleAndRecovery?.description ?? "",
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                            fontWeight: FontWeight.w400,
+                                            color: isDarkMode ? Colors.white : Colors.black)),
+                                  ),
+                                ],
+                              ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -462,7 +470,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _onSelectCalendarDateTime({required DateTime date}) {
-    showLogsBottomSheet(dateTime: date, context: context);
+    setState(() {
+      _selectedCalendarDate = date;
+    });
   }
 
   void _deleteRoutine({required RoutineTemplateDto template}) async {
@@ -490,7 +500,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final template = _template;
     if (template != null) {
       final copyOfTemplate = template.copyWith();
-      final arguments = RoutineTemplateArguments(template: copyOfTemplate);
+      final arguments = RoutineTemplateArguments(template: copyOfTemplate, planId: copyOfTemplate.planId);
       final updatedTemplate = await navigateToRoutineTemplateEditor(context: context, arguments: arguments);
       if (updatedTemplate != null) {
         setState(() {
@@ -500,22 +510,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) async {
+  void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) {
     final template = _template;
     if (template != null) {
-      final readiness =
-          await navigateWithSlideTransition(context: context, child: ReadinessScreen(muscleGroups: muscleGroups))
-                  as DailyReadiness? ??
-              DailyReadiness.empty();
-      final fatigue = readiness.perceivedFatigue;
-      final soreness = readiness.muscleSoreness;
-      final sleep = readiness.sleepDuration;
+      final readiness = SharedPrefs().readinessScore;
       final log = template.toLog();
-      final logWithReadiness = log.copyWith(fatigueLevel: fatigue, sorenessLevel: soreness, sleepLevel: sleep);
+      final logWithReadiness = log.copyWith(readinessScore: readiness);
       final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
-      if (mounted) {
-        navigateToRoutineLogEditor(context: context, arguments: arguments);
-      }
+      navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }
 
@@ -535,6 +537,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             notes: template.notes,
             exerciseTemplates: exercises,
             owner: "",
+            planId: template.planId,
             createdAt: DateTime.now(),
             updatedAt: DateTime.now());
 
@@ -547,9 +550,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         }
       } catch (_) {
         if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to create your template");
+          showSnackbar(context: context, message: "Oops, we are unable to create your template");
         }
       } finally {
         _hideLoadingScreen();
@@ -597,85 +598,32 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       displayBottomSheet(
           context: context,
           isScrollControlled: true,
-          child: SafeArea(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.link,
-                  size: 18,
-                ),
-                horizontalTitleGap: 10,
-                title: Text(
-                  "Copy as Link",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  maxLines: 1,
-                ),
-                subtitle: Text(workoutLink),
-                onTap: () {
-                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
-                  HapticFeedback.heavyImpact();
-                  final data = ClipboardData(text: workoutLink);
-                  Clipboard.setData(data).then((_) {
-                    if (mounted) {
-                      Navigator.of(context).pop();
-                      showSnackbar(
-                          context: context,
-                          message: "Workout link copied");
-                    }
-                  });
-                },
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.copy,
-                  size: 18,
-                ),
-                horizontalTitleGap: 6,
-                title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text("${template.name}..."),
-                onTap: () {
-                  Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
-                  HapticFeedback.heavyImpact();
-                  final data = ClipboardData(text: workoutText);
-                  Clipboard.setData(data).then((_) {
-                    if (mounted) {
-                      Navigator.of(context).pop();
-                      showSnackbar(
-                          context: context,
-                          message: "Workout copied");
-                    }
-                  });
-                },
-              ),
-            ]),
-          ));
-    }
-  }
-
-  void _showMenuBottomSheet({required RoutinePlanDto? planDto}) {
-    displayBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        child: SafeArea(
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
-                FontAwesomeIcons.penToSquare,
+                FontAwesomeIcons.link,
                 size: 18,
               ),
               horizontalTitleGap: 10,
               title: Text(
-                "Edit",
-                style: Theme.of(context).textTheme.bodyLarge
+                "Copy as Link",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                maxLines: 1,
               ),
+              subtitle: Text(workoutLink),
               onTap: () {
-                Navigator.of(context).pop();
-                _navigateToRoutineTemplateEditor();
+                Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsLink.displayName);
+                HapticFeedback.heavyImpact();
+                final data = ClipboardData(text: workoutLink);
+                Clipboard.setData(data).then((_) {
+                  if (mounted) {
+                    Navigator.of(context).pop();
+                    showSnackbar(context: context, message: "Workout link copied");
+                  }
+                });
               },
             ),
             ListTile(
@@ -685,96 +633,115 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                 size: 18,
               ),
               horizontalTitleGap: 6,
-              title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
+              title: Text("Copy as Text", style: Theme.of(context).textTheme.titleMedium),
+              subtitle: Text("${template.name}..."),
               onTap: () {
-                Navigator.of(context).pop();
-                _createTemplate(copy: true);},
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.share,
-                size: 18,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Share", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                _showShareBottomSheet();
+                Posthog().capture(eventName: PostHogAnalyticsEvent.shareRoutineTemplateAsText.displayName);
+                HapticFeedback.heavyImpact();
+                final data = ClipboardData(text: workoutText);
+                Clipboard.setData(data).then((_) {
+                  if (mounted) {
+                    Navigator.of(context).pop();
+                    showSnackbar(context: context, message: "Workout copied");
+                  }
+                });
               },
             ),
-            planDto != null
-                ? ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const FaIcon(
-                      FontAwesomeIcons.minus,
-                      size: 18,
-                      color: Colors.red,
-                    ),
-                    horizontalTitleGap: 6,
-                    title: Text("Remove from plan", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      showBottomSheetWithMultiActions(
-                          context: context,
-                          title: "Remove from plan?",
-                          description: "Are you sure you want to remove this workout from ${planDto.name}?",
-                          leftAction: Navigator.of(context).pop,
-                          rightAction: () {
-                            context.pop();
-                            _removeFromPlan();
-                          },
-                          leftActionLabel: 'Cancel',
-                          rightActionLabel: 'Remove',
-                          isRightActionDestructive: true);
-                    },
-                  )
-                : ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const FaIcon(
-                      FontAwesomeIcons.plus,
-                      size: 18,
-                    ),
-                    horizontalTitleGap: 6,
-                    title: Text("Add to plan", style: Theme.of(context).textTheme.bodyLarge),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _showPlanPicker();
-                    },
-                  ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.trash,
-                size: 16,
-                color: Colors.redAccent,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
-              onTap: () {
-                Navigator.of(context).pop();
+          ]));
+    }
+  }
 
-                final template = _template;
+  void _showMenuBottomSheet({required RoutinePlanDto? planDto}) {
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.penToSquare,
+              size: 18,
+            ),
+            horizontalTitleGap: 10,
+            title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _navigateToRoutineTemplateEditor();
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.copy,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _createTemplate(copy: true);
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.share,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Share", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _showShareBottomSheet();
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.solidSquarePlus,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Move to another plan", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              _showPlanPicker();
+            },
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.trash,
+              size: 16,
+              color: Colors.redAccent,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
+            onTap: () {
+              Navigator.of(context).pop();
 
-                if (template != null) {
-                  showBottomSheetWithMultiActions(
-                      context: context,
-                      title: "Delete workout?",
-                      description: planDto != null ? "Are you sure you want to delete this workout and remove it from ${planDto.name}?":  "Are you sure you want to delete this workout?",
-                      leftAction: Navigator.of(context).pop,
-                      rightAction: () {
-                        context.pop();
-                        _toggleLoadingState();
-                        _deleteRoutine(template: template);
-                      },
-                      leftActionLabel: 'Cancel',
-                      rightActionLabel: 'Delete',
-                      isRightActionDestructive: true);
-                }
-              },
-            )
-          ]),
-        ));
+              final template = _template;
+
+              if (template != null) {
+                showBottomSheetWithMultiActions(
+                    context: context,
+                    title: "Delete workout?",
+                    description: planDto != null
+                        ? "Are you sure you want to delete this workout and remove it from ${planDto.name}?"
+                        : "Are you sure you want to delete this workout?",
+                    leftAction: Navigator.of(context).pop,
+                    rightAction: () {
+                      context.pop();
+                      _toggleLoadingState();
+                      _deleteRoutine(template: template);
+                    },
+                    leftActionLabel: 'Cancel',
+                    rightActionLabel: 'Delete',
+                    isRightActionDestructive: true);
+              }
+            },
+          )
+        ]));
   }
 
   void _showPlanPicker() {
@@ -787,7 +754,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
       displayBottomSheet(
         context: context,
         child: PlanPicker(
-          title: "Add ${template.name} to . . .",
+          title: "Move ${template.name} to . . .",
           plans: plans,
           onSelect: (selectedPlan) async {
             Navigator.of(context).pop();
@@ -799,29 +766,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
             await templateProvider.updateTemplate(template: updatedRoutineTemplate);
 
             if (mounted) {
-              showSnackbar(
-                  context: context,
-                  message: "Add ${template.name} to ${selectedPlan.name}");
+              showSnackbar(context: context, message: "Add ${template.name} to ${selectedPlan.name}");
             }
           },
         ),
       );
-    }
-  }
-
-  void _removeFromPlan() async {
-    final template = _template;
-
-    if (template != null) {
-      final templateProvider = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-      final updatedRoutineTemplate = template.copyWith(planId: "");
-
-      await templateProvider.updateTemplate(template: updatedRoutineTemplate);
-
-      setState(() {
-        _template = updatedRoutineTemplate;
-      });
     }
   }
 

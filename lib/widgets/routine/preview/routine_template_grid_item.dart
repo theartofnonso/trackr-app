@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/appsync/routine_template_dto.dart';
 import '../../../utils/string_utils.dart';
+import '../../icons/custom_icon.dart';
 
 class RoutineTemplateGridItemWidget extends StatelessWidget {
   final RoutineTemplateDto template;
@@ -46,21 +48,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
             ),
             Wrap(
               children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: vibrantGreen.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: Image.asset(
-                    'icons/dumbbells.png',
-                    fit: BoxFit.contain,
-                    height: 14,
-                    color: vibrantGreen, // Adjust the height as needed
-                  ),
-                ),
+                CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen, width: 20, height: 20, iconSize: 10.5,),
                 const SizedBox(
                   width: 6,
                 ),

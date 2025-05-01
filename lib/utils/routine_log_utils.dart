@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/utils/readiness_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
@@ -62,18 +61,6 @@ String prepareLogInstruction({required BuildContext context, required RoutineLog
   }
 
   buffer.writeln();
-
-  String fatigue = perceivedFatigueScale[routineLog.fatigueLevel] ?? "";
-
-  String soreness = muscleSorenessScale[routineLog.sorenessLevel] ?? "";
-
-  if (fatigue.isNotEmpty) {
-    buffer.writeln("My fatigue level is reported as $fatigue");
-  }
-
-  if (soreness.isNotEmpty) {
-    buffer.writeln("My muscle soreness is reported as $soreness");
-  }
 
   buffer.writeln();
 

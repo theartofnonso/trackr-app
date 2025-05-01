@@ -8,10 +8,9 @@ class TRKRInformationContainer extends StatelessWidget {
   final String ctaLabel;
   final String description;
   final VoidCallback? onTap;
-  final Color color;
   final Widget? icon;
 
-  const TRKRInformationContainer({super.key, required this.ctaLabel, required this.description, required this.onTap, this.icon, required this.color});
+  const TRKRInformationContainer({super.key, required this.ctaLabel, required this.description, required this.onTap, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,7 @@ class TRKRInformationContainer extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: isDarkMode ? color.withValues(alpha: 0.1) : color,
+          color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
           shape: BoxShape.rectangle, // Use BoxShape.circle for circular borders
           borderRadius: BorderRadius.circular(5),
         ),
@@ -42,7 +41,7 @@ class TRKRInformationContainer extends StatelessWidget {
                         style: GoogleFonts.ubuntu(fontWeight: FontWeight.w400, fontSize: 14)),
                   ),
                   const SizedBox(width: 22),
-                  icon ?? FaIcon(FontAwesomeIcons.solidLightbulb, color: Colors.white,)
+                  icon ?? FaIcon(FontAwesomeIcons.solidLightbulb)
                 ],),
               const SizedBox(height: 6),
               Text(

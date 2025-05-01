@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tracker_app/dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
+import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/openAI/open_ai_response_format.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/https_utils.dart';
@@ -25,24 +23,19 @@ import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../models/RoutineLog.dart';
-import '../../openAI/open_ai.dart';
-import '../../strings/ai_prompts.dart';
 import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/general_utils.dart';
-import '../../utils/readiness_utils.dart';
-import '../../utils/routine_log_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
-import '../../widgets/ai_widgets/trkr_information_container.dart';
+import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/not_found.dart';
+import '../../widgets/icons/custom_icon.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../AI/routine_log_report_screen.dart';
 
 class RoutineLogScreen extends StatefulWidget {
   static const routeName = '/routine_log_screen';
@@ -73,9 +66,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(
-            context: context,
-            message: exerciseAndRoutineController.errorMessage);
+        showSnackbar(context: context, message: exerciseAndRoutineController.errorMessage);
       });
     }
 
@@ -113,7 +104,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     final trendSummary = _analyzeWeeklyTrends(volumes: allLoggedVolumesForTemplate);
 
-    final readiness = calculateReadinessScore(fatigue: log.fatigueLevel, soreness: log.sorenessLevel);
+    final readiness = log.readinessScore;
 
     return Scaffold(
         appBar: AppBar(
@@ -149,65 +140,19 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Column(spacing: 6, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.deepOrange.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.calendarDay,
-                                color: Colors.deepOrange,
-                                size: 14,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(
-                            updatedLog.endTime.formattedDayMonthTime(),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.yellow.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.solidNoteSticky,
-                                color: Colors.yellow,
-                                size: 14,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Expanded(
-                            child: Text(
-                              updatedLog.notes.isNotEmpty ? "${updatedLog.notes}." : "No notes",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: Column(spacing: 12, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      ChipOne(
+                          label: updatedLog.endTime.formattedDayMonthTime(),
+                          color: vibrantGreen,
+                          child: CustomIcon(FontAwesomeIcons.calendarDay, color: Colors.deepOrange)),
+                      Text(
+                        updatedLog.notes.isNotEmpty ? "${updatedLog.notes}." : "No notes",
+                        style: GoogleFonts.ubuntu(
+                            fontSize: 14,
+                            color: isDarkMode ? Colors.white70 : Colors.black,
+                            height: 1.8,
+                            fontWeight: FontWeight.w400),
+                      )
                     ]),
                   ),
                   SingleChildScrollView(
@@ -262,14 +207,14 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         ),
                         if (readiness > 0)
                           _StatisticWidget(
-                          title: "$readiness%",
-                          subtitle: "Readiness",
-                          icon: FontAwesomeIcons.boltLightning,
-                          information: _StatisticsInformation(
-                              title: "Readiness",
-                              description:
-                              "A readiness check helps you assess how prepared you are for training intensity—helping you train smarter, avoid overtraining, and reduce the risk of injury."),
-                        ),
+                            title: "$readiness%",
+                            subtitle: "Readiness",
+                            icon: FontAwesomeIcons.boltLightning,
+                            information: _StatisticsInformation(
+                                title: "Readiness",
+                                description:
+                                    "A readiness check helps you assess how prepared you are for training intensity—helping you train smarter, avoid overtraining, and reduce the risk of injury."),
+                          ),
                       ],
                     ),
                   ),
@@ -328,13 +273,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                       fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
                             ],
                           ),
-                        if (updatedLog.owner == SharedPrefs().userId && widget.isEditable)
-                          TRKRInformationContainer(
-                            color: vibrantGreen,
-                              ctaLabel: "Ask for feedback",
-                              description:
-                                  "Completing a workout is an achievement, however consistent progress is what drives you toward your ultimate fitness goals.",
-                              onTap: () => _generateReport(log: updatedLog)),
                         ExerciseLogListView(
                             exerciseLogs: _exerciseLogsToViewModels(exerciseLogs: completedExerciseLogs)),
                         const SizedBox(
@@ -348,40 +286,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             ),
           ),
         ));
-  }
-
-  void _generateReport({required RoutineLogDto log}) async {
-    _showLoadingScreen();
-
-    String instruction = prepareLogInstruction(context: context, routineLog: log);
-
-    runMessage(system: routineLogSystemInstruction, user: instruction, responseFormat: routineLogReportResponseFormat)
-        .then((response) {
-      _hideLoadingScreen();
-      if (response != null) {
-        Posthog().capture(eventName: PostHogAnalyticsEvent.generateRoutineLogReport.displayName);
-        if (mounted) {
-          // Deserialize the JSON string
-          Map<String, dynamic> json = jsonDecode(response);
-
-          // Create an instance of ExerciseLogsResponse
-          ExercisePerformanceReport report = ExercisePerformanceReport.fromJson(json);
-          navigateWithSlideTransition(
-              context: context,
-              child: RoutineLogReportScreen(
-                report: report,
-                routineLog: log,
-              ));
-        }
-      }
-    }).catchError((e) {
-      _hideLoadingScreen();
-      if (mounted) {
-        showSnackbar(
-            context: context,
-            message: "Oops! I am unable to generate your ${log.name} report");
-      }
-    });
   }
 
   void _loadData() {
@@ -427,43 +331,41 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   void _showBottomSheet() {
     displayBottomSheet(
         context: context,
-        child: SafeArea(
-          child: Column(children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Edit Log"),
-              onTap: _editLog,
+        child: Column(children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Edit Log"),
+            onTap: _editLog,
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Edit duration"),
+            onTap: _editDuration,
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(FontAwesomeIcons.download, size: 18),
+            horizontalTitleGap: 6,
+            title: Text("Save as template"),
+            onTap: _createTemplate,
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.trash,
+              size: 18,
+              color: Colors.red,
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Edit duration"),
-              onTap: _editDuration,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(FontAwesomeIcons.download, size: 18),
-              horizontalTitleGap: 6,
-              title: Text("Save as template"),
-              onTap: _createTemplate,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.trash,
-                size: 18,
-                color: Colors.red,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Delete log",
-                  style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-              onTap: _deleteLog,
-            ),
-          ]),
-        ));
+            horizontalTitleGap: 6,
+            title: Text("Delete log",
+                style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+            onTap: _deleteLog,
+          ),
+        ]));
   }
 
   void _onShareLog({required RoutineLogDto log}) {
@@ -499,7 +401,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     if (log != null) {
       final copyOfLog = log.copyWith();
       final arguments = RoutineLogArguments(log: copyOfLog, editorMode: RoutineEditorMode.edit);
-      final updatedLog = await navigateAndEditLog(context: context, arguments: arguments);
+      final updatedLog = await navigateToRoutineEditorAndReturnLog(context: context, arguments: arguments);
       if (updatedLog != null) {
         setState(() {
           _log = updatedLog;
@@ -554,6 +456,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             name: log.name,
             notes: log.notes,
             exerciseTemplates: exercises,
+            planId: defaultPlanId,
             owner: "",
             createdAt: DateTime.now(),
             updatedAt: DateTime.now());
@@ -567,9 +470,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         }
       } catch (_) {
         if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to create template");
+          showSnackbar(context: context, message: "Oops, we are unable to create template");
         }
       } finally {
         _hideLoadingScreen();
@@ -587,9 +488,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         }
       } catch (_) {
         if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to delete this log");
+          showSnackbar(context: context, message: "Oops, we are unable to delete this log");
         }
       } finally {
         _hideLoadingScreen();

@@ -10,6 +10,7 @@ import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
+import '../../../utils/date_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../widgets/buttons/opacity_button_widget.dart';
@@ -171,7 +172,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
               child: OpacityButtonWidget(
                   onPressed: () => _onSelectMuscleGroup(newMuscleGroup: muscleGroup),
                   buttonColor: _getMuscleGroup(muscleGroup: muscleGroup) != null ? vibrantGreen : null,
-                  label: muscleGroup.name.toUpperCase()),
+                  label: muscleGroup.displayName.toUpperCase()),
             ))
         .toList();
 
@@ -308,8 +309,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         child: Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16).copyWith(
-            color: isDarkMode ? Colors.white70 : Colors.blueGrey,
-          ),
+                color: isDarkMode ? Colors.white70 : Colors.blueGrey,
+              ),
         ),
       );
 
@@ -354,8 +355,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     _searchController = TextEditingController();
     _loadOrSyncExercises();
 
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _recentExercises = exerciseAndRoutineController.logs
+    final dateRange = lastQuarterDateTimeRange();
+
+    _recentExercises = Provider.of<ExerciseAndRoutineController>(context, listen: false)
+        .whereLogsIsWithinRange(range: dateRange)
         .expand((log) => log.exerciseLogs)
         .map((exerciseLog) => exerciseLog.exercise)
         .toList();

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
 import 'package:tracker_app/models/ModelProvider.dart';
 
 import '../exercise_log_dto.dart';
@@ -42,18 +43,19 @@ class RoutineTemplateDto {
 
   factory RoutineTemplateDto.fromTemplate({required RoutineTemplate template}) {
     final json = jsonDecode(template.data);
-    final planId = json["planId"] ?? "";
+    final String? rawPlanId = json['planId'] as String?;
+    final String planId = (rawPlanId?.isNotEmpty ?? false) ? rawPlanId! : defaultPlanId;
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
-    final exerciseTemplatesInJson = json["exercises"] as List<dynamic>;
+    final rawExerciseTemplates = json["exercises"] as List<dynamic>;
     List<ExerciseLogDto> exerciseTemplates = [];
-    if (exerciseTemplatesInJson.isNotEmpty && exerciseTemplatesInJson.first is String) {
-      exerciseTemplates = exerciseTemplatesInJson
+    if (rawExerciseTemplates.isNotEmpty && rawExerciseTemplates.first is String) {
+      exerciseTemplates = rawExerciseTemplates
           .map((json) => ExerciseLogDto.fromJson(
               routineLogId: template.id, json: jsonDecode(json), createdAt: template.createdAt.getDateTimeInUtc()))
           .toList();
     } else {
-      exerciseTemplates = exerciseTemplatesInJson
+      exerciseTemplates = rawExerciseTemplates
           .map((json) => ExerciseLogDto.fromJson(
               routineLogId: template.id, createdAt: template.createdAt.getDateTimeInUtc(), json: json))
           .toList();

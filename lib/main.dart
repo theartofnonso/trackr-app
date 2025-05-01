@@ -24,36 +24,29 @@ import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dar
 import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_plan_repository.dart';
 import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
-import 'package:tracker_app/repositories/amplify/amplify_routine_user_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
-import 'package:tracker_app/screens/AI/routine_log_report_screen.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_plan_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
-import 'package:tracker_app/screens/editors/user_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
-import 'package:tracker_app/screens/home_screen.dart';
-import 'package:tracker_app/screens/insights/sets_reps_volume_insights_screen.dart';
+import 'package:tracker_app/screens/home.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
-import 'package:tracker_app/screens/onboarding/onboarding_intro_screen.dart';
+import 'package:tracker_app/screens/notifications/onboarding_flow_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
-import 'package:tracker_app/screens/routines/readiness_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
+import 'package:tracker_app/screens/routines/routine_plans_screen.dart';
 import 'package:tracker_app/screens/routines/routine_template_screen.dart';
-import 'package:tracker_app/screens/routines/routines_home.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
+import 'package:tracker_app/utils/sahha_utils.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
 
 import 'amplifyconfiguration.dart';
-import 'controllers/routine_user_controller.dart';
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/appsync/routine_plan_dto.dart';
-import 'dtos/open_ai_response_schema_dtos/exercise_performance_report.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_plan_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
@@ -67,46 +60,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void onDidReceiveNotificationResponse(NotificationResponse response) {
   final String? payload = response.payload;
   if (payload != null) {
-    Map<String, dynamic> json = jsonDecode(payload);
+    Map<String, dynamic> _ = jsonDecode(payload);
 
-    final routineLog = json["log"] as String;
-    final report = jsonDecode(json["report"]);
-
-    // Create an instance of ExerciseLogsResponse
-    ExercisePerformanceReport performanceReport = ExercisePerformanceReport.fromJson(report);
-
-    final context = navigatorKey.currentContext;
-
-    if (context == null) {
-      return;
-    }
-
-    final routineLogFound = Provider.of<ExerciseAndRoutineController>(context, // Prefer this if 'context' is not valid
-            listen: false)
-        .logWhereId(id: routineLog);
-
-    if (routineLogFound == null) {
-      // Handle the case where the routine log isn’t found
-      return;
-    }
-
-    navigatorKey.currentState?.push(PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => RoutineLogReportScreen(
-        report: performanceReport,
-        routineLog: routineLogFound,
-      ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(0.0, 1.0);
-        const end = Offset.zero;
-        const curve = Curves.ease;
-        final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        final offsetAnimation = animation.drive(tween);
-        return SlideTransition(
-          position: offsetAnimation,
-          child: child,
-        );
-      },
-    ));
+    /// Do nothing for now
   }
 }
 
@@ -147,9 +103,6 @@ void main() async {
       options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<RoutineUserController>(
-        create: (BuildContext context) => RoutineUserController(AmplifyRoutineUserRepository()),
-      ),
       ChangeNotifierProvider<ExerciseAndRoutineController>(
         create: (BuildContext context) => ExerciseAndRoutineController(
             amplifyExerciseRepository: AmplifyExerciseRepository(),
@@ -169,7 +122,7 @@ final _router = GoRouter(
   routes: [
     GoRoute(
         path: "/", // Define the path for Home Screen
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => const Home(),
         routes: [
           GoRoute(
             path: "shared-workout/:id",
@@ -200,8 +153,8 @@ final _router = GoRouter(
     GoRoute(
       path: RoutineTemplateEditorScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as RoutineTemplateArguments?;
-        return RoutineTemplateEditorScreen(template: args?.template);
+        final args = state.extra as RoutineTemplateArguments;
+        return RoutineTemplateEditorScreen(template: args.template, planId: args.planId);
       },
     ),
     GoRoute(
@@ -226,12 +179,6 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: UserEditorScreen.routeName,
-      builder: (context, state) {
-        return UserEditorScreen();
-      },
-    ),
-    GoRoute(
       path: ExerciseHomeScreen.routeName,
       builder: (context, state) {
         final args = state.extra as ExerciseDto;
@@ -239,9 +186,9 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: RoutinesHomeScreen.routeName,
+      path: RoutinePlansScreen.routeName,
       builder: (context, state) {
-        return RoutinesHomeScreen();
+        return RoutinePlansScreen();
       },
     ),
     GoRoute(
@@ -286,24 +233,8 @@ final _router = GoRouter(
       builder: (context, state) => const SettingsScreen(),
     ),
     GoRoute(
-      path: UserProfileScreen.routeName,
-      builder: (context, state) => const UserProfileScreen(),
-    ),
-    GoRoute(
-      path: HomeScreen.routeName,
-      builder: (context, state) => const HomeScreen(),
-    ),
-    GoRoute(
-      path: ReadinessScreen.routeName,
-      builder: (context, state) => const ReadinessScreen(),
-    ),
-    GoRoute(
-      path: SetsAndRepsVolumeInsightsScreen.routeName,
-      builder: (context, state) => const SetsAndRepsVolumeInsightsScreen(),
-    ),
-    GoRoute(
-      path: OnboardingIntroScreen.routeName,
-      builder: (context, state) => OnboardingIntroScreen(),
+      path: Home.routeName,
+      builder: (context, state) => const Home(),
     ),
     GoRoute(
       path: RoutineLogSummaryScreen.routeName,
@@ -330,8 +261,6 @@ final _router = GoRouter(
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  //get analytics => analytics;
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -343,6 +272,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _configureAmplify();
+    configureSahha();
   }
 
   Future<void> _configureAmplify() async {
@@ -368,6 +298,7 @@ class _MyAppState extends State<MyApp> {
   void _completeIntro() {
     setState(() {
       _isFirstLaunch = false;
+      SharedPrefs().firstLaunch = false;
     });
   }
 
@@ -390,7 +321,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     return _isFirstLaunch
-        ? OnboardingIntroScreen(onComplete: _completeIntro)
+        ? OnboardingFlowScreen(onPressed: _completeIntro)
         : Authenticator(
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,

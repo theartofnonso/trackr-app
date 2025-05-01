@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracker_app/dtos/appsync/routine_user_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/screens/preferences/user_profile_screen.dart';
 
 import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -20,17 +18,10 @@ import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/editors/routine_plan_editor_screen.dart';
 import '../screens/editors/routine_template_editor_screen.dart';
-import '../screens/editors/user_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/routines/routine_plan.dart';
+import '../screens/routines/routine_plans_screen.dart';
 import '../screens/routines/routine_template_screen.dart';
-import '../screens/routines/routines_home.dart';
-
-Future<RoutineUserDto?> navigateToUserEditor(
-    {required BuildContext context, RoutineUserDto? user}) async {
-  final updatedUser = await context.push(UserEditorScreen.routeName, extra: user) as RoutineUserDto?;
-  return updatedUser;
-}
 
 Future<ExerciseDto?> navigateToExerciseEditor(
     {required BuildContext context, ExerciseEditorArguments? arguments}) async {
@@ -39,7 +30,7 @@ Future<ExerciseDto?> navigateToExerciseEditor(
 }
 
 Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor(
-    {required BuildContext context, RoutineTemplateArguments? arguments}) async {
+    {required BuildContext context, required RoutineTemplateArguments arguments}) async {
   final template = await context.push(RoutineTemplateEditorScreen.routeName, extra: arguments) as RoutineTemplateDto?;
   return template;
 }
@@ -63,12 +54,13 @@ Future<void> navigateToRoutineLogEditor({required BuildContext context, required
   final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
   if (log != null) {
     if (context.mounted) {
-      context.push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true, "isEditable": true});
+      context
+          .push(RoutineLogScreen.routeName, extra: {"log": log, "showSummary": true, "isEditable": true});
     }
   }
 }
 
-Future<RoutineLogDto?> navigateAndEditLog(
+Future<RoutineLogDto?> navigateToRoutineEditorAndReturnLog(
     {required BuildContext context, required RoutineLogArguments arguments}) async {
   final log = await context.push(RoutineLogEditorScreen.routeName, extra: arguments) as RoutineLogDto?;
   return log;
@@ -95,15 +87,11 @@ void navigateToShareableScreen({required BuildContext context, required RoutineL
 }
 
 void navigateToRoutineHome({required BuildContext context}) {
-  context.push(RoutinesHomeScreen.routeName);
+  context.push(RoutinePlansScreen.routeName);
 }
 
 Future<void> navigateToSettings({required BuildContext context}) async {
   await context.push(SettingsScreen.routeName);
-}
-
-Future<void> navigateToProfile({required BuildContext context}) async {
-  await context.push(UserProfileScreen.routeName);
 }
 
 /// Create a screen on demand

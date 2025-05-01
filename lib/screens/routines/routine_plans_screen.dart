@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/string_utils.dart';
+import 'package:tracker_app/utils/training_archetype_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
@@ -21,6 +24,7 @@ import '../../strings/ai_prompts.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -44,11 +48,26 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
+
       final plans = List<RoutinePlanDto>.from(provider.plans);
 
-      final children = plans.map((plan) => RoutinePlanGridItemWidget(plan: plan)).toList();
+      final logs = provider.logs;
+
+      final defaultPlanGridItem = RoutinePlanGridItemWidget(plan: RoutinePlanDto.defaultPlan);
+
+      final children = [defaultPlanGridItem, ...plans.map((plan) => RoutinePlanGridItemWidget(plan: plan))];
 
       return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
+              onPressed: context.pop,
+            ),
+            actions: [
+              IconButton(
+                  onPressed: _showMenuBottomSheet, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 28))
+            ],
+          ),
           body: Container(
         height: double.infinity,
         decoration: BoxDecoration(
@@ -58,19 +77,12 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
           minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
           bottom: false,
           child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            GestureDetector(
+            InformationContainerWithBackgroundImage(
+              image: 'images/man_coach.PNG',
+              color: Colors.black,
+              subtitle:
+                  "We use your training history to recommend plans. ${logs.isNotEmpty ? 'Tap to get a personalised plan.' : "Tap for a plan to start training."}",
               onTap: _runMessage,
-              child: BackgroundInformationContainer(
-                image: 'images/lace.jpg',
-                containerColor: Colors.green.shade800,
-                content: "We analyze your training history to recommend plans tailored to your style.",
-                textStyle: GoogleFonts.ubuntu(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withValues(alpha: 0.9),
-                ),
-                ctaContent: 'Get a personalised plan',
-              ),
             ),
             plans.isNotEmpty
                 ? Expanded(
@@ -113,6 +125,27 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     showSnackbar(context: context, message: message);
   }
 
+  void _showMenuBottomSheet() {
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.plus,
+              size: 18,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Create new workout plan", style: Theme.of(context).textTheme.bodyLarge),
+            onTap: () {
+              Navigator.of(context).pop();
+              navigateToRoutinePlanEditor(context: context);
+            },
+          ),
+        ]));
+  }
+
   void _runMessage() async {
     _runFunctionMessage();
   }
@@ -128,26 +161,33 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
 
     final stringBuffer = StringBuffer();
 
-    for (final week in weeksInLastQuarter) {
-      final startOfWeek = week.start;
-      final endOfWeek = week.end;
-      final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+    if (logs.isNotEmpty) {
+      for (final week in weeksInLastQuarter) {
+        final startOfWeek = week.start;
+        final endOfWeek = week.end;
+        final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
 
-      stringBuffer.writeln("For the week starting ${startOfWeek.withoutTime()} to ${endOfWeek.withoutTime()}");
-
-      stringBuffer.writeln();
-
-      for (final (index, log) in logsForTheWeek.indexed) {
-        stringBuffer.writeln("Session ${index + 1} (${log.name}):");
-
-        stringBuffer.writeln("I did with the following exercises:");
-
-        for (final exerciseLog in log.exerciseLogs) {
-          stringBuffer.writeln("${exerciseLog.exercise.name} [${exerciseLog.exercise.id}]");
-        }
+        stringBuffer.writeln("For the week starting ${startOfWeek.withoutTime()} to ${endOfWeek.withoutTime()}");
 
         stringBuffer.writeln();
+
+        for (final (index, log) in logsForTheWeek.indexed) {
+          stringBuffer.writeln("Session ${index + 1} (${log.name}):");
+
+          stringBuffer.writeln("I did with the following exercises:");
+
+          for (final exerciseLog in log.exerciseLogs) {
+            stringBuffer.writeln("${exerciseLog.exercise.name} [${exerciseLog.exercise.id}]");
+          }
+
+          stringBuffer.writeln();
+        }
       }
+
+      final archetypes = classifyTrainingArchetypes(logs: logs).map((archetype) => archetype.description).toList();
+      final archetypesSummary = listWithAnd(strings: archetypes);
+
+      stringBuffer.writeln("These are my training behaviours: $archetypesSummary");
     }
 
     final userInstruction = stringBuffer.toString();
@@ -157,7 +197,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     try {
       final json = await runMessageWithTools(
         systemInstruction: createRoutinePlanPrompt,
-        userInstruction: userInstruction,
+        userInstruction:
+            userInstruction.isNotEmpty ? userInstruction : "I am a new user with no training history or preference.",
       );
 
       if (json == null) {

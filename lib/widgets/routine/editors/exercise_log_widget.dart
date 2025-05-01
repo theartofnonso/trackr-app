@@ -17,6 +17,7 @@ import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/icons/custom_icon.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/reps_set_header.dart';
@@ -31,9 +32,12 @@ import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
+import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
+import '../../information_containers/transparent_information_container_lite.dart';
 import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
@@ -114,13 +118,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _clearControllers() {
-    if (withDurationOnly(type: _exerciseLog.exercise.type)) {
+    final exerciseLog = _exerciseLog;
+
+    if (withDurationOnly(type: exerciseLog.exercise.type)) {
       _durationControllers = [];
     }
-    if (withWeightsOnly(type: _exerciseLog.exercise.type)) {
+    if (withWeightsOnly(type: exerciseLog.exercise.type)) {
       _weightAndRepsControllers = [];
     }
-    if (withRepsOnly(type: _exerciseLog.exercise.type)) {
+    if (withRepsOnly(type: exerciseLog.exercise.type)) {
       _repsControllers = [];
     }
 
@@ -128,16 +134,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _disposeControllers() {
-    if (withDurationOnly(type: _exerciseLog.exercise.type)) {
+    final exerciseLog = _exerciseLog;
+
+    if (withDurationOnly(type: exerciseLog.exercise.type)) {
       // Duration does not have any controller to dispose
     }
-    if (withWeightsOnly(type: _exerciseLog.exercise.type)) {
+    if (withWeightsOnly(type: exerciseLog.exercise.type)) {
       for (final controllerPair in _weightAndRepsControllers) {
         controllerPair.$1.dispose();
         controllerPair.$2.dispose();
       }
     }
-    if (withRepsOnly(type: _exerciseLog.exercise.type)) {
+    if (withRepsOnly(type: exerciseLog.exercise.type)) {
       for (final controller in _repsControllers) {
         controller.dispose();
       }
@@ -192,6 +200,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .toList();
 
     final isOutSideOfRange = isOutsideReasonableRange(previousReps, reps);
+
     if (isOutSideOfRange) {
       final message = _repsErrorMessage(reps: reps);
       _errorMessages.add(_ErrorMessage(index: index, message: message));
@@ -214,22 +223,28 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .updateDuration(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet, notify: true);
   }
 
-  void _updateSetCheck({required int index, required SetDto setDto}) {
-    if (setDto.isEmpty()) {
+  void _updateSetCheck({required int index}) {
+
+    // 1. Pull the current version from provider, not from the parameter
+    final currentSet = Provider.of<ExerciseLogController>(context, listen: false)
+        .whereExerciseLog(exerciseId: _exerciseLog.id)
+        .sets[index];
+
+    if (currentSet.isEmpty()) {
       showSnackbar(context: context, message: "Mind taking a look at the set values and confirming they’re correct?");
       return;
     }
 
-    final checked = !setDto.checked;
-    final updatedSet = setDto.copyWith(checked: checked);
+    final checked = !currentSet.checked;
+    final updatedSet = currentSet.copyWith(checked: checked);
     Provider.of<ExerciseLogController>(context, listen: false)
         .updateSetCheck(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
 
     _loadControllers();
 
-    final maxReps = switch (setDto.type) {
-      ExerciseType.weights => (setDto as WeightAndRepsSetDto).reps,
-      ExerciseType.bodyWeight => (setDto as RepsSetDto).reps,
+    final maxReps = switch (currentSet.type) {
+      ExerciseType.weights => (currentSet as WeightAndRepsSetDto).reps,
+      ExerciseType.bodyWeight => (currentSet as RepsSetDto).reps,
       ExerciseType.duration => 0,
     };
 
@@ -238,7 +253,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           context: context,
           child: _RPERatingSlider(
             maxReps: maxReps,
-            rpeRating: setDto.rpeRating.toDouble(),
+            rpeRating: currentSet.rpeRating.toDouble(),
             onSelectRating: (int rpeRating) {
               final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
               Provider.of<ExerciseLogController>(context, listen: false)
@@ -292,8 +307,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
       _checkRepsRange(reps: reps, index: index);
 
-      final weightController = TextEditingController(text: (set).weight.toString());
-      final repsController = TextEditingController(text: set.reps.toString());
+      final weightController = TextEditingController(text: weight.toString());
+      final repsController = TextEditingController(text: reps.toString());
       controllers.add((weightController, repsController));
     }
     setState(() {
@@ -330,7 +345,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
       _checkRepsRange(reps: reps, index: index);
 
-      final repsController = TextEditingController(text: (set as RepsSetDto).reps.toString());
+      final repsController = TextEditingController(text: reps.toString());
       controllers.add(repsController);
     }
     setState(() {
@@ -454,15 +469,75 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     });
   }
 
+  void _showDeloadSets() {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    final exerciseLog = _exerciseLog;
+    final exercise = exerciseLog.exercise;
+    final type = exercise.type;
+
+    final readinessScore = SharedPrefs().readinessScore;
+
+    final deloadSets = calculateDeload(original: exerciseLog, recoveryScore: readinessScore);
+
+    displayBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        child: Column(spacing: 2, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text("Training Load", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20)),
+          Text(
+              "Based on your readiness score of $readinessScore, we recommend this load to keep you active, while giving your body time to fully recharge.",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.grey.shade800)),
+          const SizedBox(
+            height: 16,
+          ),
+          Column(
+            spacing: 20,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              switch (type) {
+                ExerciseType.weights => DoubleSetHeader(
+                    firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
+                    secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+                  ),
+                ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
+                ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
+              },
+              SetsListview(type: type, sets: deloadSets),
+            ],
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          SizedBox(
+              height: 45,
+              width: double.infinity,
+              child: OpacityButtonWidget(
+                  label: "Train with this plan".toUpperCase(),
+                  buttonColor: vibrantGreen,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Provider.of<ExerciseLogController>(context, listen: false)
+                        .overwriteSets(exerciseLogId: _exerciseLog.id, newSets: deloadSets);
+                    _loadControllers();
+                  }))
+        ]));
+  }
+
   @override
   Widget build(BuildContext context) {
+    
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
-    final exerciseLog =
-        Provider.of<ExerciseLogController>(context, listen: true).whereExerciseLog(exerciseId: widget.exerciseLogId);
+    final exerciseLog = Provider.of<ExerciseLogController>(context, listen: false)
+        .whereExerciseLog(exerciseId: _exerciseLog.exercise.id);
 
     final currentSets = exerciseLog.sets;
 
@@ -589,13 +664,18 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         .mapIndexed((index, error) => InformationContainerLite(
             content: error.message,
             color: Colors.yellow,
-            forceDarkMode: false,
+            useOpacity: false,
             onTap: () {
               setState(() {
                 _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == error.index);
               });
-            }))
+            },
+            trailing: FaIcon(FontAwesomeIcons.squareXmark, color: Colors.black)))
         .toList();
+
+    final readinessScore = SharedPrefs().readinessScore;
+    final readinessTier = tierForScore(score: readinessScore / 100);
+    final isLowReadiness = readinessScore > 0 && readinessTier != RecoveryTier.optimal;
 
     return Scaffold(
       appBar: AppBar(
@@ -623,15 +703,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
           IconButton(
             onPressed: _addSet,
-            icon: const FaIcon(FontAwesomeIcons.plus, size: 18),
+            icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),
             tooltip: 'Add new set',
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation:
+          !isKeyboardOpen && isLowReadiness ? null : FloatingActionButtonLocation.centerDocked,
       floatingActionButton: isKeyboardOpen
           ? Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -745,8 +826,24 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           ),
                       }
                     : SetsListview(type: exerciseType, sets: sets),
-                if (_errorMessages.isNotEmpty && _errorMessages.length > 1) _DepthStack(children: errorWidgets),
-                if (_errorMessages.isNotEmpty && _errorMessages.length == 1) errorWidgets.first,
+                if(_errorMessages.isNotEmpty) DepthStack(children: errorWidgets),
+                if (isLowReadiness && widget.editorType == RoutineEditorMode.log)
+                  TransparentInformationContainerLite(
+                      content: "Tap for training recommendations tailored to your readiness.",
+                      useOpacity: true,
+                      onTap: _showDeloadSets,
+                      trailing: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const FaIcon(
+                          Icons.chevron_right_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      )),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
                     if (withReps(type: exerciseType) &&
@@ -771,23 +868,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Container(
-                                        width: 25,
-                                        height: 25,
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: isDarkMode
-                                              ? progressionColor.withValues(alpha: 0.1)
-                                              : Colors.black.withValues(alpha: 0.4),
-                                          borderRadius: BorderRadius.circular(3),
-                                        ),
-                                        child: Center(
-                                          child: FaIcon(
-                                            FontAwesomeIcons.boltLightning,
-                                            color: isDarkMode ? progressionColor : Colors.white,
-                                            size: 14,
-                                          ),
-                                        ))
+                                    CustomIcon(FontAwesomeIcons.boltLightning, color: progressionColor),
                                   ],
                                 ),
                               ]),
@@ -838,21 +919,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Container(
-                                      width: 25,
-                                      height: 25,
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Center(
-                                        child: FaIcon(
-                                          FontAwesomeIcons.w,
-                                          color: isDarkMode ? vibrantGreen : Colors.black,
-                                          size: 12,
-                                        ),
-                                      ))
+                                  CustomIcon(FontAwesomeIcons.w, color: vibrantGreen),
                                 ],
                               ),
                             ]),
@@ -909,21 +976,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Container(
-                                      width: 25,
-                                      height: 25,
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withValues(alpha: 0.4),
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Center(
-                                        child: FaIcon(
-                                          FontAwesomeIcons.r,
-                                          color: Colors.white,
-                                          size: 12,
-                                        ),
-                                      ))
+                                  CustomIcon(FontAwesomeIcons.r, color: vibrantGreen),
                                 ],
                               ),
                             ]),
@@ -945,7 +998,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
   final List<WeightAndRepsSetDto> sets;
   final List<(TextEditingController, TextEditingController)> controllers;
   final void Function({required int index}) removeSet;
-  final void Function({required int index, required SetDto setDto}) updateSetCheck;
+  final void Function({required int index}) updateSetCheck;
   final void Function({required int index, required int reps, required SetDto setDto}) updateReps;
   final void Function({required int index, required double weight, required SetDto setDto}) updateWeight;
   final void Function({required SetDto setDto}) onTapWeightEditor;
@@ -968,7 +1021,7 @@ class _WeightAndRepsSetListView extends StatelessWidget {
       return WeightsAndRepsSetRow(
         editorType: editorType,
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onCheck: () => updateSetCheck(index: index),
         onRemoved: () => removeSet(index: index),
         onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
         onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
@@ -987,7 +1040,7 @@ class _RepsSetListView extends StatelessWidget {
   final List<RepsSetDto> sets;
   final List<TextEditingController> controllers;
   final void Function({required int index}) removeSet;
-  final void Function({required int index, required SetDto setDto}) updateSetCheck;
+  final void Function({required int index}) updateSetCheck;
   final void Function({required int index, required int reps, required SetDto setDto}) updateReps;
   final void Function() onTapRepsEditor;
 
@@ -1006,7 +1059,7 @@ class _RepsSetListView extends StatelessWidget {
       return RepsSetRow(
         editorType: editorType,
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onCheck: () => updateSetCheck(index: index),
         onRemoved: () => removeSet(index: index),
         onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
         onTapRepsEditor: () => onTapRepsEditor(),
@@ -1023,7 +1076,7 @@ class _DurationSetListView extends StatelessWidget {
   final List<DurationSetDto> sets;
   final List<DateTime> controllers;
   final void Function({required int index}) removeSet;
-  final void Function({required int index, required SetDto setDto}) updateSetCheck;
+  final void Function({required int index}) updateSetCheck;
   final void Function(
       {required int index,
       required Duration duration,
@@ -1044,7 +1097,7 @@ class _DurationSetListView extends StatelessWidget {
       return DurationSetRow(
         editorType: editorType,
         setDto: setDto,
-        onCheck: () => updateSetCheck(index: index, setDto: setDto),
+        onCheck: () => updateSetCheck(index: index),
         onRemoved: () => removeSet(index: index),
         startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
         onUpdateDuration: (Duration duration, bool shouldCheck) =>
@@ -1240,68 +1293,3 @@ Map<int, String> _repToRPE = {
   9: "🤯 Near max — serious effort",
   10: "💀 All out — absolute limit",
 };
-
-class _DepthStack extends StatelessWidget {
-  const _DepthStack({
-    super.key,
-    required this.children,
-    this.depthOffset = 0.3,
-    this.alignment = Alignment.topLeft,
-    this.clipBehavior = Clip.none,
-  });
-
-  /// The widgets to paint. Must contain **≥ 1** entry.
-  final List<Widget> children;
-
-  /// How far (in logical pixels) to drop the last child.
-  final double depthOffset;
-
-  /// Mirrors the same parameter on [Stack] so this can be a
-  /// 1-for-1 replacement when you need the depth effect.
-  final AlignmentGeometry alignment;
-
-  /// Same as [Stack.clipBehavior].
-  final Clip clipBehavior;
-
-  @override
-  Widget build(BuildContext context) {
-    if (children.isEmpty) return const SizedBox.shrink();
-
-    // Everything except the last child
-    final base = children.sublist(0, children.length - 1).map((child) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          child: child,
-        ));
-
-    // The child we’ll push downward
-    final last = children.last;
-
-    return Stack(
-      alignment: alignment,
-      clipBehavior: clipBehavior,
-      children: [
-        ...base,
-        // Move the last child down by depthOffset (positive = down)
-        Positioned(
-          left: 0,
-          right: 0,
-          top: -depthOffset,
-          child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.35), // shadow color
-                    offset: const Offset(0, 8), // x, y
-                    blurRadius: 10, // soften the edge
-                    spreadRadius: 1, // extend the shadow
-                  ),
-                ],
-              ),
-              child: last),
-        ),
-      ],
-    );
-  }
-}

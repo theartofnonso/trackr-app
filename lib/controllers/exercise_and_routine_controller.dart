@@ -214,6 +214,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Logs
   void streamLogs({required List<RoutineLog> logs}) {
     _amplifyLogRepository.loadLogStream(logs: logs);
+    notifyListeners();
   }
 
   Future<RoutineLogDto?> saveLog({required RoutineLogDto logDto, TemporalDateTime? datetime}) async {
@@ -326,6 +327,11 @@ class ExerciseAndRoutineController extends ChangeNotifier {
   /// Plan Helpers methods
   RoutinePlanDto? planWhere({required String id}) {
     return _amplifyPlanRepository.planWhere(id: id);
+  }
+
+  void getSahhaReadinessScore() async {
+    await _amplifyLogRepository.getSahhaReadinessScore();
+    notifyListeners();
   }
 
   void clear() {

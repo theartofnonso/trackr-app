@@ -4,45 +4,33 @@ import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 
-import '../../enums/activity_type_enums.dart';
 import '../../models/RoutineLog.dart';
-import '../abstract_class/log_class.dart';
 import '../exercise_log_dto.dart';
 
-class RoutineLogDto extends Log {
-  @override
+class RoutineLogDto {
+
   final String id;
 
   final String templateId;
 
-  @override
   final String name;
 
-  @override
   final String notes;
 
   final String? summary;
 
-  @override
   final DateTime startTime;
 
-  @override
   final DateTime endTime;
 
   final List<ExerciseLogDto> exerciseLogs;
 
   final String owner;
 
-  final int fatigueLevel;
+  final int readinessScore;
 
-  final int sorenessLevel;
-
-  final int sleepLevel;
-
-  @override
   final DateTime createdAt;
 
-  @override
   final DateTime updatedAt;
 
   RoutineLogDto({
@@ -55,14 +43,11 @@ class RoutineLogDto extends Log {
     required this.startTime,
     required this.endTime,
     required this.owner,
-    this.fatigueLevel = 0,
-    this.sorenessLevel = 0,
-    this.sleepLevel = 0,
+    this.readinessScore = 0,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  @override
   Duration duration() {
     return endTime.difference(startTime);
   }
@@ -76,9 +61,7 @@ class RoutineLogDto extends Log {
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
-      'fatigueLevel': fatigueLevel,
-      'sorenessLevel': sorenessLevel,
-      'sleepLevel': sleepLevel
+      'readiness': readinessScore,
     };
   }
 
@@ -95,9 +78,7 @@ class RoutineLogDto extends Log {
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogsInJson = json["exercises"] as List<dynamic>;
-    final fatigueLevel = json["fatigueLevel"] ?? 0;
-    final sorenessLevel = json["sorenessLevel"] ?? 0;
-    final sleepLevel = json["sleepLevel"] ?? 0;
+    final readinessScore = json["readiness"] ?? 0;
     List<ExerciseLogDto> exerciseLogs = [];
     if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
       exerciseLogs = exerciseLogsInJson
@@ -121,9 +102,7 @@ class RoutineLogDto extends Log {
       startTime: startTime,
       endTime: endTime,
       owner: log.owner ?? "",
-      fatigueLevel: fatigueLevel,
-      sorenessLevel: sorenessLevel,
-      sleepLevel: sleepLevel,
+      readinessScore: readinessScore,
       createdAt: log.createdAt.getDateTimeInUtc(),
       updatedAt: log.updatedAt.getDateTimeInUtc(),
     );
@@ -134,9 +113,7 @@ class RoutineLogDto extends Log {
     final name = json["name"] ?? "";
     final notes = json["notes"] ?? "";
     final summary = json["summary"];
-    final fatigueLevel = json["fatigueLevel"] ?? 0;
-    final sorenessLevel = json["sorenessLevel"] ?? 0;
-    final sleepLevel = json["sleepLevel"] ?? 0;
+    final readinessScore = json["readinessScore"] ?? 0;
     final startTime = DateTime.parse(json["startTime"]);
     final endTime = DateTime.parse(json["endTime"]);
     final exerciseLogJsons = json["exercises"] as List<dynamic>;
@@ -153,15 +130,12 @@ class RoutineLogDto extends Log {
       startTime: startTime,
       endTime: endTime,
       owner: "",
-      fatigueLevel: fatigueLevel,
-      sorenessLevel: sorenessLevel,
-      sleepLevel: sleepLevel,
+      readinessScore: readinessScore,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
   }
 
-  @override
   RoutineLogDto copyWith({
     String? id,
     String? templateId,
@@ -172,9 +146,7 @@ class RoutineLogDto extends Log {
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
     String? owner,
-    int? fatigueLevel,
-    int? sorenessLevel,
-    int? sleepLevel,
+    int? readinessScore,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -184,9 +156,7 @@ class RoutineLogDto extends Log {
       name: name ?? this.name,
       notes: notes ?? this.notes,
       summary: summary ?? this.summary,
-      fatigueLevel: fatigueLevel ?? this.fatigueLevel,
-      sorenessLevel: sorenessLevel ?? this.sorenessLevel,
-      sleepLevel: sleepLevel ?? this.sleepLevel,
+      readinessScore: readinessScore ?? this.readinessScore,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       // Deep copy the list. For any new list passed in, we clone its items;
@@ -202,14 +172,8 @@ class RoutineLogDto extends Log {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, fatigueLevel: $fatigueLevel, sorenessLevel: $sorenessLevel, sleepLevel: $sleepLevel, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, readinessScore: $readinessScore, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
-
-  @override
-  LogType get logType => LogType.routine;
-
-  @override
-  ActivityType get activityType => ActivityType.weightlifting;
 
   double get volume => exerciseLogs.expand((exerciseLog) => exerciseLog.sets).map((set) {
         return switch (set.type) {

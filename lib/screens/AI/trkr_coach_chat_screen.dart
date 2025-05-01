@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -13,6 +11,7 @@ import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/dtos/open_ai_response_schema_dtos/new_routine_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/strings/ai_prompts.dart';
+import 'package:tracker_app/widgets/information_containers/information_container_with_background_image.dart';
 
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/exercise_log_dto.dart';
@@ -88,34 +87,13 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                         ),
                       )
                     : Expanded(
-                        child: SingleChildScrollView(
-                          child: StaggeredGrid.count(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            children: [
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 1,
-                                mainAxisCellCount: 1,
-                                child: _Tile(title: "Show me a chest, leg exercises with or without equipment"),
-                              ),
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 1,
-                                mainAxisCellCount: 1,
-                                child: _Tile(title: "What exercises should I do for chest, legs, or full body?"),
-                              ),
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 1,
-                                mainAxisCellCount: 1,
-                                child: _Tile(title: "I need a quick fullbody workout — what can I do?"),
-                              ),
-                              StaggeredGridTile.count(
-                                crossAxisCellCount: 1,
-                                mainAxisCellCount: 1,
-                                child: _Tile(title: "I need a Push, Pull or Legs workout"),
-                              ),
-                            ],
-                          ),
+                        child: InformationContainerWithBackgroundImage(
+                          image: 'images/black_girl.PNG',
+                          subtitle:
+                              "TRKR can help you create new workouts tailored to your goals. You can start by asking for help, like: \n👍 Show me leg exercises using barbells only.\n👍 What exercises should I do for a full-body workout with dumbbells only?",
+                          color: Colors.black,
+                          height: 160,
+                          alignmentGeometry: Alignment.topCenter,
                         ),
                       ),
                 const SizedBox(height: 10),
@@ -325,25 +303,5 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
   void _navigateBack() {
     context.pop(_routineTemplate);
-  }
-}
-
-class _Tile extends StatelessWidget {
-  final String title;
-
-  const _Tile({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(5)),
-      child: Text(title, style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w400)),
-    );
   }
 }

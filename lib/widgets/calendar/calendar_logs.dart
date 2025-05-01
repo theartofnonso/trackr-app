@@ -12,11 +12,9 @@ class CalendarLogs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// Routine Logs
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
-    final routineLogsForCurrentDate = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
-
-    final children = routineLogsForCurrentDate.map((log) {
+    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final logs = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
+    final children = logs.map((log) {
       Widget widget;
 
       widget = RoutineLogWidget(log: log, trailing: log.duration().hmsAnalog());
@@ -27,10 +25,8 @@ class CalendarLogs extends StatelessWidget {
       );
     }).toList();
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.center, spacing: 16, children: [
-      Text("Training Logs".toUpperCase(),
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-      ...children
-    ]);
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, spacing: 16, children:
+      children
+    );
   }
 }

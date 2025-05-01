@@ -11,10 +11,8 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
 import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/daily_readiness.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../screens/routines/readiness_screen.dart';
 import '../shared_prefs.dart';
 import 'data_trend_utils.dart';
 import 'navigation_utils.dart';
@@ -60,7 +58,7 @@ double toLbs(double value) {
 String toFtInString(double value) {
   // 1 inch = 2.54 cm, 1 foot = 12 inches
   final double totalInches = value / 2.54;
-  final int feet = totalInches ~/ 12;         // integer division to get whole feet
+  final int feet = totalInches ~/ 12; // integer division to get whole feet
   final double remainderInches = totalInches % 12;
   // Round inches to 2 decimals if desired:
   return '$feet ft ${remainderInches.round()} in';
@@ -69,13 +67,10 @@ String toFtInString(double value) {
 Map<String, num> toFtIn(double value) {
   // 1 inch = 2.54 cm, 1 foot = 12 inches
   final double totalInches = value / 2.54;
-  final int feet = totalInches ~/ 12;         // integer division to get whole feet
+  final int feet = totalInches ~/ 12; // integer division to get whole feet
   final double remainderInches = totalInches % 12;
   // Round inches to 2 decimals if desired:
-  return {
-    'feet': feet,
-    'inches': remainderInches.round()
-  };
+  return {'feet': feet, 'inches': remainderInches.round()};
 }
 
 int toCm({required int feet, required int inches}) {
@@ -151,19 +146,6 @@ Future<bool> _requestAndroidNotificationPermission() async {
       false;
 }
 
-Color logStreakColor(num value) {
-  final result = value / 12;
-  if (result < 0.3) {
-    return Colors.red;
-  } else if (result < 0.5) {
-    return Colors.yellow;
-  } else if (result < 0.8) {
-    return vibrantBlue;
-  } else {
-    return vibrantGreen;
-  }
-}
-
 /// Higher values now get a "better" color (green)
 Color lowToHighIntensityColor(double score) {
   if (score < 0.3) {
@@ -171,10 +153,42 @@ Color lowToHighIntensityColor(double score) {
     return Colors.red;
   } else if (score < 0.5) {
     return Colors.yellow;
-  } else if (score < 0.8) {
+  } else if (score < 0.7) {
     return vibrantBlue;
   } else {
     return vibrantGreen;
+  }
+}
+
+List<Color> lowToHighIntensityColors(double score) {
+  if (score < 0.3) {
+    return const [
+      Color(0xFFFF5722), // strong orange
+      Color(0xFFFF3945), // reddish-orange
+      Color(0xFFEA004E), // crimson-red
+      Color(0xFFFF5722),
+    ];
+  } else if (score < 0.5) {
+    return const [
+      Color(0xFFFFC107), // sunflower
+      Color(0xFFFF9F1C), // deep yellow-orange
+      Color(0xFFFF7538), // orange
+      Color(0xFFFFC107),
+    ];
+  } else if (score < 0.7) {
+    return const [
+      Color(0xFF3763FF), // royal blue
+      vibrantBlue, // teal-green
+      Color(0xFF78FF5C), // lime-green
+      Color(0xFF3763FF),
+    ];
+  } else {
+    return const [
+      Color(0xFF4CAF50), // medium green
+      vibrantGreen, // yellow-green
+      vibrantGreen, // soft yellow
+      vibrantGreen,
+    ];
   }
 }
 
@@ -184,7 +198,7 @@ Color highToLowIntensityColor(double score) {
     return vibrantGreen;
   } else if (score < 0.5) {
     return vibrantBlue;
-  } else if (score < 0.8) {
+  } else if (score < 0.7) {
     return Colors.yellow;
   } else {
     // Higher recovery values now get a "worse" color (red)
@@ -299,12 +313,10 @@ Widget getTrendIcon({required Trend trend}) {
   };
 }
 
-void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) async {
-  final readiness = await navigateWithSlideTransition(context: context, child: ReadinessScreen()) as DailyReadiness? ??
-      DailyReadiness.empty();
-  final fatigue = readiness.perceivedFatigue;
-  final soreness = readiness.muscleSoreness;
-  final sleep = readiness.sleepDuration;
+void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
+
+  final readiness = SharedPrefs().readinessScore;
+
   final log = RoutineLogDto(
       id: "",
       templateId: "",
@@ -314,16 +326,14 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) a
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",
-      fatigueLevel: fatigue,
-      sorenessLevel: soreness,
-      sleepLevel: sleep,
+      readinessScore: readiness,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 
-  if (context.mounted) {
+
     final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
     navigateToRoutineLogEditor(context: context, arguments: arguments);
-  }
+
 }
 
 bool isOutsideReasonableRange(List<num> numbers, num newNumber,
@@ -387,4 +397,23 @@ List<int> generateNumbers({required int start, required int end}) {
     numbers.add(i);
   }
   return numbers;
+}
+
+String getReadinessSummary({required int readinessScore}) {
+  final score = readinessScore / 100;
+
+  // Ensure the score is within 0–100.
+  if (readinessScore <= 0) {
+    return "Your daily readiness score gives us insight into how rested you feel, so we can suggest workouts that match your energy levels.";
+  }
+
+  if (score < 0.3) {
+    return "🛑 Very poor readiness. High pain, fatigue, or soreness likely. Consider rest, gentle mobility work, or seek medical advice.";
+  } else if (score < 0.5) {
+    return "⚠️ Low readiness. Notable issues like pain, fatigue, or heavy soreness. Reduce intensity and focus on recovery activities.";
+  } else if (score < 0.7) {
+    return "👍 Generally solid readiness. Minor aches or tiredness possible. Proceed with your planned workout but remain mindful of any overstress.";
+  } else {
+    return "💯 Optimal readiness. Minimal pain or fatigue. Suitable for higher intensity or advanced training, if desired.";
+  }
 }

@@ -75,4 +75,13 @@ class SharedPrefs {
   set routineLog(String value) {
     _sharedPrefs?.setString(routineLogKey, value);
   }
+
+  /// Readiness Score
+  final String _readinessScore = "readiness_score";
+
+  int get readinessScore => _sharedPrefs?.getInt(_readinessScore) ?? 0;
+
+  set readinessScore(int value) {
+    _sharedPrefs?.setInt(_readinessScore, value);
+  }
 }
