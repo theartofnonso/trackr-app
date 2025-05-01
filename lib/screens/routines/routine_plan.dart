@@ -136,17 +136,18 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 ),
                 routineTemplates.isNotEmpty
                     ? GridView.count(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    childAspectRatio: 1,
-                    mainAxisSpacing: 10.0,
-                    crossAxisSpacing: 10.0,
-                    children: children)
-                    : Expanded(
-                        child: const NoListEmptyState(
-                            message: "It might feel quiet now, but your workout templates will soon appear here."),
-                      ),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                        children: children)
+                    : Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 50.0),
+                      child: const NoListEmptyState(
+                          message: "It might feel quiet now, but your workout templates will soon appear here."),
+                    ),
               ]),
             ),
           ),
@@ -233,55 +234,55 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 final arguments = RoutineTemplateArguments(planId: plan?.id ?? "");
                 navigateToRoutineTemplateEditor(context: context, arguments: arguments);
               }),
-          if(plan?.id != defaultPlanId)
+          if (plan?.id != defaultPlanId)
+            ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const FaIcon(
+                  FontAwesomeIcons.penToSquare,
+                  size: 18,
+                ),
+                horizontalTitleGap: 6,
+                title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _navigateToRoutinePlanEditor();
+                }),
+          if (plan?.id != defaultPlanId)
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
-                FontAwesomeIcons.penToSquare,
-                size: 18,
+                FontAwesomeIcons.trash,
+                size: 16,
+                color: Colors.redAccent,
               ),
               horizontalTitleGap: 6,
-              title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
+              title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
               onTap: () {
                 Navigator.of(context).pop();
-                _navigateToRoutinePlanEditor();
-              }),
-          if(plan?.id != defaultPlanId)
-            ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.trash,
-              size: 16,
-              color: Colors.redAccent,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Delete", style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.red)),
-            onTap: () {
-              Navigator.of(context).pop();
 
-              if (plan != null) {
-                showBottomSheetWithMultiActions(
-                    context: context,
-                    title: "Delete plan?",
-                    description: "Are you sure you want to delete this plan?",
-                    leftAction: Navigator.of(context).pop,
-                    rightAction: () {
-                      context.pop();
-                      _toggleLoadingState();
-                      _deleteRoutinePlan(plan: plan);
-                    },
-                    leftActionLabel: 'Cancel',
-                    rightActionLabel: 'Delete',
-                    isRightActionDestructive: true);
-              }
-            },
-          )
+                if (plan != null) {
+                  showBottomSheetWithMultiActions(
+                      context: context,
+                      title: "Delete plan?",
+                      description: "Are you sure you want to delete this plan?",
+                      leftAction: Navigator.of(context).pop,
+                      rightAction: () {
+                        context.pop();
+                        _toggleLoadingState();
+                        _deleteRoutinePlan(plan: plan);
+                      },
+                      leftActionLabel: 'Cancel',
+                      rightActionLabel: 'Delete',
+                      isRightActionDestructive: true);
+                }
+              },
+            )
         ]));
   }
 
   void _switchToAIContext() async {
     final result =
-    await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+        await navigateWithSlideTransition(context: context, child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (mounted) {
         _saveTemplate(context: context, template: result);
