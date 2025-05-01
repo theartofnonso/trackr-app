@@ -698,7 +698,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const FaIcon(
-              FontAwesomeIcons.plus,
+              FontAwesomeIcons.solidSquarePlus,
               size: 18,
             ),
             horizontalTitleGap: 6,
