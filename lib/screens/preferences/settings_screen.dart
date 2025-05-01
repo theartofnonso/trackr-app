@@ -303,6 +303,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               setState(() {
                 _notificationEnabled = status;
               });
+              if (mounted) {
+                context.pop();
+              }
             });
           }));
     }
