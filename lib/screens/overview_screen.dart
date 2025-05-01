@@ -439,7 +439,7 @@ class _NoScheduledTitle extends StatelessWidget {
           color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(5)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Keep training to see future workout schedules",
+        Text("Keep training to see future training schedules",
             style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
         const Spacer(),
         Row(
