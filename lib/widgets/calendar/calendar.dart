@@ -7,6 +7,7 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
+import 'package:tracker_app/utils/date_utils.dart';
 
 class _DateViewModel {
   final DateTime dateTime;
@@ -84,6 +85,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
         _expanded = !_expanded;
         if (!_expanded) {
           _focused = _anchor; // header shows the current month
+          widget.onMonthChanged?.call(thisMonthDateRange());
         }
       });
 

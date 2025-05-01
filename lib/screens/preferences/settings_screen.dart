@@ -12,12 +12,14 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/graphQL/queries.dart';
+import 'package:tracker_app/screens/request_screens/notifications_request.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
+import '../../utils/navigation_utils.dart';
 import '../../utils/sahha_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -294,10 +296,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
   void _turnOnNotification() async {
     if (!_notificationEnabled) {
-      final isEnabled = await requestNotificationPermission();
-      setState(() {
-        _notificationEnabled = isEnabled;
-      });
+      await navigateWithSlideTransition(
+          context: context,
+          child: NotificationsRequestScreen(onRequest: () {
+            requestNotificationPermission().then((status) {
+              setState(() {
+                _notificationEnabled = status;
+              });
+            });
+          }));
     }
   }
 
