@@ -306,8 +306,12 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     return _amplifyLogRepository.whereRecentSetsForExercise(exercise: exercise);
   }
 
-  List<SetDto> wherePrevSetsForExercise({required ExerciseDto exercise}) {
-    return _amplifyLogRepository.wherePrevSetsForExercise(exercise: exercise);
+  List<SetDto> wherePrevSetsForExercise({required ExerciseDto exercise, int? take}) {
+    return _amplifyLogRepository.wherePrevSetsForExercise(exercise: exercise, take: take);
+  }
+
+  List<SetDto> wherePrevSetsGroupForIndex({required ExerciseDto exercise, required int index, int? take}) {
+    return _amplifyLogRepository.wherePrevSetsGroupForIndex(exercise: exercise, index: index, take: take);
   }
 
   /// Exercise Helpers methods

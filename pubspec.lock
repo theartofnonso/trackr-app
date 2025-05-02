@@ -1033,10 +1033,10 @@ packages:
     dependency: "direct main"
     description:
       name: sahha_flutter
-      sha256: de3e280c709eb83c9fa6d136ba9f713db6887df8c84335e9a8f152baff7c2a14
+      sha256: "7ad54cb943d8f0fc50aa45a4f34e22d9396bc7ea8242ec8ce52eba553bc47b0b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4"
+    version: "1.1.5"
   sentry:
     dependency: transitive
     description:

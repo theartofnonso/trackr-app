@@ -44,10 +44,10 @@ PODS:
     - Flutter
     - FlutterMacOS
     - PostHog (~> 3.19)
-  - Sahha (1.1.3)
-  - sahha_flutter (1.1.4):
+  - Sahha (1.1.5)
+  - sahha_flutter (1.1.5):
     - Flutter
-    - Sahha (= 1.1.3)
+    - Sahha (= 1.1.5)
   - Sentry/HybridSDK (8.46.0)
   - sentry_flutter (8.14.1):
     - Flutter
@@ -148,8 +148,8 @@ SPEC CHECKSUMS:
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PostHog: 8394fade16f5cfd92fe2a9d34c29dd9e5304da03
   posthog_flutter: c7cc14a5f1b0759dfdfd63dd31a9a9a1af5caf96
-  Sahha: c7c704e4894d4c82879decba18f2cca8db86fbcf
-  sahha_flutter: dc86199d3835674721d4d293a5c1161056859967
+  Sahha: 7259b3905c6d49eb45baa7e6c7ddbb51e1eb06c7
+  sahha_flutter: f2281be76a295bbdb9badfddddf983f041134e17
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   sentry_flutter: 942017adbe00f963061cb11ec260414a990b7a42
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
