@@ -135,7 +135,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final predictedTemplate = templates.firstWhereOrNull((template) => template.id == predictedTemplateId);
 
     final hasPredictedTemplateBeenLogged =
-        logsForCurrentDay.firstWhereOrNull((log) => log.id == predictedTemplate?.id) != null;
+        logsForCurrentDay.firstWhereOrNull((log) => log.templateId == predictedTemplate?.id) != null;
 
     final readiness = SharedPrefs().readinessScore;
 

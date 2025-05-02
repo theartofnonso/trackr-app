@@ -166,7 +166,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                   value: recovery,
                   strokeWidth: 6,
                   backgroundColor: isDarkMode ? Colors.black12 : Colors.grey.shade400,
-                  strokeCap: StrokeCap.butt,
+                  strokeCap: StrokeCap.round,
                   valueColor: AlwaysStoppedAnimation<Color>(lowToHighIntensityColor(recovery)),
                 ),
               ),

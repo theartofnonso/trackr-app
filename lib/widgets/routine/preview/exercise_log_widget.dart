@@ -12,13 +12,11 @@ import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
-import '../../../dtos/graph/chart_point_dto.dart';
-import '../../../enums/chart_unit_enum.dart';
+import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/data_trend_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
-import '../../chart/line_chart_widget.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 
@@ -98,6 +96,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final pastExerciseLogs =
         routineLogController.whereExerciseLogsBefore(exercise: exercise, date: widget.exerciseLog.createdAt);
 
+    final pastSets = routineLogController.wherePrevSetsForExercise(exercise: exercise);
+
     final pbs =
         calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseType, exerciseLog: widget.exerciseLog);
 
@@ -111,19 +111,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final validLogs = allExerciseLogs.where((log) => log.sets.isNotEmpty).toList();
 
-    List<ChartPointDto> chartPoints = [];
-
-    List<ChartPointDto> volumeChartPoints = [];
-
-    List<ChartPointDto> rpeChartPoints = [];
-
-    List<Color> rpeColors = [];
-
-    if (exerciseType == ExerciseType.weights && _metric == WeightAndRPE.weight) {
-      final sets = validLogs.map((log) => heaviestWeightInSetForExerciseLog(exerciseLog: log)).toList();
-      chartPoints = sets.mapIndexed((index, set) => ChartPointDto(index, (set).weight)).toList();
-    }
-
     StrengthStatus strengthStatus = StrengthStatus.none;
 
     if (_metric == WeightAndRPE.rpe) {
@@ -132,15 +119,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         return rpeRatings.average.ceil();
       }).toList();
 
-      rpeChartPoints = averageRpeRatings.mapIndexed((index, rpeRating) => ChartPointDto(index, rpeRating)).toList();
-      rpeColors = averageRpeRatings.map((rpeRating) => rpeIntensityToColor[rpeRating]!).toList();
-
       if (exerciseType == ExerciseType.weights) {
         final totalVolumes = validLogs.map((log) {
           final volumes = log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
           return volumes.sum;
         }).toList();
-        volumeChartPoints = totalVolumes.mapIndexed((index, totalVolume) => ChartPointDto(index, totalVolume)).toList();
         strengthStatus =
             _analyzeVolumeRPERelationship(volumes: totalVolumes, rpes: averageRpeRatings, volume: 'Volume');
       }
@@ -150,7 +133,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           final reps = log.sets.map((set) => (set as RepsSetDto).reps);
           return reps.sum;
         }).toList();
-        volumeChartPoints = totalReps.mapIndexed((index, totalRep) => ChartPointDto(index, totalRep)).toList();
         strengthStatus = _analyzeVolumeRPERelationship(volumes: totalReps, rpes: averageRpeRatings, volume: 'Reps');
       }
 
@@ -159,8 +141,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           final durations = log.sets.map((set) => (set as DurationSetDto).duration);
           return durations.fold(Duration.zero, (sum, item) => sum + item).inMilliseconds;
         }).toList();
-        volumeChartPoints =
-            totalDuration.mapIndexed((index, totalDuration) => ChartPointDto(index, totalDuration)).toList();
         strengthStatus =
             _analyzeVolumeRPERelationship(volumes: totalDuration, rpes: averageRpeRatings, volume: 'Duration');
       }
@@ -204,47 +184,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 12,
+              spacing: 14,
               children: [
-                const SizedBox(height: 2),
                 _metric == WeightAndRPE.weight
-                    ? Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: LineChartWidget(
-                            chartPoints: chartPoints, periods: [], unit: ChartUnit.weight, aspectRation: 2.5),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Stack(children: [
-                          LineChartWidget(
-                              chartPoints: volumeChartPoints,
-                              periods: [],
-                              unit: _getChartUnit(),
-                              aspectRation: 2.5,
-                              rightReservedSize: 20,
-                              hasLeftAxisTitles: false,
-                              belowBarData: false,
-                              hasRightAxisTitles: false),
-                          LineChartWidget(
-                              chartPoints: rpeChartPoints,
-                              periods: [],
-                              unit: ChartUnit.number,
-                              aspectRation: 2.5,
-                              colors: rpeColors,
-                              lineChartSide: LineChartSide.right,
-                              rightReservedSize: 20,
-                              hasLeftAxisTitles: false,
-                              belowBarData: false,
-                              hasRightAxisTitles: false),
-                        ]),
-                      ),
-                Text(_metric == WeightAndRPE.weight ? _metric.description : strengthStatus.description,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12,
-                        height: 1.8,
-                        color: isDarkMode ? Colors.white70 : Colors.black)),
+                    ? summarizeProgression(
+                        values: _weightsForExercise(pastSets: pastSets), context: context, textAlign: TextAlign.center)
+                    : Text(strengthStatus.description,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(fontWeight: FontWeight.w400, fontSize: 13, height: 1.8)),
                 CupertinoSlidingSegmentedControl<WeightAndRPE>(
                   backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
                   thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
@@ -281,13 +231,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     );
   }
 
-  ChartUnit _getChartUnit() {
-    final exerciseType = widget.exerciseLog.exercise.type;
-    return switch (exerciseType) {
-      ExerciseType.weights => ChartUnit.weight,
-      ExerciseType.bodyWeight => ChartUnit.number,
-      ExerciseType.duration => ChartUnit.duration,
-    };
+  List<num> _weightsForExercise({required List<SetDto> pastSets}) {
+    return pastSets.reversed.map((set) => (set as WeightAndRepsSetDto).weight).toList();
   }
 
   String _volumeRepsDuration() {

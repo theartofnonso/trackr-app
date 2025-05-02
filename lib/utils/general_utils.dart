@@ -214,7 +214,7 @@ String recoveryMuscleIllustration({required double recoveryPercentage, required 
   } else if (recoveryPercentage < 0.5) {
     // High soreness (30–49%)
     return 'yellow_muscles_illustration/${muscleGroup.illustration()}.png';
-  } else if (recoveryPercentage < 0.8) {
+  } else if (recoveryPercentage < 0.7) {
     // Moderate soreness (50–79%)
     return 'blue_muscles_illustration/${muscleGroup.illustration()}.png';
   } else {
@@ -426,13 +426,19 @@ String getReadinessSummary({required int readinessScore}) {
 ///
 
 /// --- style helpers --------------------------------------------------------
-const _italic = TextStyle(fontStyle: FontStyle.italic);
 
-Color _deltaColor(bool gain) => gain ? vibrantGreen : Colors.red;
+Color _deltaColor(num difference) => difference > 0 ? vibrantGreen : difference < 0 ? Colors.red : Colors.yellow;
 
-Widget _weight(num value, String unit) => CustomWordMarkIcon("${value.toStringAsFixed(1)} $unit", padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2), color: Colors.white,);
+Widget _weight(num value, String unit, BuildContext context) {
+  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+  final isDarkMode = systemBrightness == Brightness.dark;
+  return CustomWordMarkIcon("${value.toStringAsFixed(1)} $unit",
+      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      color: isDarkMode ? Colors.white70 : Colors.grey.shade600);
+}
 
-Widget summarizeProgression({required BuildContext context, required List<num> values}) {
+Widget summarizeProgression(
+    {required BuildContext context, required List<num> values, TextAlign textAlign = TextAlign.start}) {
   if (values.isEmpty) return Text("No weight data available");
 
   final startWeight = values.first;
@@ -452,20 +458,23 @@ Widget summarizeProgression({required BuildContext context, required List<num> v
     label: 'Starting at ${startWeight.toStringAsFixed(1)} $weightUnit, '
         'currently at ${endWeight.toStringAsFixed(1)} $weightUnit. '
         '${difference.abs().toStringAsFixed(1)} $weightUnit '
-        '${difference > 0 ? 'gained' : 'lost'} overall. Showing $trend',
+        '${difference > 0 ? 'gained' : 'lost'}. Showing $trend',
     child: RichText(
+      textAlign: textAlign,
       text: TextSpan(
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.8),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 2),
         children: [
           const TextSpan(text: 'Starting at '),
-          WidgetSpan(child: _weight(startWeight, weightUnit()), alignment: PlaceholderAlignment.middle),
+          WidgetSpan(child: _weight(startWeight, weightUnit(), context), alignment: PlaceholderAlignment.middle),
           const TextSpan(text: ', currently at '),
-          WidgetSpan(child: _weight(endWeight, weightUnit()), alignment: PlaceholderAlignment.middle),
+          WidgetSpan(child: _weight(endWeight, weightUnit(), context), alignment: PlaceholderAlignment.middle),
           const TextSpan(text: ' . '),
-          WidgetSpan(child: CustomWordMarkIcon('${difference.abs().toStringAsFixed(1)} ${weightUnit()}', color: _deltaColor(difference > 0), padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)), alignment: PlaceholderAlignment.middle),
-          TextSpan(text: difference > 0 ? ' gained' : ' lost'),
-          const TextSpan(text: ' overall. Showing '),
-          TextSpan(text: trend, style: _italic),
+          TextSpan(text: difference > 0 ? "You've gained" : difference < 0 ? "You lost" : "No change at"),
+          TextSpan(text: " "),
+          WidgetSpan(
+              child: CustomWordMarkIcon('${difference.abs().toStringAsFixed(1)} ${weightUnit()}',
+                  color: _deltaColor(difference), padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)),
+              alignment: PlaceholderAlignment.middle),
         ],
       ),
     ),

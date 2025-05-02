@@ -779,32 +779,38 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ValueListenableBuilder<int>(
-                      valueListenable: _selectedSetIndex,
-                      builder: (_, idx, __) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // --- the buttons --------------------------------------------------
-                            Wrap(
-                              spacing: 6,
-                              children: List.generate(
-                                sets.length,
-                                (i) => OpacityButtonWidget(
-                                  label: 'Set ${i + 1}',
-                                  buttonColor: idx == i ? vibrantGreen : null,
-                                  onPressed: () => _selectedSetIndex.value = i,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            // --- the charts ---------------------------------------------------
-                            summarizeProgression(values: _weightsForSetIndex(idx), context: context)
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
+                    if (exerciseType == ExerciseType.weights)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ValueListenableBuilder<int>(
+                            valueListenable: _selectedSetIndex,
+                            builder: (_, idx, __) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // --- the buttons --------------------------------------------------
+                                  Wrap(
+                                    spacing: 6,
+                                    children: List.generate(
+                                      sets.length,
+                                      (i) => OpacityButtonWidget(
+                                        label: 'Set ${i + 1}',
+                                        buttonColor: idx == i ? vibrantGreen : null,
+                                        onPressed: () => _selectedSetIndex.value = i,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  // --- the charts ---------------------------------------------------
+                                  summarizeProgression(values: _weightsForSetIndex(idx), context: context)
+                                ],
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
                     _showPreviousSets
                         ? switch (exerciseType) {
                             ExerciseType.weights => DoubleSetHeader(
