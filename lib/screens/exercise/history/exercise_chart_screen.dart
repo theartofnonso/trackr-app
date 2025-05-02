@@ -258,6 +258,12 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
                   chartPoints: _chartPoints,
                   periods: _dateTimes,
                   unit: _chartUnit,
+                  aspectRation: 4.5,
+                  lineChartSide: LineChartSide.right,
+                  rightReservedSize: 20,
+                  hasLeftAxisTitles: false,
+                  belowBarData: false,
+                  hasRightAxisTitles: false
                 ),
               ],
             ),
