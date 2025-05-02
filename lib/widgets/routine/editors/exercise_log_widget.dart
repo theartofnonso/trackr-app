@@ -13,6 +13,7 @@ import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/enums/chart_unit_enum.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/extensions/set_dtos_extensions.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/progressive_overload_utils.dart';
@@ -77,9 +78,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   SetDto? _selectedSetDto;
 
-  int _selectedSetIndex = 0;
+  final _selectedSetIndex = ValueNotifier<int>(0);
 
   List<_ErrorMessage> _errorMessages = [];
+
+  late ExerciseLogController _logCtrl;
+
+  late ExerciseAndRoutineController _routineCtrl;
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
@@ -395,6 +400,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _logCtrl     = context.read<ExerciseLogController>();
+    _routineCtrl = context.read<ExerciseAndRoutineController>();
+  }
+
   /// Analyzes a list of RPE ratings and returns a descriptive summary.
   String _getRpeTrendSummary({required List<int> ratings}) {
     bool isHigh(int rpe) => rpe >= 6;
@@ -532,6 +544,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ]));
   }
 
+  List<ChartPointDto> _chartForSetIndex(int idx) {
+    final past = _routineCtrl.wherePrevSetsGroupForIndex(
+        exercise: _exerciseLog.exercise, index: idx, take: 10);
+    return [
+      for (var i = 0; i < past.length; ++i)
+        ChartPointDto(i, (past[i] as WeightAndRepsSetDto).weight)
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -539,20 +560,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
-    final exerciseLogController = Provider.of<ExerciseLogController>(context, listen: false);
-
     final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final exerciseLog = exerciseLogController
-        .whereExerciseLog(exerciseId: _exerciseLog.exercise.id);
+    final exerciseLog = context.select<ExerciseLogController, ExerciseLogDto>((c) => c.whereExerciseLog(exerciseId: _exerciseLog.exercise.id));
 
     final currentSets = exerciseLog.sets;
 
     final recentSets = exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseLog.exercise);
 
     final previousSets = exerciseAndRoutineController.wherePrevSetsForExercise(exercise: exerciseLog.exercise);
-
-    final previousSetsForIndex = exerciseAndRoutineController.wherePrevSetsGroupForIndex(exercise: exerciseLog.exercise, index: _selectedSetIndex, take: 10).reversed.toList();
 
     final exerciseType = exerciseLog.exercise.type;
 
@@ -565,12 +581,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     RepRange? typicalRepRange;
 
     /// Get working sets
-    final workingSets = switch (exerciseType) {
-      ExerciseType.weights => markHighestWeightSets(sets),
-      ExerciseType.bodyWeight => markHighestRepsSets(sets),
-      ExerciseType.duration => markHighestDurationSets(sets),
-    }
-        .where((set) => set.isWorkingSet)
+    final workingSets = sets.workingSets(exerciseType)
+        .where((s) => s.isWorkingSet)
         .toList();
 
     bool isAllSameWeight = false;
@@ -684,28 +696,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final readinessTier = tierForScore(score: readinessScore / 100);
     final isLowReadiness = readinessScore > 0 && readinessTier != RecoveryTier.optimal;
 
-    List<ChartPointDto> setsChartPoints = [];
-
-    if (exerciseType == ExerciseType.weights) {
-      setsChartPoints =
-      previousSetsForIndex.mapIndexed((index, set) => ChartPointDto(index, (set as WeightAndRepsSetDto).weight)).toList();
-    }
-
-    //final setsGroups = exe
-
-    final setsChildren = sets
-        .mapIndexed((index, set) => OpacityButtonWidget(
-              onPressed: () {
-                setState(() {
-                  _selectedSetIndex = index;
-                });
-              },
-              label: "Set ${index + 1}",
-              buttonColor: _selectedSetIndex == index ? vibrantGreen : null,
-              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
-            ))
-        .toList();
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -796,10 +786,23 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                  Wrap(runSpacing: 6, spacing: 6, children: setsChildren),
+                    ValueListenableBuilder<int>(
+                      valueListenable: _selectedSetIndex,
+                      builder: (_, idx, __) => Wrap(
+                        spacing: 6,
+                        children: List.generate(
+                          sets.length,
+                              (i) => OpacityButtonWidget(
+                            label: 'Set ${i + 1}',
+                            buttonColor: idx == i ? vibrantGreen : null,
+                            onPressed: () => _selectedSetIndex.value = i,
+                          ),
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 16),
                   LineChartWidget(
-                      chartPoints: setsChartPoints,
+                      chartPoints: _chartForSetIndex(_selectedSetIndex.value),
                       periods: [],
                       unit: ChartUnit.weight,
                       aspectRation: 2.5,
@@ -1067,21 +1070,27 @@ class _WeightAndRepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return WeightsAndRepsSetRow(
-        editorType: editorType,
-        setDto: setDto,
-        onCheck: () => updateSetCheck(index: index),
-        onRemoved: () => removeSet(index: index),
-        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-        onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
-        onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-        onTapRepsEditor: () => onTapRepsEditor(),
-        controllers: controllers[index],
-      );
-    }).toList();
 
-    return Column(spacing: 8, children: children);
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sets.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, index) {
+        final setDto = sets[index];
+        return WeightsAndRepsSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index),
+          onRemoved: () => removeSet(index: index),
+          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+          onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+          onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(),
+          controllers: controllers[index],
+        );
+      },
+    );
   }
 }
 
@@ -1105,19 +1114,25 @@ class _RepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return RepsSetRow(
-        editorType: editorType,
-        setDto: setDto,
-        onCheck: () => updateSetCheck(index: index),
-        onRemoved: () => removeSet(index: index),
-        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-        onTapRepsEditor: () => onTapRepsEditor(),
-        controller: controllers[index],
-      );
-    }).toList();
 
-    return Column(spacing: 8, children: children);
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sets.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, index) {
+        final setDto = sets[index];
+        return RepsSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index),
+          onRemoved: () => removeSet(index: index),
+          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(),
+          controller: controllers[index],
+        );
+      },
+    );
   }
 }
 
@@ -1143,19 +1158,25 @@ class _DurationSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return DurationSetRow(
-        editorType: editorType,
-        setDto: setDto,
-        onCheck: () => updateSetCheck(index: index),
-        onRemoved: () => removeSet(index: index),
-        startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-        onUpdateDuration: (Duration duration, bool shouldCheck) =>
-            updateDuration(index: index, setDto: setDto, duration: duration, shouldCheck: shouldCheck),
-      );
-    }).toList();
 
-    return Column(spacing: 8, children: children);
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sets.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, index) {
+        final setDto = sets[index];
+        return DurationSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index),
+          onRemoved: () => removeSet(index: index),
+          startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
+          onUpdateDuration: (Duration duration, bool shouldCheck) =>
+              updateDuration(index: index, setDto: setDto, duration: duration, shouldCheck: shouldCheck),
+        );
+      },
+    );
   }
 }
 
