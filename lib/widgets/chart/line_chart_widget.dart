@@ -26,7 +26,7 @@ class LineChartWidget extends StatelessWidget {
   final double? maxY;
   final Color Function(double value)? leftAxisTitlesColor;
   final Color Function(double value)? rightAxisTitlesColor;
-
+  final bool belowBarData;
   const LineChartWidget(
       {super.key,
       required this.chartPoints,
@@ -41,7 +41,7 @@ class LineChartWidget extends StatelessWidget {
         this.hasLeftAxisTitles = true,
         this.leftAxisTitlesColor,
         this.rightAxisTitlesColor,
-      this.leftReservedSize = 40, this.rightReservedSize = 40});
+      this.leftReservedSize = 40, this.rightReservedSize = 40, this.belowBarData = true});
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +74,7 @@ class LineChartWidget extends StatelessWidget {
                         ),
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
+                            interval: interval,
                             showTitles: hasLeftAxisTitles,
                             getTitlesWidget: _leftTitleWidgets,
                             reservedSize: leftReservedSize,
@@ -99,7 +100,7 @@ class LineChartWidget extends StatelessWidget {
                             color: isDarkMode ? Colors.white70 : Colors.grey.shade600,
                             gradient: colors.length >= 2 ? LinearGradient(colors: colors) : null,
                             belowBarData: BarAreaData(
-                              show: true,
+                              show: belowBarData,
                               gradient: LinearGradient(
                                 colors: [
                                   isDarkMode ? Colors.white : Colors.black,

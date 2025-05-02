@@ -398,6 +398,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   void dispose() {
     _disposeControllers();
+    _selectedSetIndex.dispose();
     super.dispose();
   }
 
@@ -545,9 +546,28 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ]));
   }
 
-  List<ChartPointDto> _chartForSetIndex(int idx) {
-    final past = _routineCtrl.wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10).reversed.toList();
+  List<ChartPointDto> _weightChartForSetIndex(int idx) {
+    final past = _routineCtrl
+        .wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10)
+        .reversed
+        .toList();
     return [for (var i = 0; i < past.length; ++i) ChartPointDto(i, (past[i] as WeightAndRepsSetDto).weight)];
+  }
+
+  List<ChartPointDto> _rpeChartForSetIndex(int idx) {
+    final past = _routineCtrl
+        .wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10)
+        .reversed
+        .toList();
+    return [for (var i = 0; i < past.length; ++i) ChartPointDto(i, (past[i]).rpeRating)];
+  }
+
+  List<Color> _rpeIntensityColorsForSetIndex(int idx) {
+    final past = _routineCtrl
+        .wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10)
+        .reversed
+        .toList();
+    return [for (var i = 0; i < past.length; ++i) rpeIntensityToColor[past[i].rpeRating]!];
   }
 
   @override
@@ -780,32 +800,63 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   children: [
                     ValueListenableBuilder<int>(
                       valueListenable: _selectedSetIndex,
-                      builder: (_, idx, __) => Wrap(
-                        spacing: 6,
-                        children: List.generate(
-                          sets.length,
-                          (i) => OpacityButtonWidget(
-                            label: 'Set ${i + 1}',
-                            buttonColor: idx == i ? vibrantGreen : null,
-                            onPressed: () => _selectedSetIndex.value = i,
-                          ),
-                        ),
-                      ),
+                      builder: (_, idx, __) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // --- the buttons --------------------------------------------------
+                            Wrap(
+                              spacing: 6,
+                              children: List.generate(
+                                sets.length,
+                                (i) => OpacityButtonWidget(
+                                  label: 'Set ${i + 1}',
+                                  buttonColor: idx == i ? vibrantGreen : null,
+                                  onPressed: () => _selectedSetIndex.value = i,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            // --- the charts ---------------------------------------------------
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Stack(
+                                children: [
+                                  LineChartWidget(
+                                      chartPoints: _weightChartForSetIndex(idx),
+                                      periods: const [],
+                                      unit: ChartUnit.weight,
+                                      aspectRation: 2.5,
+                                      rightReservedSize: 20,
+                                      hasLeftAxisTitles: false,
+                                      belowBarData: false,
+                                      hasRightAxisTitles: false),
+                                  LineChartWidget(
+                                      chartPoints: _rpeChartForSetIndex(idx),
+                                      periods: const [],
+                                      unit: ChartUnit.number,
+                                      aspectRation: 2.5,
+                                      colors: _rpeIntensityColorsForSetIndex(idx),
+                                      lineChartSide: LineChartSide.right,
+                                      rightReservedSize: 20,
+                                      hasLeftAxisTitles: false,
+                                      belowBarData: false,
+                                      hasRightAxisTitles: false),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Showing weight progression from your last 10 sessions.',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 12,
+                                    color: isDarkMode ? Colors.white70 : Colors.black,
+                                  ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                    const SizedBox(height: 16),
-                    LineChartWidget(
-                        chartPoints: _chartForSetIndex(_selectedSetIndex.value),
-                        periods: [],
-                        unit: ChartUnit.weight,
-                        aspectRation: 2.5,
-                        leftReservedSize: 30,
-                        hasRightAxisTitles: false),
-                    Text("Showing weight progression from your last 10 sessions.",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                            height: 1.8,
-                            color: isDarkMode ? Colors.white70 : Colors.black)),
                     const SizedBox(height: 16),
                     _showPreviousSets
                         ? switch (exerciseType) {
