@@ -546,7 +546,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   List<ChartPointDto> _chartForSetIndex(int idx) {
-    final past = _routineCtrl.wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10);
+    final past = _routineCtrl.wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10).reversed.toList();
     return [for (var i = 0; i < past.length; ++i) ChartPointDto(i, (past[i] as WeightAndRepsSetDto).weight)];
   }
 
