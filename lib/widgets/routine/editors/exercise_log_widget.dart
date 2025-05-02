@@ -9,9 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
-import 'package:tracker_app/enums/chart_unit_enum.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/set_dtos_extensions.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -38,7 +36,6 @@ import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
-import '../../chart/line_chart_widget.dart';
 import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
 import '../../information_containers/transparent_information_container_lite.dart';
@@ -546,28 +543,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ]));
   }
 
-  List<ChartPointDto> _weightChartForSetIndex(int idx) {
-    final past = _routineCtrl
-        .wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10)
+  List<num> _weightsForSetIndex(int idx) {
+    return _routineCtrl
+        .wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx)
         .reversed
+        .map((set) => (set as WeightAndRepsSetDto).weight)
         .toList();
-    return [for (var i = 0; i < past.length; ++i) ChartPointDto(i, (past[i] as WeightAndRepsSetDto).weight)];
-  }
-
-  List<ChartPointDto> _rpeChartForSetIndex(int idx) {
-    final past = _routineCtrl
-        .wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10)
-        .reversed
-        .toList();
-    return [for (var i = 0; i < past.length; ++i) ChartPointDto(i, (past[i]).rpeRating)];
-  }
-
-  List<Color> _rpeIntensityColorsForSetIndex(int idx) {
-    final past = _routineCtrl
-        .wherePrevSetsGroupForIndex(exercise: _exerciseLog.exercise, index: idx, take: 10)
-        .reversed
-        .toList();
-    return [for (var i = 0; i < past.length; ++i) rpeIntensityToColor[past[i].rpeRating]!];
   }
 
   @override
@@ -816,43 +797,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             // --- the charts ---------------------------------------------------
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Stack(
-                                children: [
-                                  LineChartWidget(
-                                      chartPoints: _weightChartForSetIndex(idx),
-                                      periods: const [],
-                                      unit: ChartUnit.weight,
-                                      aspectRation: 2.5,
-                                      rightReservedSize: 20,
-                                      hasLeftAxisTitles: false,
-                                      belowBarData: false,
-                                      hasRightAxisTitles: false),
-                                  LineChartWidget(
-                                      chartPoints: _rpeChartForSetIndex(idx),
-                                      periods: const [],
-                                      unit: ChartUnit.number,
-                                      aspectRation: 2.5,
-                                      colors: _rpeIntensityColorsForSetIndex(idx),
-                                      lineChartSide: LineChartSide.right,
-                                      rightReservedSize: 20,
-                                      hasLeftAxisTitles: false,
-                                      belowBarData: false,
-                                      hasRightAxisTitles: false),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Showing weight progression from your last 10 sessions.',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontSize: 12,
-                                    color: isDarkMode ? Colors.white70 : Colors.black,
-                                  ),
-                            ),
+                            summarizeProgression(values: _weightsForSetIndex(idx), context: context)
                           ],
                         );
                       },

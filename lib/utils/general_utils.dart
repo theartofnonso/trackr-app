@@ -8,6 +8,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -314,7 +316,6 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
-
   final readiness = SharedPrefs().readinessScore;
 
   final log = RoutineLogDto(
@@ -330,10 +331,8 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 
-
-    final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
-    navigateToRoutineLogEditor(context: context, arguments: arguments);
-
+  final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+  navigateToRoutineLogEditor(context: context, arguments: arguments);
 }
 
 bool isOutsideReasonableRange(List<num> numbers, num newNumber,
@@ -416,4 +415,62 @@ String getReadinessSummary({required int readinessScore}) {
   } else {
     return "💯 Optimal readiness. Minimal pain or fatigue. Suitable for higher intensity or advanced training, if desired.";
   }
+}
+
+/// Returns a short, human-readable summary of how weights changed.
+///
+/// Examples:
+///   [60, 62.5, 65, 67.5] ➜ "Steady increase (+7.5 kg overall)"
+///   [80, 78, 77]         ➜ "Overall drop (-3 kg)"
+///   [50, 51, 49, 50]     ➜ "Mixed changes (net 0 kg)"
+///
+///
+
+/// --- style helpers --------------------------------------------------------
+const _strong = TextStyle(fontWeight: FontWeight.w700);
+const _unit = TextStyle(letterSpacing: .5);
+const _italic = TextStyle(fontStyle: FontStyle.italic);
+
+Color _deltaColor(bool gain) => gain ? vibrantGreen : Colors.red;
+
+Widget _weight(num value, String unit) => CustomWordMarkIcon("${value.toStringAsFixed(1)} $unit", color: Colors.white70, padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2));
+
+Widget summarizeProgression({required BuildContext context, required List<num> values}) {
+  if (values.isEmpty) return Text("No weight data available");
+
+  final startWeight = values.first;
+  final endWeight = values.last;
+  final difference = endWeight - startWeight;
+
+  String trend;
+  if (difference > 0) {
+    trend = "an upward trend ↗";
+  } else if (difference < 0) {
+    trend = "a downward trend ↘";
+  } else {
+    trend = "stable with no change →";
+  }
+
+  return Semantics(
+    label: 'Starting at ${startWeight.toStringAsFixed(1)} $weightUnit, '
+        'currently at ${endWeight.toStringAsFixed(1)} $weightUnit. '
+        '${difference.abs().toStringAsFixed(1)} $weightUnit '
+        '${difference > 0 ? 'gained' : 'lost'} overall. Showing $trend',
+    child: RichText(
+      text: TextSpan(
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.8),
+        children: [
+          const TextSpan(text: 'Starting at '),
+          WidgetSpan(child: _weight(startWeight, weightUnit()), alignment: PlaceholderAlignment.middle),
+          const TextSpan(text: ', currently at '),
+          WidgetSpan(child: _weight(endWeight, weightUnit()), alignment: PlaceholderAlignment.middle),
+          const TextSpan(text: '. '),
+          WidgetSpan(child: CustomWordMarkIcon('${difference.abs().toStringAsFixed(1)} ${weightUnit()}', color: _deltaColor(difference > 0), padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)), alignment: PlaceholderAlignment.middle),
+          TextSpan(text: difference > 0 ? ' gained' : ' lost'),
+          const TextSpan(text: ' overall. Showing '),
+          TextSpan(text: trend, style: _italic),
+        ],
+      ),
+    ),
+  );
 }
