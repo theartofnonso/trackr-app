@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../colors.dart';
 import '../../utils/general_utils.dart';
@@ -21,7 +22,7 @@ class SahhaSensorsRequestScreen extends StatefulWidget {
 
 class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
 
-  String _androidRelease = "";
+  int _androidSDK = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +65,18 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
+              if(_androidSDK >= 29 && _androidSDK <= 33)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 26.0,),
+                  child: SizedBox(
+                      height: 45,
+                      width: double.infinity,
+                      child: OpacityButtonWidget(
+                        label: "Download Google Health Connect",
+                        buttonColor: Colors.transparent,
+                        onPressed: _openPlayStore,
+                      )),
+                ),
               const SizedBox(height: 50),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 26.0),
@@ -85,9 +98,9 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
 
   void _getAndroidVersion() async {
     final androidInfo = await DeviceInfoPlugin().androidInfo;
-    final release = androidInfo.version.release;
+    final sdk = androidInfo.version.sdkInt;
     setState(() {
-      _androidRelease = release;
+      _androidSDK = sdk;
     });
   }
 
@@ -98,4 +111,20 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
       _getAndroidVersion();
     });
   }
+
+  Future<void> _openPlayStore() async {
+    final uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata&hl=en");
+
+    // Prefer launching in the Play-Store app; fall back to the browser.
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+
+    if (!launched) {
+      // Optionally show a snackbar / dialog.
+      debugPrint('Could not open the Play-Store link.');
+    }
+  }
+
 }
