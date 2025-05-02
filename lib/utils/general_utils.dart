@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../colors.dart';
@@ -427,13 +426,11 @@ String getReadinessSummary({required int readinessScore}) {
 ///
 
 /// --- style helpers --------------------------------------------------------
-const _strong = TextStyle(fontWeight: FontWeight.w700);
-const _unit = TextStyle(letterSpacing: .5);
 const _italic = TextStyle(fontStyle: FontStyle.italic);
 
 Color _deltaColor(bool gain) => gain ? vibrantGreen : Colors.red;
 
-Widget _weight(num value, String unit) => CustomWordMarkIcon("${value.toStringAsFixed(1)} $unit", color: Colors.white70, padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2));
+Widget _weight(num value, String unit) => CustomWordMarkIcon("${value.toStringAsFixed(1)} $unit", padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2), color: Colors.white,);
 
 Widget summarizeProgression({required BuildContext context, required List<num> values}) {
   if (values.isEmpty) return Text("No weight data available");
@@ -464,7 +461,7 @@ Widget summarizeProgression({required BuildContext context, required List<num> v
           WidgetSpan(child: _weight(startWeight, weightUnit()), alignment: PlaceholderAlignment.middle),
           const TextSpan(text: ', currently at '),
           WidgetSpan(child: _weight(endWeight, weightUnit()), alignment: PlaceholderAlignment.middle),
-          const TextSpan(text: '. '),
+          const TextSpan(text: ' . '),
           WidgetSpan(child: CustomWordMarkIcon('${difference.abs().toStringAsFixed(1)} ${weightUnit()}', color: _deltaColor(difference > 0), padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)), alignment: PlaceholderAlignment.middle),
           TextSpan(text: difference > 0 ? ' gained' : ' lost'),
           const TextSpan(text: ' overall. Showing '),
