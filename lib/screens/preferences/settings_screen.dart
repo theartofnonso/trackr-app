@@ -109,36 +109,41 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   height: 20,
                 ),
                 if (Platform.isIOS)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      LabelDivider(
-                        label: "Notifications",
-                        labelColor: isDarkMode ? Colors.white : Colors.black,
-                        dividerColor: sapphireLighter,
-                        fontSize: 14,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          LabelDivider(
+                            label: "Notifications",
+                            labelColor: isDarkMode ? Colors.white : Colors.black,
+                            dividerColor: sapphireLighter,
+                            fontSize: 14,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                              "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
+                              textAlign: TextAlign.start,
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                        ]),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                          "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
-                          textAlign: TextAlign.start,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
-                    ]),
+                      ListTile(
+                        onTap: _turnOnNotification,
+                        dense: true,
+                        horizontalTitleGap: 0,
+                        leading: Text(_notificationEnabled ? "Notification is on" : "Turn on notifications",
+                            textAlign: TextAlign.start,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w600, fontSize: 14, color: isDarkMode ? Colors.white : Colors.black)),
+                        trailing: FaIcon(
+                          FontAwesomeIcons.solidBell,
+                          size: 14,
+                        ),
+                      ),
+                    ],
                   ),
-                ListTile(
-                  onTap: _turnOnNotification,
-                  dense: true,
-                  horizontalTitleGap: 0,
-                  leading: Text(_notificationEnabled ? "Notification is on" : "Turn on notifications",
-                      textAlign: TextAlign.start,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w600, fontSize: 14, color: isDarkMode ? Colors.white : Colors.black)),
-                  trailing: FaIcon(
-                    FontAwesomeIcons.solidBell,
-                    size: 14,
-                  ),
-                ),
                 ListTile(
                   tileColor: Colors.transparent,
                   title: Text("Weight", style: Theme.of(context).textTheme.titleMedium),
