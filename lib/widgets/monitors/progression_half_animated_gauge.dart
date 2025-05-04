@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/utils/progressive_overload_utils.dart';
 
-import '../../../../utils/general_utils.dart';
-
 /// A semicircular gauge whose gradient colors rotate slowly with the gauge
 /// positioned above the label.
 ///

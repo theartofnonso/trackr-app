@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
-import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../colors.dart';
@@ -238,37 +237,6 @@ Color highToLowIntensityColor(double score) {
     // Higher recovery values now get a "worse" color (red)
     return Colors.red;
   }
-}
-
-Color rpeToIntensityColor({required TrainingProgression progression}) {
-  return switch (progression) {
-    TrainingProgression.increase => vibrantGreen,
-    TrainingProgression.decrease => Colors.red,
-    TrainingProgression.maintain => vibrantBlue,
-  };
-}
-
-List<Color> rpeToIntensityColors({required TrainingProgression progression}) {
-  return switch (progression) {
-    TrainingProgression.increase => const [
-        Color(0xFF4CAF50), // medium green
-        vibrantGreen, // yellow-green
-        vibrantGreen, // soft yellow
-        vibrantGreen,
-      ],
-    TrainingProgression.decrease => const [
-        Color(0xFFFF5722), // strong orange
-        Color(0xFFFF3945), // reddish-orange
-        Color(0xFFEA004E), // crimson-red
-        Color(0xFFFF5722),
-      ],
-    TrainingProgression.maintain => const [
-        Color(0xFF3763FF), // royal blue
-        vibrantBlue, // teal-green
-        Color(0xFF78FF5C), // lime-green
-        Color(0xFF3763FF),
-      ],
-  };
 }
 
 String recoveryMuscleIllustration({required double recoveryPercentage, required MuscleGroup muscleGroup}) {

@@ -1,3 +1,9 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
+import '../colors.dart';
+
 enum TrainingProgression { increase, decrease, maintain }
 
 class TrainingData {
@@ -96,4 +102,35 @@ TrainingProgression _determineOverallProgression({
     return TrainingProgression.decrease;
   }
   return TrainingProgression.maintain;
+}
+
+Color rpeToIntensityColor({required TrainingProgression progression}) {
+  return switch (progression) {
+    TrainingProgression.increase => vibrantGreen,
+    TrainingProgression.decrease => Colors.red,
+    TrainingProgression.maintain => vibrantBlue,
+  };
+}
+
+List<Color> rpeToIntensityColors({required TrainingProgression progression}) {
+  return switch (progression) {
+    TrainingProgression.increase => const [
+      Color(0xFF4CAF50), // medium green
+      vibrantGreen, // yellow-green
+      vibrantGreen, // soft yellow
+      vibrantGreen,
+    ],
+    TrainingProgression.decrease => const [
+      Color(0xFFFF5722), // strong orange
+      Color(0xFFFF3945), // reddish-orange
+      Color(0xFFEA004E), // crimson-red
+      Color(0xFFFF5722),
+    ],
+    TrainingProgression.maintain => const [
+      Color(0xFF3763FF), // royal blue
+      vibrantBlue, // teal-green
+      Color(0xFF78FF5C), // lime-green
+      Color(0xFF3763FF),
+    ],
+  };
 }

@@ -329,6 +329,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                             child: OpacityButtonWidget(
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               buttonColor: vibrantGreen,
+                              trailing: FaIcon(FontAwesomeIcons.solidSquareCaretRight),
                               label: widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
                               onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
                             )),
