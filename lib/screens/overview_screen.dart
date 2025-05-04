@@ -223,7 +223,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 child: _AddTile(),
               ),
             ),
-            StaggeredGridTile.count(
+            if(logs.isNotEmpty)
+              StaggeredGridTile.count(
               crossAxisCellCount: 2,
               mainAxisCellCount: 1,
               child: Column(

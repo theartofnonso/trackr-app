@@ -807,7 +807,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         ),
                       ),
                   ]),
-                RichText(
+                if(typicalRepRange.minReps > 0 && typicalRepRange.maxReps > 0)
+                  RichText(
                   text: TextSpan(
                       text: "${typicalRepRange.minReps}",
                       style: Theme.of(context)
