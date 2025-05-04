@@ -552,9 +552,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final typicalRepRange = determineTypicalRepRange(reps: reps);
 
     /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
-    final trainingData = workingSets.map((set) {
+    final trainingData = exerciseType == ExerciseType.weights ? workingSets.map((set) {
       return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
-    }).toList();
+    }).toList() : <TrainingData>[];
 
     trainingProgression = getTrainingProgression(
         data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
