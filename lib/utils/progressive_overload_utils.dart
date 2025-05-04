@@ -15,6 +15,8 @@ class TrainingData {
   String toString() {
     return 'TrainingData{reps: $reps, rpe: $rpe, weight: $weight}';
   }
+
+
 }
 
 TrainingProgression getTrainingProgression({
