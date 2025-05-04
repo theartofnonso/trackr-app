@@ -13,7 +13,7 @@ import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../logger.dart';
 import '../../utils/general_utils.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/list_tile.dart';
 import '../../widgets/picker.dart';
@@ -163,11 +163,8 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                     minimum: EdgeInsets.all(10),
                     child: SizedBox(
                       width: double.infinity,
-                      child: OpacityButtonWidget(
-                          onPressed: _createExercise,
-                          label: "Create Exercise",
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                          buttonColor: vibrantGreen),
+                      child: OpacityButtonWidgetTwo(
+                          onPressed: _createExercise, label: "Create Exercise", buttonColor: vibrantGreen),
                     ),
                   ),
               ]),

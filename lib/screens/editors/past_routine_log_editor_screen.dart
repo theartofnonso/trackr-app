@@ -18,7 +18,7 @@ import '../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/editors/exercise_log_grid_item.dart';
 import '../../widgets/weight_plate_calculator.dart';
@@ -319,8 +319,7 @@ class _PastRoutineLogEditorScreenState extends State<PastRoutineLogEditorScreen>
                         minimum: EdgeInsets.symmetric(horizontal: 20),
                         child: SizedBox(
                             width: double.infinity,
-                            child: OpacityButtonWidget(
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: OpacityButtonWidgetTwo(
                                 buttonColor: vibrantGreen,
                                 label: "Log Past Session",
                                 onPressed: _createLog)),

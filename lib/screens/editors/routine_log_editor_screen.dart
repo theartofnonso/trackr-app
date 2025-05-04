@@ -24,7 +24,7 @@ import '../../shared_prefs.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/notifications_utils.dart';
 import '../../utils/routine_utils.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/monitors/half_animated_gauge.dart';
 
@@ -326,10 +326,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                         minimum: EdgeInsets.symmetric(horizontal: 20),
                         child: SizedBox(
                             width: double.infinity,
-                            child: OpacityButtonWidget(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: OpacityButtonWidgetTwo(
                               buttonColor: vibrantGreen,
-                              trailing: FaIcon(FontAwesomeIcons.solidSquareCaretRight),
                               label: widget.mode == RoutineEditorMode.log ? "Finish Session" : "Update Session",
                               onPressed: widget.mode == RoutineEditorMode.log ? _saveLog : _updateLog,
                             )),

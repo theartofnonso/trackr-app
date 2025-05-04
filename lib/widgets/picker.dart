@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
+
+import 'buttons/opacity_button_widget_two.dart';
 
 class GenericPicker<T> extends StatefulWidget {
   /// The initially selected item (optional).
@@ -81,10 +82,9 @@ class _GenericPickerState<T> extends State<GenericPicker<T>> {
         ),
         const SizedBox(height: 10),
         // Replace this button with your custom 'OpacityButtonWidget' if you like.
-        OpacityButtonWidget(
+        OpacityButtonWidgetTwo(
           onPressed: () => widget.onItemSelected(_selectedItem),
           buttonColor: vibrantGreen,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           label: "Select ${widget.labelBuilder(_selectedItem)}",
         ),
       ],

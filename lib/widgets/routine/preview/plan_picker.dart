@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
 
 import '../../../../colors.dart';
-import '../../buttons/opacity_button_widget.dart';
+import '../../buttons/opacity_button_widget_two.dart';
 import '../../empty_states/list_tile_empty_state.dart';
 
 class PlanPicker extends StatelessWidget {
@@ -11,11 +11,7 @@ class PlanPicker extends StatelessWidget {
   final List<RoutinePlanDto> plans;
   final void Function(RoutinePlanDto plan) onSelect;
 
-  const PlanPicker(
-      {super.key,
-      required this.title,
-      required this.plans,
-      required this.onSelect});
+  const PlanPicker({super.key, required this.title, required this.plans, required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +62,7 @@ class _EmptyState extends StatelessWidget {
             child: ListTileEmptyState(),
           ),
           const SizedBox(height: 24),
-          OpacityButtonWidget(
-              onPressed: onPressed,
-              label: "Create a workout plan",
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              buttonColor: vibrantGreen)
+          OpacityButtonWidgetTwo(onPressed: onPressed, label: "Create a workout plan", buttonColor: vibrantGreen)
         ],
       ),
     );

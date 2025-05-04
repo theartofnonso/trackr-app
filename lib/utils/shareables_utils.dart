@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../colors.dart';
-import '../widgets/buttons/opacity_button_widget.dart';
+import '../widgets/buttons/opacity_button_widget_two.dart';
 import 'dialog_utils.dart';
 
 Future<ShareResult> captureImage(
@@ -50,19 +50,19 @@ void onShare(
                   child: child),
             )),
         const SizedBox(height: 20),
-        OpacityButtonWidget(
-            onPressed: () {
-              Navigator.of(context).pop();
-              captureImage(key: globalKey, pixelRatio: 5).then((result) {
-                if (context.mounted) {
-                  if (result.status == ShareResultStatus.success) {
-                    showSnackbar(context: context, message: "Content Shared");
-                  }
+        OpacityButtonWidgetTwo(
+          onPressed: () {
+            Navigator.of(context).pop();
+            captureImage(key: globalKey, pixelRatio: 5).then((result) {
+              if (context.mounted) {
+                if (result.status == ShareResultStatus.success) {
+                  showSnackbar(context: context, message: "Content Shared");
                 }
-              });
-            },
-            label: "Share",
-            buttonColor: vibrantGreen,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14))
+              }
+            });
+          },
+          label: "Share",
+          buttonColor: vibrantGreen,
+        )
       ]));
 }

@@ -16,7 +16,6 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/icons/custom_icon.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
@@ -35,6 +34,7 @@ import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../../buttons/opacity_button_widget_two.dart';
 import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
 import '../../information_containers/transparent_information_container_lite.dart';
@@ -465,7 +465,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           SizedBox(
               height: 45,
               width: double.infinity,
-              child: OpacityButtonWidget(
+              child: OpacityButtonWidgetTwo(
                   label: "Switch to this load".toUpperCase(),
                   buttonColor: vibrantGreen,
                   onPressed: () {
@@ -552,9 +552,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final typicalRepRange = determineTypicalRepRange(reps: reps);
 
     /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
-    final trainingData = exerciseType == ExerciseType.weights ? workingSets.map((set) {
-      return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
-    }).toList() : <TrainingData>[];
+    final trainingData = exerciseType == ExerciseType.weights
+        ? workingSets.map((set) {
+            return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
+          }).toList()
+        : <TrainingData>[];
 
     trainingProgression = getTrainingProgression(
         data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
@@ -807,42 +809,42 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         ),
                       ),
                   ]),
-                if(typicalRepRange.minReps > 0 && typicalRepRange.maxReps > 0)
+                if (typicalRepRange.minReps > 0 && typicalRepRange.maxReps > 0)
                   RichText(
-                  text: TextSpan(
-                      text: "${typicalRepRange.minReps}",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
-                      children: [
-                        TextSpan(
-                          text: "-",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
-                        ),
-                        TextSpan(
-                          text: "${typicalRepRange.maxReps}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
-                        ),
-                        TextSpan(text: " "),
-                        TextSpan(
-                          text:
-                              "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                height: 2.0,
-                                color: isDarkMode ? Colors.white70 : Colors.black54,
-                              ),
-                        ),
-                      ]),
-                )
+                    text: TextSpan(
+                        text: "${typicalRepRange.minReps}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                        children: [
+                          TextSpan(
+                            text: "-",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                          ),
+                          TextSpan(
+                            text: "${typicalRepRange.maxReps}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                          ),
+                          TextSpan(text: " "),
+                          TextSpan(
+                            text:
+                                "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  height: 2.0,
+                                  color: isDarkMode ? Colors.white70 : Colors.black54,
+                                ),
+                          ),
+                        ]),
+                  )
               ],
             ),
           ),
@@ -1125,7 +1127,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
         SizedBox(
             width: double.infinity,
             height: 45,
-            child: OpacityButtonWidget(
+            child: OpacityButtonWidgetTwo(
                 label: "save rating".toUpperCase(), buttonColor: vibrantGreen, onPressed: onSelectRepRange)),
       ],
     );

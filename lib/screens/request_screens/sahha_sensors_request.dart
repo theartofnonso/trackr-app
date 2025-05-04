@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../colors.dart';
 import '../../utils/general_utils.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/icons/apple_health_icon.dart';
 import '../../widgets/icons/google_health_icon.dart';
 
@@ -21,12 +21,10 @@ class SahhaSensorsRequestScreen extends StatefulWidget {
 }
 
 class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
-
   int _androidSDK = 0;
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -34,10 +32,10 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
     final deviceIcon = Platform.isIOS
         ? AppleHealthIcon(isDarkMode: isDarkMode, height: 80)
         : GoogleHealthIcon(
-      isDarkMode: isDarkMode,
-      height: 80,
-      elevation: isDarkMode,
-    );
+            isDarkMode: isDarkMode,
+            height: 80,
+            elevation: isDarkMode,
+          );
 
     return Scaffold(
       appBar: AppBar(
@@ -65,13 +63,15 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              if(_androidSDK >= 29 && _androidSDK <= 33)
+              if (_androidSDK >= 29 && _androidSDK <= 33)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 26.0,),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 26.0,
+                  ),
                   child: SizedBox(
                       height: 45,
                       width: double.infinity,
-                      child: OpacityButtonWidget(
+                      child: OpacityButtonWidgetTwo(
                         label: "Download Google Health Connect",
                         buttonColor: Colors.transparent,
                         onPressed: _openPlayStore,
@@ -83,7 +83,7 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
                 child: SizedBox(
                     height: 45,
                     width: double.infinity,
-                    child: OpacityButtonWidget(
+                    child: OpacityButtonWidgetTwo(
                       label: "Connect to train better",
                       buttonColor: vibrantGreen,
                       onPressed: widget.onRequest,
@@ -126,5 +126,4 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
       debugPrint('Could not open the Play-Store link.');
     }
   }
-
 }

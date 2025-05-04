@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../utils/theme/theme.dart';
+import '../../widgets/buttons/opacity_button_widget_two.dart';
 
 // ---------------------------------------------------------------------------
 //  FULL‑SCREEN VIDEO + SOFT BLUR + OVERLAYED TEXT & CTA BUTTON
@@ -129,7 +129,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     SizedBox(
                         height: 50,
                         width: double.infinity,
-                        child: OpacityButtonWidget(
+                        child: OpacityButtonWidgetTwo(
                             label: "Start training better", onPressed: widget.onPressed, buttonColor: vibrantGreen))
                   ],
                 ),

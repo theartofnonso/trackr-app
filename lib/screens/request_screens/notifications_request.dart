@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../colors.dart';
 import '../../utils/general_utils.dart';
-import '../../widgets/buttons/opacity_button_widget.dart';
+import '../../widgets/buttons/opacity_button_widget_two.dart';
 
 class NotificationsRequestScreen extends StatefulWidget {
   final VoidCallback onRequest;
@@ -52,7 +52,7 @@ class _NotificationsRequestScreenState extends State<NotificationsRequestScreen>
                 child: SizedBox(
                     height: 45,
                     width: double.infinity,
-                    child: OpacityButtonWidget(
+                    child: OpacityButtonWidgetTwo(
                       label: "Turn on notifications",
                       buttonColor: vibrantGreen,
                       onPressed: widget.onRequest,
