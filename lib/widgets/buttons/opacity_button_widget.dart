@@ -55,19 +55,12 @@ class OpacityButtonWidget extends StatelessWidget {
         onPressed: onPressed,
         onLongPress: onLongPress,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(label,
-                  textAlign: TextAlign.start,
-                  style: textStyle ??
-                      Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: _themeForegroundColor(isDarkMode: isDarkMode), fontWeight: FontWeight.bold)),
-              CustomIcon(Icons.chevron_right_rounded, color: Colors.white)
-            ],
-          ),
+          padding: padding,
+          child: Text(label,
+              textAlign: TextAlign.start,
+              style: textStyle ??
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: _themeForegroundColor(isDarkMode: isDarkMode), fontWeight: FontWeight.bold)),
         ));
   }
 }
