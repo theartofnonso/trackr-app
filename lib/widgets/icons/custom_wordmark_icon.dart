@@ -22,7 +22,7 @@ class CustomWordMarkIcon extends StatelessWidget {
       ),
       child: Text(label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: isDarkMode ? color : Colors.white,
+            color: isDarkMode ? color : Colors.white, fontWeight: FontWeight.bold
           )),
     );
   }

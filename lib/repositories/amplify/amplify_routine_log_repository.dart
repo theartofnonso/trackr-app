@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:collection/collection.dart';
@@ -159,12 +160,47 @@ class AmplifyRoutineLogRepository {
     return _logs.firstWhereOrNull((log) => log.id == id);
   }
 
-  List<SetDto> wherePrevSetsForExercise({required ExerciseDto exercise}) {
-    final exerciseLogs = _exerciseLogsByExerciseId[exercise.id]?.reversed ?? [];
-    return exerciseLogs
-        .expand((exerciseLog) => exerciseLog.sets)
-        .where((set) => set.isNotEmpty() && set.checked)
-        .toList();
+  /// Returns all *checked, non-empty* sets from the most-recent `take` logs
+  /// of a given exercise. If `take` is null, the entire history is scanned.
+  List<SetDto> wherePrevSetsForExercise({
+    required ExerciseDto exercise,
+    int? take,
+  }) {
+    // 1️⃣  Fast-return if we have no logs for this exercise id.
+    final logs = _exerciseLogsByExerciseId[exercise.id];
+    if (logs == null || logs.isEmpty) return const [];
+
+    // 2️⃣  Iterate in reverse order to get “latest first”.
+    final Iterable<ExerciseLogDto> recent = take == null ? logs.reversed : logs.reversed.take(take);
+
+    // 3️⃣  Use a single list-comprehension to avoid multiple temporary lists.
+    return [
+      for (final log in recent)
+        for (final set in log.sets)
+          if (set.checked && set.isNotEmpty()) set,
+    ];
+  }
+
+  List<SetDto> wherePrevSetsGroupForIndex({
+    required ExerciseDto exercise,
+    required int index,
+    int? take,
+  }) {
+    if (index < 0) return const [];
+
+    final logs = _exerciseLogsByExerciseId[exercise.id];
+    if (logs == null || logs.isEmpty) return const [];
+
+    // newest → oldest, optionally limited by `take`
+    final Iterable<ExerciseLogDto> recent =
+    take == null ? logs.reversed : logs.reversed.take(take);
+
+    final result = <SetDto>[];
+    for (final log in recent) {
+      // only pick from logs that contain that index
+      if (index < log.sets.length) result.add(log.sets[index]);
+    }
+    return result;
   }
 
   List<SetDto> whereRecentSetsForExercise({required ExerciseDto exercise}) {

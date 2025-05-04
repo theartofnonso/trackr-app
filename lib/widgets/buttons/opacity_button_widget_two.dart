@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 
-class OpacityButtonWidget extends StatelessWidget {
+import '../icons/custom_icon.dart';
+
+class OpacityButtonWidgetTwo extends StatelessWidget {
   final void Function()? onPressed;
   final void Function()? onLongPress;
   final String label;
   final Color? buttonColor;
-  final EdgeInsets? padding;
   final TextStyle? textStyle;
   final VisualDensity? visualDensity;
-  final Widget? trailing;
 
-  const OpacityButtonWidget(
+  const OpacityButtonWidgetTwo(
       {super.key,
       this.onPressed,
       this.onLongPress,
       required this.label,
       this.buttonColor,
       this.textStyle,
-      this.padding = const EdgeInsets.symmetric(horizontal: 10),
-      this.visualDensity = VisualDensity.compact,
-      this.trailing});
+      this.visualDensity = VisualDensity.compact,});
 
   Color? _themeForegroundColor({required bool isDarkMode}) {
     return isDarkMode ? buttonColor : Colors.black;
@@ -53,12 +51,19 @@ class OpacityButtonWidget extends StatelessWidget {
         onPressed: onPressed,
         onLongPress: onLongPress,
         child: Container(
-          padding: padding,
-          child: Text(label,
-              textAlign: TextAlign.start,
-              style: textStyle ??
-                  Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: _themeForegroundColor(isDarkMode: isDarkMode), fontWeight: FontWeight.bold)),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(label,
+                  textAlign: TextAlign.start,
+                  style: textStyle ??
+                      Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: _themeForegroundColor(isDarkMode: isDarkMode), fontWeight: FontWeight.bold)),
+              CustomIcon(Icons.chevron_right_rounded, color: buttonColor ?? Colors.white)
+            ],
+          ),
         ));
   }
 }

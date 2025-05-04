@@ -13,9 +13,9 @@ TrainingFrequencyArchetype trainingFrequencyArchetype({required int avgSessions}
 
 TrainingDurationArchetype trainingDurationArchetype({required Duration avgDuration}) {
   final minutes = avgDuration.inMinutes;
-  if (minutes < 30) return TrainingDurationArchetype.shortSession;
-  if (minutes < 60) return TrainingDurationArchetype.standardSession;
-  return TrainingDurationArchetype.extendedSession;
+  if (minutes < 30) return TrainingDurationArchetype.shortSessions;
+  if (minutes < 60) return TrainingDurationArchetype.standardSessions;
+  return TrainingDurationArchetype.extendedSessions;
 }
 
 RpeArchetype rpeArchetype({required double highRpeRatio}) {

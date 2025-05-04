@@ -26,9 +26,9 @@ enum TrainingFrequencyArchetype implements TrainingArchetype {
 
 /// This determines the length of a users training session
 enum TrainingDurationArchetype implements TrainingArchetype {
-  shortSession(name: "short_training_session", description: "Short training sessions (<30 min)"),
-  standardSession(name: "standard_training_session", description: "Standard training Sessions (30–59 min)"),
-  extendedSession(name: "extended_training_session", description: "Extended training sessions (> 60 min)");
+  shortSessions(name: "short_training_sessions", description: "Short training sessions (<30 min)"),
+  standardSessions(name: "standard_training_sessions", description: "Standard training Sessions (30–59 min)"),
+  extendedSessions(name: "extended_training_sessions", description: "Extended training sessions (> 60 min)");
 
   const TrainingDurationArchetype({required this.name, required this.description});
 

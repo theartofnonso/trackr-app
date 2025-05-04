@@ -7,6 +7,7 @@ import 'package:tracker_app/widgets/information_containers/information_container
 
 import '../../strings/datetime_range_picker_strings.dart';
 import '../buttons/opacity_button_widget.dart';
+import '../buttons/opacity_button_widget_two.dart';
 
 class DateTimeRangePicker extends StatefulWidget {
   final DateTimeRange? initialDateTimeRange;
@@ -100,14 +101,13 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                     : SizedBox(
                         width: double.infinity,
                         height: 45,
-                        child: OpacityButtonWidget(
+                        child: OpacityButtonWidgetTwo(
                             onPressed: () {
                               final range = DateTimeRange(start: _startDateTime, end: _endDateTime);
                               widget.onSelectRange(range);
                             },
                             label: "Log ${_calculateDuration().hmsAnalog()} session",
-                            buttonColor: vibrantGreen,
-                            padding: const EdgeInsets.all(10.0)),
+                            buttonColor: vibrantGreen,),
                       )),
           ),
         ],

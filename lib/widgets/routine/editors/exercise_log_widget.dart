@@ -4,19 +4,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/extensions/set_dtos_extensions.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/utils/sets_utils.dart';
 import 'package:tracker_app/utils/string_utils.dart';
-import 'package:tracker_app/widgets/buttons/opacity_button_widget.dart';
 import 'package:tracker_app/widgets/icons/custom_icon.dart';
 import 'package:tracker_app/widgets/information_containers/information_container_lite.dart';
 import 'package:tracker_app/widgets/routine/editors/set_headers/duration_set_header.dart';
@@ -35,20 +34,15 @@ import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../../buttons/opacity_button_widget_two.dart';
 import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
 import '../../information_containers/transparent_information_container_lite.dart';
+import '../../monitors/progression_half_animated_gauge.dart';
 import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
 import '../preview/sets_listview.dart';
-
-class _ErrorMessage {
-  final int index;
-  final String message;
-
-  _ErrorMessage({required this.index, required this.message});
-}
 
 class ExerciseLogWidget extends StatefulWidget {
   final RoutineEditorMode editorType;
@@ -74,7 +68,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   SetDto? _selectedSetDto;
 
-  List<_ErrorMessage> _errorMessages = [];
+  final _selectedSetIndex = ValueNotifier<int>(0);
+
+  final _errors = <int, String>{};
 
   void _show1RMRecommendations() {
     final pastExerciseLogs =
@@ -130,7 +126,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       _repsControllers = [];
     }
 
-    _errorMessages = [];
+    _errors.clear();
   }
 
   void _disposeControllers() {
@@ -175,9 +171,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final isOutSideOfRange = isOutsideReasonableRange(previousWeights, weight);
     if (isOutSideOfRange) {
       final message = _getWeightErrorMessage(weight: weight);
-      _errorMessages.add(_ErrorMessage(index: index, message: message));
+      _setError(idx: index, msg: message);
     } else {
-      _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
+      _errors.remove(index);
     }
 
     _checkWeightRange(weight: weight, index: index);
@@ -203,9 +199,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     if (isOutSideOfRange) {
       final message = _repsErrorMessage(reps: reps);
-      _errorMessages.add(_ErrorMessage(index: index, message: message));
+      _setError(idx: index, msg: message);
     } else {
-      _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
+      _errors.remove(index);
     }
 
     _checkRepsRange(reps: reps, index: index);
@@ -224,7 +220,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index}) {
-
     // 1. Pull the current version from provider, not from the parameter
     final currentSet = Provider.of<ExerciseLogController>(context, listen: false)
         .whereExerciseLog(exerciseId: _exerciseLog.id)
@@ -267,12 +262,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     if (isDefaultWeightUnit()) {
       if (weight < 0.5 || weight > 500) {
         final message = 'Weight must be between 0.5 and 500 kg.';
-        _errorMessages.add(_ErrorMessage(index: index, message: message));
+        _setError(idx: index, msg: message);
       }
     } else {
       if (weight < 1 || weight > 1100) {
         final message = 'Weight must be between 1 and 1100 lbs.';
-        _errorMessages.add(_ErrorMessage(index: index, message: message));
+        _setError(idx: index, msg: message);
       }
     }
   }
@@ -280,7 +275,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _checkRepsRange({required int reps, required int index}) {
     if (reps <= 0) {
       final message = 'You need to complete at least 1 repetition.';
-      _errorMessages.add(_ErrorMessage(index: index, message: message));
+      _setError(idx: index, msg: message);
     }
   }
 
@@ -298,9 +293,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final isOutSideOfRange = isOutsideReasonableRange(previousWeights, weight);
       if (isOutSideOfRange) {
         final message = _getWeightErrorMessage(weight: weight);
-        _errorMessages.add(_ErrorMessage(index: index, message: message));
+        _setError(idx: index, msg: message);
       } else {
-        _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
+        _errors.remove(index);
       }
 
       _checkWeightRange(weight: weight, index: index);
@@ -338,9 +333,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       final isOutSideOfRange = isOutsideReasonableRange(previousReps, reps);
       if (isOutSideOfRange) {
         final message = _repsErrorMessage(reps: reps);
-        _errorMessages.add(_ErrorMessage(index: index, message: message));
+        _setError(idx: index, msg: message);
       } else {
-        _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == index);
+        _errors.remove(index);
       }
 
       _checkRepsRange(reps: reps, index: index);
@@ -358,6 +353,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   String _getWeightErrorMessage({required double weight}) =>
       "Hmm, $weight${weightUnit()} looks a bit off your usual range. Mind checking the value just to be sure?.";
+
+  void _setError({required int idx, required String? msg}) {
+    if (msg == null) {
+      _errors.remove(idx);
+    } else {
+      _errors[idx] = msg;
+    }
+  }
 
   void _loadDurationControllers({required List<SetDto> sets}) {
     List<DateTime> controllers = [];
@@ -388,62 +391,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   void dispose() {
     _disposeControllers();
+    _selectedSetIndex.dispose();
     super.dispose();
-  }
-
-  /// Analyzes a list of RPE ratings and returns a descriptive summary.
-  String _getRpeTrendSummary({required List<int> ratings}) {
-    bool isHigh(int rpe) => rpe >= 6;
-    bool isLow(int rpe) => rpe <= 5;
-
-    if (ratings.isEmpty) {
-      return "No ratings provided";
-    }
-    if (ratings.length == 1) {
-      // If there's only one data point, just describe that point.
-      return "Keep pushing to see more insights";
-    }
-
-    // Determine if all ratings are high, all are low, or mixed.
-    final allHigh = ratings.every(isHigh);
-    final allLow = ratings.every(isLow);
-
-    // Identify the first and last RPE
-    final firstRpe = ratings.first;
-    final lastRpe = ratings.last;
-
-    // If all ratings are in the high range:
-    if (allHigh) {
-      return "High intensity - You're pushing hard";
-    }
-
-    // If all ratings are in the low range:
-    if (allLow) {
-      return "Low intensity - Your training feels manageable";
-    }
-
-    // If they’re not all high or all low, determine if it went high-to-low or low-to-high
-    final firstIsHigh = isHigh(firstRpe);
-    final lastIsHigh = isHigh(lastRpe);
-
-    if (firstIsHigh && !lastIsHigh) {
-      // High to low range
-      return "Your intensity is dropping - You're pacing through sets";
-    } else if (!firstIsHigh && lastIsHigh) {
-      // Low to high range
-      return "You are pushing harder or might be fatigued";
-    }
-
-    // If it doesn’t fit neatly into the above categories, just return a generic message
-    // (e.g., in case of mixed RPEs but not strictly first-is-high-last-is-low).
-    return switch (_exerciseLog.exercise.type) {
-      ExerciseType.weights =>
-        "You might be experimenting with different weights or rep ranges. Try maintaining a gradual progression",
-      ExerciseType.bodyWeight =>
-        "You might be experimenting with different rep ranges. Try maintaining a gradual progression",
-      ExerciseType.duration =>
-        "You might be experimenting with different durations. Try maintaining a gradual progression",
-    };
   }
 
   void _dismissKeyboard() {
@@ -516,8 +465,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           SizedBox(
               height: 45,
               width: double.infinity,
-              child: OpacityButtonWidget(
-                  label: "Train with this plan".toUpperCase(),
+              child: OpacityButtonWidgetTwo(
+                  label: "Switch to this load".toUpperCase(),
                   buttonColor: vibrantGreen,
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -528,43 +477,49 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ]));
   }
 
+  String _trainingProgressionSummary({
+    required TrainingProgression trainingProgression,
+    required double rpe,
+  }) {
+    final setLabel = switch (_exerciseLog.exercise.type) {
+      ExerciseType.weights => "weight",
+      ExerciseType.bodyWeight => "reps",
+      ExerciseType.duration => "duration",
+    };
+
+    return switch (trainingProgression) {
+      TrainingProgression.increase => "Consider increasing the $setLabel of",
+      TrainingProgression.decrease => "Consider reducing the $setLabel of",
+      TrainingProgression.maintain => "Stick with your current $setLabel of",
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
-    
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
-    final exerciseLog = Provider.of<ExerciseLogController>(context, listen: false)
-        .whereExerciseLog(exerciseId: _exerciseLog.exercise.id);
+    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    final exerciseLog = context
+        .select<ExerciseLogController, ExerciseLogDto>((c) => c.whereExerciseLog(exerciseId: _exerciseLog.exercise.id));
 
     final currentSets = exerciseLog.sets;
 
-    final recentSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
+    final recentSets = exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseLog.exercise);
 
-    final previousSets = Provider.of<ExerciseAndRoutineController>(context, listen: false)
-        .wherePrevSetsForExercise(exercise: exerciseLog.exercise);
+    final previousSets = exerciseAndRoutineController.wherePrevSetsForExercise(exercise: exerciseLog.exercise);
 
     final exerciseType = exerciseLog.exercise.type;
 
     final sets = _showPreviousSets ? recentSets : currentSets;
 
-    String progressionSummary = "";
-    String rpeTrendSummary = "";
-    Color progressionColor = isDarkMode ? Colors.white70 : Colors.black54;
     TrainingProgression? trainingProgression;
-    RepRange? typicalRepRange;
 
     /// Get working sets
-    final workingSets = switch (exerciseType) {
-      ExerciseType.weights => markHighestWeightSets(sets),
-      ExerciseType.bodyWeight => markHighestRepsSets(sets),
-      ExerciseType.duration => markHighestDurationSets(sets),
-    }
-        .where((set) => set.isWorkingSet)
-        .toList();
+    final workingSets = sets.workingSets(exerciseType).where((s) => s.isWorkingSet).toList();
 
     bool isAllSameWeight = false;
 
@@ -580,96 +535,44 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ExerciseType.duration => getLongestDuration(workingSets),
     };
 
-    if (withWeightsOnly(type: exerciseType)) {
-      /// Determine typical rep range using historic training data
-      final sets = [...currentSets, ...previousSets];
-      final reps = switch (exerciseType) {
-        ExerciseType.weights => markHighestWeightSets(sets),
-        ExerciseType.bodyWeight => markHighestRepsSets(sets),
-        ExerciseType.duration => markHighestDurationSets(sets),
-      }
-          .map((set) {
-        return switch (exerciseType) {
-          ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
-          ExerciseType.bodyWeight => (set as RepsSetDto).reps,
-          ExerciseType.duration => 0,
-        };
-      }).toList();
-
-      typicalRepRange = determineTypicalRepRange(reps: reps);
-
-      /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
-      final trainingData = workingSets.map((set) {
-        return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
-      }).toList();
-
-      trainingProgression = getTrainingProgression(
-          data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
+    /// Determine typical rep range using historic training data
+    final reps = switch (exerciseType) {
+      ExerciseType.weights => markHighestWeightSets([...currentSets, ...previousSets]),
+      ExerciseType.bodyWeight => markHighestRepsSets([...currentSets, ...previousSets]),
+      ExerciseType.duration => markHighestDurationSets([...currentSets, ...previousSets]),
     }
-
-    final weightsRepsDurationLabel = switch (exerciseType) {
-      ExerciseType.weights => "weight",
-      ExerciseType.bodyWeight => "reps",
-      ExerciseType.duration => "duration",
-    };
-
-    /// Generate weight or reps progression summary
-    if (previousSets.isNotEmpty) {
-      progressionSummary = switch (trainingProgression) {
-        TrainingProgression.increase =>
-          ", time to take it up a notch, consider increasing the $weightsRepsDurationLabel of ${workingSet?.summary()}.",
-        TrainingProgression.decrease =>
-          ", dial it back a bit, consider reducing the $weightsRepsDurationLabel of ${workingSet?.summary()} for now.",
-        TrainingProgression.maintain =>
-          ", right on track, stick with your current $weightsRepsDurationLabel of ${workingSet?.summary()}.",
-        null => "",
+        .map((set) {
+      return switch (exerciseType) {
+        ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
+        ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+        ExerciseType.duration => 0,
       };
-    }
+    }).toList();
 
-    /// Generate weight or reps progression color
-    if (previousSets.isNotEmpty) {
-      progressionColor = switch (trainingProgression) {
-        TrainingProgression.increase => vibrantGreen,
-        TrainingProgression.decrease => Colors.deepOrange,
-        TrainingProgression.maintain => vibrantBlue,
-        null => Colors.transparent,
-      };
-    }
+    final typicalRepRange = determineTypicalRepRange(reps: reps);
+
+    /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
+    final trainingData = exerciseType == ExerciseType.weights
+        ? workingSets.map((set) {
+            return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
+          }).toList()
+        : <TrainingData>[];
+
+    trainingProgression = getTrainingProgression(
+        data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
 
     final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
 
-    if (isEmptySets) {
-      progressionSummary = ".";
-      progressionColor = vibrantBlue;
-    }
+    final rpeRatings = sets.map((set) => set.rpeRating).toList();
 
-    final rpeRatings = sets.mapIndexed((index, set) => set.rpeRating).toList();
+    final avgRPE = rpeRatings.isNotEmpty ? rpeRatings.average.roundToDouble() : 4.0;
 
-    if (previousSets.isNotEmpty) {
-      rpeTrendSummary = _getRpeTrendSummary(ratings: rpeRatings);
-    }
-
-    String? noRepRangeMessage;
-
-    if (typicalRepRange?.maxReps == 0) {
-      noRepRangeMessage = "Log more sets to determine your rep range.";
-    } else {
-      if (typicalRepRange?.minReps == typicalRepRange?.maxReps) {
-        noRepRangeMessage =
-            "${typicalRepRange?.minReps} is your max reps. if you comfortably hit ${typicalRepRange?.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange?.maxReps}, reduce it; otherwise, maintain. Tap for more info.";
-      }
-    }
-
-    final errorWidgets = _errorMessages
-        .mapIndexed((index, error) => InformationContainerLite(
-            content: error.message,
+    final errorWidgets = _errors.entries
+        .map((error) => InformationContainerLite(
+            content: error.value,
             color: Colors.yellow,
             useOpacity: false,
-            onTap: () {
-              setState(() {
-                _errorMessages.removeWhere((errorToBeRemoved) => errorToBeRemoved.index == error.index);
-              });
-            },
+            onTap: () => setState(() => _errors.remove(error.key)),
             trailing: FaIcon(FontAwesomeIcons.squareXmark, color: Colors.black)))
         .toList();
 
@@ -764,114 +667,101 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.sentences,
                 ),
-                _showPreviousSets
-                    ? switch (exerciseType) {
-                        ExerciseType.weights => DoubleSetHeader(
-                            firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
-                            secondLabel: 'PREVIOUS REPS'.toUpperCase(),
-                          ),
-                        ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
-                        ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
-                      }
-                    : switch (exerciseType) {
-                        ExerciseType.weights => WeightAndRepsSetHeader(
-                            editorType: widget.editorType,
-                            firstLabel: weightUnit().toUpperCase(),
-                            secondLabel: 'REPS',
-                          ),
-                        ExerciseType.bodyWeight => RepsSetHeader(
-                            editorType: widget.editorType,
-                          ),
-                        ExerciseType.duration => DurationSetHeader(
-                            editorType: widget.editorType,
-                          )
-                      },
-                if (sets.isEmpty && !_showPreviousSets)
-                  Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      NoListEmptyState(
-                          showIcon: false, message: "Tap the + button to start adding sets to your exercise"),
-                    ],
-                  ),
-                !_showPreviousSets
-                    ? switch (exerciseType) {
-                        ExerciseType.weights => _WeightAndRepsSetListView(
-                            sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
-                            updateSetCheck: _updateSetCheck,
-                            removeSet: _removeSet,
-                            updateReps: _updateReps,
-                            updateWeight: _updateWeight,
-                            controllers: _weightAndRepsControllers,
-                            onTapWeightEditor: _onTapWeightEditor,
-                            onTapRepsEditor: _onTapRepsEditor,
-                            editorType: widget.editorType,
-                          ),
-                        ExerciseType.bodyWeight => _RepsSetListView(
-                            sets: sets.map((set) => set as RepsSetDto).toList(),
-                            updateSetCheck: _updateSetCheck,
-                            removeSet: _removeSet,
-                            updateReps: _updateReps,
-                            controllers: _repsControllers,
-                            onTapRepsEditor: _onTapRepsEditor,
-                            editorType: widget.editorType,
-                          ),
-                        ExerciseType.duration => _DurationSetListView(
-                            sets: sets.map((set) => set as DurationSetDto).toList(),
-                            updateSetCheck: _updateSetCheck,
-                            removeSet: _removeSet,
-                            updateDuration: _updateDuration,
-                            controllers: _durationControllers,
-                            editorType: widget.editorType,
-                          ),
-                      }
-                    : SetsListview(type: exerciseType, sets: sets),
-                if(_errorMessages.isNotEmpty) DepthStack(children: errorWidgets),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _showPreviousSets
+                        ? switch (exerciseType) {
+                            ExerciseType.weights => DoubleSetHeader(
+                                firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
+                                secondLabel: 'PREVIOUS REPS'.toUpperCase(),
+                              ),
+                            ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
+                            ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
+                          }
+                        : switch (exerciseType) {
+                            ExerciseType.weights => WeightAndRepsSetHeader(
+                                editorType: widget.editorType,
+                                firstLabel: weightUnit().toUpperCase(),
+                                secondLabel: 'REPS',
+                              ),
+                            ExerciseType.bodyWeight => RepsSetHeader(
+                                editorType: widget.editorType,
+                              ),
+                            ExerciseType.duration => DurationSetHeader(
+                                editorType: widget.editorType,
+                              )
+                          },
+                    if (sets.isEmpty && !_showPreviousSets)
+                      Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          NoListEmptyState(
+                              showIcon: false, message: "Tap the + button to start adding sets to your exercise"),
+                        ],
+                      ),
+                    const SizedBox(height: 20),
+                    !_showPreviousSets
+                        ? switch (exerciseType) {
+                            ExerciseType.weights => _WeightAndRepsSetListView(
+                                sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
+                                updateSetCheck: _updateSetCheck,
+                                removeSet: _removeSet,
+                                updateReps: _updateReps,
+                                updateWeight: _updateWeight,
+                                controllers: _weightAndRepsControllers,
+                                onTapWeightEditor: _onTapWeightEditor,
+                                onTapRepsEditor: _onTapRepsEditor,
+                                editorType: widget.editorType,
+                              ),
+                            ExerciseType.bodyWeight => _RepsSetListView(
+                                sets: sets.map((set) => set as RepsSetDto).toList(),
+                                updateSetCheck: _updateSetCheck,
+                                removeSet: _removeSet,
+                                updateReps: _updateReps,
+                                controllers: _repsControllers,
+                                onTapRepsEditor: _onTapRepsEditor,
+                                editorType: widget.editorType,
+                              ),
+                            ExerciseType.duration => _DurationSetListView(
+                                sets: sets.map((set) => set as DurationSetDto).toList(),
+                                updateSetCheck: _updateSetCheck,
+                                removeSet: _removeSet,
+                                updateDuration: _updateDuration,
+                                controllers: _durationControllers,
+                                editorType: widget.editorType,
+                              ),
+                          }
+                        : SetsListview(type: exerciseType, sets: sets),
+                  ],
+                ),
+                if (_errors.isNotEmpty) DepthStack(children: errorWidgets),
                 if (isLowReadiness && widget.editorType == RoutineEditorMode.log)
                   TransparentInformationContainerLite(
                       content: "Tap for training recommendations tailored to your readiness.",
                       useOpacity: true,
                       onTap: _showDeloadSets,
-                      trailing: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const FaIcon(
-                          Icons.chevron_right_rounded,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      )),
+                      trailing: CustomIcon(Icons.chevron_right_rounded, color: Colors.white)),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
-                    if (withReps(type: exerciseType) &&
-                        trainingProgression != null &&
-                        rpeTrendSummary.isNotEmpty &&
-                        progressionSummary.isNotEmpty)
+                    if (withReps(type: exerciseType))
                       StaggeredGridTile.count(
-                        crossAxisCellCount: 2,
+                        crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
                         child: Container(
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                              color: isDarkMode ? progressionColor.withValues(alpha: 0.1) : progressionColor,
+                              color: isDarkMode
+                                  ? rpeToIntensityColor(progression: trainingProgression).withValues(alpha: 0.1)
+                                  : rpeToIntensityColor(progression: trainingProgression),
                               borderRadius: BorderRadius.circular(5)),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text("$rpeTrendSummary$progressionSummary",
-                                    style: GoogleFonts.ubuntu(fontSize: 16, height: 1.5, fontWeight: FontWeight.w600)),
-                                const Spacer(),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    CustomIcon(FontAwesomeIcons.boltLightning, color: progressionColor),
-                                  ],
-                                ),
-                              ]),
+                          child: ProgressionHalfAnimatedGauge(
+                            value: avgRPE,
+                            min: 0,
+                            max: 10,
+                            label: trainingProgression.name,
+                            progression: trainingProgression,
+                          ),
                         ),
                       ),
 
@@ -887,103 +777,74 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               description:
                                   "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements."),
                           child: Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                                color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                              RichText(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                  color: isDarkMode
+                                      ? rpeToIntensityColor(progression: trainingProgression).withValues(alpha: 0.1)
+                                      : rpeToIntensityColor(progression: trainingProgression),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: RichText(
                                 text: TextSpan(
-                                  text: workingSet.summary(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(fontWeight: FontWeight.w700, fontSize: 14, height: 1.5),
-                                  children: [
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "is your most challenging set, driving you toward your training goals. Tap for more info.",
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    text:
+                                        "${_trainingProgressionSummary(trainingProgression: trainingProgression, rpe: avgRPE)} In your next session",
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                           fontWeight: FontWeight.w700,
-                                          fontSize: 14,
+                                          fontSize: 18,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54,
                                           height: 1.5,
-                                          color: isDarkMode ? Colors.white70 : Colors.black54),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              const Spacer(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  CustomIcon(FontAwesomeIcons.w, color: vibrantGreen),
-                                ],
-                              ),
-                            ]),
-                          ),
-                        ),
-                      ),
-
-                    /// Only show for exercises that measure Reps
-                    if (typicalRepRange != null && withReps(type: exerciseType))
-                      StaggeredGridTile.count(
-                        crossAxisCellCount: 1,
-                        mainAxisCellCount: 1,
-                        child: GestureDetector(
-                          onTap: () => showBottomSheetWithNoAction(
-                              context: context,
-                              title: "Rep Range",
-                              description:
-                                  "Rep ranges acts as a guideline for adjusting weights. If you consistently hit the high end of your range with good form, it’s a signal to increase the load. Conversely, if you struggle to reach the low end, reduce the weight slightly until you can complete the set effectively."),
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                                color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                              noRepRangeMessage != null
-                                  ? Text(noRepRangeMessage,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(fontWeight: FontWeight.w700, height: 1.5))
-                                  : RichText(
-                                      text: TextSpan(
-                                        text: "${typicalRepRange.minReps} - ${typicalRepRange.maxReps}",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(fontWeight: FontWeight.w700, height: 1.5),
-                                        children: [
-                                          TextSpan(
-                                            text: " ",
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
-                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                fontWeight: FontWeight.w700,
-                                                color: isDarkMode ? Colors.white70 : Colors.black54,
-                                                height: 1.5),
-                                          )
-                                        ],
+                                        ),
+                                    children: [
+                                      TextSpan(text: " "),
+                                      TextSpan(
+                                        text: workingSet.summary(),
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 18,
+                                            height: 1.5,
+                                            color: Colors.white),
                                       ),
-                                    ),
-                              const Spacer(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  CustomIcon(FontAwesomeIcons.r, color: vibrantGreen),
-                                ],
-                              ),
-                            ]),
-                          ),
+                                      TextSpan(text: "."),
+                                    ]),
+                              )),
                         ),
                       ),
                   ]),
+                if (typicalRepRange.minReps > 0 && typicalRepRange.maxReps > 0)
+                  RichText(
+                    text: TextSpan(
+                        text: "${typicalRepRange.minReps}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                        children: [
+                          TextSpan(
+                            text: "-",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                          ),
+                          TextSpan(
+                            text: "${typicalRepRange.maxReps}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                          ),
+                          TextSpan(text: " "),
+                          TextSpan(
+                            text:
+                                "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  height: 2.0,
+                                  color: isDarkMode ? Colors.white70 : Colors.black54,
+                                ),
+                          ),
+                        ]),
+                  )
               ],
             ),
           ),
@@ -1017,21 +878,27 @@ class _WeightAndRepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return WeightsAndRepsSetRow(
-        editorType: editorType,
-        setDto: setDto,
-        onCheck: () => updateSetCheck(index: index),
-        onRemoved: () => removeSet(index: index),
-        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-        onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
-        onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
-        onTapRepsEditor: () => onTapRepsEditor(),
-        controllers: controllers[index],
-      );
-    }).toList();
-
-    return Column(spacing: 8, children: children);
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sets.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, index) {
+        final setDto = sets[index];
+        return WeightsAndRepsSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index),
+          onRemoved: () => removeSet(index: index),
+          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+          onChangedWeight: (double value) => updateWeight(index: index, weight: value, setDto: setDto),
+          onTapWeightEditor: () => onTapWeightEditor(setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(),
+          controllers: controllers[index],
+        );
+      },
+    );
   }
 }
 
@@ -1055,19 +922,25 @@ class _RepsSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return RepsSetRow(
-        editorType: editorType,
-        setDto: setDto,
-        onCheck: () => updateSetCheck(index: index),
-        onRemoved: () => removeSet(index: index),
-        onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
-        onTapRepsEditor: () => onTapRepsEditor(),
-        controller: controllers[index],
-      );
-    }).toList();
-
-    return Column(spacing: 8, children: children);
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sets.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, index) {
+        final setDto = sets[index];
+        return RepsSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index),
+          onRemoved: () => removeSet(index: index),
+          onChangedReps: (int value) => updateReps(index: index, reps: value, setDto: setDto),
+          onTapRepsEditor: () => onTapRepsEditor(),
+          controller: controllers[index],
+        );
+      },
+    );
   }
 }
 
@@ -1093,19 +966,25 @@ class _DurationSetListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = sets.mapIndexed((index, setDto) {
-      return DurationSetRow(
-        editorType: editorType,
-        setDto: setDto,
-        onCheck: () => updateSetCheck(index: index),
-        onRemoved: () => removeSet(index: index),
-        startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
-        onUpdateDuration: (Duration duration, bool shouldCheck) =>
-            updateDuration(index: index, setDto: setDto, duration: duration, shouldCheck: shouldCheck),
-      );
-    }).toList();
-
-    return Column(spacing: 8, children: children);
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sets.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, index) {
+        final setDto = sets[index];
+        return DurationSetRow(
+          editorType: editorType,
+          setDto: setDto,
+          onCheck: () => updateSetCheck(index: index),
+          onRemoved: () => removeSet(index: index),
+          startTime: controllers.isNotEmpty ? controllers[index] : DateTime.now(),
+          onUpdateDuration: (Duration duration, bool shouldCheck) =>
+              updateDuration(index: index, setDto: setDto, duration: duration, shouldCheck: shouldCheck),
+        );
+      },
+    );
   }
 }
 
@@ -1248,7 +1127,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
         SizedBox(
             width: double.infinity,
             height: 45,
-            child: OpacityButtonWidget(
+            child: OpacityButtonWidgetTwo(
                 label: "save rating".toUpperCase(), buttonColor: vibrantGreen, onPressed: onSelectRepRange)),
       ],
     );

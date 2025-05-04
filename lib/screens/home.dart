@@ -68,10 +68,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         decoration: BoxDecoration(
           gradient: themeGradient(context: context),
         ),
-        child: SafeArea(
-          minimum: const EdgeInsets.all(10),
-          bottom: false,
-          child: OverviewScreen(),
+        child: RefreshIndicator(
+          onRefresh: _pullRefresh,
+          child: SafeArea(
+            minimum: const EdgeInsets.all(10),
+            bottom: false,
+            child: OverviewScreen(),
+          ),
         ),
       ),
     );
@@ -207,6 +210,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         _sensorStatus = sensorStatus;
       });
     },));
+  }
+
+  Future<void> _pullRefresh() async {
+    _getSahhaReadinessScore();
   }
 
   @override

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../colors.dart';
 import '../../../../dtos/exercise_log_dto.dart';
-import '../../../buttons/opacity_button_widget.dart';
+import '../../../buttons/opacity_button_widget_two.dart';
 import '../../../empty_states/list_tile_empty_state.dart';
 
 class SuperSetExerciseLogPicker extends StatelessWidget {
@@ -68,10 +68,9 @@ class _EmptyState extends StatelessWidget {
             child: ListTileEmptyState(),
           ),
           const SizedBox(height: 24),
-          OpacityButtonWidget(
+          OpacityButtonWidgetTwo(
               onPressed: onPressed,
               label: "Add more exercises",
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               buttonColor: vibrantGreen)
         ],
       ),

@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -192,6 +193,38 @@ List<Color> lowToHighIntensityColors(double score) {
   }
 }
 
+List<Color> highToLowIntensityColors(double score) {
+  if (score >= 0.7) {
+    return const [
+      Color(0xFFFF5722), // strong orange
+      Color(0xFFFF3945), // reddish-orange
+      Color(0xFFEA004E), // crimson-red
+      Color(0xFFFF5722),
+    ];
+  } else if (score >= 0.5) {
+    return const [
+      Color(0xFFFFC107), // sunflower
+      Color(0xFFFF9F1C), // deep yellow-orange
+      Color(0xFFFF7538), // orange
+      Color(0xFFFFC107),
+    ];
+  } else if (score >= 0.3) {
+    return const [
+      Color(0xFF3763FF), // royal blue
+      vibrantBlue, // teal-green
+      Color(0xFF78FF5C), // lime-green
+      Color(0xFF3763FF),
+    ];
+  } else {
+    return const [
+      Color(0xFF4CAF50), // medium green
+      vibrantGreen, // yellow-green
+      vibrantGreen, // soft yellow
+      vibrantGreen,
+    ];
+  }
+}
+
 /// Lower values now get a "better" color (green)
 Color highToLowIntensityColor(double score) {
   if (score < 0.3) {
@@ -213,7 +246,7 @@ String recoveryMuscleIllustration({required double recoveryPercentage, required 
   } else if (recoveryPercentage < 0.5) {
     // High soreness (30–49%)
     return 'yellow_muscles_illustration/${muscleGroup.illustration()}.png';
-  } else if (recoveryPercentage < 0.8) {
+  } else if (recoveryPercentage < 0.7) {
     // Moderate soreness (50–79%)
     return 'blue_muscles_illustration/${muscleGroup.illustration()}.png';
   } else {
@@ -314,7 +347,6 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
-
   final readiness = SharedPrefs().readinessScore;
 
   final log = RoutineLogDto(
@@ -330,10 +362,8 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 
-
-    final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
-    navigateToRoutineLogEditor(context: context, arguments: arguments);
-
+  final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+  navigateToRoutineLogEditor(context: context, arguments: arguments);
 }
 
 bool isOutsideReasonableRange(List<num> numbers, num newNumber,
@@ -416,4 +446,78 @@ String getReadinessSummary({required int readinessScore}) {
   } else {
     return "💯 Optimal readiness. Minimal pain or fatigue. Suitable for higher intensity or advanced training, if desired.";
   }
+}
+
+/// Returns a short, human-readable summary of how weights changed.
+///
+/// Examples:
+///   [60, 62.5, 65, 67.5] ➜ "Steady increase (+7.5 kg overall)"
+///   [80, 78, 77]         ➜ "Overall drop (-3 kg)"
+///   [50, 51, 49, 50]     ➜ "Mixed changes (net 0 kg)"
+///
+///
+
+/// --- style helpers --------------------------------------------------------
+
+Color _deltaColor(num difference) => difference > 0
+    ? vibrantGreen
+    : difference < 0
+        ? Colors.red
+        : Colors.yellow;
+
+Widget _weight(num value, String unit, BuildContext context) {
+  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+  final isDarkMode = systemBrightness == Brightness.dark;
+  return CustomWordMarkIcon("${value.toStringAsFixed(1)} $unit",
+      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      color: isDarkMode ? Colors.white70 : Colors.grey.shade600);
+}
+
+Widget summarizeProgression(
+    {required BuildContext context, required List<num> values, TextAlign textAlign = TextAlign.start}) {
+  if (values.isEmpty) return Text("No weight data available");
+
+  final startWeight = values.first;
+  final endWeight = values.last;
+  final difference = endWeight - startWeight;
+
+  String trend;
+  if (difference > 0) {
+    trend = "an upward trend ↗";
+  } else if (difference < 0) {
+    trend = "a downward trend ↘";
+  } else {
+    trend = "stable with no change →";
+  }
+
+  return Semantics(
+    label: 'Starting at ${startWeight.toStringAsFixed(1)} $weightUnit, '
+        'currently at ${endWeight.toStringAsFixed(1)} $weightUnit. '
+        '${difference.abs().toStringAsFixed(1)} $weightUnit '
+        '${difference > 0 ? 'gained' : 'lost'}. Showing $trend',
+    child: RichText(
+      textAlign: textAlign,
+      text: TextSpan(
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 2),
+        children: [
+          const TextSpan(text: 'Starting at '),
+          WidgetSpan(child: _weight(startWeight, weightUnit(), context), alignment: PlaceholderAlignment.middle),
+          const TextSpan(text: ', currently at '),
+          WidgetSpan(child: _weight(endWeight, weightUnit(), context), alignment: PlaceholderAlignment.middle),
+          const TextSpan(text: ' . '),
+          TextSpan(
+              text: difference > 0
+                  ? "You've gained"
+                  : difference < 0
+                      ? "You lost"
+                      : "No change at"),
+          TextSpan(text: " "),
+          WidgetSpan(
+              child: CustomWordMarkIcon('${difference.abs().toStringAsFixed(1)} ${weightUnit()}',
+                  color: _deltaColor(difference), padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)),
+              alignment: PlaceholderAlignment.middle),
+        ],
+      ),
+    ),
+  );
 }

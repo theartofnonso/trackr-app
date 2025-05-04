@@ -2,8 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../utils/general_utils.dart';
+import 'package:tracker_app/utils/progressive_overload_utils.dart';
 
 /// A semicircular gauge whose gradient colors rotate slowly with the gauge
 /// positioned above the label.
@@ -11,8 +10,8 @@ import '../../utils/general_utils.dart';
 /// ```dart
 /// const AnimatedGauge(value: 134, min: 0, max: 200)
 /// ```
-class HalfAnimatedGauge extends StatefulWidget {
-  const HalfAnimatedGauge({
+class ProgressionHalfAnimatedGauge extends StatefulWidget {
+  const ProgressionHalfAnimatedGauge({
     super.key,
     required this.value,
     required this.min,
@@ -20,10 +19,11 @@ class HalfAnimatedGauge extends StatefulWidget {
     this.size = 280,
     this.stroke = 16,
     this.rotationPeriod = const Duration(seconds: 6),
-     this.label = "", this.labelWidget,
+    required this.label,
+    required this.progression, // New parameter
   });
 
-  final int value;
+  final double value;
   final double min;
   final double max;
 
@@ -38,13 +38,13 @@ class HalfAnimatedGauge extends StatefulWidget {
 
   final String label;
 
-  final Widget? labelWidget;
+  final TrainingProgression progression; // New parameter
 
   @override
-  State<HalfAnimatedGauge> createState() => _HalfAnimatedGaugeState();
+  State<ProgressionHalfAnimatedGauge> createState() => _ProgressionHalfAnimatedGaugeState();
 }
 
-class _HalfAnimatedGaugeState extends State<HalfAnimatedGauge> with SingleTickerProviderStateMixin {
+class _ProgressionHalfAnimatedGaugeState extends State<ProgressionHalfAnimatedGauge> with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
 
   @override
@@ -83,27 +83,28 @@ class _HalfAnimatedGaugeState extends State<HalfAnimatedGauge> with SingleTicker
                     max: widget.max,
                     stroke: widget.stroke,
                     gradientRotation: _ctrl.value,
+                    progression: widget.progression, // Pass progression
                   ),
                 );
               },
             ),
           ),
         ),
-        widget.labelWidget ?? Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("${widget.value}", style: GoogleFonts.ubuntu(fontSize: 30, height: 1.5, fontWeight: FontWeight.w900)),
-              Text(widget.label,
-                  style: GoogleFonts.ubuntu(
-                      fontSize: 14,
-                      height: 1.5,
-                      fontWeight: FontWeight.w400,
-                      color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
-            ],
-          ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Text("${widget.value}", style: GoogleFonts.ubuntu(fontSize: 30, height: 1.5, fontWeight: FontWeight.w900)),
+            Text(widget.label,
+                style: GoogleFonts.ubuntu(
+                    fontSize: 14,
+                    height: 1.5,
+                    fontWeight: FontWeight.w400,
+                    color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
+          ],
         )
       ],
     );
@@ -118,10 +119,12 @@ class _GaugePainter extends CustomPainter {
     required this.max,
     required this.stroke,
     required this.gradientRotation,
+    required this.progression, // New parameter
   });
 
-  final int value;
+  final double value;
   final double min, max, stroke, gradientRotation;
+  final TrainingProgression progression; // New parameter
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -149,7 +152,7 @@ class _GaugePainter extends CustomPainter {
       startAngle: math.pi, // left-most point
       endAngle: math.pi * 3, // completes full circle
       transform: GradientRotation(gradientRotation * 2 * math.pi),
-      colors: lowToHighIntensityColors(value / max),
+      colors: _getProgressionColors(progression),
     ).createShader(sweepRect);
 
     final trackPaint = Paint()
@@ -208,7 +211,22 @@ class _GaugePainter extends CustomPainter {
     canvas.drawCircle(knobOffset, stroke * .3, innerShadowPaint);
   }
 
+  List<Color> _getProgressionColors(TrainingProgression progression) {
+    switch (progression) {
+      case TrainingProgression.increase:
+        return rpeToIntensityColors(progression: progression);
+      case TrainingProgression.decrease:
+        return rpeToIntensityColors(progression: progression);
+      case TrainingProgression.maintain:
+        return rpeToIntensityColors(progression: progression);
+    }
+  }
+
   @override
   bool shouldRepaint(covariant _GaugePainter old) =>
-      old.gradientRotation != gradientRotation || old.value != value || old.min != min || old.max != max;
+      old.progression != progression || // Check progression
+          old.gradientRotation != gradientRotation ||
+          old.value != value ||
+          old.min != min ||
+          old.max != max;
 }

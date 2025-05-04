@@ -239,13 +239,14 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               children: [
                 Text(
                   exercise.description != null ? "${exercise.description}." : "No notes",
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.ubuntu(
                       fontSize: 14,
                       color: isDarkMode ? Colors.white70 : Colors.black,
                       height: 1.8,
                       fontWeight: FontWeight.w400),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 24),
               ],
             ),
           Padding(
@@ -253,11 +254,11 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const SizedBox(height: 16),
                 LineChartWidget(
                   chartPoints: _chartPoints,
                   periods: _dateTimes,
                   unit: _chartUnit,
+                  aspectRation: 1.8,
                 ),
               ],
             ),
