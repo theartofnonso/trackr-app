@@ -216,11 +216,11 @@ class _GaugePainter extends CustomPainter {
   List<Color> _getProgressionColors(TrainingProgression progression) {
     switch (progression) {
       case TrainingProgression.increase:
-        return rpeToIntensityColors(value);
+        return rpeToIntensityColors(progression: progression);
       case TrainingProgression.decrease:
-        return rpeToIntensityColors(value);
+        return rpeToIntensityColors(progression: progression);
       case TrainingProgression.maintain:
-        return rpeToIntensityColors(value);
+        return rpeToIntensityColors(progression: progression);
     }
   }
 

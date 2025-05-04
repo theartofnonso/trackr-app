@@ -487,20 +487,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ExerciseType.duration => "duration",
     };
 
-    String intensityNote() {
-      if (rpe >= 9) return " You’re pushing hard — strong effort!";
-      if (rpe >= 7) return " Solid intensity — you're doing great.";
-      return " Feels manageable — room to grow.";
-    }
-
     return switch (trainingProgression) {
-      TrainingProgression.increase =>
-        "Time to take it up a notch, consider increasing the $setLabel of your next session.${intensityNote()}",
-      TrainingProgression.decrease =>
-        "Dial it back a bit, consider reducing the $setLabel to recover properly.${intensityNote()}",
-      TrainingProgression.maintain => rpe >= 9
-          ? "You’re operating at peak effort — stick with your current $setLabel and focus on consistency."
-          : "Right on track, stick with your current $setLabel.${intensityNote()}",
+      TrainingProgression.increase => "Consider increasing the $setLabel of",
+      TrainingProgression.decrease => "Consider reducing the $setLabel of",
+      TrainingProgression.maintain => "Stick with your current $setLabel of",
     };
   }
 
@@ -760,8 +750,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
                               color: isDarkMode
-                                  ? rpeToIntensityColor(avgRPE).withValues(alpha: 0.1)
-                                  : rpeToIntensityColor(avgRPE),
+                                  ? rpeToIntensityColor(progression: trainingProgression).withValues(alpha: 0.1)
+                                  : rpeToIntensityColor(progression: trainingProgression),
                               borderRadius: BorderRadius.circular(5)),
                           child: ProgressionHalfAnimatedGauge(
                             value: avgRPE,
@@ -788,16 +778,16 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               padding: EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                   color: isDarkMode
-                                      ? rpeToIntensityColor(avgRPE).withValues(alpha: 0.1)
-                                      : rpeToIntensityColor(avgRPE),
+                                      ? rpeToIntensityColor(progression: trainingProgression).withValues(alpha: 0.1)
+                                      : rpeToIntensityColor(progression: trainingProgression),
                                   borderRadius: BorderRadius.circular(5)),
                               child: RichText(
                                 text: TextSpan(
-                                    text: _trainingProgressionSummary(
-                                        trainingProgression: trainingProgression, rpe: avgRPE),
+                                    text:
+                                        "${_trainingProgressionSummary(trainingProgression: trainingProgression, rpe: avgRPE)} In your next session",
                                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                           fontWeight: FontWeight.w700,
-                                          fontSize: 16,
+                                          fontSize: 18,
                                           color: isDarkMode ? Colors.white70 : Colors.black54,
                                           height: 1.5,
                                         ),
@@ -807,7 +797,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                         text: workingSet.summary(),
                                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                             fontWeight: FontWeight.w700,
-                                            fontSize: 16,
+                                            fontSize: 18,
                                             height: 1.5,
                                             color: Colors.white),
                                       ),
@@ -823,15 +813,21 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       style: Theme.of(context)
                           .textTheme
                           .bodyLarge
-                          ?.copyWith(fontWeight: FontWeight.w900, fontSize: 30, height: 1.5),
+                          ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
                       children: [
-                        TextSpan(text: "-"),
+                        TextSpan(
+                          text: "-",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                        ),
                         TextSpan(
                           text: "${typicalRepRange.maxReps}",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.w900, fontSize: 30, height: 1.5),
+                              ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
                         ),
                         TextSpan(text: " "),
                         TextSpan(

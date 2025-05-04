@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
+import 'package:tracker_app/utils/progressive_overload_utils.dart';
 import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../colors.dart';
@@ -211,15 +212,15 @@ List<Color> highToLowIntensityColors(double score) {
   } else if (score >= 0.3) {
     return const [
       Color(0xFF3763FF), // royal blue
-      vibrantBlue,       // teal-green
+      vibrantBlue, // teal-green
       Color(0xFF78FF5C), // lime-green
       Color(0xFF3763FF),
     ];
   } else {
     return const [
       Color(0xFF4CAF50), // medium green
-      vibrantGreen,      // yellow-green
-      vibrantGreen,      // soft yellow
+      vibrantGreen, // yellow-green
+      vibrantGreen, // soft yellow
       vibrantGreen,
     ];
   }
@@ -239,32 +240,35 @@ Color highToLowIntensityColor(double score) {
   }
 }
 
-Color rpeToIntensityColor(double rpe) {
-  if (rpe >= 7.0) {
-    // High RPE (intense effort) gets a "worse" color (red)
-    return Colors.red;
-  } else {
-    // Low RPE (light effort) gets a "better" color (green)
-    return vibrantGreen;
-  }
+Color rpeToIntensityColor({required TrainingProgression progression}) {
+  return switch (progression) {
+    TrainingProgression.increase => vibrantGreen,
+    TrainingProgression.decrease => Colors.red,
+    TrainingProgression.maintain => vibrantBlue,
+  };
 }
 
-List<Color> rpeToIntensityColors(double rpe) {
-  if (rpe >= 7.0) {
-    return const [
-      Color(0xFFFF5722), // strong orange
-      Color(0xFFFF3945), // reddish-orange
-      Color(0xFFEA004E), // crimson-red
-      Color(0xFFFF5722),
-    ];
-  } else {
-    return const [
-      Color(0xFF4CAF50), // medium green
-      vibrantGreen,      // yellow-green
-      vibrantGreen,      // soft yellow
-      vibrantGreen,
-    ];
-  }
+List<Color> rpeToIntensityColors({required TrainingProgression progression}) {
+  return switch (progression) {
+    TrainingProgression.increase => const [
+        Color(0xFF4CAF50), // medium green
+        vibrantGreen, // yellow-green
+        vibrantGreen, // soft yellow
+        vibrantGreen,
+      ],
+    TrainingProgression.decrease => const [
+        Color(0xFFFF5722), // strong orange
+        Color(0xFFFF3945), // reddish-orange
+        Color(0xFFEA004E), // crimson-red
+        Color(0xFFFF5722),
+      ],
+    TrainingProgression.maintain => const [
+        Color(0xFF3763FF), // royal blue
+        vibrantBlue, // teal-green
+        Color(0xFF78FF5C), // lime-green
+        Color(0xFF3763FF),
+      ],
+  };
 }
 
 String recoveryMuscleIllustration({required double recoveryPercentage, required MuscleGroup muscleGroup}) {
@@ -487,7 +491,11 @@ String getReadinessSummary({required int readinessScore}) {
 
 /// --- style helpers --------------------------------------------------------
 
-Color _deltaColor(num difference) => difference > 0 ? vibrantGreen : difference < 0 ? Colors.red : Colors.yellow;
+Color _deltaColor(num difference) => difference > 0
+    ? vibrantGreen
+    : difference < 0
+        ? Colors.red
+        : Colors.yellow;
 
 Widget _weight(num value, String unit, BuildContext context) {
   Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -529,7 +537,12 @@ Widget summarizeProgression(
           const TextSpan(text: ', currently at '),
           WidgetSpan(child: _weight(endWeight, weightUnit(), context), alignment: PlaceholderAlignment.middle),
           const TextSpan(text: ' . '),
-          TextSpan(text: difference > 0 ? "You've gained" : difference < 0 ? "You lost" : "No change at"),
+          TextSpan(
+              text: difference > 0
+                  ? "You've gained"
+                  : difference < 0
+                      ? "You lost"
+                      : "No change at"),
           TextSpan(text: " "),
           WidgetSpan(
               child: CustomWordMarkIcon('${difference.abs().toStringAsFixed(1)} ${weightUnit()}',
