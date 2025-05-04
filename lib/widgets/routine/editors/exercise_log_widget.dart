@@ -477,19 +477,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ]));
   }
 
-  String trainingProgressionSummary({required TrainingProgression trainingProgression, required SetDto workingSet}) {
+  String _trainingProgressionSummary({required TrainingProgression trainingProgression}) {
     final setLabel = switch (_exerciseLog.exercise.type) {
-      ExerciseType.weights => "weights",
+      ExerciseType.weights => "weight",
       ExerciseType.bodyWeight => "reps",
       ExerciseType.duration => "duration",
     };
 
     return switch (trainingProgression) {
-      TrainingProgression.increase =>
-        "Time to take it up a notch, consider increasing the $setLabel of ${workingSet.summary()}.",
-      TrainingProgression.decrease =>
-        "Dial it back a bit, consider reducing the $setLabel of ${workingSet.summary()} for now.",
-      TrainingProgression.maintain => "Right on track, stick with your current $setLabel of ${workingSet.summary()}.",
+      TrainingProgression.increase => "Time to take it up a notch, consider increasing the $setLabel of",
+      TrainingProgression.decrease => "Dial it back a bit, consider reducing the $setLabel of",
+      TrainingProgression.maintain => "Right on track, stick with your current $setLabel of",
     };
   }
 
@@ -783,14 +781,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                       ? rpeToIntensityColor(avgRPE).withValues(alpha: 0.1)
                                       : rpeToIntensityColor(avgRPE),
                                   borderRadius: BorderRadius.circular(5)),
-                              child: Text(
-                                trainingProgressionSummary(
-                                    trainingProgression: trainingProgression, workingSet: workingSet),
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16,
-                                      height: 1.5,
-                                    ),
+                              child: RichText(
+                                text: TextSpan(
+                                    text: _trainingProgressionSummary(trainingProgression: trainingProgression),
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                          color: isDarkMode ? Colors.white70 : Colors.black54,
+                                          height: 1.5,
+                                        ),
+                                    children: [
+                                      TextSpan(text: " "),
+                                      TextSpan(
+                                        text: workingSet.summary(),
+                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 18,
+                                            height: 1.5,
+                                            color: Colors.white),
+                                      ),
+                                      TextSpan(text: "."),
+                                    ]),
                               )),
                         ),
                       ),
