@@ -84,7 +84,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                   "We use your training history to recommend plans. ${logs.isNotEmpty ? 'Tap to get a personalised plan.' : "Tap for a plan to start training."}",
               onTap: _runMessage,
             ),
-            plans.isNotEmpty
+            children.isNotEmpty
                 ? Expanded(
                     child: GridView.count(
                         crossAxisCount: 2,

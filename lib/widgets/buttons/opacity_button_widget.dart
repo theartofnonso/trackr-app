@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../icons/custom_icon.dart';
-
 class OpacityButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
   final void Function()? onLongPress;
