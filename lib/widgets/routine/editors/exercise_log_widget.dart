@@ -38,7 +38,7 @@ import '../../../utils/one_rep_max_calculator.dart';
 import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
 import '../../information_containers/transparent_information_container_lite.dart';
-import '../../monitors/progression_half_animatedGauge.dart';
+import '../../monitors/progression_half_animated_gauge.dart';
 import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
@@ -477,17 +477,30 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ]));
   }
 
-  String _trainingProgressionSummary({required TrainingProgression trainingProgression}) {
+  String _trainingProgressionSummary({
+    required TrainingProgression trainingProgression,
+    required double rpe,
+  }) {
     final setLabel = switch (_exerciseLog.exercise.type) {
       ExerciseType.weights => "weight",
       ExerciseType.bodyWeight => "reps",
       ExerciseType.duration => "duration",
     };
 
+    String intensityNote() {
+      if (rpe >= 9) return " You’re pushing hard — strong effort!";
+      if (rpe >= 7) return " Solid intensity — you're doing great.";
+      return " Feels manageable — room to grow.";
+    }
+
     return switch (trainingProgression) {
-      TrainingProgression.increase => "Time to take it up a notch, consider increasing the $setLabel of",
-      TrainingProgression.decrease => "Dial it back a bit, consider reducing the $setLabel of",
-      TrainingProgression.maintain => "Right on track, stick with your current $setLabel of",
+      TrainingProgression.increase =>
+        "Time to take it up a notch, consider increasing the $setLabel of your next session.${intensityNote()}",
+      TrainingProgression.decrease =>
+        "Dial it back a bit, consider reducing the $setLabel to recover properly.${intensityNote()}",
+      TrainingProgression.maintain => rpe >= 9
+          ? "You’re operating at peak effort — stick with your current $setLabel and focus on consistency."
+          : "Right on track, stick with your current $setLabel.${intensityNote()}",
     };
   }
 
@@ -532,32 +545,29 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ExerciseType.duration => getLongestDuration(workingSets),
     };
 
-    if (withWeightsOnly(type: exerciseType)) {
-      /// Determine typical rep range using historic training data
-      final sets = [...currentSets, ...previousSets];
-      final reps = switch (exerciseType) {
-        ExerciseType.weights => markHighestWeightSets(sets),
-        ExerciseType.bodyWeight => markHighestRepsSets(sets),
-        ExerciseType.duration => markHighestDurationSets(sets),
-      }
-          .map((set) {
-        return switch (exerciseType) {
-          ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
-          ExerciseType.bodyWeight => (set as RepsSetDto).reps,
-          ExerciseType.duration => 0,
-        };
-      }).toList();
-
-      final typicalRepRange = determineTypicalRepRange(reps: reps);
-
-      /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
-      final trainingData = workingSets.map((set) {
-        return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
-      }).toList();
-
-      trainingProgression = getTrainingProgression(
-          data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
+    /// Determine typical rep range using historic training data
+    final reps = switch (exerciseType) {
+      ExerciseType.weights => markHighestWeightSets([...currentSets, ...previousSets]),
+      ExerciseType.bodyWeight => markHighestRepsSets([...currentSets, ...previousSets]),
+      ExerciseType.duration => markHighestDurationSets([...currentSets, ...previousSets]),
     }
+        .map((set) {
+      return switch (exerciseType) {
+        ExerciseType.weights => (set as WeightAndRepsSetDto).reps,
+        ExerciseType.bodyWeight => (set as RepsSetDto).reps,
+        ExerciseType.duration => 0,
+      };
+    }).toList();
+
+    final typicalRepRange = determineTypicalRepRange(reps: reps);
+
+    /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
+    final trainingData = workingSets.map((set) {
+      return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
+    }).toList();
+
+    trainingProgression = getTrainingProgression(
+        data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
 
     final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
 
@@ -742,7 +752,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       trailing: CustomIcon(Icons.chevron_right_rounded, color: Colors.white)),
                 if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
-                    if (withReps(type: exerciseType) && trainingProgression != null)
+                    if (withReps(type: exerciseType))
                       StaggeredGridTile.count(
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
@@ -764,7 +774,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       ),
 
                     /// Only show for exercises that measure Weights, Reps and Duration
-                    if (trainingProgression != null && workingSet != null)
+                    if (workingSet != null)
                       StaggeredGridTile.count(
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
@@ -783,10 +793,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                   borderRadius: BorderRadius.circular(5)),
                               child: RichText(
                                 text: TextSpan(
-                                    text: _trainingProgressionSummary(trainingProgression: trainingProgression),
+                                    text: _trainingProgressionSummary(
+                                        trainingProgression: trainingProgression, rpe: avgRPE),
                                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                           fontWeight: FontWeight.w700,
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           color: isDarkMode ? Colors.white70 : Colors.black54,
                                           height: 1.5,
                                         ),
@@ -796,7 +807,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                         text: workingSet.summary(),
                                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                             fontWeight: FontWeight.w700,
-                                            fontSize: 18,
+                                            fontSize: 16,
                                             height: 1.5,
                                             color: Colors.white),
                                       ),
@@ -806,6 +817,35 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         ),
                       ),
                   ]),
+                RichText(
+                  text: TextSpan(
+                      text: "${typicalRepRange.minReps}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.w900, fontSize: 30, height: 1.5),
+                      children: [
+                        TextSpan(text: "-"),
+                        TextSpan(
+                          text: "${typicalRepRange.maxReps}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontWeight: FontWeight.w900, fontSize: 30, height: 1.5),
+                        ),
+                        TextSpan(text: " "),
+                        TextSpan(
+                          text:
+                              "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                height: 2.0,
+                                color: isDarkMode ? Colors.white70 : Colors.black54,
+                              ),
+                        ),
+                      ]),
+                )
               ],
             ),
           ),

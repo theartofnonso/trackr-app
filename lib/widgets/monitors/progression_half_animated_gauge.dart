@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/utils/progressive_overload_utils.dart';
 
 import '../../../../utils/general_utils.dart';
