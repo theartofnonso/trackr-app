@@ -20,7 +20,7 @@ class HalfAnimatedGauge extends StatefulWidget {
     this.size = 280,
     this.stroke = 16,
     this.rotationPeriod = const Duration(seconds: 6),
-    required this.label,
+     this.label = "", this.labelWidget,
   });
 
   final int value;
@@ -37,6 +37,8 @@ class HalfAnimatedGauge extends StatefulWidget {
   final Duration rotationPeriod;
 
   final String label;
+
+  final Widget? labelWidget;
 
   @override
   State<HalfAnimatedGauge> createState() => _HalfAnimatedGaugeState();
@@ -87,21 +89,21 @@ class _HalfAnimatedGaugeState extends State<HalfAnimatedGauge> with SingleTicker
             ),
           ),
         ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Text("${widget.value}", style: GoogleFonts.ubuntu(fontSize: 30, height: 1.5, fontWeight: FontWeight.w900)),
-            Text(widget.label,
-                style: GoogleFonts.ubuntu(
-                    fontSize: 14,
-                    height: 1.5,
-                    fontWeight: FontWeight.w400,
-                    color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
-          ],
+        widget.labelWidget ?? Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("${widget.value}", style: GoogleFonts.ubuntu(fontSize: 30, height: 1.5, fontWeight: FontWeight.w900)),
+              Text(widget.label,
+                  style: GoogleFonts.ubuntu(
+                      fontSize: 14,
+                      height: 1.5,
+                      fontWeight: FontWeight.w400,
+                      color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
+            ],
+          ),
         )
       ],
     );

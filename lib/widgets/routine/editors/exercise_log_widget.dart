@@ -786,7 +786,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                     text: _trainingProgressionSummary(trainingProgression: trainingProgression),
                                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                           fontWeight: FontWeight.w700,
-                                      fontSize: 18,
+                                          fontSize: 18,
                                           color: isDarkMode ? Colors.white70 : Colors.black54,
                                           height: 1.5,
                                         ),

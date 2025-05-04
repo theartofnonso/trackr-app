@@ -243,10 +243,6 @@ Color rpeToIntensityColor(double rpe) {
   if (rpe >= 7.0) {
     // High RPE (intense effort) gets a "worse" color (red)
     return Colors.red;
-  } else if (rpe >= 5.0) {
-    return Colors.yellow;
-  } else if (rpe >= 3.0) {
-    return vibrantBlue;
   } else {
     // Low RPE (light effort) gets a "better" color (green)
     return vibrantGreen;
@@ -260,20 +256,6 @@ List<Color> rpeToIntensityColors(double rpe) {
       Color(0xFFFF3945), // reddish-orange
       Color(0xFFEA004E), // crimson-red
       Color(0xFFFF5722),
-    ];
-  } else if (rpe >= 5.0) {
-    return const [
-      Color(0xFFFFC107), // sunflower
-      Color(0xFFFF9F1C), // deep yellow-orange
-      Color(0xFFFF7538), // orange
-      Color(0xFFFFC107),
-    ];
-  } else if (rpe >= 3.0) {
-    return const [
-      Color(0xFF3763FF), // royal blue
-      vibrantBlue,       // teal-green
-      Color(0xFF78FF5C), // lime-green
-      Color(0xFF3763FF),
     ];
   } else {
     return const [

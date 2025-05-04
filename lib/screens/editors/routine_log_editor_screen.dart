@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
@@ -25,7 +26,7 @@ import '../../utils/notifications_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/information_containers/information_container_with_background_image.dart';
+import '../../widgets/monitors/half_animated_gauge.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';
@@ -257,25 +258,37 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                       Consumer<ExerciseLogController>(
                           builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
                         return SizedBox(
-                          height: 80,
+                          height: 100,
+                          width: double.infinity,
                           child: GridView(
                               scrollDirection: Axis.horizontal,
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 1,
-                                childAspectRatio: 0.5, // for square shape
+                                childAspectRatio: 0.8, // 0.5 for square shape
                                 crossAxisSpacing: 10,
                                 mainAxisSpacing: 10,
                               ),
                               children: [
                                 if (readiness > 0)
-                                  _StatisticWidget(
-                                      title: Text("$readiness%",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge
-                                              ?.copyWith(color: lowToHighIntensityColor(readiness / 100))),
-                                      subtitle: "Readiness"),
+                                  Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: lowToHighIntensityColor(readiness / 100).withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: HalfAnimatedGauge(
+                                      value: readiness,
+                                      min: 0,
+                                      max: 100,
+                                      stroke: 12,
+                                      labelWidget: Padding(
+                                        padding: const EdgeInsets.only(top: 28.0),
+                                        child: Text("$readiness",
+                                            style: GoogleFonts.ubuntu(
+                                                fontSize: 24, height: 1.5, fontWeight: FontWeight.w900)),
+                                      ),
+                                    ),
+                                  ),
                                 _StatisticWidget(
                                     title: Text(
                                         "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
@@ -296,16 +309,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                               ]),
                         );
                       }),
-                    if (readiness > 0)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: InformationContainerWithBackgroundImage(
-                          image: "images/recovery_girl.PNG",
-                          alignmentGeometry: Alignment.center,
-                          subtitle: getReadinessSummary(readinessScore: readiness),
-                          color: Colors.black,
-                        ),
-                      ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: Padding(
@@ -444,7 +447,7 @@ class _StatisticWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: isDarkMode ? sapphireDark.withValues(alpha: 0.4) : Colors.grey.shade200, // Set the background color
+        color: isDarkMode ? Colors.white70.withValues(alpha: 0.05) : Colors.grey.shade200, // Set the background color
         // Background color of the container
         borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
       ),

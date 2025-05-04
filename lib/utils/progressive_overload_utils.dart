@@ -72,7 +72,7 @@ TrainingProgression _getSessionSuggestion({
   const int rpeIncreaseThreshold = 7;
 
   if (session.reps >= targetMax) {
-    return session.rpe <= rpeIncreaseThreshold
+    return session.rpe < rpeIncreaseThreshold
         ? TrainingProgression.increase
         : TrainingProgression.maintain;
   }
