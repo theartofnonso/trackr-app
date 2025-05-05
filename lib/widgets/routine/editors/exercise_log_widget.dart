@@ -720,7 +720,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       useOpacity: true,
                       onTap: _showDeloadSets,
                       trailing: CustomIcon(Icons.chevron_right_rounded, color: Colors.white)),
-                if (sets.isNotEmpty && widget.editorType == RoutineEditorMode.log && !isEmptySets)
+                if (exerciseType == ExerciseType.weights && widget.editorType == RoutineEditorMode.log && !isEmptySets)
                   StaggeredGrid.count(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, children: [
                     if (withReps(type: exerciseType))
                       StaggeredGridTile.count(
