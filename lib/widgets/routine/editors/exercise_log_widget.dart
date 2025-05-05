@@ -762,7 +762,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                             )),
                       ),
                   ]),
-                if (workingSet != null && exerciseType == ExerciseType.weights)
+                if (workingSet != null && workingSet.isNotEmpty() && exerciseType == ExerciseType.weights)
                   TransparentInformationContainerLite(
                       content: "${workingSet.summary()} is your working set.",
                       useOpacity: true,
