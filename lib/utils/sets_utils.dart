@@ -15,7 +15,8 @@ List<SetDto> personalBestSets({required List<SetDto> sets}) {
   for (var group in groupedByReps.entries) {
     final weights = group.value.map((set) => (set as WeightAndRepsSetDto).weight);
     final heaviestWeight = weights.max;
-    setsWithHeaviestWeight.add(WeightAndRepsSetDto(weight: heaviestWeight, reps: group.key, checked: false));
+    setsWithHeaviestWeight
+        .add(WeightAndRepsSetDto(weight: heaviestWeight, reps: group.key, checked: false, dateTime: DateTime.now()));
   }
 
   // Sort by value2
@@ -56,7 +57,8 @@ List<WeightAndRepsSetDto> markHighestWeightSets(List<SetDto> sets) {
         reps: set.reps,
         checked: set.checked,
         rpeRating: set.rpeRating,
-        isWorkingSet: set.weight == maxWeight);
+        isWorkingSet: set.weight == maxWeight,
+        dateTime: DateTime.now());
   }).toList();
 }
 
@@ -76,7 +78,8 @@ List<WeightAndRepsSetDto> markHeaviestVolumeSets(List<SetDto> sets) {
         reps: set.reps,
         checked: set.checked,
         rpeRating: set.rpeRating,
-        isWorkingSet: set.volume() == maxVolume);
+        isWorkingSet: set.volume() == maxVolume,
+        dateTime: DateTime.now());
   }).toList();
 }
 
@@ -92,7 +95,11 @@ List<RepsSetDto> markHighestRepsSets(List<SetDto> sets) {
   // Map original list and update working sets
   return repsSets.map((set) {
     return RepsSetDto(
-        reps: set.reps, checked: set.checked, rpeRating: set.rpeRating, isWorkingSet: set.reps == maxReps);
+        reps: set.reps,
+        checked: set.checked,
+        rpeRating: set.rpeRating,
+        isWorkingSet: set.reps == maxReps,
+        dateTime: DateTime.now());
   }).toList();
 }
 
@@ -111,7 +118,8 @@ List<DurationSetDto> markHighestDurationSets(List<SetDto> sets) {
         duration: set.duration,
         checked: set.checked,
         rpeRating: set.rpeRating,
-        isWorkingSet: set.duration == maxDuration);
+        isWorkingSet: set.duration == maxDuration,
+        dateTime: DateTime.now());
   }).toList();
 }
 

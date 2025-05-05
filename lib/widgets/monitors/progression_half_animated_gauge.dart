@@ -20,7 +20,7 @@ class ProgressionHalfAnimatedGauge extends StatefulWidget {
     this.stroke = 16,
     this.rotationPeriod = const Duration(seconds: 6),
     required this.label,
-    required this.progression, // New parameter
+    required this.report,
   });
 
   final double value;
@@ -38,7 +38,7 @@ class ProgressionHalfAnimatedGauge extends StatefulWidget {
 
   final String label;
 
-  final TrainingProgression progression; // New parameter
+  final TrainingIntensityReport report; // New parameter
 
   @override
   State<ProgressionHalfAnimatedGauge> createState() => _ProgressionHalfAnimatedGaugeState();
@@ -83,7 +83,7 @@ class _ProgressionHalfAnimatedGaugeState extends State<ProgressionHalfAnimatedGa
                     max: widget.max,
                     stroke: widget.stroke,
                     gradientRotation: _ctrl.value,
-                    progression: widget.progression, // Pass progression
+                    report: widget.report, // Pass progression
                   ),
                 );
               },
@@ -119,12 +119,12 @@ class _GaugePainter extends CustomPainter {
     required this.max,
     required this.stroke,
     required this.gradientRotation,
-    required this.progression, // New parameter
+    required this.report, // New parameter
   });
 
   final double value;
   final double min, max, stroke, gradientRotation;
-  final TrainingProgression progression; // New parameter
+  final TrainingIntensityReport report; // New parameter
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -152,7 +152,7 @@ class _GaugePainter extends CustomPainter {
       startAngle: math.pi, // left-most point
       endAngle: math.pi * 3, // completes full circle
       transform: GradientRotation(gradientRotation * 2 * math.pi),
-      colors: _getProgressionColors(progression),
+      colors: progressionToGradient(report: report),
     ).createShader(sweepRect);
 
     final trackPaint = Paint()
@@ -211,20 +211,9 @@ class _GaugePainter extends CustomPainter {
     canvas.drawCircle(knobOffset, stroke * .3, innerShadowPaint);
   }
 
-  List<Color> _getProgressionColors(TrainingProgression progression) {
-    switch (progression) {
-      case TrainingProgression.increase:
-        return rpeToIntensityColors(progression: progression);
-      case TrainingProgression.decrease:
-        return rpeToIntensityColors(progression: progression);
-      case TrainingProgression.maintain:
-        return rpeToIntensityColors(progression: progression);
-    }
-  }
-
   @override
   bool shouldRepaint(covariant _GaugePainter old) =>
-      old.progression != progression || // Check progression
+      old.report != report || // Check progression
           old.gradientRotation != gradientRotation ||
           old.value != value ||
           old.min != min ||

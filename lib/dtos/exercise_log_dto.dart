@@ -67,9 +67,9 @@ class ExerciseLogDto {
     final setsInJsons = json["sets"] as List<dynamic>;
     List<SetDto> sets = [];
     if (setsInJsons.isNotEmpty && setsInJsons.first is String) {
-      sets = setsInJsons.map((json) => SetDto.fromJson(jsonDecode(json), exerciseType: exercise.type)).toList();
+      sets = setsInJsons.map((json) => SetDto.fromJson(jsonDecode(json), exerciseType: exercise.type, datetime: createdAt ?? DateTime.now())).toList();
     } else {
-      sets = setsInJsons.map((json) => SetDto.fromJson(json, exerciseType: exercise.type)).toList();
+      sets = setsInJsons.map((json) => SetDto.fromJson(json, exerciseType: exercise.type, datetime: createdAt ?? DateTime.now())).toList();
     }
 
     final exerciseLog = ExerciseLogDto(

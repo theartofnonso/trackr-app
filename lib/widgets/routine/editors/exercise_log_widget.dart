@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -476,23 +475,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         ]));
   }
 
-  String _trainingProgressionSummary({
-    required TrainingProgression trainingProgression,
-    required double rpe,
-  }) {
-    final setLabel = switch (_exerciseLog.exercise.type) {
-      ExerciseType.weights => "weight",
-      ExerciseType.bodyWeight => "reps",
-      ExerciseType.duration => "duration",
-    };
-
-    return switch (trainingProgression) {
-      TrainingProgression.increase => "Consider increasing your working $setLabel of",
-      TrainingProgression.decrease => "Consider reducing your working $setLabel of",
-      TrainingProgression.maintain => "Stick with your current working $setLabel of",
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
@@ -515,7 +497,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final sets = _showPreviousSets ? recentSets : currentSets;
 
-    TrainingProgression? trainingProgression;
+    TrainingIntensityReport? trainingIntensityReport;
 
     /// Get working sets
     final workingSets = sets.workingSets(exerciseType).where((s) => s.isWorkingSet).toList();
@@ -553,18 +535,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
     final trainingData = exerciseType == ExerciseType.weights
         ? workingSets.map((set) {
-            return TrainingData(reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating);
+            return TrainingData(
+                reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating, date: set.dateTime);
           }).toList()
         : <TrainingData>[];
 
-    trainingProgression = getTrainingProgression(
+    trainingIntensityReport = getTrainingProgressionReport(
         data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
 
     final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
-
-    final rpeRatings = sets.map((set) => set.rpeRating).toList();
-
-    final avgRPE = rpeRatings.isNotEmpty ? rpeRatings.average.roundToDouble() : 4.0;
 
     final errorWidgets = _errors.entries
         .map((error) => InformationContainerLite(
@@ -750,14 +729,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         child: Container(
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                              color: rpeToIntensityColor(progression: trainingProgression).withValues(alpha: 0.1),
+                              color: progressionToColor(report: trainingIntensityReport).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(5)),
                           child: ProgressionHalfAnimatedGauge(
-                            value: avgRPE,
+                            value: trainingIntensityReport.averageRPE.roundToDouble(),
                             min: 0,
                             max: 10,
-                            label: trainingProgression.name,
-                            progression: trainingProgression,
+                            label: trainingIntensityReport.progression.name,
+                            report: trainingIntensityReport,
                           ),
                         ),
                       ),
@@ -767,82 +746,34 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       StaggeredGridTile.count(
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
-                        child: GestureDetector(
-                          onTap: () => showBottomSheetWithNoAction(
-                              context: context,
-                              title: "Working Sets",
-                              description:
-                                  "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements."),
-                          child: Container(
-                              padding: EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                  color: isDarkMode
-                                      ? rpeToIntensityColor(progression: trainingProgression).withValues(alpha: 0.1)
-                                      : rpeToIntensityColor(progression: trainingProgression),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: RichText(
-                                text: TextSpan(
-                                    text:
-                                        _trainingProgressionSummary(trainingProgression: trainingProgression, rpe: avgRPE),
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 18,
-                                          color: isDarkMode ? Colors.white70 : Colors.black,
-                                          height: 1.5,
-                                        ),
-                                    children: [
-                                      TextSpan(text: " "),
-                                      TextSpan(
-                                        text: workingSet.summary(),
-                                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 18,
-                                            height: 1.5,
-                                            color: Colors.white),
-                                      ),
-                                      TextSpan(text: " "),
-                                      TextSpan(text: "in your next session."),
-                                    ]),
-                              )),
-                        ),
+                        child: Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                                color: isDarkMode
+                                    ? progressionToColor(report: trainingIntensityReport).withValues(alpha: 0.1)
+                                    : progressionToColor(report: trainingIntensityReport),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Text(
+                              trainingIntensityReport.explanation,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16, height: 1.8),
+                            )),
                       ),
                   ]),
-                if (typicalRepRange.minReps > 0 && typicalRepRange.maxReps > 0)
-                  RichText(
-                    text: TextSpan(
-                        text: "${typicalRepRange.minReps}",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(fontWeight: FontWeight.w900, fontSize: 20, height: 1.5),
-                        children: [
-                          TextSpan(
-                            text: "-",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 20, height: 1.5),
-                          ),
-                          TextSpan(
-                            text: "${typicalRepRange.maxReps}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 20, height: 1.5),
-                          ),
-                          TextSpan(text: " "),
-                          TextSpan(
-                            text:
-                                "is your typical rep range. if you comfortably hit ${typicalRepRange.maxReps}, increase the weight; if you struggle to reach ${typicalRepRange.minReps}, reduce it; otherwise, maintain. Tap for more info.",
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  height: 2.0,
-                                  color: isDarkMode ? Colors.white70 : Colors.black54,
-                                ),
-                          ),
-                        ]),
-                  )
+                if (workingSet != null && exerciseType == ExerciseType.weights)
+                  TransparentInformationContainerLite(
+                      content: "${workingSet.summary()} is your working set.",
+                      useOpacity: true,
+                      onTap: () {
+                        showBottomSheetWithNoAction(
+                            context: context,
+                            title: "Working Sets",
+                            description:
+                                "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements.");
+                      },
+                      trailing: CustomIcon(Icons.chevron_right_rounded, color: Colors.white)),
               ],
             ),
           ),

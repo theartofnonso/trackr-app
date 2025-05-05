@@ -45,9 +45,9 @@ void main() {
     superSetId: "superSetId",
     notes: "notes",
     sets: [
-      const WeightAndRepsSetDto(weight: 80, reps: 5, checked: true),
-      const WeightAndRepsSetDto(weight: 100, reps: 8, checked: true),
-      const WeightAndRepsSetDto(weight: 100, reps: 6, checked: true),
+      WeightAndRepsSetDto(weight: 80, reps: 5, checked: true, dateTime: DateTime.now()),
+      WeightAndRepsSetDto(weight: 100, reps: 8, checked: true, dateTime: DateTime.now()),
+      WeightAndRepsSetDto(weight: 100, reps: 6, checked: true, dateTime: DateTime.now()),
     ],
     createdAt: DateTime(2023, 12, 1),
   );
@@ -59,9 +59,9 @@ void main() {
     exercise: plankExercise,
     notes: "notes",
     sets: [
-      const DurationSetDto(duration: Duration(milliseconds: 120000), checked: true),
-      const DurationSetDto(duration: Duration(milliseconds: 180000), checked: true),
-      const DurationSetDto(duration: Duration(milliseconds: 150000), checked: true),
+      DurationSetDto(duration: Duration(milliseconds: 120000), checked: true, dateTime: DateTime.now()),
+      DurationSetDto(duration: Duration(milliseconds: 180000), checked: true, dateTime: DateTime.now()),
+      DurationSetDto(duration: Duration(milliseconds: 150000), checked: true, dateTime: DateTime.now()),
     ],
     createdAt: DateTime.now(),
   );
@@ -73,9 +73,9 @@ void main() {
     exercise: benchPressExercise,
     notes: "notes",
     sets: [
-      const WeightAndRepsSetDto(weight: 80, reps: 15, checked: true),
-      const WeightAndRepsSetDto(weight: 110, reps: 18, checked: true),
-      const WeightAndRepsSetDto(weight: 120, reps: 16, checked: true),
+      WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()),
+      WeightAndRepsSetDto(weight: 110, reps: 18, checked: true, dateTime: DateTime.now()),
+      WeightAndRepsSetDto(weight: 120, reps: 16, checked: true, dateTime: DateTime.now()),
     ],
     createdAt: DateTime(2023, 12, 1),
   );
@@ -181,7 +181,7 @@ void main() {
     exerciseLogRepository.updateWeight(
         exerciseLogId: legCurlExerciseLog.id,
         index: 0,
-        setDto: const WeightAndRepsSetDto(weight: 90, reps: 15, checked: false));
+        setDto: WeightAndRepsSetDto(weight: 90, reps: 15, checked: false, dateTime: DateTime.now()));
 
     // Assert
     expect((exerciseLogRepository.exerciseLogs.first.sets[0] as WeightAndRepsSetDto).weight, 90);
@@ -194,7 +194,7 @@ void main() {
     exerciseLogRepository.updateWeight(
         exerciseLogId: legCurlExerciseLog.id,
         index: 0,
-        setDto: const WeightAndRepsSetDto(weight: 80, reps: 25, checked: false));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 25, checked: false, dateTime: DateTime.now()));
 
     expect((exerciseLogRepository.exerciseLogs.first.sets[0] as WeightAndRepsSetDto).reps, 25);
   });
@@ -202,7 +202,7 @@ void main() {
   test("Update check status of a set", () {
     final exerciseLogRepository = ExerciseLogRepository();
     final modifiedLog =
-        legCurlExerciseLog.copyWith(sets: [const WeightAndRepsSetDto(weight: 80, reps: 25, checked: false)]);
+        legCurlExerciseLog.copyWith(sets: [WeightAndRepsSetDto(weight: 80, reps: 25, checked: false, dateTime: DateTime.now())]);
 
     exerciseLogRepository.loadExerciseLogs(exerciseLogs: [modifiedLog]);
 
@@ -210,7 +210,7 @@ void main() {
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: modifiedLog.id,
         index: 0,
-        setDto: const WeightAndRepsSetDto(weight: 80, reps: 25, checked: true));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 25, checked: true, dateTime: DateTime.now()));
 
     // Assert
     expect(exerciseLogRepository.exerciseLogs[0].sets[0].checked, true);
@@ -248,15 +248,15 @@ void main() {
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: legCurlExerciseLog.id,
         index: 0,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: legCurlExerciseLog.id,
         index: 1,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: legCurlExerciseLog.id,
         index: 2,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()));
 
     /// Duration Exercises are loaded with without a set, so we need to add new ones everytime because they are logged in realtime
     exerciseLogRepository.addSet(exerciseLogId: plankExerciseLog.id, pastSets: []);
@@ -265,28 +265,28 @@ void main() {
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: plankExerciseLog.id,
         index: 0,
-        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true));
+        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: plankExerciseLog.id,
         index: 1,
-        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true));
+        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: plankExerciseLog.id,
         index: 2,
-        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true));
+        setDto: DurationSetDto(duration: Duration(milliseconds: 120000), checked: true, dateTime: DateTime.now()));
 
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: benchPressExerciseLog.id,
         index: 0,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: benchPressExerciseLog.id,
         index: 1,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: benchPressExerciseLog.id,
         index: 2,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false, dateTime: DateTime.now()));
 
     final completed = exerciseLogRepository.completedExerciseLogs();
 
@@ -306,9 +306,9 @@ void main() {
       superSetId: "superSetId",
       notes: "notes",
       sets: [
-        const WeightAndRepsSetDto(weight: 80, reps: 5, checked: true),
-        const WeightAndRepsSetDto(weight: 100, reps: 8, checked: true),
-        const WeightAndRepsSetDto(weight: 100, reps: 6, checked: true),
+        WeightAndRepsSetDto(weight: 80, reps: 5, checked: true, dateTime: DateTime.now()),
+        WeightAndRepsSetDto(weight: 100, reps: 8, checked: true, dateTime: DateTime.now()),
+        WeightAndRepsSetDto(weight: 100, reps: 6, checked: true, dateTime: DateTime.now()),
       ],
       createdAt: DateTime(2023, 12, 1),
     );
@@ -320,9 +320,9 @@ void main() {
       exercise: benchPressExercise,
       notes: "notes",
       sets: [
-        const WeightAndRepsSetDto(weight: 80, reps: 15, checked: true),
-        const WeightAndRepsSetDto(weight: 110, reps: 18, checked: true),
-        const WeightAndRepsSetDto(weight: 120, reps: 16, checked: true),
+        WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()),
+        WeightAndRepsSetDto(weight: 110, reps: 18, checked: true, dateTime: DateTime.now()),
+        WeightAndRepsSetDto(weight: 120, reps: 16, checked: true, dateTime: DateTime.now()),
       ],
       createdAt: DateTime(2023, 12, 1),
     );
@@ -333,28 +333,28 @@ void main() {
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: legCurlExerciseLog.id,
         index: 0,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: legCurlExerciseLog.id,
         index: 1,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: legCurlExerciseLog.id,
         index: 2,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()));
 
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: benchPressExerciseLog.id,
         index: 0,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: false, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: benchPressExerciseLog.id,
         index: 1,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()));
     exerciseLogRepository.updateSetCheck(
         exerciseLogId: benchPressExerciseLog.id,
         index: 2,
-        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true));
+        setDto: WeightAndRepsSetDto(weight: 80, reps: 15, checked: true, dateTime: DateTime.now()));
 
     final completed = exerciseLogRepository.completedSets();
 

@@ -14,15 +14,15 @@ import 'package:tracker_app/utils/exercise_logs_utils.dart';
 void main() {
   // Helper function to create a WeightAndRepsSetDto for convenience
   WeightAndRepsSetDto weightSet({double weight = 50.0, int reps = 10, bool checked = true}) {
-    return WeightAndRepsSetDto(weight: weight, reps: reps, checked: checked);
+    return WeightAndRepsSetDto(weight: weight, reps: reps, checked: checked, dateTime: DateTime.now());
   }
 
   RepsSetDto repsSet({int reps = 15, bool checked = true}) {
-    return RepsSetDto(reps: reps, checked: checked);
+    return RepsSetDto(reps: reps, checked: checked, dateTime: DateTime.now());
   }
 
   DurationSetDto durationSet({Duration duration = const Duration(seconds: 30), bool checked = true}) {
-    return DurationSetDto(duration: duration, checked: checked);
+    return DurationSetDto(duration: duration, checked: checked, dateTime: DateTime.now());
   }
 
   // Mock Exercise DTOs

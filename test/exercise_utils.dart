@@ -27,12 +27,12 @@ ExerciseDto makeExercise({
 ExerciseLogDto makeLog({
   required ExerciseDto exercise,
   DateTime? createdAt,
-  List<SetDto> sets = const [WeightAndRepsSetDto(weight: 10, reps: 12, checked: true)],
+  List<SetDto> sets = const [],
 }) {
   return ExerciseLogDto(
     id: exercise.id,
     exercise: exercise,
-    sets: sets,
+    sets: sets.isNotEmpty ? sets : [WeightAndRepsSetDto(weight: 10, reps: 12, checked: true, dateTime: createdAt)],
     createdAt: createdAt ?? DateTime.now(),
     routineLogId: 'routine1',
     superSetId: '',

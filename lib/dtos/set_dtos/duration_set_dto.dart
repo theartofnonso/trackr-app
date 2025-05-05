@@ -1,42 +1,76 @@
-
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-
 import '../../enums/exercise_type_enums.dart';
 
 class DurationSetDto extends SetDto {
-  final Duration _duration;
+  final Duration duration;
 
-  const DurationSetDto({required duration, super.checked = false, super.rpeRating = 4, super.isWorkingSet})
-      : _duration = duration;
+  const DurationSetDto({
+    required this.duration,
+    super.checked = false,
+    super.rpeRating = 4,
+    super.isWorkingSet = false,
+    required super.dateTime,
+  });
 
-  Duration get duration => _duration;
+  factory DurationSetDto.defaultSet() => DurationSetDto(
+    duration: Duration.zero,
+    dateTime: DateTime.now(),
+  );
+
+  factory DurationSetDto.fromJson(Map<String, dynamic> json, {required DateTime dateTime}) {
+    return DurationSetDto(
+      duration: Duration(milliseconds: (json['duration'] as num).toInt()),
+      checked: json['checked'] as bool,
+      rpeRating: json['rpeRating'] as int,
+      isWorkingSet: json['isWorkingSet'] as bool,
+      dateTime: dateTime,
+    );
+  }
 
   @override
   ExerciseType get type => ExerciseType.duration;
 
   @override
-  DurationSetDto copyWith({Duration? duration, bool? checked, ExerciseType? type, int? rpeRating, bool? isWorkingSet}) {
-    return DurationSetDto(duration: duration ?? _duration, checked: checked ?? super.checked, rpeRating: super.rpeRating, isWorkingSet: isWorkingSet ?? super.isWorkingSet);
+  bool isEmpty() => duration == Duration.zero;
+
+  @override
+  bool isNotEmpty() => duration > Duration.zero;
+
+  @override
+  DurationSetDto copyWith({
+    Duration? duration,
+    bool? checked,
+    int? rpeRating,
+    bool? isWorkingSet,
+    DateTime? dateTime,
+  }) {
+    return DurationSetDto(
+      duration: duration ?? this.duration,
+      checked: checked ?? this.checked,
+      rpeRating: rpeRating ?? this.rpeRating,
+      isWorkingSet: isWorkingSet ?? this.isWorkingSet,
+      dateTime: dateTime ?? this.dateTime,
+    );
   }
 
   @override
-  bool isEmpty() {
-    return _duration == Duration.zero;
+  String summary() => duration.hmsAnalog();
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super.toJson()
+      ..addAll({
+        'duration': duration.inMilliseconds,
+      });
   }
 
   @override
-  bool isNotEmpty() {
-    return _duration > Duration.zero;
-  }
-
-  @override
-  String summary() {
-    return duration.hmsAnalog();
-  }
-
-  @override
-  String toString() {
-    return 'DurationSetDTO{duration: $_duration, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}, isWorkingSet: ${super.isWorkingSet}}';
-  }
+  String toString() => 'DurationSetDto('
+      'duration: $duration, '
+      'checked: $checked, '
+      'rpeRating: $rpeRating, '
+      'isWorkingSet: $isWorkingSet, '
+      'dateTime: $dateTime'
+      ')';
 }

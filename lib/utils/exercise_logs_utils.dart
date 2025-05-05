@@ -21,7 +21,7 @@ WeightAndRepsSetDto heaviestWeightInSetForExerciseLog({required ExerciseLogDto e
   final weightSets = exerciseLog.sets.whereType<WeightAndRepsSetDto>().toList();
 
   if (weightSets.isEmpty) {
-    return const WeightAndRepsSetDto(weight: 0.0, reps: 0, checked: false);
+    return WeightAndRepsSetDto.defaultSet();
   }
 
   return weightSets

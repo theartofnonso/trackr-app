@@ -4,53 +4,78 @@ import 'package:tracker_app/utils/general_utils.dart';
 import '../../enums/exercise_type_enums.dart';
 
 class WeightAndRepsSetDto extends SetDto {
-  final double _weight;
-  final int _reps;
+  final double weight;
+  final int reps;
 
-  const WeightAndRepsSetDto(
-      {required double weight, required int reps, super.checked = false, super.rpeRating = 4, super.isWorkingSet})
-      : _weight = weight,
-        _reps = reps;
+  const WeightAndRepsSetDto({
+    required this.weight,
+    required this.reps,
+    super.checked = false,
+    super.rpeRating = 4,
+    super.isWorkingSet = false,
+    required super.dateTime,
+  });
 
-  double get weight => weightWithConversion(value: _weight);
+  factory WeightAndRepsSetDto.defaultSet() =>
+      WeightAndRepsSetDto(
+        weight: 0,
+        reps: 0,
+        dateTime: DateTime.now(),
+      );
 
-  int get reps => _reps;
+  factory WeightAndRepsSetDto.fromJson(Map<String, dynamic> json, {required DateTime dateTime}) {
+    return WeightAndRepsSetDto(
+      weight: (json['weight'] as num).toDouble(),
+      reps: (json['reps'] as num).toInt(),
+      checked: json['isChecked'] as bool,
+      rpeRating: json['rpeRating'] as int,
+      isWorkingSet: json['isWorkingSet'] as bool,
+      dateTime: dateTime,
+    );
+  }
 
   @override
   ExerciseType get type => ExerciseType.weights;
 
   @override
-  WeightAndRepsSetDto copyWith({double? weight, int? reps, bool? checked, int? rpeRating, bool? isWorkingSet}) {
+  bool isEmpty() => weight == 0 && reps == 0;
+
+  @override
+  bool isNotEmpty() => weight > 0 && reps > 0;
+
+  @override
+  WeightAndRepsSetDto copyWith({
+    bool? checked,
+    int? rpeRating,
+    bool? isWorkingSet,
+    DateTime? dateTime,
+    double? weight,
+    int? reps,
+  }) {
     return WeightAndRepsSetDto(
-        weight: weight ?? _weight,
-        reps: reps ?? _reps,
-        checked: checked ?? super.checked,
-        rpeRating: rpeRating ?? super.rpeRating,
-        isWorkingSet: isWorkingSet ?? super.isWorkingSet);
+      weight: weight ?? this.weight,
+      reps: reps ?? this.reps,
+      checked: checked ?? this.checked,
+      rpeRating: rpeRating ?? this.rpeRating,
+      isWorkingSet: isWorkingSet ?? this.isWorkingSet,
+      dateTime: dateTime ?? this.dateTime,
+    );
   }
 
   @override
-  bool isEmpty() {
-    return _weight * _reps == 0;
-  }
+  String summary() => '$weight${weightUnit()} x $reps reps';
 
   @override
-  bool isNotEmpty() {
-    return _weight * _reps > 0;
+  Map<String, dynamic> toJson() {
+    return super.toJson()
+      ..addAll({
+        'weight': weight,
+        'reps': reps,
+      });
   }
 
   double volume() {
-    final convertedWeight = weightWithConversion(value: _weight);
-    return (convertedWeight * _reps);
-  }
-
-  @override
-  String summary() {
-    return "$weight${weightUnit()} x $reps";
-  }
-
-  @override
-  String toString() {
-    return 'WeightAndRepsSetDTO{weight: $_weight, reps: $_reps, checked: ${super.checked}, type: $type}, rpeRating: ${super.rpeRating}, isWorkingSet: ${super.isWorkingSet}}';
+    final convertedWeight = weightWithConversion(value: weight);
+    return (convertedWeight * reps);
   }
 }
