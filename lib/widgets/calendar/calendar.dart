@@ -110,7 +110,7 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
           alignment: Alignment.topCenter,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              const double rowHeight = 54.0; // Adjust based on your item height + spacing
+              const double rowHeight = 60.0; // Adjust based on your item height + spacing
               final int rowCount = _expanded ? _currentMonthWeeks : 1;
               final double height = rowHeight * rowCount;
 
@@ -272,7 +272,7 @@ class _CalendarHeader extends StatelessWidget {
         ),
         itemCount: 7,
         itemBuilder: (_, index) => Text(
-          ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index],
+          ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][index],
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDarkMode ? Colors.white70 : Colors.black54),
           textAlign: TextAlign.center,
         ),

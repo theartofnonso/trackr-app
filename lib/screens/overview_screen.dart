@@ -579,10 +579,12 @@ class _TemplatesTile extends StatelessWidget {
                 color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(3),
               ),
-              child: Image.asset(
-                'icons/dumbbells.png',
-                fit: BoxFit.contain,
-                color: isDarkMode ? vibrantBlue : Colors.white, // Adjust the height as needed
+              child: Center(
+                child: FaIcon(
+                  FontAwesomeIcons.personWalking,
+                  size: 14,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],
@@ -613,20 +615,21 @@ class _AddTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 25,
+              height: 25 ,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(3),
               ),
               child: Center(
-                child: FaIcon(
-                  FontAwesomeIcons.plus,
-                  color: isDarkMode ? Colors.yellow : Colors.white,
-                  size: 20,
-                ),
-              ),
+                child: Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.plus,
+                    size: 14,
+                    color: Colors.white,
+                  ),
+                ))
             )
           ],
         ),
