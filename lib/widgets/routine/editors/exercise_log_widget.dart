@@ -758,7 +758,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
-                                  ?.copyWith(fontWeight: FontWeight.w600, fontSize: 16, height: 1.8),
+                                  ?.copyWith(fontWeight: FontWeight.w600, fontSize: 15, height: 1.8),
                             )),
                       ),
                   ]),
