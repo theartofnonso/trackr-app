@@ -135,7 +135,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         leading: Text(_notificationEnabled ? "Notification is on" : "Turn on notifications",
                             textAlign: TextAlign.start,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w600, fontSize: 14, color: isDarkMode ? Colors.white : Colors.black)),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: isDarkMode ? Colors.white : Colors.black)),
                         trailing: FaIcon(
                           FontAwesomeIcons.solidBell,
                           size: 14,
@@ -334,6 +336,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           _clearAppData();
           deAuthenticateSahhaUser();
           await Amplify.Auth.signOut();
+          if (mounted) {
+            context.go('/'); // Replace '/welcome' with your initial route
+          }
         },
         leftActionLabel: 'Cancel',
         rightActionLabel: 'Logout',
@@ -361,6 +366,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             _clearAppData();
             deAuthenticateSahhaUser();
             await Amplify.Auth.deleteUser();
+            if (mounted) {
+              context.go('/'); // Replace '/welcome' with your initial route
+            }
           } else {
             _hideLoadingScreen();
             if (mounted) {
