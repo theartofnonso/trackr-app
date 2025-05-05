@@ -13,7 +13,11 @@ class SharedPrefs {
   }
 
   void clear() {
-    _sharedPrefs?.clear();
+    remove(key: _weightUnitKey);
+    remove(key: _userIdKey);
+    remove(key: _userEmailKey);
+    remove(key: routineLogKey);
+    remove(key: _readinessScore);
   }
 
   void remove({required String key}) {
@@ -31,15 +35,6 @@ class SharedPrefs {
 
   set weightUnit(String value) {
     _sharedPrefs?.setString(_weightUnitKey, value);
-  }
-
-  /// Height Unit Type
-  final String _heightUnitKey = "height_unit_type_key";
-
-  String get heightUnit => _sharedPrefs?.getString(_heightUnitKey) ?? HeightUnit.cm.name;
-
-  set heightUnit(String value) {
-    _sharedPrefs?.setString(_heightUnitKey, value);
   }
 
   /// First launch flag

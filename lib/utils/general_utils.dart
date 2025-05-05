@@ -24,12 +24,6 @@ bool isDefaultWeightUnit() {
   return weightUnit == WeightUnit.kg;
 }
 
-bool isDefaultHeightUnit() {
-  final heightString = SharedPrefs().heightUnit;
-  final heightUnit = HeightUnit.fromString(heightString);
-  return heightUnit == HeightUnit.cm;
-}
-
 double weightWithConversion({required num value}) {
   return isDefaultWeightUnit() ? value.toDouble() : toLbs(value.toDouble());
 }
@@ -40,10 +34,6 @@ String heightWithConversion({HeightUnit? unit, required num value}) {
 
 String weightUnit() {
   return SharedPrefs().weightUnit;
-}
-
-String heightUnit() {
-  return SharedPrefs().heightUnit;
 }
 
 double toKg(double value) {
@@ -82,10 +72,6 @@ int toCm({required int feet, required int inches}) {
 
 void toggleWeightUnit({required WeightUnit unit}) {
   SharedPrefs().weightUnit = unit.name;
-}
-
-void toggleHeightUnit({required HeightUnit unit}) {
-  SharedPrefs().heightUnit = unit.name;
 }
 
 String timeOfDay({DateTime? datetime}) {
