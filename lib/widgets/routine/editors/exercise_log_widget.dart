@@ -801,7 +801,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                             color: Colors.white),
                                       ),
                                       TextSpan(text: " "),
-                                      TextSpan(text: " in your next session."),
+                                      TextSpan(text: "in your next session."),
                                     ]),
                               )),
                         ),
