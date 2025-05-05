@@ -140,8 +140,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final readiness = SharedPrefs().readinessScore;
 
     return SingleChildScrollView(
-      child: Column(spacing: 12, children: [
+      child: Column(children: [
         Calendar(onSelectDate: _onSelectCalendarDateTime, onMonthChanged: _onMonthChanged),
+        const SizedBox(height: 10,),
         CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
         StaggeredGrid.count(
           crossAxisCount: 2,
