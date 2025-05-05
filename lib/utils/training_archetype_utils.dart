@@ -64,9 +64,9 @@ List<TrainingArchetype> classifyTrainingArchetypes({
   // ---------------------------------------------------------------------------
   // 1. Collect the last 13 calendar weeks
   // ---------------------------------------------------------------------------
-  final dateRange = theLastYearDateTimeRange();
+  final dateRange = lastQuarterDateTimeRange();
   final weeksInLastQuarter =
-      generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed; // chronological order
+      generateWeeksInRange(range: dateRange).toList(); // chronological order
 
   // ---------------------------------------------------------------------------
   // 2. Compute weekly session counts & store every single workout duration

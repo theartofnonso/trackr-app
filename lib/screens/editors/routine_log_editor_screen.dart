@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
@@ -20,13 +19,12 @@ import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../shared_prefs.dart';
+import '../../utils/date_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/notifications_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/monitors/half_animated_gauge.dart';
 
 class RoutineLogEditorScreen extends StatefulWidget {
   static const routeName = '/routine-log-editor';
@@ -45,6 +43,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   late Function _onDisposeCallback;
 
   final _minimisedExerciseLogCards = <String>[];
+
+  int _averageWorkoutDurationInMinutes = 0;
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
@@ -192,11 +192,30 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     context.pop(routineLog);
   }
 
+  int _averageWorkoutDuration() {
+
+    final dateRange = lastQuarterDateTimeRange();
+    final weeksInLastQuarter = generateWeeksInRange(range: dateRange).toList(); // chronological order
+
+    final List<int> allDurations = <int>[]; // in minutes
+
+    final exerciseLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+
+    for (final week in weeksInLastQuarter) {
+      final weekLogs = exerciseLogController.whereLogsIsWithinRange(range: week);
+      allDurations.addAll(weekLogs.map((log) => log.duration().inMinutes));
+    }
+
+    int safeAverage(List<int> values) => values.isEmpty ? 0 : (values.reduce((a, b) => a + b) / values.length).round();
+
+    return safeAverage(allDurations);
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
+    print(_averageWorkoutDurationInMinutes);
 
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
@@ -211,14 +230,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final exerciseLogs = context.select((ExerciseLogController controller) => controller.exerciseLogs);
 
     final log = widget.log;
-
-    final readiness = SharedPrefs().readinessScore;
-
-    final color = readiness == 0
-        ? isDarkMode
-        ? Colors.white70.withValues(alpha: 0.05)
-        : Colors.grey.shade200
-        : lowToHighIntensityColor(readiness / 100).withValues(alpha: 0.1);
 
     final children = exerciseLogs.map((exerciseLog) {
       return ExerciseLogGridItemWidget(
@@ -265,59 +276,15 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                   spacing: 20,
                   children: [
                     if (widget.mode == RoutineEditorMode.log)
-                      Consumer<ExerciseLogController>(
-                          builder: (BuildContext context, ExerciseLogController provider, Widget? child) {
-                        return SizedBox(
-                          height: 100,
-                          width: double.infinity,
-                          child: GridView(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                childAspectRatio: 0.8, // 0.5 for square shape
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                              ),
-                              children: [
-                                  Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        color: color,
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: HalfAnimatedGauge(
-                                      value: readiness,
-                                      min: 0,
-                                      max: 100,
-                                      stroke: 12,
-                                      labelWidget: Padding(
-                                        padding: const EdgeInsets.only(top: 28.0),
-                                        child: Text("$readiness",
-                                            style: GoogleFonts.ubuntu(
-                                                fontSize: 24, height: 1.5, fontWeight: FontWeight.w900)),
-                                      ),
-                                    ),
-                                  ),
-                                _StatisticWidget(
-                                    title: Text(
-                                        "${provider.completedExerciseLog().length} of ${provider.exerciseLogs.length}",
-                                        style: Theme.of(context).textTheme.titleLarge),
-                                    subtitle: "Exercises"),
-                                _StatisticWidget(
-                                    title: Text(
-                                        "${provider.completedSets().length} of ${provider.exerciseLogs.expand((exerciseLog) => exerciseLog.sets).length}",
-                                        style: Theme.of(context).textTheme.titleLarge),
-                                    subtitle: "Sets"),
-                                _StatisticWidget(
-                                    title: StopwatchTimer(
-                                      digital: true,
-                                      startTime: widget.log.startTime,
-                                      textStyle: Theme.of(context).textTheme.titleLarge,
-                                    ),
-                                    subtitle: "Duration")
-                              ]),
-                        );
-                      }),
+                      Center(
+                        child: StopwatchTimer(
+                          digital: true,
+                          startTime: widget.log.startTime,
+                          textStyle: Theme.of(context).textTheme.headlineLarge,
+                          maxDuration: Duration(minutes: _averageWorkoutDurationInMinutes),
+                          warningThreshold: const Duration(minutes: 15),
+                        ),
+                      ),
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: Padding(
@@ -364,6 +331,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _loadRoutineAndExerciseLogs();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
+
+    _averageWorkoutDurationInMinutes = _averageWorkoutDuration();
   }
 
   void _loadRoutineAndExerciseLogs() {
@@ -438,35 +407,5 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             androidScheduleMode: AndroidScheduleMode.exact);
       }
     }
-  }
-}
-
-class _StatisticWidget extends StatelessWidget {
-  final Widget title;
-  final String subtitle;
-
-  const _StatisticWidget({required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: isDarkMode ? Colors.white70.withValues(alpha: 0.05) : Colors.grey.shade200, // Set the background color
-        // Background color of the container
-        borderRadius: BorderRadius.circular(5), // Border radius for rounded corners
-      ),
-      child: Stack(children: [
-        title,
-        Positioned.fill(
-          child: Align(
-              alignment: Alignment.bottomRight,
-              child: Text(subtitle, style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 12))),
-        ),
-      ]),
-    );
   }
 }
