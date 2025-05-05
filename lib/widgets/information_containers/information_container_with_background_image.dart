@@ -17,7 +17,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
     required this.subtitle,
     this.onTap,
     required this.color,
-    this.height = 120,
+    this.height = 160,
     this.borderRadius = 12,
     this.alignmentGeometry,
   });

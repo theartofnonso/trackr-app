@@ -102,7 +102,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   subtitle: "Loving TRKR? Your feedback helps us grow and improve.",
                   color: Colors.black,
                   onTap: _openStoreListing,
-                  height: 160,
                   alignmentGeometry: Alignment.topCenter,
                 ),
                 const SizedBox(
