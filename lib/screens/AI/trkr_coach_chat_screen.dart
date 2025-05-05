@@ -88,7 +88,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                       )
                     : Expanded(
                         child: InformationContainerWithBackgroundImage(
-                          image: 'images/black_girl.PNG',
+                          image: 'images/recovery_girl.PNG',
                           subtitle:
                               "TRKR can help you create new workouts tailored to your goals. You can start by asking for help, like: \n👍 Show me leg exercises using barbells only.\n👍 What exercises should I do for a full-body workout with dumbbells only?",
                           color: Colors.black,

@@ -98,11 +98,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InformationContainerWithBackgroundImage(
-                  image: 'images/black_girl.PNG',
+                  image: 'images/recovery_girl.PNG',
                   subtitle: "Loving TRKR? Your feedback helps us grow and improve.",
                   color: Colors.black,
                   onTap: _openStoreListing,
-                  alignmentGeometry: Alignment.topCenter,
+                  alignmentGeometry: Alignment.center,
                 ),
                 const SizedBox(
                   height: 20,
