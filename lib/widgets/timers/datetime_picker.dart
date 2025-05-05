@@ -31,10 +31,13 @@ class _DatetimePickerState extends State<DatetimePicker> {
               }),
         ),
         const SizedBox(height: 10),
-        OpacityButtonWidgetTwo(
-          onPressed: () => widget.onSelect(_dateTime),
-          label: "Select date",
-          buttonColor: vibrantGreen,
+        SizedBox(
+          width: double.infinity,
+          child: OpacityButtonWidgetTwo(
+            onPressed: () => widget.onSelect(_dateTime),
+            label: "Select date",
+            buttonColor: vibrantGreen,
+          ),
         ),
       ],
     );

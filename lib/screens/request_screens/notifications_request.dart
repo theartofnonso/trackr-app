@@ -49,14 +49,11 @@ class _NotificationsRequestScreenState extends State<NotificationsRequestScreen>
               const SizedBox(height: 50),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 26.0),
-                child: SizedBox(
-                    height: 45,
-                    width: double.infinity,
-                    child: OpacityButtonWidgetTwo(
-                      label: "Turn on notifications",
-                      buttonColor: vibrantGreen,
-                      onPressed: widget.onRequest,
-                    )),
+                child: OpacityButtonWidgetTwo(
+                  label: "Turn on notifications",
+                  buttonColor: vibrantGreen,
+                  onPressed: widget.onRequest,
+                ),
               ),
             ],
           ),

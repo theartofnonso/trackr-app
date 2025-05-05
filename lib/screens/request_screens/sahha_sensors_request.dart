@@ -64,31 +64,21 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               if (_androidSDK >= 29 && _androidSDK <= 33)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 26.0,
-                  ),
-                  child: SizedBox(
-                      height: 45,
-                      width: double.infinity,
-                      child: OpacityButtonWidgetTwo(
-                        label: "Download Google Health Connect",
-                        buttonColor: Colors.transparent,
-                        onPressed: _openPlayStore,
-                      )),
-                ),
-              const SizedBox(height: 50),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 26.0),
-                child: SizedBox(
-                    height: 45,
+                SizedBox(
                     width: double.infinity,
                     child: OpacityButtonWidgetTwo(
-                      label: "Connect to train better",
-                      buttonColor: vibrantGreen,
-                      onPressed: widget.onRequest,
+                      label: "Download Google Health Connect",
+                      buttonColor: Colors.transparent,
+                      onPressed: _openPlayStore,
                     )),
-              ),
+              const SizedBox(height: 50),
+              SizedBox(
+                  width: double.infinity,
+                  child: OpacityButtonWidgetTwo(
+                    label: "Connect to train better",
+                    buttonColor: vibrantGreen,
+                    onPressed: widget.onRequest,
+                  )),
             ],
           ),
         ),
@@ -97,11 +87,13 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
   }
 
   void _getAndroidVersion() async {
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
-    final sdk = androidInfo.version.sdkInt;
-    setState(() {
-      _androidSDK = sdk;
-    });
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      final sdk = androidInfo.version.sdkInt;
+      setState(() {
+        _androidSDK = sdk;
+      });
+    }
   }
 
   @override

@@ -56,6 +56,7 @@ class _EmptyState extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
           const Padding(
@@ -68,10 +69,13 @@ class _EmptyState extends StatelessWidget {
             child: ListTileEmptyState(),
           ),
           const SizedBox(height: 24),
-          OpacityButtonWidgetTwo(
-              onPressed: onPressed,
-              label: "Add more exercises",
-              buttonColor: vibrantGreen)
+          SizedBox(
+            width: double.infinity,
+            child: OpacityButtonWidgetTwo(
+                onPressed: onPressed,
+                label: "Add more exercises",
+                buttonColor: vibrantGreen),
+          )
         ],
       ),
     );

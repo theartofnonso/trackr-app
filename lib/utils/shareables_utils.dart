@@ -50,19 +50,22 @@ void onShare(
                   child: child),
             )),
         const SizedBox(height: 20),
-        OpacityButtonWidgetTwo(
-          onPressed: () {
-            Navigator.of(context).pop();
-            captureImage(key: globalKey, pixelRatio: 5).then((result) {
-              if (context.mounted) {
-                if (result.status == ShareResultStatus.success) {
-                  showSnackbar(context: context, message: "Content Shared");
+        SizedBox(
+          width: double.infinity,
+          child: OpacityButtonWidgetTwo(
+            onPressed: () {
+              Navigator.of(context).pop();
+              captureImage(key: globalKey, pixelRatio: 5).then((result) {
+                if (context.mounted) {
+                  if (result.status == ShareResultStatus.success) {
+                    showSnackbar(context: context, message: "Content Shared");
+                  }
                 }
-              }
-            });
-          },
-          label: "Share",
-          buttonColor: vibrantGreen,
+              });
+            },
+            label: "Share",
+            buttonColor: vibrantGreen,
+          ),
         )
       ]));
 }

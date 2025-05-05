@@ -127,10 +127,10 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: OpacityButtonWidgetTwo(
-                            label: "Start training better", onPressed: widget.onPressed, buttonColor: vibrantGreen))
+                      width: double.infinity,
+                      child: OpacityButtonWidgetTwo(
+                          label: "Start training better", onPressed: widget.onPressed, buttonColor: vibrantGreen),
+                    )
                   ],
                 ),
               ),

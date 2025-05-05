@@ -100,7 +100,6 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                       )
                     : SizedBox(
                         width: double.infinity,
-                        height: 45,
                         child: OpacityButtonWidgetTwo(
                             onPressed: () {
                               final range = DateTimeRange(start: _startDateTime, end: _endDateTime);

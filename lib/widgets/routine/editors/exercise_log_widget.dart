@@ -463,7 +463,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             height: 16,
           ),
           SizedBox(
-              height: 45,
               width: double.infinity,
               child: OpacityButtonWidgetTwo(
                   label: "Switch to this load".toUpperCase(),
@@ -488,9 +487,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     };
 
     return switch (trainingProgression) {
-      TrainingProgression.increase => "Consider increasing the $setLabel of",
-      TrainingProgression.decrease => "Consider reducing the $setLabel of",
-      TrainingProgression.maintain => "Stick with your current $setLabel of",
+      TrainingProgression.increase => "Consider increasing your working $setLabel of",
+      TrainingProgression.decrease => "Consider reducing your working $setLabel of",
+      TrainingProgression.maintain => "Stick with your current working $setLabel of",
     };
   }
 
@@ -786,7 +785,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                               child: RichText(
                                 text: TextSpan(
                                     text:
-                                        "${_trainingProgressionSummary(trainingProgression: trainingProgression, rpe: avgRPE)} In your next session",
+                                        _trainingProgressionSummary(trainingProgression: trainingProgression, rpe: avgRPE),
                                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 18,
@@ -803,7 +802,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                             height: 1.5,
                                             color: Colors.white),
                                       ),
-                                      TextSpan(text: "."),
+                                      TextSpan(text: " "),
+                                      TextSpan(text: " in your next session."),
                                     ]),
                               )),
                         ),
@@ -816,21 +816,21 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge
-                            ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                            ?.copyWith(fontWeight: FontWeight.w900, fontSize: 20, height: 1.5),
                         children: [
                           TextSpan(
                             text: "-",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 20, height: 1.5),
                           ),
                           TextSpan(
                             text: "${typicalRepRange.maxReps}",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 22, height: 1.5),
+                                ?.copyWith(fontWeight: FontWeight.w900, fontSize: 20, height: 1.5),
                           ),
                           TextSpan(text: " "),
                           TextSpan(
@@ -1126,7 +1126,6 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
         const SizedBox(height: 10),
         SizedBox(
             width: double.infinity,
-            height: 45,
             child: OpacityButtonWidgetTwo(
                 label: "save rating".toUpperCase(), buttonColor: vibrantGreen, onPressed: onSelectRepRange)),
       ],

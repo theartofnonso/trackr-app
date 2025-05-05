@@ -62,7 +62,9 @@ class _EmptyState extends StatelessWidget {
             child: ListTileEmptyState(),
           ),
           const SizedBox(height: 24),
-          OpacityButtonWidgetTwo(onPressed: onPressed, label: "Create a workout plan", buttonColor: vibrantGreen)
+          SizedBox(
+              width: double.infinity,
+              child: OpacityButtonWidgetTwo(onPressed: onPressed, label: "Create a workout plan", buttonColor: vibrantGreen))
         ],
       ),
     );
