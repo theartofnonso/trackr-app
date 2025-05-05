@@ -194,6 +194,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
@@ -209,6 +213,12 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final log = widget.log;
 
     final readiness = SharedPrefs().readinessScore;
+
+    final color = readiness == 0
+        ? isDarkMode
+        ? Colors.white70.withValues(alpha: 0.05)
+        : Colors.grey.shade200
+        : lowToHighIntensityColor(readiness / 100).withValues(alpha: 0.1);
 
     final children = exerciseLogs.map((exerciseLog) {
       return ExerciseLogGridItemWidget(
@@ -270,11 +280,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                                 mainAxisSpacing: 10,
                               ),
                               children: [
-                                if (readiness > 0)
                                   Container(
                                     padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                        color: lowToHighIntensityColor(readiness / 100).withValues(alpha: 0.1),
+                                        color: color,
                                         borderRadius: BorderRadius.circular(5)),
                                     child: HalfAnimatedGauge(
                                       value: readiness,
