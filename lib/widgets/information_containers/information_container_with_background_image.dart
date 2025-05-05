@@ -96,26 +96,19 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
                         ),
                       ),
                       if (callback != null)
-                        Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          const SizedBox(width: 12),
-                          // Circle icon with chevron
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const FaIcon(
-                              Icons.chevron_right_rounded,
-                              color: Colors.white,
-                              size: 20,
-                            ),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.only(bottom: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(3),
                           ),
-                        ],
-                      )
+                          child: const FaIcon(
+                            Icons.chevron_right_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        )
                     ],
                   ),
                 ),
