@@ -117,7 +117,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Casual lifters, serious results. We do the thinking, you do the lifting.",
+                      "Training is tough. Let's tell you what to do instead.",
                       textAlign: TextAlign.start,
                       style: GoogleFonts.ubuntu(
                             color: Colors.white70,
