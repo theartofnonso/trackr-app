@@ -369,9 +369,9 @@ class _ReadinessTile extends StatelessWidget {
 
     final color = readinessScore == 0
         ? isDarkMode
-            ? Colors.white70.withValues(alpha: 0.1)
+            ? Colors.white.withValues(alpha: 0.1)
             : Colors.grey.shade200
-        : lowToHighIntensityColor(readinessScore / 100);
+        : lowToHighIntensityColor(readinessScore / 100).withValues(alpha: 0.1);
 
     return GestureDetector(
       onTap: () {
@@ -379,7 +379,7 @@ class _ReadinessTile extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(5)),
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
         child: HalfAnimatedGauge(
           value: readinessScore,
           min: 0,

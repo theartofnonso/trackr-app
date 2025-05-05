@@ -750,9 +750,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         child: Container(
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                              color: isDarkMode
-                                  ? rpeToIntensityColor(progression: trainingProgression).withValues(alpha: 0.1)
-                                  : rpeToIntensityColor(progression: trainingProgression),
+                              color: rpeToIntensityColor(progression: trainingProgression).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(5)),
                           child: ProgressionHalfAnimatedGauge(
                             value: avgRPE,
@@ -789,7 +787,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 18,
-                                          color: isDarkMode ? Colors.white70 : Colors.black54,
+                                          color: isDarkMode ? Colors.white70 : Colors.black,
                                           height: 1.5,
                                         ),
                                     children: [
