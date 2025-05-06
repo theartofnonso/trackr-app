@@ -44,8 +44,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
   final _minimisedExerciseLogCards = <String>[];
 
-  int _averageWorkoutDurationInMinutes = 0;
-
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
     final excludeExercises = controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
@@ -215,8 +213,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   @override
   Widget build(BuildContext context) {
 
-    print(_averageWorkoutDurationInMinutes);
-
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
@@ -230,6 +226,8 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     final exerciseLogs = context.select((ExerciseLogController controller) => controller.exerciseLogs);
 
     final log = widget.log;
+
+    final avgWorkoutDuration = _averageWorkoutDuration();
 
     final children = exerciseLogs.map((exerciseLog) {
       return ExerciseLogGridItemWidget(
@@ -281,7 +279,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                           digital: true,
                           startTime: widget.log.startTime,
                           textStyle: Theme.of(context).textTheme.headlineLarge,
-                          maxDuration: Duration(minutes: _averageWorkoutDurationInMinutes),
+                          maxDuration: Duration(minutes: avgWorkoutDuration),
                           warningThreshold: const Duration(minutes: 15),
                         ),
                       ),
@@ -332,7 +330,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
 
-    _averageWorkoutDurationInMinutes = _averageWorkoutDuration();
   }
 
   void _loadRoutineAndExerciseLogs() {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 
 class StopwatchTimer extends StatefulWidget {
@@ -37,7 +38,6 @@ class _StopwatchTimerState extends State<StopwatchTimer> {
 
   @override
   Widget build(BuildContext context) {
-
     final maxDuration = widget.maxDuration;
 
     _elapsedDuration = DateTime.now().difference(widget.startTime);
@@ -49,39 +49,48 @@ class _StopwatchTimerState extends State<StopwatchTimer> {
     final Color? elapsedColor = widget.forceLightMode ? Colors.white : null;
     final TextStyle? elapsedStyle = (widget.textStyle ?? Theme.of(context).textTheme.bodyMedium)?.copyWith(color: elapsedColor);
 
-    if (maxDuration != null && _elapsedDuration > maxDuration) {
-      final Duration difference = _elapsedDuration - widget.maxDuration!;
-      final bool isNegative = difference.isNegative;
-      final Duration absoluteDifference = difference.abs();
-      final String differenceTimeString = widget.digital
-          ? absoluteDifference.hmsDigital()
-          : absoluteDifference.hmsAnalog();
-      final String differenceDisplayText = '${isNegative ? '-' : '+'}$differenceTimeString';
+    if (maxDuration != null) {
+      final Duration remainingTime = maxDuration - _elapsedDuration;
 
-      Color? differenceColor;
-      if (_elapsedDuration >= widget.maxDuration!) {
-        differenceColor = widget.exceededColor;
-      } else {
-        final Duration remaining = widget.maxDuration! - _elapsedDuration;
-        if (remaining <= widget.warningThreshold) {
-          differenceColor = widget.warningColor;
+      // Check if elapsed exceeds max or remaining time is within warning threshold
+      if (_elapsedDuration > maxDuration || remainingTime <= widget.warningThreshold) {
+        final Duration difference = _elapsedDuration - maxDuration;
+        final bool isNegative = difference.isNegative;
+        final Duration absoluteDifference = difference.abs();
+        final String differenceTimeString = widget.digital
+            ? absoluteDifference.hmsDigital()
+            : absoluteDifference.hmsAnalog();
+        final String differenceDisplayText = '${isNegative ? '-' : '+'}$differenceTimeString';
+
+        Color? differenceColor;
+        if (_elapsedDuration >= maxDuration) {
+          differenceColor = widget.exceededColor;
+        } else {
+          final Duration remaining = maxDuration - _elapsedDuration;
+          if (remaining <= widget.warningThreshold) {
+            differenceColor = widget.warningColor;
+          }
         }
+
+        final Color? finalDifferenceColor = differenceColor ?? (widget.forceLightMode ? Colors.white : null);
+        final TextStyle differenceStyle = GoogleFonts.ubuntu(
+          color: finalDifferenceColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+        );
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(elapsedDisplayText, style: elapsedStyle),
+            Text(differenceDisplayText, style: differenceStyle),
+          ],
+        );
       }
-
-      final Color? finalDifferenceColor = differenceColor ?? (widget.forceLightMode ? Colors.white : null);
-      final TextStyle? differenceStyle = (widget.textStyle ?? Theme.of(context).textTheme.bodySmall)?.copyWith(color: finalDifferenceColor, fontSize: 18, fontWeight: FontWeight.w500);
-
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(elapsedDisplayText, style: elapsedStyle),
-          Text(differenceDisplayText, style: differenceStyle),
-        ],
-      );
-    } else {
-      return Text(elapsedDisplayText, style: elapsedStyle);
     }
+
+    return Text(elapsedDisplayText, style: elapsedStyle);
   }
 
   @override
