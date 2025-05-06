@@ -175,12 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
                 ListTile(
                   onTap: _navigateToExerciseLibrary,
-                  leading: Image.asset(
-                    'icons/dumbbells.png',
-                    fit: BoxFit.contain,
-                    height: 24, // Adjust the height as needed
-                    color: isDarkMode ? Colors.white70 : Colors.black38,
-                  ),
+                  leading: FaIcon(FontAwesomeIcons.personWalking, color: isDarkMode ? Colors.white70 : Colors.black38),
                   title: Text("Exercises", style: Theme.of(context).textTheme.titleMedium),
                   subtitle: Text("manage exercises"),
                 ),
