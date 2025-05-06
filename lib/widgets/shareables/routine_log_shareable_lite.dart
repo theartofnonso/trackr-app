@@ -105,7 +105,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                     children: [
                       const Spacer(),
                       Image.asset(
-                        'images/logo_transparent_horizontal.png',
+                        'images/logo_transparent.png',
                         fit: BoxFit.contain,
                         height: 8, // Adjust the height as needed
                       )

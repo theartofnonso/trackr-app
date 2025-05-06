@@ -110,7 +110,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.asset(
-                      'images/logo_transparent_horizontal.png',
+                      'images/logo_transparent.png',
                       fit: BoxFit.contain,
                       color: Colors.white,
                       height: 30, // Adjust the height as needed
