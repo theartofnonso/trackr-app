@@ -138,5 +138,5 @@ flutter_launcher_icons:
   android: "launcher_icon"
   image_path_android: "images/trackr_icon_android.png"
   ios: true
-  image_path: "images/logo_background.png"
+  image_path: "images/logo.png"
   remove_alpha_ios: true

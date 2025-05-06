@@ -8,8 +8,8 @@ class TRKRCoachWidget extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Image.asset(
-          'images/logo_transparent.png',
-          fit: BoxFit.contain,
+          'images/framer_logo.png',
+          fit: BoxFit.cover,
           height: 30, // Adjust the height as needed
         ));
   }
