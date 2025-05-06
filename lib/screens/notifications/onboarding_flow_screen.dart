@@ -110,12 +110,11 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.asset(
-                      'images/logo_transparent.png',
+                      'images/framer_logo.png',
                       fit: BoxFit.contain,
                       color: Colors.white,
-                      height: 30, // Adjust the height as needed
+                      height: 80, // Adjust the height as needed
                     ),
-                    const SizedBox(height: 18),
                     Text(
                       "Training is tough. Let's tell you what to do instead.",
                       textAlign: TextAlign.start,

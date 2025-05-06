@@ -118,8 +118,8 @@ class PBsShareable extends StatelessWidget {
                         const Spacer(),
                         Image.asset(
                           'images/logo_transparent.png',
-                          fit: BoxFit.contain,
-                          height: 8, // Adjust the height as needed
+                          fit: BoxFit.cover,
+                          height: 60, // Adjust the height as needed
                         )
                       ],
                     ),

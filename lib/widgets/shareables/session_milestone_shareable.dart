@@ -76,9 +76,9 @@ class SessionMilestoneShareable extends StatelessWidget {
                     children: [
                       const Spacer(),
                       Image.asset(
-                        'images/icon_transparent_horizontal.png',
-                        fit: BoxFit.contain,
-                        height: 8, // Adjust the height as needed
+                        'images/logo_transparent.png',
+                        fit: BoxFit.cover,
+                        height: 60, // Adjust the height as needed
                       )
                     ],
                   ),

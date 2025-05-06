@@ -10,7 +10,7 @@ class TRKRCoachWidget extends StatelessWidget {
         child: Image.asset(
           'images/logo_transparent.png',
           fit: BoxFit.contain,
-          height: 12, // Adjust the height as needed
+          height: 30, // Adjust the height as needed
         ));
   }
 }
