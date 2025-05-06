@@ -99,7 +99,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               children: [
                 InformationContainerWithBackgroundImage(
                   image: 'images/recovery_girl.PNG',
-                  subtitle: "Loving TRKR? Your feedback helps us grow and improve.",
+                  subtitle: "Loving TRNR? Your feedback helps us grow and improve.",
                   color: Colors.black,
                   onTap: _openStoreListing,
                   alignmentGeometry: Alignment.center,

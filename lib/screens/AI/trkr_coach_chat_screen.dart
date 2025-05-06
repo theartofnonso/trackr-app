@@ -56,7 +56,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
             onPressed: Navigator.of(context).pop,
           ),
-          title: Text("TRKR Coach".toUpperCase()),
+          title: Text("TRNR Coach".toUpperCase()),
           actions: [
             routineTemplate != null
                 ? IconButton(
@@ -90,7 +90,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                         child: InformationContainerWithBackgroundImage(
                           image: 'images/recovery_girl.PNG',
                           subtitle:
-                              "TRKR can help you create new workouts tailored to your goals. You can start by asking for help, like: \n👍 Show me leg exercises using barbells only.\n👍 What exercises should I do for a full-body workout with dumbbells only?",
+                              "TRNR can help you create new workouts tailored to your goals. You can start by asking for help, like: \n👍 Show me leg exercises using barbells only.\n👍 What exercises should I do for a full-body workout with dumbbells only?",
                           color: Colors.black,
                           height: 160,
                           alignmentGeometry: Alignment.topCenter,

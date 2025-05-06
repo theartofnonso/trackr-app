@@ -36,7 +36,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("TRKR Notifications".toUpperCase()),
+        title: Text("Notifications".toUpperCase()),
         leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
       ),

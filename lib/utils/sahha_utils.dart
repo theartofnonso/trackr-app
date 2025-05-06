@@ -39,8 +39,10 @@ Future<bool> authenticateSahhaUser({
 }) async {
   try {
     final isAuthenticated = await SahhaFlutter.authenticate(
-      appId: sahhaAppId,
-      appSecret: sahhaAppSecret,
+      appId: kReleaseMode
+          ? sahhaAppIdProd : sahhaAppIdDev,
+      appSecret: kReleaseMode
+          ? sahhaAppSecretProd: sahhaAppSecretDev,
       externalId: userId,
     );
 

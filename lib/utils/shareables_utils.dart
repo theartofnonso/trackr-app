@@ -12,7 +12,7 @@ import '../widgets/buttons/opacity_button_widget_two.dart';
 import 'dialog_utils.dart';
 
 Future<ShareResult> captureImage(
-    {required GlobalKey key, required double pixelRatio, String message = "Shared from TRKR"}) async {
+    {required GlobalKey key, required double pixelRatio, String message = "Shared from TRNR"}) async {
   final RenderRepaintBoundary boundary = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
   final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
   final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);

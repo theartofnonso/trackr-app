@@ -164,7 +164,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                         _StatisticWidget(
                           title: "${completedExerciseLogs.length}",
                           subtitle: "Exercises",
-                          image: "dumbbells",
+                          icon: FontAwesomeIcons.personWalking,
                           information: _StatisticsInformation(
                               title: "Exercises",
                               description:
@@ -602,27 +602,19 @@ class _StatisticsInformation {
 
 class _StatisticWidget extends StatelessWidget {
   final IconData? icon;
-  final String? image;
   final String title;
   final String subtitle;
   final _StatisticsInformation information;
 
   const _StatisticWidget(
-      {this.icon, this.image, required this.title, required this.subtitle, required this.information});
+      {this.icon, required this.title, required this.subtitle, required this.information});
 
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final leading = image != null
-        ? Image.asset(
-            'icons/$image.png',
-            fit: BoxFit.contain,
-            color: isDarkMode ? Colors.white : Colors.black,
-            height: 14, // Adjust the height as needed
-          )
-        : FaIcon(icon, size: 14);
+    final leading = FaIcon(icon, size: 14);
 
     return GestureDetector(
       onTap: () =>

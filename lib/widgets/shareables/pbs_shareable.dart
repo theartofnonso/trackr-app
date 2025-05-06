@@ -117,7 +117,7 @@ class PBsShareable extends StatelessWidget {
                       children: [
                         const Spacer(),
                         Image.asset(
-                          'images/trkr.png',
+                          'images/logo_transparent_horizontal.png',
                           fit: BoxFit.contain,
                           height: 8, // Adjust the height as needed
                         )
