@@ -29,7 +29,7 @@ class CustomIcon extends StatelessWidget {
       child: Center(
         child: FaIcon(
           icon,
-          color: isDarkMode ? color : Colors.white,
+          color: isDarkMode ? color : Colors.black,
           size: iconSize ?? 14,
         ),
       ),

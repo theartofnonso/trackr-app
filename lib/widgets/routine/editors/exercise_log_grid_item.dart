@@ -62,7 +62,7 @@ class ExerciseLogGridItemWidget extends StatelessWidget {
       },
       onLongPress: () => _showBottomSheet(context: context),
       child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
               color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
           child: Column(spacing: 12, crossAxisAlignment: CrossAxisAlignment.start, children: [

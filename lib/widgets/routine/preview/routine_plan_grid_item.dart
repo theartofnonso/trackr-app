@@ -29,7 +29,7 @@ class RoutinePlanGridItemWidget extends StatelessWidget {
       onTap: () => navigateToRoutinePlanPreview(context: context, plan: plan),
       child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
               color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
           child: Column(spacing: 12, crossAxisAlignment: CrossAxisAlignment.start, children: [

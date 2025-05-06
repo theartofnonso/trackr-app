@@ -741,7 +741,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                         ),
                       ),
 
-                    /// Only show for exercises that measure Weights, Reps and Duration
+                    /// Only show for exercises that measure Weights, Reps
                     if (workingSet != null)
                       StaggeredGridTile.count(
                         crossAxisCellCount: 1,

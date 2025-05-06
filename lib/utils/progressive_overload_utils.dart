@@ -222,11 +222,7 @@ Color progressionToColor({required TrainingIntensityReport report}) {
     TrainingProgression.maintain => vibrantBlue,
   };
 
-  return Color.lerp(
-    baseColor.withValues(alpha: 0.3),
-    baseColor,
-    report.confidence,
-  )!;
+  return baseColor;
 }
 
 List<Color> progressionToGradient({required TrainingIntensityReport report}) {
