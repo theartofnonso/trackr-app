@@ -188,7 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ListTile(
                     onTap: _visitTRKR,
                     leading: FaIcon(FontAwesomeIcons.instagram, color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("TRKR in the wild", style: Theme.of(context).textTheme.titleMedium),
+                    title: Text("TRNR in the wild", style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("follow us on socials")),
                 ListTile(
                     onTap: _logout,
@@ -237,7 +237,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       scheme: 'mailto',
       path: 'hello@trkr.fit', // Replace with the recipient's email
       queryParameters: {
-        'subject': 'Feedback for TRKR', // Set the email subject
+        'subject': 'Feedback for TRNR', // Set the email subject
       },
     );
 

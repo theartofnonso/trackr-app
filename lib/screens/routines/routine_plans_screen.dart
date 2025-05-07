@@ -98,7 +98,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: const NoListEmptyState(
                           message:
-                              "It might feel quiet now, but tap the + button to create a plan or ask TRKR coach for help."),
+                              "It might feel quiet now, but tap the + button to create a plan or ask TRNR coach for help."),
                     ),
                   ),
           ]),
