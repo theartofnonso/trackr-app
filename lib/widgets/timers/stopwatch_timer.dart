@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
+import 'package:tracker_app/widgets/icons/custom_icon.dart';
 
 class StopwatchTimer extends StatefulWidget {
   final DateTime startTime;
@@ -42,12 +44,11 @@ class _StopwatchTimerState extends State<StopwatchTimer> {
 
     _elapsedDuration = DateTime.now().difference(widget.startTime);
 
-    String elapsedDisplayText = widget.digital
-        ? _elapsedDuration.hmsDigital()
-        : _elapsedDuration.hmsAnalog();
+    String elapsedDisplayText = widget.digital ? _elapsedDuration.hmsDigital() : _elapsedDuration.hmsAnalog();
 
     final Color? elapsedColor = widget.forceLightMode ? Colors.white : null;
-    final TextStyle? elapsedStyle = (widget.textStyle ?? Theme.of(context).textTheme.bodyMedium)?.copyWith(color: elapsedColor);
+    final TextStyle? elapsedStyle =
+        (widget.textStyle ?? Theme.of(context).textTheme.bodyMedium)?.copyWith(color: elapsedColor);
 
     if (maxDuration != null) {
       final Duration remainingTime = maxDuration - _elapsedDuration;
@@ -57,9 +58,8 @@ class _StopwatchTimerState extends State<StopwatchTimer> {
         final Duration difference = _elapsedDuration - maxDuration;
         final bool isNegative = difference.isNegative;
         final Duration absoluteDifference = difference.abs();
-        final String differenceTimeString = widget.digital
-            ? absoluteDifference.hmsDigital()
-            : absoluteDifference.hmsAnalog();
+        final String differenceTimeString =
+            widget.digital ? absoluteDifference.hmsDigital() : absoluteDifference.hmsAnalog();
         final String differenceDisplayText = '${isNegative ? '-' : '+'}$differenceTimeString';
 
         Color? differenceColor;
@@ -84,7 +84,10 @@ class _StopwatchTimerState extends State<StopwatchTimer> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(elapsedDisplayText, style: elapsedStyle),
-            Text(differenceDisplayText, style: differenceStyle),
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: 4, children: [
+              Text(differenceDisplayText, style: differenceStyle),
+              CustomIcon(FontAwesomeIcons.info, color: finalDifferenceColor ?? Colors.white)
+            ]),
           ],
         );
       }

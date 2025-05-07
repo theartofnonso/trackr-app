@@ -110,7 +110,7 @@ void showDatetimeRangePicker(
       isScrollControlled: true);
 }
 
-void showBottomSheetWithNoAction({required BuildContext context, required String title, required String description}) {
+void showBottomSheetWithNoAction({required BuildContext context, required String title, required String description, TextStyle? textStyle}) {
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -118,7 +118,7 @@ void showBottomSheetWithNoAction({required BuildContext context, required String
         const SizedBox(
           height: 4,
         ),
-        Text(description, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start)
+        Text(description, style: textStyle ?? Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start)
       ]));
 }
 

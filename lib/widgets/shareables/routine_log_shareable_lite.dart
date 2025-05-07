@@ -107,7 +107,7 @@ class RoutineLogShareableLite extends StatelessWidget {
                       Image.asset(
                         'images/framer_logo.png',
                         fit: BoxFit.cover,
-                        height: 60, // Adjust the height as needed
+                        height: 30, // Adjust the height as needed
                       )
                     ],
                   ),

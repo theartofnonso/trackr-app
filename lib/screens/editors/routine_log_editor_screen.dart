@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
@@ -41,8 +43,6 @@ class RoutineLogEditorScreen extends StatefulWidget {
 
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with WidgetsBindingObserver {
   late Function _onDisposeCallback;
-
-  final _minimisedExerciseLogCards = <String>[];
 
   void _selectExercisesInLibrary() async {
     final controller = Provider.of<ExerciseLogController>(context, listen: false);
@@ -191,7 +191,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
   }
 
   int _averageWorkoutDuration() {
-
     final dateRange = lastQuarterDateTimeRange();
     final weeksInLastQuarter = generateWeeksInRange(range: dateRange).toList(); // chronological order
 
@@ -207,12 +206,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     int safeAverage(List<int> values) => values.isEmpty ? 0 : (values.reduce((a, b) => a + b) / values.length).round();
 
     return safeAverage(allDurations);
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     final routineLogEditorController = Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     if (routineLogEditorController.errorMessage.isNotEmpty) {
@@ -274,13 +271,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
                   spacing: 20,
                   children: [
                     if (widget.mode == RoutineEditorMode.log)
-                      Center(
-                        child: StopwatchTimer(
-                          digital: true,
-                          startTime: widget.log.startTime,
-                          textStyle: Theme.of(context).textTheme.headlineLarge,
-                          maxDuration: Duration(minutes: avgWorkoutDuration),
-                          warningThreshold: const Duration(minutes: 15),
+                      GestureDetector(
+                        onTap: _showRoutineTimerInfo,
+                        child: Center(
+                          child: StopwatchTimer(
+                            digital: true,
+                            startTime: widget.log.startTime,
+                            textStyle: Theme.of(context).textTheme.headlineLarge,
+                            maxDuration: Duration(minutes: avgWorkoutDuration),
+                            warningThreshold: const Duration(minutes: 15),
+                          ),
                         ),
                       ),
                     if (exerciseLogs.isNotEmpty)
@@ -329,7 +329,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     _loadRoutineAndExerciseLogs();
 
     _onDisposeCallback = Provider.of<ExerciseLogController>(context, listen: false).onClear;
-
   }
 
   void _loadRoutineAndExerciseLogs() {
@@ -353,19 +352,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
           }).toList()
         : widget.log.exerciseLogs;
     exerciseLogController.loadExerciseLogs(exerciseLogs: exerciseLogs);
-    _minimiseOrMaximiseCards();
-  }
-
-  void _minimiseOrMaximiseCards() {
-    Provider.of<ExerciseLogController>(context, listen: false).exerciseLogs.forEach((exerciseLog) {
-      final completedSets = exerciseLog.sets.where((set) => set.checked).length;
-      final isExerciseCompleted = completedSets == exerciseLog.sets.length;
-      if (isExerciseCompleted) {
-        setState(() {
-          _minimisedExerciseLogCards.add(exerciseLog.id);
-        });
-      }
-    });
   }
 
   @override
@@ -404,5 +390,44 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
             androidScheduleMode: AndroidScheduleMode.exact);
       }
     }
+  }
+
+  void _showRoutineTimerInfo() {
+    // ── 1.  Gather data ────────────────────────────────────────────────────────────
+    final Duration elapsed = DateTime.now().difference(widget.log.startTime);
+    final Duration average = Duration(minutes: _averageWorkoutDuration());
+
+    // ── 2.  Calculate differences ─────────────────────────────────────────────────
+    final Duration overTime = elapsed - average; // positive  ⇒ exceeded
+    final Duration remaining = average - elapsed; // positive  ⇒ still within
+
+    // Short local helper for h:m:s; keeps later lines compact.
+    String fmt(Duration d) => d.hmsDigital();
+
+    // ── 3.  Decide colour & message ───────────────────────────────────────────────
+    late final Color infoColor;
+    late final String infoText;
+
+    if (overTime >= Duration.zero) {
+      // Exceeded the average
+      infoColor = Colors.red;
+      infoText = "You're training ${fmt(overTime)} longer than your average session.";
+    } else if (remaining <= const Duration(minutes: 15)) {
+      // Inside the last 15-minute window
+      infoColor = Colors.yellow;
+      infoText = "You'll reach your average session time in ${fmt(remaining)}.";
+    } else {
+      // Comfortably within the average
+      infoColor = Colors.white;
+      infoText = "Your average training duration is ${fmt(average)}.";
+    }
+
+    final textInfoTextStyle = GoogleFonts.ubuntu(
+      color: infoColor,
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+    );
+    showBottomSheetWithNoAction(
+        context: context, title: "Workout Timer", description: infoText, textStyle: textInfoTextStyle);
   }
 }
