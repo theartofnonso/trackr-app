@@ -10,14 +10,6 @@ class DepthStack extends StatelessWidget {
     this.basePadding = const EdgeInsets.symmetric(horizontal: 6),
     this.backgroundColor = Colors.white,
     this.borderRadius = const BorderRadius.all(Radius.circular(12)),
-    this.boxShadow = const [
-      BoxShadow(
-        color: Colors.black,
-        offset: Offset(0, 4),
-        blurRadius: 10,
-        spreadRadius: 1,
-      ),
-    ],
   });
 
   final List<Widget> children;
@@ -27,7 +19,6 @@ class DepthStack extends StatelessWidget {
   final EdgeInsetsGeometry basePadding;
   final Color backgroundColor;
   final BorderRadiusGeometry borderRadius;
-  final List<BoxShadow> boxShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +47,6 @@ class DepthStack extends StatelessWidget {
               decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: borderRadius,
-                boxShadow: boxShadow,
               ),
               child: lastChild,
             ),
@@ -69,7 +59,6 @@ class DepthStack extends StatelessWidget {
               decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: borderRadius,
-                boxShadow: boxShadow,
               ),
               child: lastChild,
             ),
