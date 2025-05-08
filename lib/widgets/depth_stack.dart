@@ -22,11 +22,24 @@ class DepthStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     assert(children.isNotEmpty, 'DepthStack requires at least one child');
 
     final hasMultipleChildren = children.length > 1;
     final baseChildren = hasMultipleChildren ? children.sublist(0, children.length - 1) : [];
     final lastChild = children.last;
+
+    final boxShadow = [
+      BoxShadow(
+        color: isDarkMode ? Colors.black : Colors.grey.shade400,
+        offset: Offset(0, 4),
+        blurRadius: isDarkMode ? 10 : 2,
+        spreadRadius: 1,
+      ),
+    ];
 
     return Stack(
       alignment: alignment,
@@ -47,6 +60,7 @@ class DepthStack extends StatelessWidget {
               decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: borderRadius,
+                boxShadow: boxShadow,
               ),
               child: lastChild,
             ),
@@ -59,6 +73,7 @@ class DepthStack extends StatelessWidget {
               decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: borderRadius,
+                boxShadow: boxShadow,
               ),
               child: lastChild,
             ),
