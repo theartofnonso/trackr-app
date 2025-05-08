@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/widgets/icons/custom_icon.dart';
 
 class StopwatchTimer extends StatefulWidget {
   final DateTime startTime;
@@ -86,7 +85,7 @@ class _StopwatchTimerState extends State<StopwatchTimer> {
             Text(elapsedDisplayText, style: elapsedStyle),
             Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: 4, children: [
               Text(differenceDisplayText, style: differenceStyle),
-              CustomIcon(FontAwesomeIcons.info, color: finalDifferenceColor ?? Colors.white)
+              FaIcon(Icons.info_rounded, size: 12, color: differenceColor,)
             ]),
           ],
         );

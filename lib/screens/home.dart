@@ -12,6 +12,7 @@ import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/utils/revenuecat_utils.dart';
 
 import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -36,7 +37,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
-
   SahhaSensorStatus _sensorStatus = SahhaSensorStatus.pending;
 
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
@@ -46,7 +46,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-
     final hasPendingActions = _sensorStatus == SahhaSensorStatus.pending;
 
     return Scaffold(
@@ -137,18 +136,20 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     try {
       // ── 1. Get the signed-in Amplify user ────────────────────────────────
       final authUser = await Amplify.Auth.getCurrentUser();
-      final userId   = authUser.userId;
-      final email    = authUser.signInDetails.toJson()['username']?.toString() ?? '';
+      final userId = authUser.userId;
+      final email = authUser.signInDetails.toJson()['username']?.toString() ?? '';
 
       // ── 2. Persist to SharedPrefs & analytics ─────────────────────────────
       final prefs = SharedPrefs();
       prefs
-        ..userId    = userId
+        ..userId = userId
         ..userEmail = email;
 
       Posthog().identify(userId: userId);
 
-      _handleSahhaAuth(userId);
+      _handleSahhaAuth(userId: userId);
+
+      _handleRevenueCatAuth(userId: userId);
 
       _loadAppData();
     }
@@ -168,11 +169,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   /// Wrapper that authenticates with Sahha and, if successful,
   /// immediately fetches the readiness score.
-  Future<void> _handleSahhaAuth(String userId) async {
+  Future<void> _handleSahhaAuth({required String userId}) async {
     final ok = await authenticateSahhaUser(userId: userId);
     if (ok) {
       _getSahhaReadinessScore();
     }
+  }
+
+  Future<void> _handleRevenueCatAuth({required String userId}) async {
+    await logInUserForAppPurchases(userId: userId);
   }
 
   void _loadCachedLog() {
@@ -205,11 +210,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _navigateToNotificationHome() {
-    navigateWithSlideTransition(context: context, child: NotificationsScreen(onSahhaSensorStatusUpdate: (SahhaSensorStatus sensorStatus) {
-      setState(() {
-        _sensorStatus = sensorStatus;
-      });
-    },));
+    navigateWithSlideTransition(
+        context: context,
+        child: NotificationsScreen(
+          onSahhaSensorStatusUpdate: (SahhaSensorStatus sensorStatus) {
+            setState(() {
+              _sensorStatus = sensorStatus;
+            });
+          },
+        ));
   }
 
   Future<void> _pullRefresh() async {

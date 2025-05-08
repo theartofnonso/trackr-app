@@ -44,6 +44,20 @@ PODS:
     - Flutter
     - FlutterMacOS
     - PostHog (~> 3.19)
+  - purchases_flutter (8.8.0):
+    - Flutter
+    - PurchasesHybridCommon (= 13.29.1)
+  - purchases_ui_flutter (8.8.0):
+    - Flutter
+    - PurchasesHybridCommonUI (= 13.29.1)
+  - PurchasesHybridCommon (13.29.1):
+    - RevenueCat (= 5.22.2)
+  - PurchasesHybridCommonUI (13.29.1):
+    - PurchasesHybridCommon (= 13.29.1)
+    - RevenueCatUI (= 5.22.2)
+  - RevenueCat (5.22.2)
+  - RevenueCatUI (5.22.2):
+    - RevenueCat (= 5.22.2)
   - Sahha (1.1.5)
   - sahha_flutter (1.1.5):
     - Flutter
@@ -81,6 +95,8 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - posthog_flutter (from `.symlinks/plugins/posthog_flutter/ios`)
+  - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
+  - purchases_ui_flutter (from `.symlinks/plugins/purchases_ui_flutter/ios`)
   - sahha_flutter (from `.symlinks/plugins/sahha_flutter/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -91,6 +107,10 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - PostHog
+    - PurchasesHybridCommon
+    - PurchasesHybridCommonUI
+    - RevenueCat
+    - RevenueCatUI
     - Sahha
     - Sentry
     - SQLite.swift
@@ -121,6 +141,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   posthog_flutter:
     :path: ".symlinks/plugins/posthog_flutter/ios"
+  purchases_flutter:
+    :path: ".symlinks/plugins/purchases_flutter/ios"
+  purchases_ui_flutter:
+    :path: ".symlinks/plugins/purchases_ui_flutter/ios"
   sahha_flutter:
     :path: ".symlinks/plugins/sahha_flutter/ios"
   sentry_flutter:
@@ -148,6 +172,12 @@ SPEC CHECKSUMS:
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PostHog: 8394fade16f5cfd92fe2a9d34c29dd9e5304da03
   posthog_flutter: c7cc14a5f1b0759dfdfd63dd31a9a9a1af5caf96
+  purchases_flutter: 437a2d875b16ea37f1847b2f88604fc13a18646b
+  purchases_ui_flutter: 0e63afa7c5a6088088ac1fcd06f653c2260cdc9e
+  PurchasesHybridCommon: 1728ff834821ecfc85e987a565d51eda36213958
+  PurchasesHybridCommonUI: 1541272f8adcb7d809f7178cecced3eafd6f5fc8
+  RevenueCat: 234d2361e453ce1282cee7e18449d01aba45ebbf
+  RevenueCatUI: 24f46287ce3185fc9816f0128c09342ab1c76d66
   Sahha: 7259b3905c6d49eb45baa7e6c7ddbb51e1eb06c7
   sahha_flutter: f2281be76a295bbdb9badfddddf983f041134e17
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854

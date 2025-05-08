@@ -33,6 +33,7 @@ import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
+import '../../../utils/revenuecat_utils.dart';
 import '../../buttons/opacity_button_widget_two.dart';
 import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
@@ -219,6 +220,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index}) {
+    showPaywallIfNeeded();
     // 1. Pull the current version from provider, not from the parameter
     final currentSet = Provider.of<ExerciseLogController>(context, listen: false)
         .whereExerciseLog(exerciseId: _exerciseLog.id)

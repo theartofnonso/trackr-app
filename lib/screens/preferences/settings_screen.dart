@@ -15,6 +15,7 @@ import 'package:tracker_app/graphQL/queries.dart';
 import 'package:tracker_app/screens/request_screens/notifications_request.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/urls.dart';
+import 'package:tracker_app/utils/revenuecat_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../utils/dialog_utils.dart';
@@ -330,6 +331,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           _showLoadingScreen();
           _clearAppData();
           deAuthenticateSahhaUser();
+          logOutUserForAppPurchases();
           await Amplify.Auth.signOut();
           if (mounted) {
             context.go('/'); // Replace '/welcome' with your initial route
@@ -360,6 +362,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             _hideLoadingScreen();
             _clearAppData();
             deAuthenticateSahhaUser();
+            logOutUserForAppPurchases();
             await Amplify.Auth.deleteUser();
             if (mounted) {
               context.go('/'); // Replace '/welcome' with your initial route
