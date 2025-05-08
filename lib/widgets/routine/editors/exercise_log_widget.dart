@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_ui_flutter/paywall_result.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -220,43 +221,47 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index}) {
-    showPaywallIfNeeded();
-    // 1. Pull the current version from provider, not from the parameter
-    final currentSet = Provider.of<ExerciseLogController>(context, listen: false)
-        .whereExerciseLog(exerciseId: _exerciseLog.id)
-        .sets[index];
+    showPaywallIfNeeded().then((payWallResult) {
+      if (payWallResult == PaywallResult.notPresented) {
+        // 1. Pull the current version from provider, not from the parameter
+        final currentSet = Provider.of<ExerciseLogController>(context, listen: false)
+            .whereExerciseLog(exerciseId: _exerciseLog.id)
+            .sets[index];
 
-    if (currentSet.isEmpty()) {
-      showSnackbar(context: context, message: "Mind taking a look at the set values and confirming they’re correct?");
-      return;
-    }
+        if (currentSet.isEmpty()) {
+          showSnackbar(
+              context: context, message: "Mind taking a look at the set values and confirming they’re correct?");
+          return;
+        }
 
-    final checked = !currentSet.checked;
-    final updatedSet = currentSet.copyWith(checked: checked);
-    Provider.of<ExerciseLogController>(context, listen: false)
-        .updateSetCheck(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
+        final checked = !currentSet.checked;
+        final updatedSet = currentSet.copyWith(checked: checked);
+        Provider.of<ExerciseLogController>(context, listen: false)
+            .updateSetCheck(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
 
-    _loadControllers();
+        _loadControllers();
 
-    final maxReps = switch (currentSet.type) {
-      ExerciseType.weights => (currentSet as WeightAndRepsSetDto).reps,
-      ExerciseType.bodyWeight => (currentSet as RepsSetDto).reps,
-      ExerciseType.duration => 0,
-    };
+        final maxReps = switch (currentSet.type) {
+          ExerciseType.weights => (currentSet as WeightAndRepsSetDto).reps,
+          ExerciseType.bodyWeight => (currentSet as RepsSetDto).reps,
+          ExerciseType.duration => 0,
+        };
 
-    if (checked) {
-      displayBottomSheet(
-          context: context,
-          child: _RPERatingSlider(
-            maxReps: maxReps,
-            rpeRating: currentSet.rpeRating.toDouble(),
-            onSelectRating: (int rpeRating) {
-              final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
-              Provider.of<ExerciseLogController>(context, listen: false)
-                  .updateRpeRating(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSetWithRpeRating);
-            },
-          ));
-    }
+        if (checked) {
+          displayBottomSheet(
+              context: context,
+              child: _RPERatingSlider(
+                maxReps: maxReps,
+                rpeRating: currentSet.rpeRating.toDouble(),
+                onSelectRating: (int rpeRating) {
+                  final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
+                  Provider.of<ExerciseLogController>(context, listen: false)
+                      .updateRpeRating(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSetWithRpeRating);
+                },
+              ));
+        }
+      }
+    });
   }
 
   void _checkWeightRange({required double weight, required int index}) {

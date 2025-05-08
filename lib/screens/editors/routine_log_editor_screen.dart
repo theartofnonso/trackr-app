@@ -423,7 +423,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     }
 
     final textInfoTextStyle = GoogleFonts.ubuntu(
-      color: infoColor,
       fontSize: 14,
       fontWeight: FontWeight.w400,
     );

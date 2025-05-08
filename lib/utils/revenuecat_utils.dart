@@ -30,6 +30,6 @@ Future<void> logOutUserForAppPurchases() async {
   await Purchases.logOut();
 }
 
-void showPaywallIfNeeded() {
-  RevenueCatUI.presentPaywallIfNeeded("pro");
+Future<PaywallResult> showPaywallIfNeeded() {
+  return RevenueCatUI.presentPaywallIfNeeded("pro");
 }
