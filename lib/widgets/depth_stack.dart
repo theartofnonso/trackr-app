@@ -34,10 +34,10 @@ class DepthStack extends StatelessWidget {
 
     final boxShadow = [
       BoxShadow(
-        color: isDarkMode ? Colors.black : Colors.grey.shade400,
+        color: isDarkMode ? Colors.black : Colors.grey.shade300,
         offset: Offset(0, 4),
-        blurRadius: isDarkMode ? 10 : 2,
-        spreadRadius: 1,
+        blurRadius: isDarkMode ? 10 : 2.8,
+        spreadRadius: 4,
       ),
     ];
 

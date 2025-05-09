@@ -405,20 +405,16 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen> with Wi
     String fmt(Duration d) => d.hmsDigital();
 
     // ── 3.  Decide colour & message ───────────────────────────────────────────────
-    late final Color infoColor;
     late final String infoText;
 
     if (overTime >= Duration.zero) {
       // Exceeded the average
-      infoColor = Colors.red;
       infoText = "You're training ${fmt(overTime)} longer than your average session.";
     } else if (remaining <= const Duration(minutes: 15)) {
       // Inside the last 15-minute window
-      infoColor = Colors.yellow;
       infoText = "You'll reach your average session time in ${fmt(remaining)}.";
     } else {
       // Comfortably within the average
-      infoColor = Colors.white;
       infoText = "Your average training duration is ${fmt(average)}.";
     }
 

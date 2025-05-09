@@ -104,6 +104,7 @@ flutter:
     - google_fonts/
     - exercises/
     - images/
+    - icons/
     - muscles_illustration/
     - blue_muscles_illustration/
     - yellow_muscles_illustration/

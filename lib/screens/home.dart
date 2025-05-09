@@ -149,7 +149,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
       _handleSahhaAuth(userId: userId);
 
-      _handleRevenueCatAuth(userId: userId);
+      logInUserForAppPurchases(userId: userId);
 
       _loadAppData();
     }
@@ -174,10 +174,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     if (ok) {
       _getSahhaReadinessScore();
     }
-  }
-
-  Future<void> _handleRevenueCatAuth({required String userId}) async {
-    await logInUserForAppPurchases(userId: userId);
   }
 
   void _loadCachedLog() {
