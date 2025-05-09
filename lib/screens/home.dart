@@ -4,10 +4,13 @@ import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/models/customer_info_wrapper.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/Exercise.dart';
@@ -170,9 +173,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   /// Wrapper that authenticates with Sahha and, if successful,
   /// immediately fetches the readiness score.
   Future<void> _handleSahhaAuth({required String userId}) async {
-    final ok = await authenticateSahhaUser(userId: userId);
-    if (ok) {
-      _getSahhaReadinessScore();
+    final isSubscribed = await _checkSubscriptionStatus();
+    if(isSubscribed) {
+      final ok = await authenticateSahhaUser(userId: userId);
+      if (ok) {
+        _getSahhaReadinessScore();
+      }
+    } else {
+      deAuthenticateSahhaUser();
     }
   }
 
@@ -203,6 +211,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }).catchError((error, stackTrace) {
       debugPrint(error.toString());
     });
+  }
+
+  Future<bool> _checkSubscriptionStatus() async {
+    bool isSubscribed = false;
+    try {
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      isSubscribed = customerInfo.entitlements.all["pro"]?.isActive ?? false;
+    } on PlatformException catch (_) {
+      // Error fetching customer info
+    }
+    return isSubscribed;
   }
 
   void _navigateToNotificationHome() {
