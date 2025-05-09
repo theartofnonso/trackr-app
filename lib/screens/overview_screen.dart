@@ -420,7 +420,7 @@ class _LogStreakTile extends StatelessWidget {
           value: monthlyProgress,
           min: 0,
           max: 12,
-          label: "Streak",
+          label: "Days",
         ),
       ),
     );
