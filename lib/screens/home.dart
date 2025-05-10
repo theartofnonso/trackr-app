@@ -173,7 +173,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   /// immediately fetches the readiness score.
   Future<void> _authSahhaUser({required String userId}) async {
     final isSubscribed = await _checkSubscriptionStatus();
-    print(isSubscribed);
     if (isSubscribed) {
       final ok = await authenticateSahhaUser(userId: userId);
       if (ok) {
