@@ -9,7 +9,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:purchases_flutter/models/customer_info_wrapper.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -150,7 +149,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
       Posthog().identify(userId: userId);
 
-      _handleSahhaAuth(userId: userId);
+      _authSahhaUser(userId: userId);
 
       logInUserForAppPurchases(userId: userId);
 
@@ -172,9 +171,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   /// Wrapper that authenticates with Sahha and, if successful,
   /// immediately fetches the readiness score.
-  Future<void> _handleSahhaAuth({required String userId}) async {
+  Future<void> _authSahhaUser({required String userId}) async {
     final isSubscribed = await _checkSubscriptionStatus();
-    if(isSubscribed) {
+    print(isSubscribed);
+    if (isSubscribed) {
       final ok = await authenticateSahhaUser(userId: userId);
       if (ok) {
         _getSahhaReadinessScore();
@@ -253,9 +253,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           .cancelAll(); // Cancel all notifications including pending workout sessions and regular training reminders
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkSahhaSensors();
-    });
+    _checkSahhaSensors();
 
     _loadCachedLog();
   }

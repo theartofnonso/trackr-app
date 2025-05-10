@@ -399,6 +399,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           child: TextField(
             controller: TextEditingController(text: _exerciseLog.notes),
             cursorColor: isDarkMode ? Colors.white : Colors.black,
+            onChanged: (value) => _updateExerciseLogNotes(value: value),
             autofocus: true,
             decoration: InputDecoration(
               hintText: "Enter notes",
