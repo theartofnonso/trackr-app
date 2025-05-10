@@ -186,13 +186,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      RoutineLogDto? routineLog;
+      ;
       final cache = SharedPrefs().routineLog;
       if (cache.isNotEmpty) {
         final json = jsonDecode(cache);
-        routineLog = RoutineLogDto.fromCachedLog(json: json);
-      }
-      if (routineLog != null) {
+        final routineLog = RoutineLogDto.fromCachedLog(json: json);
         final arguments = RoutineLogArguments(log: routineLog, editorMode: RoutineEditorMode.log, cached: true);
         navigateToRoutineLogEditor(context: context, arguments: arguments);
       }
