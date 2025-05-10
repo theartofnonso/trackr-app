@@ -64,7 +64,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   List<TextEditingController> _repsControllers = [];
   List<DateTime> _durationControllers = [];
 
-  bool _showPreviousSets = false;
+  bool _showNotes = false;
 
   SetDto? _selectedSetDto;
 
@@ -380,10 +380,40 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     });
   }
 
-  void _togglePreviousSets() {
+  void _toggleNotes() {
     setState(() {
-      _showPreviousSets = !_showPreviousSets;
+      _showNotes = !_showNotes;
     });
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        // Get theme data from the current context
+        final brightness = MediaQuery.of(context).platformBrightness;
+        final isDarkMode = brightness == Brightness.dark;
+
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: TextField(
+            controller: TextEditingController(text: _exerciseLog.notes),
+            cursorColor: isDarkMode ? Colors.white : Colors.black,
+            autofocus: true,
+            decoration: InputDecoration(
+              hintText: "Enter notes",
+              contentPadding: EdgeInsets.all(16.0),
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+            ),
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            textCapitalization: TextCapitalization.sentences,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -496,18 +526,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final currentSets = exerciseLog.sets;
 
-    final recentSets = exerciseAndRoutineController.whereRecentSetsForExercise(exercise: exerciseLog.exercise);
-
     final previousSets = exerciseAndRoutineController.wherePrevSetsForExercise(exercise: exerciseLog.exercise);
 
     final exerciseType = exerciseLog.exercise.type;
 
-    final sets = _showPreviousSets ? recentSets : currentSets;
-
     TrainingIntensityReport? trainingIntensityReport;
 
     /// Get working sets
-    final workingSets = sets.workingSets(exerciseType).where((s) => s.isWorkingSet).toList();
+    final workingSets = currentSets.workingSets(exerciseType).where((s) => s.isWorkingSet).toList();
 
     bool isAllSameWeight = false;
 
@@ -550,7 +576,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     trainingIntensityReport = getTrainingProgressionReport(
         data: trainingData, targetMinReps: typicalRepRange.minReps, targetMaxReps: typicalRepRange.maxReps);
 
-    final isEmptySets = hasEmptyValues(sets: sets, exerciseType: exerciseType);
+    final isEmptySets = hasEmptyValues(sets: currentSets, exerciseType: exerciseType);
 
     final errorWidgets = _errors.entries
         .map((error) => InformationContainerLite(
@@ -579,14 +605,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             child: Text(exerciseLog.exercise.name)),
         actions: [
           IconButton(
-            onPressed: _togglePreviousSets,
-            icon: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 16),
-            tooltip: 'Exercise Log History',
+            onPressed: _toggleNotes,
+            icon: const FaIcon(FontAwesomeIcons.noteSticky, size: 18),
+            tooltip: 'Notes',
           ),
           if (withWeightsOnly(type: exerciseType))
             IconButton(
               onPressed: _show1RMRecommendations,
-              icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 16),
+              icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 18),
               tooltip: 'Weights and Reps Recommendations',
             ),
           IconButton(
@@ -598,7 +624,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ),
       floatingActionButtonLocation:
           !isKeyboardOpen && isLowReadiness ? null : FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: isKeyboardOpen
+      floatingActionButton: isKeyboardOpen && !_showNotes
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Row(
@@ -675,7 +701,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _showPreviousSets
+                      _showNotes
                           ? switch (exerciseType) {
                               ExerciseType.weights => DoubleSetHeader(
                                   firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
@@ -697,7 +723,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                   editorType: widget.editorType,
                                 )
                             },
-                      if (sets.isEmpty && !_showPreviousSets)
+                      if (currentSets.isEmpty && !_showNotes)
                         Column(
                           children: [
                             const SizedBox(height: 10),
@@ -706,38 +732,36 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           ],
                         ),
                       const SizedBox(height: 20),
-                      !_showPreviousSets
-                          ? switch (exerciseType) {
-                              ExerciseType.weights => _WeightAndRepsSetListView(
-                                  sets: sets.map((set) => set as WeightAndRepsSetDto).toList(),
-                                  updateSetCheck: _updateSetCheck,
-                                  removeSet: _removeSet,
-                                  updateReps: _updateReps,
-                                  updateWeight: _updateWeight,
-                                  controllers: _weightAndRepsControllers,
-                                  onTapWeightEditor: _onTapWeightEditor,
-                                  onTapRepsEditor: _onTapRepsEditor,
-                                  editorType: widget.editorType,
-                                ),
-                              ExerciseType.bodyWeight => _RepsSetListView(
-                                  sets: sets.map((set) => set as RepsSetDto).toList(),
-                                  updateSetCheck: _updateSetCheck,
-                                  removeSet: _removeSet,
-                                  updateReps: _updateReps,
-                                  controllers: _repsControllers,
-                                  onTapRepsEditor: _onTapRepsEditor,
-                                  editorType: widget.editorType,
-                                ),
-                              ExerciseType.duration => _DurationSetListView(
-                                  sets: sets.map((set) => set as DurationSetDto).toList(),
-                                  updateSetCheck: _updateSetCheck,
-                                  removeSet: _removeSet,
-                                  updateDuration: _updateDuration,
-                                  controllers: _durationControllers,
-                                  editorType: widget.editorType,
-                                ),
-                            }
-                          : SetsListview(type: exerciseType, sets: sets),
+                      switch (exerciseType) {
+                        ExerciseType.weights => _WeightAndRepsSetListView(
+                            sets: currentSets.map((set) => set as WeightAndRepsSetDto).toList(),
+                            updateSetCheck: _updateSetCheck,
+                            removeSet: _removeSet,
+                            updateReps: _updateReps,
+                            updateWeight: _updateWeight,
+                            controllers: _weightAndRepsControllers,
+                            onTapWeightEditor: _onTapWeightEditor,
+                            onTapRepsEditor: _onTapRepsEditor,
+                            editorType: widget.editorType,
+                          ),
+                        ExerciseType.bodyWeight => _RepsSetListView(
+                            sets: currentSets.map((set) => set as RepsSetDto).toList(),
+                            updateSetCheck: _updateSetCheck,
+                            removeSet: _removeSet,
+                            updateReps: _updateReps,
+                            controllers: _repsControllers,
+                            onTapRepsEditor: _onTapRepsEditor,
+                            editorType: widget.editorType,
+                          ),
+                        ExerciseType.duration => _DurationSetListView(
+                            sets: currentSets.map((set) => set as DurationSetDto).toList(),
+                            updateSetCheck: _updateSetCheck,
+                            removeSet: _removeSet,
+                            updateDuration: _updateDuration,
+                            controllers: _durationControllers,
+                            editorType: widget.editorType,
+                          ),
+                      }
                     ],
                   ),
                 ),
@@ -760,17 +784,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                 "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements.");
                       },
                       trailing: CustomIcon(Icons.chevron_right_rounded, color: Colors.white)),
-                TextField(
-                  controller: TextEditingController(text: exerciseLog.notes),
-                  cursorColor: isDarkMode ? Colors.white : Colors.black,
-                  onChanged: (value) => _updateExerciseLogNotes(value: value),
-                  decoration: InputDecoration(
-                    hintText: "Enter notes",
-                  ),
-                  maxLines: null,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.sentences,
-                ),
               ],
             ),
           ),
