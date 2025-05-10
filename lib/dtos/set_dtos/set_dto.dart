@@ -61,7 +61,7 @@ abstract class SetDto {
     final value1 = json["value1"] as num;
     final value2 = json["value2"] as num;
     final checked = json["checked"] as bool;
-    final rpeRating = json["rpeRating"] as int? ?? 4;
+    final rpeRating = json["rpeRating"] as int? ?? 5;
     return switch (exerciseType) {
       ExerciseType.weights =>
           WeightAndRepsSetDto(weight: value1.toDouble(), reps: value2.toInt(), checked: checked, rpeRating: rpeRating, dateTime: datetime),

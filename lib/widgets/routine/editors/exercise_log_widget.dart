@@ -1030,7 +1030,7 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
 }
 
 class _RPERatingSlider extends StatefulWidget {
-  final double? rpeRating;
+  final double rpeRating;
   final void Function(int rpeRating) onSelectRating;
   final int maxReps;
 
@@ -1041,7 +1041,7 @@ class _RPERatingSlider extends StatefulWidget {
 }
 
 class _RPERatingSliderState extends State<_RPERatingSlider> {
-  double _rpeRating = 1;
+  double _rpeRating = 5;
 
   String _lastTwoReps({required int maxReps}) => maxReps <= 1 ? "$maxReps" : "${maxReps - 1} & $maxReps";
 
@@ -1100,7 +1100,7 @@ class _RPERatingSliderState extends State<_RPERatingSlider> {
   @override
   void initState() {
     super.initState();
-    _rpeRating = widget.rpeRating ?? 5;
+    _rpeRating = widget.rpeRating < 5 ? 5 : widget.rpeRating;
   }
 }
 
