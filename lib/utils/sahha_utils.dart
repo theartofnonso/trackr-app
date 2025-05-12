@@ -14,7 +14,7 @@ final sahhaSensors = [
   SahhaSensor.heart_rate_variability_rmssd,
   SahhaSensor.heart_rate_variability_sdnn,
   SahhaSensor.resting_heart_rate,
-  SahhaSensor.heart_rate,
+  //SahhaSensor.heart_rate,
 ];
 
 
