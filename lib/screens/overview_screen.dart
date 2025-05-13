@@ -10,7 +10,6 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/widgets/ai_widgets/trkr_coach_widget.dart';
 import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
@@ -142,7 +141,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
     return SingleChildScrollView(
       child: Column(children: [
         Calendar(onSelectDate: _onSelectCalendarDateTime, onMonthChanged: _onMonthChanged),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
         StaggeredGrid.count(
           crossAxisCount: 2,
@@ -224,28 +225,28 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 child: _AddTile(),
               ),
             ),
-            if(logs.isNotEmpty)
+            if (logs.isNotEmpty)
               StaggeredGridTile.count(
-              crossAxisCellCount: 2,
-              mainAxisCellCount: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 10,
-                children: [
-                  Text(
-                      "Your training tells a story. Based on your training behavior, here’s what we’ve learned about you:",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          height: 1.6,
-                          color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
-                  Wrap(
-                    runSpacing: 10,
-                    spacing: 10,
-                    children: archetypes,
-                  ),
-                ],
+                crossAxisCellCount: 2,
+                mainAxisCellCount: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    Text(
+                        "Your training tells a story. Based on your training behavior, here’s what we’ve learned about you:",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            height: 1.6,
+                            color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
+                    Wrap(
+                      runSpacing: 10,
+                      spacing: 10,
+                      children: archetypes,
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ]),
@@ -317,7 +318,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            leading: const TRKRCoachWidget(),
             horizontalTitleGap: 10,
             title: TRKRCoachTextWidget("Describe your workout",
                 style: GoogleFonts.ubuntu(color: vibrantGreen, fontWeight: FontWeight.w500, fontSize: 16)),
@@ -376,7 +376,11 @@ class _ReadinessTile extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        showBottomSheetWithNoAction(context: context, title: "Daily Readiness", description: "We adjust your training load based on daily readiness. On days you don't feel great, we reduce your load to keep you on track.");
+        showBottomSheetWithNoAction(
+            context: context,
+            title: "Daily Readiness",
+            description:
+                "We adjust your training load based on daily readiness. On days you don't feel great, we reduce your load to keep you on track.");
       },
       child: Container(
         padding: EdgeInsets.all(12),
@@ -411,7 +415,11 @@ class _LogStreakTile extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        showBottomSheetWithNoAction(context: context, title: "Log Streak", description: "Streak is the number of days you engage in strength training each month, with an ideal target of 12 days.");
+        showBottomSheetWithNoAction(
+            context: context,
+            title: "Log Streak",
+            description:
+                "Streak is the number of days you engage in strength training each month, with an ideal target of 12 days.");
       },
       child: Container(
         padding: EdgeInsets.all(20),
@@ -616,22 +624,21 @@ class _AddTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              width: 25,
-              height: 25 ,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Center(
+                width: 25,
+                height: 25,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(3),
+                ),
                 child: Center(
+                    child: Center(
                   child: FaIcon(
                     FontAwesomeIcons.plus,
                     size: 14,
                     color: Colors.white,
                   ),
-                ))
-            )
+                )))
           ],
         ),
       ]),

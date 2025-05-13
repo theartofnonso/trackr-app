@@ -113,7 +113,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                       'images/framer_logo.png',
                       fit: BoxFit.contain,
                       color: Colors.white,
-                      height: 80, // Adjust the height as needed
+                      height: 60, // Adjust the height as needed
                     ),
                     Text(
                       "Training is tough. Let's tell you what to do instead.",
