@@ -392,12 +392,17 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         final brightness = MediaQuery.of(context).platformBrightness;
         final isDarkMode = brightness == Brightness.dark;
 
+        // 1. Pull the current version from provider, not from the parameter
+        final currentNotes = Provider.of<ExerciseLogController>(context, listen: false)
+            .whereExerciseLog(exerciseId: _exerciseLog.id)
+            .notes;
+
         return Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: TextField(
-            controller: TextEditingController(text: _exerciseLog.notes),
+            controller: TextEditingController(text: currentNotes),
             cursorColor: isDarkMode ? Colors.white : Colors.black,
             onChanged: (value) => _updateExerciseLogNotes(value: value),
             autofocus: true,
@@ -625,7 +630,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ),
       floatingActionButtonLocation:
           !isKeyboardOpen && isLowReadiness ? null : FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: isKeyboardOpen && !_showNotes
+      floatingActionButton: isKeyboardOpen
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Row(
