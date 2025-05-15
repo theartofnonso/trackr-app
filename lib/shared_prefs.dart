@@ -17,7 +17,6 @@ class SharedPrefs {
     remove(key: _userIdKey);
     remove(key: _userEmailKey);
     remove(key: routineLogKey);
-    remove(key: _readinessScore);
   }
 
   void remove({required String key}) {
@@ -69,14 +68,5 @@ class SharedPrefs {
 
   set routineLog(String value) {
     _sharedPrefs?.setString(routineLogKey, value);
-  }
-
-  /// Readiness Score
-  final String _readinessScore = "readiness_score";
-
-  int get readinessScore => _sharedPrefs?.getInt(_readinessScore) ?? 0;
-
-  set readinessScore(int value) {
-    _sharedPrefs?.setInt(_readinessScore, value);
   }
 }

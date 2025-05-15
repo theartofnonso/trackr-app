@@ -4,19 +4,15 @@ import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:sahha_flutter/sahha_flutter.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/revenuecat_utils.dart';
 
-import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
@@ -25,8 +21,6 @@ import '../models/RoutinePlan.dart';
 import '../models/RoutineTemplate.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
-import '../utils/sahha_utils.dart';
-import 'notifications/notifications_screen.dart';
 import 'overview_screen.dart';
 
 class Home extends StatefulWidget {
@@ -39,8 +33,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
-  SahhaSensorStatus _sensorStatus = SahhaSensorStatus.pending;
-
   StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
   StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
   StreamSubscription<QuerySnapshot<RoutinePlan>>? _routinePlanStream;
@@ -48,17 +40,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final hasPendingActions = _sensorStatus == SahhaSensorStatus.pending;
-
     return Scaffold(
       appBar: AppBar(actions: [
-        IconButton(
-          onPressed: _navigateToNotificationHome,
-          icon: Badge(
-              smallSize: 8,
-              backgroundColor: hasPendingActions ? vibrantGreen : Colors.transparent,
-              child: FaIcon(FontAwesomeIcons.solidBell)),
-        ),
         IconButton(
           onPressed: () => navigateToSettings(context: context),
           icon: FaIcon(FontAwesomeIcons.gear),
@@ -70,7 +53,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           gradient: themeGradient(context: context),
         ),
         child: RefreshIndicator(
-          onRefresh: _pullRefresh,
+          onRefresh: _loadAppData,
           child: SafeArea(
             minimum: const EdgeInsets.all(10),
             bottom: false,
@@ -81,7 +64,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  void _loadAppData() {
+  Future<void> _loadAppData() async {
     _observeExerciseQuery();
     _observeRoutineLogQuery();
     _observeRoutineTemplateQuery();
@@ -149,8 +132,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
       Posthog().identify(userId: userId);
 
-      _authSahhaUser(userId: userId);
-
       logInUserForAppPurchases(userId: userId);
 
       _loadAppData();
@@ -169,23 +150,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  /// Wrapper that authenticates with Sahha and, if successful,
-  /// immediately fetches the readiness score.
-  Future<void> _authSahhaUser({required String userId}) async {
-    final isSubscribed = await _checkSubscriptionStatus();
-    if (isSubscribed) {
-      final ok = await authenticateSahhaUser(userId: userId);
-      if (ok) {
-        _getSahhaReadinessScore();
-      }
-    } else {
-      deAuthenticateSahhaUser();
-    }
-  }
-
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ;
+
       final cache = SharedPrefs().routineLog;
       if (cache.isNotEmpty) {
         final json = jsonDecode(cache);
@@ -194,47 +161,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         navigateToRoutineLogEditor(context: context, arguments: arguments);
       }
     });
-  }
-
-  void _getSahhaReadinessScore() {
-    Provider.of<ExerciseAndRoutineController>(context, listen: false).getSahhaReadinessScore();
-  }
-
-  void _checkSahhaSensors() {
-    SahhaFlutter.getSensorStatus(sahhaSensors).then((value) {
-      setState(() {
-        _sensorStatus = value;
-      });
-    }).catchError((error, stackTrace) {
-      debugPrint(error.toString());
-    });
-  }
-
-  Future<bool> _checkSubscriptionStatus() async {
-    bool isSubscribed = false;
-    try {
-      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-      isSubscribed = customerInfo.entitlements.all["pro"]?.isActive ?? false;
-    } on PlatformException catch (_) {
-      // Error fetching customer info
-    }
-    return isSubscribed;
-  }
-
-  void _navigateToNotificationHome() {
-    navigateWithSlideTransition(
-        context: context,
-        child: NotificationsScreen(
-          onSahhaSensorStatusUpdate: (SahhaSensorStatus sensorStatus) {
-            setState(() {
-              _sensorStatus = sensorStatus;
-            });
-          },
-        ));
-  }
-
-  Future<void> _pullRefresh() async {
-    _getSahhaReadinessScore();
   }
 
   @override
@@ -249,30 +175,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       FlutterLocalNotificationsPlugin()
           .cancelAll(); // Cancel all notifications including pending workout sessions and regular training reminders
     }
-
-    _checkSahhaSensors();
-
     _loadCachedLog();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _exerciseStream?.cancel();
     _routineTemplateStream?.cancel();
     _routinePlanStream?.cancel();
     _routineLogStream?.cancel();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    /// Uncomment this to enable notifications
-    if (state == AppLifecycleState.resumed) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkSahhaSensors();
-        _getSahhaReadinessScore();
-      });
-    }
   }
 }

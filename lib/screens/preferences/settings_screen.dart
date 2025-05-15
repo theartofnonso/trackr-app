@@ -21,7 +21,6 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
-import '../../utils/sahha_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/dividers/label_divider.dart';
@@ -330,7 +329,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           Navigator.of(context).pop();
           _showLoadingScreen();
           _clearAppData();
-          deAuthenticateSahhaUser();
           logOutUserForAppPurchases();
           await Amplify.Auth.signOut();
           if (mounted) {
@@ -361,7 +359,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           if (deletedExercises && deletedRoutineTemplates && deletedRoutineLogs) {
             _hideLoadingScreen();
             _clearAppData();
-            deAuthenticateSahhaUser();
             logOutUserForAppPurchases();
             await Amplify.Auth.deleteUser();
             if (mounted) {

@@ -30,7 +30,6 @@ import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
-import '../../../shared_prefs.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
 import '../../../utils/revenuecat_utils.dart';
@@ -468,7 +467,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final exercise = exerciseLog.exercise;
     final type = exercise.type;
 
-    final readinessScore = SharedPrefs().readinessScore;
+    final readinessScore = 0;
 
     final deloadSets = calculateDeload(original: exerciseLog, recoveryScore: readinessScore);
 
@@ -593,7 +592,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             trailing: FaIcon(FontAwesomeIcons.squareXmark, color: Colors.black)))
         .toList();
 
-    final readinessScore = SharedPrefs().readinessScore;
+    final readinessScore = 0;
     final readinessTier = tierForScore(score: readinessScore / 100);
     final isLowReadiness = readinessScore > 0 && readinessTier != RecoveryTier.optimal;
 

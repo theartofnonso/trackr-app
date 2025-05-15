@@ -20,8 +20,10 @@ Future<ShareResult> captureImage(
   final Directory tempDir = await getTemporaryDirectory();
   final File file = File('${tempDir.path}/${DateTime.now().microsecondsSinceEpoch}.png');
   final newFile = await file.writeAsBytes(pngBytes, flush: true);
-  final List<XFile> files = [XFile(newFile.path)];
-  return await Share.shareXFiles(files, text: message, subject: message);
+  final xFile = XFile(newFile.path);
+  final List<XFile> files = [xFile];
+  final shareParams = ShareParams(files: files, previewThumbnail: xFile, title: message);
+  return await SharePlus.instance.share(shareParams);
 }
 
 void onShare(

@@ -197,8 +197,6 @@ String _generateExplanation({
   required int targetMin,
   required int targetMax,
 }) {
-  final _ = averageRPE.toStringAsFixed(1);
-  final __ = (confidence * 100).toStringAsFixed(0);
 
   switch (progression) {
     case TrainingProgression.increase:

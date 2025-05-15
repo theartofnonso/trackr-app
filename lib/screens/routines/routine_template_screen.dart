@@ -519,10 +519,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) {
     final template = _template;
     if (template != null) {
-      final readiness = SharedPrefs().readinessScore;
       final log = template.toLog();
-      final logWithReadiness = log.copyWith(readinessScore: readiness);
-      final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
+      final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
       navigateToRoutineLogEditor(context: context, arguments: arguments);
     }
   }

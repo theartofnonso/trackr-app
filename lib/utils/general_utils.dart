@@ -333,7 +333,6 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
-  final readiness = SharedPrefs().readinessScore;
 
   final log = RoutineLogDto(
       id: "",
@@ -344,7 +343,6 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
       startTime: DateTime.now(),
       endTime: DateTime.now(),
       owner: "",
-      readinessScore: readiness,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 

@@ -76,7 +76,6 @@ Future<void> _scheduleNotification({required Duration duration, required int wee
       "You usually train around this time—let’s keep up the habit and crush today’s workout!",
       tzDateTime,
       const NotificationDetails(),
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: matchDateTimeComponents,
       androidScheduleMode: AndroidScheduleMode.exact);
 }

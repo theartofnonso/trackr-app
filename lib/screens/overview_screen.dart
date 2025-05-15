@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
-import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
@@ -28,7 +27,6 @@ import '../widgets/calendar/calendar.dart';
 import '../widgets/calendar/calendar_logs.dart';
 import '../widgets/dividers/label_divider.dart';
 import '../widgets/monitors/full_animated_gauge.dart';
-import '../widgets/monitors/half_animated_gauge.dart';
 import '../widgets/monthly_insights/log_streak_chart.dart';
 import '../widgets/monthly_insights/volume_chart.dart';
 import 'AI/trkr_coach_chat_screen.dart';
@@ -136,8 +134,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final hasPredictedTemplateBeenLogged =
         logsForCurrentDay.firstWhereOrNull((log) => log.templateId == predictedTemplate?.id) != null;
 
-    final readiness = SharedPrefs().readinessScore;
-
     return SingleChildScrollView(
       child: Column(children: [
         Calendar(onSelectDate: _onSelectCalendarDateTime, onMonthChanged: _onMonthChanged),
@@ -161,11 +157,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
               child: _LogStreakTile(dateTimeRange: _calendarDateTimeRange ?? thisMonthDateRange()),
-            ),
-            StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: _ReadinessTile(readinessScore: readiness),
             ),
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
@@ -335,9 +326,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     if (result != null) {
       if (mounted) {
         final log = result.toLog();
-        final readiness = SharedPrefs().readinessScore;
-        final logWithReadiness = log.copyWith(readinessScore: readiness);
-        final arguments = RoutineLogArguments(log: logWithReadiness, editorMode: RoutineEditorMode.log);
+        final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
         if (mounted) {
           navigateToRoutineLogEditor(context: context, arguments: arguments);
         }
@@ -355,44 +344,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     setState(() {
       _calendarDateTimeRange = dateRange;
     });
-  }
-}
-
-class _ReadinessTile extends StatelessWidget {
-  final int readinessScore;
-
-  const _ReadinessTile({required this.readinessScore});
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    final color = readinessScore == 0
-        ? isDarkMode
-            ? Colors.white.withValues(alpha: 0.1)
-            : Colors.grey.shade200
-        : lowToHighIntensityColor(readinessScore / 100).withValues(alpha: 0.1);
-
-    return GestureDetector(
-      onTap: () {
-        showBottomSheetWithNoAction(
-            context: context,
-            title: "Daily Readiness",
-            description:
-                "We adjust your training load based on daily readiness. On days you don't feel great, we reduce your load to keep you on track.");
-      },
-      child: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
-        child: HalfAnimatedGauge(
-          value: readinessScore,
-          min: 0,
-          max: 100,
-          label: readinessScore > 0 ? "Readiness" : "Calculating",
-        ),
-      ),
-    );
   }
 }
 
