@@ -1,7 +1,7 @@
 
 /// TRNR
 const trackrWebUrl = 'https://trkr.fit';
-const instagramUrl = 'https://www.instagram.com/trkrtrainer';
+const instagramUrl = 'https://www.instagram.com/trnr.coach';
 const whatsappUrl = 'https://chat.whatsapp.com/FfsmvpeTrRnERipI2gDK1U';
 
 /// Pexels
