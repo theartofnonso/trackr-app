@@ -34,7 +34,7 @@ import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
-import 'package:tracker_app/screens/notifications/onboarding_flow_screen.dart';
+import 'package:tracker_app/onboarding_flow_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
 import 'package:tracker_app/screens/routines/routine_plans_screen.dart';
