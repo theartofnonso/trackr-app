@@ -724,7 +724,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                             editorType: widget.editorType,
                           )
                       },
-                      if (currentSets.isEmpty && !_showNotes)
+                      if (currentSets.isEmpty)
                         Column(
                           children: [
                             const SizedBox(height: 10),
