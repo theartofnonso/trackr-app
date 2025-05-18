@@ -552,7 +552,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     /// Determine working set for weight
     final currentWorkingSet = switch (exerciseType) {
-      ExerciseType.weights => isAllSameWeight ? getHeaviestVolume(currentWorkingSets) : getHighestWeight(currentWorkingSets),
+      ExerciseType.weights =>
+        isAllSameWeight ? getHeaviestVolume(currentWorkingSets) : getHighestWeight(currentWorkingSets),
       ExerciseType.bodyWeight => getHighestReps(currentWorkingSets),
       ExerciseType.duration => getLongestDuration(currentWorkingSets),
     };
@@ -710,28 +711,19 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _showNotes
-                          ? switch (exerciseType) {
-                              ExerciseType.weights => DoubleSetHeader(
-                                  firstLabel: "PREVIOUS ${weightUnit().toUpperCase()}".toUpperCase(),
-                                  secondLabel: 'PREVIOUS REPS'.toUpperCase(),
-                                ),
-                              ExerciseType.bodyWeight => SingleSetHeader(label: 'PREVIOUS REPS'.toUpperCase()),
-                              ExerciseType.duration => SingleSetHeader(label: 'PREVIOUS TIME'.toUpperCase())
-                            }
-                          : switch (exerciseType) {
-                              ExerciseType.weights => WeightAndRepsSetHeader(
-                                  editorType: widget.editorType,
-                                  firstLabel: weightUnit().toUpperCase(),
-                                  secondLabel: 'REPS',
-                                ),
-                              ExerciseType.bodyWeight => RepsSetHeader(
-                                  editorType: widget.editorType,
-                                ),
-                              ExerciseType.duration => DurationSetHeader(
-                                  editorType: widget.editorType,
-                                )
-                            },
+                      switch (exerciseType) {
+                        ExerciseType.weights => WeightAndRepsSetHeader(
+                            editorType: widget.editorType,
+                            firstLabel: weightUnit().toUpperCase(),
+                            secondLabel: 'REPS',
+                          ),
+                        ExerciseType.bodyWeight => RepsSetHeader(
+                            editorType: widget.editorType,
+                          ),
+                        ExerciseType.duration => DurationSetHeader(
+                            editorType: widget.editorType,
+                          )
+                      },
                       if (currentSets.isEmpty && !_showNotes)
                         Column(
                           children: [
