@@ -785,6 +785,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                 "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements.");
                       },
                       trailing: CustomIcon(Icons.chevron_right_rounded, color: Colors.white)),
+                Text("RPE (Rate of Perceived Exertion) measures how hard your set feels based on effort, fatigue, and how close you are to failure. Your rating of ${trainingIntensityReport.averageRPE.roundToDouble()} helps us understand how challenging the set was, so we can make smarter weight suggestions.",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12, height: 1.8, color: isDarkMode ? Colors.white70 : Colors.grey.shade800),
+                )
               ],
             ),
           ),
