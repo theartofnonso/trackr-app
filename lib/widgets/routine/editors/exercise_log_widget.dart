@@ -682,16 +682,20 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       if (withReps(type: exerciseType))
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          width: 180,
-                          height: 100,
-                          child: ProgressionHalfAnimatedGauge(
-                            value: trainingIntensityReport.averageRPE.roundToDouble(),
-                            min: 0,
-                            max: 10,
-                            label: "AVG RPE",
-                            report: trainingIntensityReport,
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 180,
+                            minHeight: 130,
+                          ),
+                          child: ClipRect(
+                            clipBehavior: Clip.none, // A
+                            child: ProgressionHalfAnimatedGauge(
+                              value: trainingIntensityReport.averageRPE.roundToDouble(),
+                              min: 0,
+                              max: 10,
+                              label: "AVG RPE",
+                              report: trainingIntensityReport,
+                            ),
                           ),
                         ),
                       Padding(
