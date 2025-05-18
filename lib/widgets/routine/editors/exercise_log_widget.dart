@@ -219,9 +219,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index}) async {
-    final payWallResult = await showPaywallIfNeeded();
+    PaywallResult? payWallResult = await showPaywallIfNeeded();
 
     if (!mounted) return;
+
+    payWallResult ??= PaywallResult.notPresented;
 
     if (payWallResult == PaywallResult.notPresented) {
       // 1. Pull the current version from provider, not from the parameter
@@ -529,36 +531,38 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final exerciseLog = context
         .select<ExerciseLogController, ExerciseLogDto>((c) => c.whereExerciseLog(exerciseId: _exerciseLog.exercise.id));
 
+    final exerciseType = exerciseLog.exercise.type;
+
     final currentSets = exerciseLog.sets;
 
     final previousSets = exerciseAndRoutineController.wherePrevSetsForExercise(exercise: exerciseLog.exercise);
 
-    final exerciseType = exerciseLog.exercise.type;
+    final currentWorkingSets = currentSets.workingSets(exerciseType).where((s) => s.isWorkingSet).toList();
+
+    final previousWorkingSets = previousSets.workingSets(exerciseType).where((s) => s.isWorkingSet).toList();
 
     TrainingIntensityReport? trainingIntensityReport;
-
-    /// Get working sets
-    final workingSets = currentSets.workingSets(exerciseType).where((s) => s.isWorkingSet).toList();
 
     bool isAllSameWeight = false;
 
     if (exerciseType == ExerciseType.weights) {
-      final weights = workingSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
+      final weights = currentWorkingSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
       isAllSameWeight = allNumbersAreSame(numbers: weights);
     }
 
     /// Determine working set for weight
-    final workingSet = switch (exerciseType) {
-      ExerciseType.weights => isAllSameWeight ? getHeaviestVolume(workingSets) : getHighestWeight(workingSets),
-      ExerciseType.bodyWeight => getHighestReps(workingSets),
-      ExerciseType.duration => getLongestDuration(workingSets),
+    final currentWorkingSet = switch (exerciseType) {
+      ExerciseType.weights => isAllSameWeight ? getHeaviestVolume(currentWorkingSets) : getHighestWeight(currentWorkingSets),
+      ExerciseType.bodyWeight => getHighestReps(currentWorkingSets),
+      ExerciseType.duration => getLongestDuration(currentWorkingSets),
     };
 
     /// Determine typical rep range using historic training data
+    final workingSets = [...currentWorkingSets, ...previousWorkingSets];
     final reps = switch (exerciseType) {
-      ExerciseType.weights => markHighestWeightSets([...currentSets, ...previousSets]),
-      ExerciseType.bodyWeight => markHighestRepsSets([...currentSets, ...previousSets]),
-      ExerciseType.duration => markHighestDurationSets([...currentSets, ...previousSets]),
+      ExerciseType.weights => markHighestWeightSets(workingSets),
+      ExerciseType.bodyWeight => markHighestRepsSets(workingSets),
+      ExerciseType.duration => markHighestDurationSets(workingSets),
     }
         .map((set) {
       return switch (exerciseType) {
@@ -685,7 +689,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                             value: trainingIntensityReport.averageRPE.roundToDouble(),
                             min: 0,
                             max: 10,
-                            label: trainingIntensityReport.progression.name,
+                            label: "Avg RPE",
                             report: trainingIntensityReport,
                           ),
                         ),
@@ -777,9 +781,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       useOpacity: true,
                       onTap: _showDeloadSets,
                       trailing: CustomIcon(Icons.chevron_right_rounded, color: Colors.white)),
-                if (workingSet != null && workingSet.isNotEmpty() && exerciseType == ExerciseType.weights)
+                if (currentWorkingSet != null && currentWorkingSet.isNotEmpty() && exerciseType == ExerciseType.weights)
                   TransparentInformationContainerLite(
-                      content: "${workingSet.summary()} is your working set.",
+                      content: "${currentWorkingSet.summary()} is your working set.",
                       useOpacity: true,
                       onTap: () {
                         showBottomSheetWithNoAction(
