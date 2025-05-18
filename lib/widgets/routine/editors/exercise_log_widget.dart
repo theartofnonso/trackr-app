@@ -576,7 +576,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     /// Determine progression for working sets where [ExerciseType] is [ExerciseType.weights]
     final trainingData = exerciseType == ExerciseType.weights
-        ? workingSets.map((set) {
+        ? currentWorkingSets.map((set) {
             return TrainingData(
                 reps: (set as WeightAndRepsSetDto).reps, weight: set.weight, rpe: set.rpeRating, date: set.dateTime);
           }).toList()
@@ -689,7 +689,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                             value: trainingIntensityReport.averageRPE.roundToDouble(),
                             min: 0,
                             max: 10,
-                            label: "Avg RPE",
+                            label: "AVG RPE",
                             report: trainingIntensityReport,
                           ),
                         ),
