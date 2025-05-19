@@ -30,6 +30,7 @@ class ExerciseWidget extends StatelessWidget {
 
     return ListTile(
         onTap: () => selectExercise != null ? selectExercise(exerciseDto) : null,
+      horizontalTitleGap: 30,
       titleAlignment: ListTileTitleAlignment.titleHeight,
         leading: SizedBox(
           width: 35,
