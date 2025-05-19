@@ -108,12 +108,10 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 Row(spacing: 12, children: [
                   ChipOne(
                     label: '${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}',
-                    color: vibrantGreen,
                     child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen),
                   ),
                   ChipOne(
                       label: '${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}',
-                      color: vibrantBlue,
                       child: CustomIcon(FontAwesomeIcons.hashtag, color: vibrantBlue)),
                 ]),
                 Text(plan.notes.isNotEmpty ? plan.notes : "No notes",

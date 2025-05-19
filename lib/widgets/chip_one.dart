@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 class ChipOne extends StatelessWidget {
   final String label;
   final Widget child;
-  final Color color;
 
-  const ChipOne({super.key, required this.label, required this.child, required this.color});
+  const ChipOne({super.key, required this.label, required this.child});
 
   @override
   Widget build(BuildContext context) {

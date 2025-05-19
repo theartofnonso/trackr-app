@@ -143,7 +143,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                     child: Column(spacing: 12, crossAxisAlignment: CrossAxisAlignment.start, children: [
                       ChipOne(
                           label: updatedLog.endTime.formattedDayMonthTime(),
-                          color: vibrantGreen,
                           child: CustomIcon(FontAwesomeIcons.calendarDay, color: Colors.deepOrange)),
                       Text(
                         updatedLog.notes.isNotEmpty ? "${updatedLog.notes}." : "No notes",

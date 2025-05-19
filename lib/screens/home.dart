@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/shared_prefs.dart';
+import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/revenuecat_utils.dart';
 
 import '../dtos/appsync/routine_log_dto.dart';
@@ -19,8 +20,10 @@ import '../enums/routine_editor_type_enums.dart';
 import '../models/RoutineLog.dart';
 import '../models/RoutinePlan.dart';
 import '../models/RoutineTemplate.dart';
+import '../utils/dialog_utils.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
+import '../widgets/chip_one.dart';
 import 'overview_screen.dart';
 
 class Home extends StatefulWidget {
@@ -40,13 +43,34 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    final lastYearRange = yearToDateTimeRange(datetime: DateTime.now());
+    final logsForTheYear =
+        Provider.of<ExerciseAndRoutineController>(context, listen: true).whereLogsIsWithinRange(range: lastYearRange);
+
     return Scaffold(
-      appBar: AppBar(actions: [
-        IconButton(
-          onPressed: () => navigateToSettings(context: context),
-          icon: FaIcon(FontAwesomeIcons.gear),
-        )
-      ]),
+      appBar: AppBar(
+          title: GestureDetector(
+            onTap: () {
+              showBottomSheetWithNoAction(
+                  context: context,
+                  title: "${DateTime.now().year} Log Streak",
+                  description:
+                  "Logs you’ve recorded so far this year.");
+            },
+            child: ChipOne(
+                label: "${logsForTheYear.length} Sessions",
+                child: FaIcon(FontAwesomeIcons.personWalking,
+                    size: 18, color: isDarkMode ? Colors.white70 : Colors.black)),
+          ),
+          actions: [
+            IconButton(
+              onPressed: () => navigateToSettings(context: context),
+              icon: FaIcon(FontAwesomeIcons.gear),
+            )
+          ]),
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(
@@ -152,7 +176,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _loadCachedLog() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-
       final cache = SharedPrefs().routineLog;
       if (cache.isNotEmpty) {
         final json = jsonDecode(cache);

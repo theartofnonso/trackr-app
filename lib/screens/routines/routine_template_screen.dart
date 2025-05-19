@@ -252,7 +252,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             ChipOne(
                                 label:
                                     "${template.exerciseTemplates.length} ${pluralize(word: "Exercise", count: template.exerciseTemplates.length)}",
-                                color: vibrantGreen,
                                 child: CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen)),
                             Text(
                               template.notes.isNotEmpty ? "${template.notes}." : "No notes",
