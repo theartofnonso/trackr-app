@@ -57,9 +57,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   title: "${DateTime.now().year} Log Streak",
                   description: "Your Streak counts the days you commit to strength training each month. Hit 12 sessions a month to stay on track for 144 in a year.");
             },
-            child: IconProgressBar(
-              progress: logsForTheYear.length / 144,
-              icon: FaIcon(FontAwesomeIcons.personWalking, color: Colors.green),
+            child: Container(
+              color: Colors.transparent,
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: IconProgressBar(
+                progress: logsForTheYear.length / 144,
+                icon: FaIcon(FontAwesomeIcons.personWalking, color: Colors.green),
+              ),
             ),
           ),
           actions: [
