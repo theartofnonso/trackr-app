@@ -43,7 +43,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-   
+
     final lastYearRange = yearToDateTimeRange(datetime: DateTime.now());
     final logsForTheYear =
         Provider.of<ExerciseAndRoutineController>(context, listen: true).whereLogsIsWithinRange(range: lastYearRange);
@@ -55,7 +55,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               showBottomSheetWithNoAction(
                   context: context,
                   title: "${DateTime.now().year} Log Streak",
-                  description: "Logs you’ve recorded so far this year.");
+                  description: "Your Streak counts the days you commit to strength training each month. Hit 12 sessions a month to stay on track for 144 in a year.");
             },
             child: IconProgressBar(
               progress: logsForTheYear.length / 144,
