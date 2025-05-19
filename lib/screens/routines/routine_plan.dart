@@ -120,17 +120,23 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                         color: isDarkMode ? Colors.white70 : Colors.black,
                         height: 1.8,
                         fontWeight: FontWeight.w400)),
-                Calendar(
-                  onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
-                  logs: logs,
-                ),
-                CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
-                InformationContainerWithBackgroundImage(
-                  image: 'images/man_pushup.PNG',
-                  color: Colors.black,
-                  subtitle: "Need a head start on what to train? We’ve got you covered. Tap to describe your workout.",
-                  onTap: _switchToAIContext,
-                  alignmentGeometry: Alignment.center,
+                Column(
+                  spacing: 4,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Calendar(
+                      onSelectDate: (date) => _onSelectCalendarDateTime(date: date),
+                      logs: logs,
+                    ),
+                    CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
+                    InformationContainerWithBackgroundImage(
+                      image: 'images/man_pushup.PNG',
+                      color: Colors.black,
+                      subtitle: "Need a head start on what to train? We’ve got you covered. Tap to describe your workout.",
+                      onTap: _switchToAIContext,
+                      alignmentGeometry: Alignment.center,
+                    ),
+                  ],
                 ),
                 routineTemplates.isNotEmpty
                     ? GridView.count(
