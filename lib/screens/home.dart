@@ -13,6 +13,7 @@ import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/revenuecat_utils.dart';
+import 'package:tracker_app/widgets/icons/linear_progress_bar_with_indicator.dart';
 
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
@@ -23,7 +24,6 @@ import '../models/RoutineTemplate.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
-import '../widgets/chip_one.dart';
 import 'overview_screen.dart';
 
 class Home extends StatefulWidget {
@@ -43,9 +43,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
+   
     final lastYearRange = yearToDateTimeRange(datetime: DateTime.now());
     final logsForTheYear =
         Provider.of<ExerciseAndRoutineController>(context, listen: true).whereLogsIsWithinRange(range: lastYearRange);
@@ -57,13 +55,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               showBottomSheetWithNoAction(
                   context: context,
                   title: "${DateTime.now().year} Log Streak",
-                  description:
-                  "Logs you’ve recorded so far this year.");
+                  description: "Logs you’ve recorded so far this year.");
             },
-            child: ChipOne(
-                label: "${logsForTheYear.length} Sessions",
-                child: FaIcon(FontAwesomeIcons.personWalking,
-                    size: 18, color: isDarkMode ? Colors.white70 : Colors.black)),
+            child: IconProgressBar(
+              progress: logsForTheYear.length / 144,
+              icon: FaIcon(FontAwesomeIcons.personWalking, color: Colors.green),
+            ),
           ),
           actions: [
             IconButton(
