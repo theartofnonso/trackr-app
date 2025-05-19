@@ -9,7 +9,6 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -20,7 +19,6 @@ import '../utils/date_utils.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import '../utils/string_utils.dart';
-import '../utils/training_archetype_utils.dart';
 import '../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
@@ -111,15 +109,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     final logsForCurrentDay =
         exerciseAndRoutineController.whereLogsIsSameDay(dateTime: DateTime.now().withoutTime()).toList();
-
-    final dateRange = theLastYearDateTimeRange();
-
-    final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange).toList();
-
-    final archetypes = classifyTrainingArchetypes(logs: logs)
-        .map((archetype) => archetype.name)
-        .map((arch) => CustomWordMarkIcon(arch, color: isDarkMode ? Colors.white70 : Colors.grey.shade600))
-        .toList();
 
     final templates = exerciseAndRoutineController.templates;
 
@@ -216,28 +205,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 child: _AddTile(),
               ),
             ),
-            if (logs.isNotEmpty)
-              StaggeredGridTile.count(
-                crossAxisCellCount: 2,
-                mainAxisCellCount: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 10,
-                  children: [
-                    Text(
-                        "Your training tells a story. Based on your training behavior, here’s what we’ve learned about you:",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            height: 1.6,
-                            color: isDarkMode ? Colors.white70 : Colors.grey.shade600)),
-                    Wrap(
-                      runSpacing: 10,
-                      spacing: 10,
-                      children: archetypes,
-                    ),
-                  ],
-                ),
-              ),
           ],
         ),
       ]),
