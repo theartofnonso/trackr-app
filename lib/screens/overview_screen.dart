@@ -449,7 +449,7 @@ class _ScheduledTitle extends StatelessWidget {
                   color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
                   borderRadius: BorderRadius.circular(5)),
               child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                Text("${substringByLength(text: schedule.name, length: 10)} is scheduled today. Time to get moving!",
+                Text("${substringByLength(text: schedule.name, length: 10)} is scheduled today!",
                     style: GoogleFonts.ubuntu(fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
                 const Spacer(),
                 Row(
