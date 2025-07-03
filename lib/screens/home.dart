@@ -12,7 +12,6 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
-import 'package:tracker_app/utils/revenuecat_utils.dart';
 import 'package:tracker_app/widgets/icons/linear_progress_bar_with_indicator.dart';
 
 import '../dtos/appsync/routine_log_dto.dart';
@@ -156,8 +155,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         ..userEmail = email;
 
       Posthog().identify(userId: userId);
-
-      logInUserForAppPurchases(userId: userId);
 
       _loadAppData();
     }

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:purchases_ui_flutter/paywall_result.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
@@ -32,7 +31,6 @@ import '../../../enums/routine_editor_type_enums.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
-import '../../../utils/revenuecat_utils.dart';
 import '../../buttons/opacity_button_widget_two.dart';
 import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
@@ -219,49 +217,41 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   void _updateSetCheck({required int index}) async {
-    PaywallResult? payWallResult = await showPaywallIfNeeded();
+    // 1. Pull the current version from provider, not from the parameter
+    final currentSet = Provider.of<ExerciseLogController>(context, listen: false)
+        .whereExerciseLog(exerciseId: _exerciseLog.id)
+        .sets[index];
 
-    if (!mounted) return;
+    if (currentSet.isEmpty()) {
+      showSnackbar(context: context, message: "Mind taking a look at the set values and confirming they’re correct?");
+      return;
+    }
 
-    payWallResult ??= PaywallResult.notPresented;
+    final checked = !currentSet.checked;
+    final updatedSet = currentSet.copyWith(checked: checked);
+    Provider.of<ExerciseLogController>(context, listen: false)
+        .updateSetCheck(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
 
-    if (payWallResult == PaywallResult.notPresented) {
-      // 1. Pull the current version from provider, not from the parameter
-      final currentSet = Provider.of<ExerciseLogController>(context, listen: false)
-          .whereExerciseLog(exerciseId: _exerciseLog.id)
-          .sets[index];
+    _loadControllers();
 
-      if (currentSet.isEmpty()) {
-        showSnackbar(context: context, message: "Mind taking a look at the set values and confirming they’re correct?");
-        return;
-      }
+    final maxReps = switch (currentSet.type) {
+      ExerciseType.weights => (currentSet as WeightAndRepsSetDto).reps,
+      ExerciseType.bodyWeight => (currentSet as RepsSetDto).reps,
+      ExerciseType.duration => 0,
+    };
 
-      final checked = !currentSet.checked;
-      final updatedSet = currentSet.copyWith(checked: checked);
-      Provider.of<ExerciseLogController>(context, listen: false)
-          .updateSetCheck(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSet);
-
-      _loadControllers();
-
-      final maxReps = switch (currentSet.type) {
-        ExerciseType.weights => (currentSet as WeightAndRepsSetDto).reps,
-        ExerciseType.bodyWeight => (currentSet as RepsSetDto).reps,
-        ExerciseType.duration => 0,
-      };
-
-      if (checked) {
-        displayBottomSheet(
-            context: context,
-            child: _RPERatingSlider(
-              maxReps: maxReps,
-              rpeRating: currentSet.rpeRating.toDouble(),
-              onSelectRating: (int rpeRating) {
-                final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
-                Provider.of<ExerciseLogController>(context, listen: false)
-                    .updateRpeRating(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSetWithRpeRating);
-              },
-            ));
-      }
+    if (checked) {
+      displayBottomSheet(
+          context: context,
+          child: _RPERatingSlider(
+            maxReps: maxReps,
+            rpeRating: currentSet.rpeRating.toDouble(),
+            onSelectRating: (int rpeRating) {
+              final updatedSetWithRpeRating = updatedSet.copyWith(rpeRating: rpeRating);
+              Provider.of<ExerciseLogController>(context, listen: false)
+                  .updateRpeRating(exerciseLogId: _exerciseLog.id, index: index, setDto: updatedSetWithRpeRating);
+            },
+          ));
     }
   }
 
@@ -789,11 +779,13 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                                 "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements.");
                       },
                       trailing: CustomIcon(Icons.chevron_right_rounded, color: Colors.white)),
-                Text("RPE (Rate of Perceived Exertion) measures how hard your set feels based on effort, fatigue, and how close you are to failure. Your rating of ${trainingIntensityReport.averageRPE.roundToDouble()} helps us understand how challenging the set was, so we can make smarter weight suggestions.",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(fontWeight: FontWeight.w400, fontSize: 12, height: 1.8, color: isDarkMode ? Colors.white70 : Colors.grey.shade800),
+                Text(
+                  "RPE (Rate of Perceived Exertion) measures how hard your set feels based on effort, fatigue, and how close you are to failure. Your rating of ${trainingIntensityReport.averageRPE.roundToDouble()} helps us understand how challenging the set was, so we can make smarter weight suggestions.",
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      height: 1.8,
+                      color: isDarkMode ? Colors.white70 : Colors.grey.shade800),
                 )
               ],
             ),
