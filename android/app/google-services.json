@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "785948320364",
-    "project_id": "trkr-project",
-    "storage_bucket": "trkr-project.appspot.com"
+    "project_number": "1085565567237",
+    "project_id": "healthwaredev-6034d",
+    "storage_bucket": "healthwaredev-6034d.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:785948320364:android:58480d58a8e2295801ee49",
+        "mobilesdk_app_id": "1:1085565567237:android:cef9c0dca749b005d9b76c",
         "android_client_info": {
           "package_name": "xyz.usetracker.tracker_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB9WhKq2Ipf4Dj8JVIJitFG5vheH_2CYvg"
+          "current_key": "AIzaSyB771goYMSVw34rlBrZahgiWXoMRin5pW8"
         }
       ],
       "services": {
