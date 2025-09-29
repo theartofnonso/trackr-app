@@ -1,5 +1,4 @@
 import '../../enums/gender_enums.dart';
-// Removed dependency on Amplify model
 
 class RoutineUserDto {
   final String id;

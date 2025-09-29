@@ -7,5 +7,6 @@ class RoutineLogArguments {
   final RoutineEditorMode editorMode;
   final bool cached;
 
-  RoutineLogArguments({required this.log, required this.editorMode, this.cached = false});
+  RoutineLogArguments(
+      {required this.log, required this.editorMode, this.cached = false});
 }
