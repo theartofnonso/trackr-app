@@ -1,7 +1,5 @@
-import 'dart:convert';
-
 import '../../enums/gender_enums.dart';
-import '../../models/RoutineUser.dart';
+// Removed dependency on Amplify model
 
 class RoutineUserDto {
   final String id;
@@ -21,37 +19,34 @@ class RoutineUserDto {
       required this.cognitoUserId,
       required this.email,
       required this.weight,
-        required this.height,
+      required this.height,
       required this.owner,
-        required this.trainingHistory,
+      required this.trainingHistory,
       required this.dateOfBirth,
       required this.gender});
 
-  factory RoutineUserDto.toDto(RoutineUser user) {
-    return RoutineUserDto.fromJson(user);
-  }
-
-  factory RoutineUserDto.fromJson(RoutineUser user) {
-    final json = jsonDecode(user.data);
+  factory RoutineUserDto.fromJson(Map<String, dynamic> json, {String id = ""}) {
     final cognitoUserId = json["cognitoUserId"] ?? "";
     final name = json["name"] ?? "";
     final email = json["email"] ?? "";
     final trainingHistory = json["trainingHistory"] ?? "";
     final weight = (json["weight"]) ?? 0.0;
     final height = (json["height"]) ?? 0;
-    final dateOfBirthMillisecondsSinceEpoch = (json["dob"]) as int? ?? DateTime.now().millisecondsSinceEpoch;
-    final dateOfBirth = DateTime.fromMillisecondsSinceEpoch(dateOfBirthMillisecondsSinceEpoch);
+    final dateOfBirthMillisecondsSinceEpoch =
+        (json["dob"]) as int? ?? DateTime.now().millisecondsSinceEpoch;
+    final dateOfBirth =
+        DateTime.fromMillisecondsSinceEpoch(dateOfBirthMillisecondsSinceEpoch);
     final genderString = json["gender"] ?? "";
     final gender = TRKRGender.fromString(genderString);
 
     return RoutineUserDto(
-        id: user.id,
+        id: id,
         name: name,
         cognitoUserId: cognitoUserId,
         email: email,
         weight: weight,
         height: height,
-        owner: user.owner ?? "",
+        owner: json["owner"] ?? "",
         trainingHistory: trainingHistory,
         dateOfBirth: dateOfBirth,
         gender: gender);

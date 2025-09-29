@@ -1,14 +1,10 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 
-import '../../models/RoutineLog.dart';
 import '../exercise_log_dto.dart';
 
 class RoutineLogDto {
-
   final String id;
 
   final String templateId;
@@ -63,49 +59,6 @@ class RoutineLogDto {
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
       'readiness': readinessScore,
     };
-  }
-
-  factory RoutineLogDto.toDto(RoutineLog log) {
-    return RoutineLogDto.fromLog(log: log);
-  }
-
-  factory RoutineLogDto.fromLog({required RoutineLog log}) {
-    final json = jsonDecode(log.data);
-    final templateId = json["templateId"] ?? "";
-    final name = json["name"] ?? "";
-    final notes = json["notes"] ?? "";
-    final summary = json["summary"];
-    final startTime = DateTime.parse(json["startTime"]);
-    final endTime = DateTime.parse(json["endTime"]);
-    final exerciseLogsInJson = json["exercises"] as List<dynamic>;
-    final readinessScore = json["readiness"] ?? 0;
-    List<ExerciseLogDto> exerciseLogs = [];
-    if (exerciseLogsInJson.isNotEmpty && exerciseLogsInJson.first is String) {
-      exerciseLogs = exerciseLogsInJson
-          .map((json) => ExerciseLogDto.fromJson(
-              routineLogId: log.id, json: jsonDecode(json), createdAt: log.createdAt.getDateTimeInUtc()))
-          .toList();
-    } else {
-      exerciseLogs = exerciseLogsInJson
-          .map((json) =>
-              ExerciseLogDto.fromJson(routineLogId: log.id, createdAt: log.createdAt.getDateTimeInUtc(), json: json))
-          .toList();
-    }
-
-    return RoutineLogDto(
-      id: log.id,
-      templateId: templateId,
-      name: name,
-      exerciseLogs: exerciseLogs,
-      notes: notes,
-      summary: summary,
-      startTime: startTime,
-      endTime: endTime,
-      owner: log.owner ?? "",
-      readinessScore: readinessScore,
-      createdAt: log.createdAt.getDateTimeInUtc(),
-      updatedAt: log.updatedAt.getDateTimeInUtc(),
-    );
   }
 
   factory RoutineLogDto.fromCachedLog({required Map<String, dynamic> json}) {
@@ -175,7 +128,8 @@ class RoutineLogDto {
     return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, readinessScore: $readinessScore, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
-  double get volume => exerciseLogs.expand((exerciseLog) => exerciseLog.sets).map((set) {
+  double get volume =>
+      exerciseLogs.expand((exerciseLog) => exerciseLog.sets).map((set) {
         return switch (set.type) {
           ExerciseType.weights => (set as WeightAndRepsSetDto).volume(),
           ExerciseType.bodyWeight => 0.0,
