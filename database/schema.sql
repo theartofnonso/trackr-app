@@ -1,9 +1,6 @@
 -- TRKR Supabase Database Schema
 -- This replaces the AWS Amplify GraphQL schema with PostgreSQL tables
 
--- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- Exercises table
 CREATE TABLE IF NOT EXISTS public.exercises (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,

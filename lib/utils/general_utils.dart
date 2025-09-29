@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -85,20 +83,18 @@ String timeOfDay({DateTime? datetime}) {
   return 'Evening';
 }
 
-Future<bool> batchDeleteUserData({required String document, required String documentKey}) async {
-  final operation = Amplify.API.mutate(
-    request: GraphQLRequest<dynamic>(document: document),
-  );
-  final response = await operation.response;
-  final result = jsonDecode(response.data);
-  return result[documentKey];
+Future<bool> batchDeleteUserData(
+    {required String document, required String documentKey}) async {
+  // UI-only mode: act like deletion succeeded
+  return true;
 }
 
 Future<NotificationsEnabledOptions> checkIosNotificationPermission() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   return await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
           ?.checkPermissions() ??
       const NotificationsEnabledOptions(
           isEnabled: false,
@@ -110,13 +106,16 @@ Future<NotificationsEnabledOptions> checkIosNotificationPermission() async {
 }
 
 Future<bool> requestNotificationPermission() async {
-  return Platform.isIOS ? _requestIosNotificationPermission() : _requestAndroidNotificationPermission();
+  return Platform.isIOS
+      ? _requestIosNotificationPermission()
+      : _requestAndroidNotificationPermission();
 }
 
 Future<bool> _requestIosNotificationPermission() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   return await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
             alert: true,
             badge: true,
@@ -128,7 +127,8 @@ Future<bool> _requestIosNotificationPermission() async {
 Future<bool> _requestAndroidNotificationPermission() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   return await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
           ?.requestNotificationsPermission() ??
       false;
 }
@@ -225,7 +225,8 @@ Color highToLowIntensityColor(double score) {
   }
 }
 
-String recoveryMuscleIllustration({required double recoveryPercentage, required MuscleGroup muscleGroup}) {
+String recoveryMuscleIllustration(
+    {required double recoveryPercentage, required MuscleGroup muscleGroup}) {
   if (recoveryPercentage < 0.3) {
     // Severe DOMS (0–29%)
     return 'red_muscles_illustration/${muscleGroup.illustration()}.png';
@@ -333,7 +334,6 @@ Widget getTrendIcon({required Trend trend}) {
 }
 
 void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
-
   final log = RoutineLogDto(
       id: "",
       templateId: "",
@@ -346,7 +346,8 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 
-  final arguments = RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
+  final arguments =
+      RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
   navigateToRoutineLogEditor(context: context, arguments: arguments);
 }
 
@@ -361,8 +362,8 @@ bool isOutsideReasonableRange(List<num> numbers, num newNumber,
   final currentMax = sorted.last;
 
   // Magnitude jump check (for decimal errors)
-  final isMagnitudeJump =
-      newNumber >= currentMax * magnitudeThreshold || (currentMin > 0 && newNumber <= currentMin / magnitudeThreshold);
+  final isMagnitudeJump = newNumber >= currentMax * magnitudeThreshold ||
+      (currentMin > 0 && newNumber <= currentMin / magnitudeThreshold);
 
   // IQR-based outlier check
   final q1 = _quantile(sorted, 0.25);
@@ -458,7 +459,9 @@ Widget _weight(num value, String unit, BuildContext context) {
 }
 
 Widget summarizeProgression(
-    {required BuildContext context, required List<num> values, TextAlign textAlign = TextAlign.start}) {
+    {required BuildContext context,
+    required List<num> values,
+    TextAlign textAlign = TextAlign.start}) {
   if (values.isEmpty) return Text("No weight data available");
 
   final startWeight = values.first;
@@ -485,9 +488,13 @@ Widget summarizeProgression(
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 2),
         children: [
           const TextSpan(text: 'Starting at '),
-          WidgetSpan(child: _weight(startWeight, weightUnit(), context), alignment: PlaceholderAlignment.middle),
+          WidgetSpan(
+              child: _weight(startWeight, weightUnit(), context),
+              alignment: PlaceholderAlignment.middle),
           const TextSpan(text: ', currently at '),
-          WidgetSpan(child: _weight(endWeight, weightUnit(), context), alignment: PlaceholderAlignment.middle),
+          WidgetSpan(
+              child: _weight(endWeight, weightUnit(), context),
+              alignment: PlaceholderAlignment.middle),
           const TextSpan(text: ' . '),
           TextSpan(
               text: difference > 0
@@ -497,8 +504,10 @@ Widget summarizeProgression(
                       : "No change at"),
           TextSpan(text: " "),
           WidgetSpan(
-              child: CustomWordMarkIcon('${difference.abs().toStringAsFixed(1)} ${weightUnit()}',
-                  color: _deltaColor(difference), padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)),
+              child: CustomWordMarkIcon(
+                  '${difference.abs().toStringAsFixed(1)} ${weightUnit()}',
+                  color: _deltaColor(difference),
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)),
               alignment: PlaceholderAlignment.middle),
         ],
       ),

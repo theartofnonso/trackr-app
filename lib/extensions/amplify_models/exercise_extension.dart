@@ -1,17 +1,18 @@
 import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/models/ModelProvider.dart';
 import '../../enums/exercise_type_enums.dart';
 
-extension ExerciseExtension on Exercise {
+extension ExerciseExtensionLocal on Object {
   static ExerciseDto dtoLocal(dynamic json) {
     final id = json["id"];
     final name = json["name"];
     final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
     final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
-    final secondaryMuscleGroupJson = json["secondaryMuscleGroups"] as List<dynamic>;
-    final secondaryMuscleGroups =
-        secondaryMuscleGroupJson.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+    final secondaryMuscleGroupJson =
+        json["secondaryMuscleGroups"] as List<dynamic>;
+    final secondaryMuscleGroups = secondaryMuscleGroupJson
+        .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
+        .toList();
     final typeString = json["type"];
     final video = json["video"];
     final videoUri = video != null ? Uri.parse(video) : null;

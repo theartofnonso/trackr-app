@@ -2,14 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:amplify_flutter/amplify_flutter.dart';
+// Removed Amplify usage for UI-only mode
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
-import 'package:tracker_app/models/Exercise.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/widgets/icons/linear_progress_bar_with_indicator.dart';
@@ -17,9 +16,6 @@ import 'package:tracker_app/widgets/icons/linear_progress_bar_with_indicator.dar
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../models/RoutineLog.dart';
-import '../models/RoutinePlan.dart';
-import '../models/RoutineTemplate.dart';
 import '../utils/dialog_utils.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
@@ -35,16 +31,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
-  StreamSubscription<QuerySnapshot<RoutineLog>>? _routineLogStream;
-  StreamSubscription<QuerySnapshot<RoutineTemplate>>? _routineTemplateStream;
-  StreamSubscription<QuerySnapshot<RoutinePlan>>? _routinePlanStream;
-  StreamSubscription<QuerySnapshot<Exercise>>? _exerciseStream;
-
   @override
   Widget build(BuildContext context) {
     final lastYearRange = yearToDateTimeRange(datetime: DateTime.now());
     final logsForTheYear =
-        Provider.of<ExerciseAndRoutineController>(context, listen: true).whereLogsIsWithinRange(range: lastYearRange);
+        Provider.of<ExerciseAndRoutineController>(context, listen: true)
+            .whereLogsIsWithinRange(range: lastYearRange);
 
     return Scaffold(
       appBar: AppBar(
@@ -52,7 +44,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             onTap: () {
               showBottomSheetWithNoAction(
                   context: context,
-                  title: "${logsForTheYear.length} of 144 sessions in ${DateTime.now().year}",
+                  title:
+                      "${logsForTheYear.length} of 144 sessions in ${DateTime.now().year}",
                   description:
                       "Your Streak counts the days you commit to strength training each month. Hit 12 sessions a month to stay on track for 144 in a year.");
             },
@@ -61,7 +54,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               padding: EdgeInsets.symmetric(vertical: 10),
               child: IconProgressBar(
                 progress: logsForTheYear.length / 144,
-                icon: FaIcon(FontAwesomeIcons.personWalking, color: Colors.green),
+                icon:
+                    FaIcon(FontAwesomeIcons.personWalking, color: Colors.green),
               ),
             ),
           ),
@@ -89,87 +83,22 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Future<void> _loadAppData() async {
-    _observeExerciseQuery();
-    _observeRoutineLogQuery();
-    _observeRoutineTemplateQuery();
-    _observeRoutinePlanQuery();
-  }
-
-  void _observeExerciseQuery() async {
-    final controller = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    // Simple one-time loads for UI-only mode
+    final controller =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
     await controller.loadLocalExercises();
-    _exerciseStream = Amplify.DataStore.observeQuery(
-      Exercise.classType,
-      sortBy: [Exercise.CREATEDAT.ascending()],
-    ).listen((QuerySnapshot<Exercise> snapshot) {
-      if (mounted) {
-        controller.streamExercises(exercises: snapshot.items);
-      }
-    });
-  }
-
-  void _observeRoutineTemplateQuery() {
-    _routineTemplateStream = Amplify.DataStore.observeQuery(
-      RoutineTemplate.classType,
-      sortBy: [RoutineTemplate.CREATEDAT.descending()],
-    ).listen((QuerySnapshot<RoutineTemplate> snapshot) {
-      if (mounted) {
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).streamTemplates(templates: snapshot.items);
-      }
-    });
-  }
-
-  void _observeRoutinePlanQuery() {
-    _routinePlanStream = Amplify.DataStore.observeQuery(
-      RoutinePlan.classType,
-      sortBy: [RoutinePlan.CREATEDAT.descending()],
-    ).listen((QuerySnapshot<RoutinePlan> snapshot) {
-      if (mounted) {
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).streamPlans(plans: snapshot.items);
-      }
-    });
-  }
-
-  void _observeRoutineLogQuery() {
-    _routineLogStream = Amplify.DataStore.observeQuery(
-      RoutineLog.classType,
-      sortBy: [RoutineLog.CREATEDAT.ascending()],
-    ).listen((QuerySnapshot<RoutineLog> snapshot) {
-      if (mounted) {
-        Provider.of<ExerciseAndRoutineController>(context, listen: false).streamLogs(logs: snapshot.items);
-      }
-    });
+    setState(() {});
   }
 
   Future<void> _userSetup() async {
-    try {
-      // ── 1. Get the signed-in Amplify user ────────────────────────────────
-      final authUser = await Amplify.Auth.getCurrentUser();
-      final userId = authUser.userId;
-      final email = authUser.signInDetails.toJson()['username']?.toString() ?? '';
-
-      // ── 2. Persist to SharedPrefs & analytics ─────────────────────────────
-      final prefs = SharedPrefs();
-      prefs
-        ..userId = userId
-        ..userEmail = email;
-
-      Posthog().identify(userId: userId);
-
-      _loadAppData();
-    }
-
-    // Amplify-specific failures
-    on AuthException catch (e, st) {
-      debugPrint('[UserSetup] Amplify Auth error: ${e.message}');
-      debugPrintStack(stackTrace: st);
-    }
-
-    // Anything else
-    catch (e, st) {
-      debugPrint('[UserSetup] unexpected error: $e');
-      debugPrintStack(stackTrace: st);
-    }
+    // Mock user setup for UI-only mode
+    final prefs = SharedPrefs();
+    prefs
+      ..userId = prefs.userId.isNotEmpty ? prefs.userId : 'demo-user'
+      ..userEmail =
+          prefs.userEmail.isNotEmpty ? prefs.userEmail : 'demo@trnr.app';
+    Posthog().identify(userId: prefs.userId);
+    _loadAppData();
   }
 
   void _loadCachedLog() {
@@ -178,7 +107,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       if (cache.isNotEmpty) {
         final json = jsonDecode(cache);
         final routineLog = RoutineLogDto.fromCachedLog(json: json);
-        final arguments = RoutineLogArguments(log: routineLog, editorMode: RoutineEditorMode.log, cached: true);
+        final arguments = RoutineLogArguments(
+            log: routineLog, editorMode: RoutineEditorMode.log, cached: true);
         navigateToRoutineLogEditor(context: context, arguments: arguments);
       }
     });
@@ -201,10 +131,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _exerciseStream?.cancel();
-    _routineTemplateStream?.cancel();
-    _routinePlanStream?.cancel();
-    _routineLogStream?.cancel();
+    // No stream subscriptions to cancel in UI-only mode
     super.dispose();
   }
 }

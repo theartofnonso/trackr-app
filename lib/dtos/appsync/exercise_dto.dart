@@ -1,8 +1,3 @@
-import 'dart:convert';
-
-
-import 'package:tracker_app/models/ModelProvider.dart';
-
 import '../../enums/exercise_type_enums.dart';
 import '../../enums/muscle_group_enums.dart';
 
@@ -35,7 +30,8 @@ class ExerciseDto {
       'id': id,
       'name': name,
       'primaryMuscleGroup': primaryMuscleGroup.name,
-      'secondaryMuscleGroups': secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
+      'secondaryMuscleGroups':
+          secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
       'type': type.id,
       'owner': owner,
       'description': description ?? "",
@@ -45,30 +41,27 @@ class ExerciseDto {
     };
   }
 
-  factory ExerciseDto.toDto(Exercise exercise) {
-    return ExerciseDto.fromExercise(exercise: exercise);
-  }
+  // Removed Amplify model conversion
 
-  factory ExerciseDto.fromExercise({required Exercise exercise}) {
-    final json = jsonDecode(exercise.data);
-    return ExerciseDto.fromJson(json, owner: exercise.owner, exerciseId: exercise.id);
-  }
-
-  factory ExerciseDto.fromJson(Map<String, dynamic> json, {String? exerciseId, String? owner}) {
+  factory ExerciseDto.fromJson(Map<String, dynamic> json,
+      {String? exerciseId, String? owner}) {
     final id = exerciseId ?? json["id"] ?? "";
     final name = json["name"] ?? "";
     final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";
     final primaryMuscleGroup = MuscleGroup.fromString(primaryMuscleGroupString);
-    final secondaryMuscleGroupString = (json["secondaryMuscleGroups"] as List<dynamic>?) ?? [];
-    final secondaryMuscleGroups =
-        secondaryMuscleGroupString.map((muscleGroup) => MuscleGroup.fromString(muscleGroup)).toList();
+    final secondaryMuscleGroupString =
+        (json["secondaryMuscleGroups"] as List<dynamic>?) ?? [];
+    final secondaryMuscleGroups = secondaryMuscleGroupString
+        .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
+        .toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
     final video = json["video"];
     final description = json["description"] ?? "";
     final videoUri = video != null ? Uri.parse(video) : null;
     final creditSource = json["creditSource"];
-    final creditSourceUri = creditSource != null ? Uri.parse(creditSource) : null;
+    final creditSourceUri =
+        creditSource != null ? Uri.parse(creditSource) : null;
     final credit = json["credit"] ?? "";
 
     return ExerciseDto(
@@ -119,8 +112,6 @@ class ExerciseDto {
 
   @override
   bool operator ==(Object other) {
-    return other is ExerciseDto &&
-        other.id == id;
+    return other is ExerciseDto && other.id == id;
   }
-
 }

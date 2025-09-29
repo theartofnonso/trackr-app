@@ -2,11 +2,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_authenticator/amplify_authenticator.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
+// Removed Amplify auth flows
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,10 +18,10 @@ import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
-import 'package:tracker_app/repositories/amplify/amplify_exercise_repository.dart';
-import 'package:tracker_app/repositories/amplify/amplify_routine_log_repository.dart';
-import 'package:tracker_app/repositories/amplify/amplify_routine_plan_repository.dart';
-import 'package:tracker_app/repositories/amplify/amplify_routine_template_repository.dart';
+import 'package:tracker_app/repositories/mock/mock_exercise_repository.dart';
+import 'package:tracker_app/repositories/mock/mock_routine_log_repository.dart';
+import 'package:tracker_app/repositories/mock/mock_routine_plan_repository.dart';
+import 'package:tracker_app/repositories/mock/mock_routine_template_repository.dart';
 import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
@@ -42,17 +38,15 @@ import 'package:tracker_app/screens/routines/routine_plan.dart';
 import 'package:tracker_app/screens/routines/routine_plans_screen.dart';
 import 'package:tracker_app/screens/routines/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/date_utils.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
 
-import 'amplifyconfiguration.dart';
+//
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/appsync/routine_plan_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_plan_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'logger.dart';
-import 'models/ModelProvider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -82,19 +76,22 @@ void main() async {
 
   await initializeDateFormatting();
 
-  const DarwinInitializationSettings iOSInitializationSettingsDarwin = DarwinInitializationSettings(
+  const DarwinInitializationSettings iOSInitializationSettingsDarwin =
+      DarwinInitializationSettings(
     requestAlertPermission: false,
     requestBadgePermission: false,
     requestSoundPermission: false,
   );
 
-  const AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings("app_icon");
+  const AndroidInitializationSettings androidInitializationSettings =
+      AndroidInitializationSettings("app_icon");
 
-  const initializationSettings =
-      InitializationSettings(iOS: iOSInitializationSettingsDarwin, android: androidInitializationSettings);
+  const initializationSettings = InitializationSettings(
+      iOS: iOSInitializationSettingsDarwin,
+      android: androidInitializationSettings);
 
-  await FlutterLocalNotificationsPlugin()
-      .initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
+  await FlutterLocalNotificationsPlugin().initialize(initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
 
   tz.initializeTimeZones();
 
@@ -110,13 +107,14 @@ void main() async {
     appRunner: () => runApp(MultiProvider(providers: [
       ChangeNotifierProvider<ExerciseAndRoutineController>(
         create: (BuildContext context) => ExerciseAndRoutineController(
-            amplifyExerciseRepository: AmplifyExerciseRepository(),
-            amplifyTemplateRepository: AmplifyRoutineTemplateRepository(),
-            amplifyPlanRepository: AmplifyRoutinePlanRepository(),
-            amplifyLogRepository: AmplifyRoutineLogRepository()),
+            exerciseRepository: MockExerciseRepository(),
+            templateRepository: MockRoutineTemplateRepository(),
+            planRepository: MockRoutinePlanRepository(),
+            logRepository: MockRoutineLogRepository()),
       ),
       ChangeNotifierProvider<ExerciseLogController>(
-          create: (BuildContext context) => ExerciseLogController(ExerciseLogRepository())),
+          create: (BuildContext context) =>
+              ExerciseLogController(ExerciseLogRepository())),
     ], child: const MyApp())),
   );
 }
@@ -159,7 +157,8 @@ final _router = GoRouter(
       path: RoutineTemplateEditorScreen.routeName,
       builder: (context, state) {
         final args = state.extra as RoutineTemplateArguments;
-        return RoutineTemplateEditorScreen(template: args.template, planId: args.planId);
+        return RoutineTemplateEditorScreen(
+            template: args.template, planId: args.planId);
       },
     ),
     GoRoute(
@@ -219,12 +218,17 @@ final _router = GoRouter(
         final isEditable = extra['isEditable'] as bool;
 
         return CustomTransitionPage(
-            child: RoutineLogScreen(id: log?.id ?? "", showSummary: showSummary, isEditable: isEditable),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            child: RoutineLogScreen(
+                id: log?.id ?? "",
+                showSummary: showSummary,
+                isEditable: isEditable),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;
               const curve = Curves.ease;
-              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
               final offsetAnimation = animation.drive(tween);
               return SlideTransition(
                 position: offsetAnimation,
@@ -247,11 +251,13 @@ final _router = GoRouter(
         final args = state.extra as RoutineLogDto;
         return CustomTransitionPage(
             child: RoutineLogSummaryScreen(log: args),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
               const begin = Offset(0.0, 1.0);
               const end = Offset.zero;
               const curve = Curves.ease;
-              final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              final tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
               final offsetAnimation = animation.drive(tween);
               return SlideTransition(
                 position: offsetAnimation,
@@ -276,27 +282,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _configureAmplify();
-  }
-
-  Future<void> _configureAmplify() async {
-    /// Only sync data for this year
-    final dateRange = theLastYearDateTimeRange();
-    final startOfCurrentYear = dateRange.start.toIso8601String();
-    final endOfCurrentYear = dateRange.end.toIso8601String();
-    try {
-      await Amplify.addPlugin(AmplifyAuthCognito());
-      final apiPluginOptions = APIPluginOptions(modelProvider: ModelProvider.instance);
-      await Amplify.addPlugin(AmplifyAPI(options: apiPluginOptions));
-      final datastorePluginOptions = DataStorePluginOptions(syncExpressions: [
-        DataStoreSyncExpression(
-            RoutineLog.classType, () => RoutineLog.CREATEDAT.between(startOfCurrentYear, endOfCurrentYear)),
-      ]);
-      await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance, options: datastorePluginOptions));
-      await Amplify.configure(amplifyconfig);
-    } on Exception catch (e) {
-      debugPrint('Could not configure Amplify: $e');
-    }
+    // Auth flows removed; no backend configuration in demo mode
   }
 
   void _completeIntro() {
@@ -319,22 +305,21 @@ class _MyAppState extends State<MyApp> {
 
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: isDarkMode ? Colors.white : Colors.black, // status bar color
-        systemNavigationBarIconBrightness: isDarkMode ? Brightness.dark : Brightness.light, // Icon Color
+        statusBarColor:
+            isDarkMode ? Colors.white : Colors.black, // status bar color
+        systemNavigationBarIconBrightness:
+            isDarkMode ? Brightness.dark : Brightness.light, // Icon Color
       ),
     );
 
     return _isFirstLaunch
         ? OnboardingFlowScreen(onPressed: _completeIntro)
-        : Authenticator(
-            child: MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              builder: Authenticator.builder(),
-              themeMode: ThemeMode.system,
-              theme: TRKRTheme.lightTheme,
-              darkTheme: TRKRTheme.darkTheme,
-              routerConfig: _router,
-            ),
+        : MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            themeMode: ThemeMode.system,
+            theme: TRKRTheme.lightTheme,
+            darkTheme: TRKRTheme.darkTheme,
+            routerConfig: _router,
           );
   }
 }
