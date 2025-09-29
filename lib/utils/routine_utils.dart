@@ -13,48 +13,58 @@ import '../screens/exercise/reorder_exercises_screen.dart';
 import 'exercise_logs_utils.dart';
 
 Future<List<ExerciseLogDto>?> reOrderExerciseLogs(
-    {required BuildContext context, required List<ExerciseLogDto> exerciseLogs}) async {
-  return await Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ReOrderExercisesScreen(exercises: exerciseLogs)))
+    {required BuildContext context,
+    required List<ExerciseLogDto> exerciseLogs}) async {
+  return await Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) =>
+              ReOrderExercisesScreen(exercises: exerciseLogs)))
       as List<ExerciseLogDto>?;
 }
 
 List<ExerciseLogDto> whereOtherExerciseLogsExcept(
-    {required ExerciseLogDto exerciseLog, required List<ExerciseLogDto> others}) {
-  return others.where((procedure) => procedure.id != exerciseLog.id && procedure.superSetId.isEmpty).toList();
+    {required ExerciseLogDto exerciseLog,
+    required List<ExerciseLogDto> others}) {
+  return others
+      .where((procedure) =>
+          procedure.id != exerciseLog.id && procedure.superSetId.isEmpty)
+      .toList();
 }
 
 List<TemplateChange> checkForChanges(
-    {required List<ExerciseLogDto> exerciseLog1, required List<ExerciseLogDto> exerciseLog2, bool isEditor = true}) {
+    {required List<ExerciseLogDto> exerciseLog1,
+    required List<ExerciseLogDto> exerciseLog2,
+    bool isEditor = true}) {
   List<TemplateChange?> unsavedChangesMessage = [];
 
   /// Check if [ExerciseLogDto] have been added or removed
-  final differentExercisesLengthMessage =
-      hasDifferentExerciseLogsLength(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  final differentExercisesLengthMessage = hasDifferentExerciseLogsLength(
+      exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
   unsavedChangesMessage.add(differentExercisesLengthMessage);
 
   /// Check if [ExerciseLogDto] has been re-ordered
-  final differentExercisesOrderMessage =
-      hasReOrderedExercises(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  final differentExercisesOrderMessage = hasReOrderedExercises(
+      exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
   unsavedChangesMessage.add(differentExercisesOrderMessage);
 
   /// Check if [SetDto]'s have been added or removed
-  final differentSetsLengthMessage = hasDifferentSetsLength(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  final differentSetsLengthMessage = hasDifferentSetsLength(
+      exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
   unsavedChangesMessage.add(differentSetsLengthMessage);
 
   /// Check if [ExerciseType] for [Exercise] in [ExerciseLogDto] has been changed
-  final differentExerciseTypesChangeMessage =
-      hasExercisesChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  final differentExerciseTypesChangeMessage = hasExercisesChanged(
+      exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
   unsavedChangesMessage.add(differentExerciseTypesChangeMessage);
 
   /// Check if superset in [ExerciseLogDto] has been changed i.e. added or removed
-  final differentSuperSetIdsChangeMessage =
-      hasSuperSetIdChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+  final differentSuperSetIdsChangeMessage = hasSuperSetIdChanged(
+      exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
   unsavedChangesMessage.add(differentSuperSetIdsChangeMessage);
 
   /// Check if set values have been changed
   if (isEditor) {
-    final updatedSetValuesChangeMessage = hasSetValueChanged(exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
+    final updatedSetValuesChangeMessage = hasSetValueChanged(
+        exerciseLogs1: exerciseLog1, exerciseLogs2: exerciseLog2);
     unsavedChangesMessage.add(updatedSetValuesChangeMessage);
   }
 
@@ -62,32 +72,40 @@ List<TemplateChange> checkForChanges(
 }
 
 ExerciseLogDto? whereOtherExerciseInSuperSet(
-    {required ExerciseLogDto firstExercise, required List<ExerciseLogDto> exercises}) {
+    {required ExerciseLogDto firstExercise,
+    required List<ExerciseLogDto> exercises}) {
   return exercises.firstWhereOrNull((exercise) =>
       exercise.superSetId.isNotEmpty &&
       exercise.superSetId == firstExercise.superSetId &&
       exercise.exercise.id != firstExercise.exercise.id);
 }
 
-Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId({required List<RoutineLogDto> routineLogs}) {
+Map<String, List<ExerciseLogDto>> groupExerciseLogsByExerciseId(
+    {required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
   return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.id);
 }
 
-Map<MuscleGroup, List<ExerciseLogDto>> groupExerciseLogsByMuscleGroup({required List<RoutineLogDto> routineLogs}) {
+Map<MuscleGroup, List<ExerciseLogDto>> groupExerciseLogsByMuscleGroup(
+    {required List<RoutineLogDto> routineLogs}) {
   final exerciseLogs = routineLogs.expand((log) => log.exerciseLogs);
-  return groupBy(exerciseLogs, (exerciseLog) => exerciseLog.exercise.primaryMuscleGroup);
+  return groupBy(
+      exerciseLogs, (exerciseLog) => exerciseLog.exercise.primaryMuscleGroup);
 }
 
-String superSetId({required ExerciseLogDto firstExerciseLog, required ExerciseLogDto secondExerciseLog}) {
+String superSetId(
+    {required ExerciseLogDto firstExerciseLog,
+    required ExerciseLogDto secondExerciseLog}) {
   return "superset_id_${firstExerciseLog.exercise.id}_${secondExerciseLog.exercise.id}";
 }
 
-List<ExerciseLogViewModel> exerciseLogsToViewModels({required List<ExerciseLogDto> exerciseLogs}) {
+List<ExerciseLogViewModel> exerciseLogsToViewModels(
+    {required List<ExerciseLogDto> exerciseLogs}) {
   return exerciseLogs.map((exerciseLog) {
     return ExerciseLogViewModel(
         exerciseLog: exerciseLog,
-        superSet: whereOtherExerciseInSuperSet(firstExercise: exerciseLog, exercises: exerciseLogs));
+        superSet: whereOtherExerciseInSuperSet(
+            firstExercise: exerciseLog, exercises: exerciseLogs));
   }).toList();
 }
 
@@ -120,13 +138,16 @@ String copyRoutineAsText(
     for (var i = 0; i < exerciseLog.sets.length; i++) {
       switch (exerciseLog.exercise.type) {
         case ExerciseType.weights:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
+          routineText
+              .writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
         case ExerciseType.bodyWeight:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
+          routineText
+              .writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
         case ExerciseType.duration:
-          routineText.writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
+          routineText
+              .writeln("   • Set ${i + 1}: ${exerciseLog.sets[i].summary()}");
           break;
       }
     }

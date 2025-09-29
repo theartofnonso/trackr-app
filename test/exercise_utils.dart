@@ -32,7 +32,12 @@ ExerciseLogDto makeLog({
   return ExerciseLogDto(
     id: exercise.id,
     exercise: exercise,
-    sets: sets.isNotEmpty ? sets : [WeightAndRepsSetDto(weight: 10, reps: 12, checked: true, dateTime: createdAt)],
+    sets: sets.isNotEmpty
+        ? sets
+        : [
+            WeightAndRepsSetDto(
+                weight: 10, reps: 12, checked: true, dateTime: createdAt)
+          ],
     createdAt: createdAt ?? DateTime.now(),
     routineLogId: 'routine1',
     superSetId: '',

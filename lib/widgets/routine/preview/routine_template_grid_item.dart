@@ -13,7 +13,8 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
   final RoutinePlanDto? plan;
   final void Function()? onTap;
 
-  const RoutineTemplateGridItemWidget({super.key, required this.template, this.onTap, this.plan});
+  const RoutineTemplateGridItemWidget(
+      {super.key, required this.template, this.onTap, this.plan});
 
   @override
   Widget build(BuildContext context) {
@@ -28,39 +29,49 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
-          child: Column(spacing: 14, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            if (plan != null)
-              Text("In ${plan?.name}",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: GoogleFonts.ubuntu(
-                      fontSize: 12,
-                      color: isDarkMode ? Colors.white70 : Colors.black,
-                      height: 1.5,
-                      fontWeight: FontWeight.w400)),
-            const Spacer(),
-            Text(
-              template.name,
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-              maxLines: plan != null ? 1 : 3,
-            ),
-            Wrap(
+              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(12)),
+          child: Column(
+              spacing: 14,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomIcon(FontAwesomeIcons.personWalking, color: vibrantGreen, width: 20, height: 20, iconSize: 10.5,),
-                const SizedBox(
-                  width: 6,
-                ),
+                if (plan != null)
+                  Text("In ${plan?.name}",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      style: GoogleFonts.ubuntu(
+                          fontSize: 12,
+                          color: isDarkMode ? Colors.white70 : Colors.black,
+                          height: 1.5,
+                          fontWeight: FontWeight.w400)),
+                const Spacer(),
                 Text(
-                  "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  template.name,
+                  style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+                  maxLines: plan != null ? 1 : 3,
                 ),
-              ],
-            ),
-          ])),
+                Wrap(
+                  children: [
+                    CustomIcon(
+                      FontAwesomeIcons.personWalking,
+                      color: vibrantGreen,
+                      width: 20,
+                      height: 20,
+                      iconSize: 10.5,
+                    ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      "${exercises.length} ${pluralize(word: "Exercise", count: exercises.length)}",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
+              ])),
     );
   }
 }

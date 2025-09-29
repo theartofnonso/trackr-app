@@ -32,9 +32,11 @@ void showExercisesInLibrary(
     required List<ExerciseDto> exercisesToExclude,
     required void Function(List<ExerciseDto> selectedExercises) onSelected,
     ExerciseType? type}) async {
-  final selectedExercises = await Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ExerciseLibraryScreen(excludeExercises: exercisesToExclude, type: type,)))
-      as List<ExerciseDto>?;
+  final selectedExercises = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => ExerciseLibraryScreen(
+            excludeExercises: exercisesToExclude,
+            type: type,
+          ))) as List<ExerciseDto>?;
 
   if (context.mounted) {
     if (selectedExercises != null && selectedExercises.isNotEmpty) {
@@ -45,12 +47,13 @@ void showExercisesInLibrary(
 
 void showTemplatesInLibrary(
     {required BuildContext context,
-      RoutinePlanDto? planDto,
-      required List<RoutineTemplateDto> templatesToExclude,
-      required void Function(List<RoutineTemplateDto> selectedTemplates) onSelected}) async {
-  final selectedTemplates = await Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => RoutineTemplateLibraryScreen(excludeTemplates: templatesToExclude)))
-  as List<RoutineTemplateDto>?;
+    RoutinePlanDto? planDto,
+    required List<RoutineTemplateDto> templatesToExclude,
+    required void Function(List<RoutineTemplateDto> selectedTemplates)
+        onSelected}) async {
+  final selectedTemplates = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => RoutineTemplateLibraryScreen(
+          excludeTemplates: templatesToExclude))) as List<RoutineTemplateDto>?;
 
   if (context.mounted) {
     if (selectedTemplates != null && selectedTemplates.isNotEmpty) {

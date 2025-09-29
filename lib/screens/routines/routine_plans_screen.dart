@@ -48,14 +48,17 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
-
       final plans = List<RoutinePlanDto>.from(provider.plans);
 
       final logs = provider.logs;
 
-      final defaultPlanGridItem = RoutinePlanGridItemWidget(plan: RoutinePlanDto.defaultPlan);
+      final defaultPlanGridItem =
+          RoutinePlanGridItemWidget(plan: RoutinePlanDto.defaultPlan);
 
-      final children = [defaultPlanGridItem, ...plans.map((plan) => RoutinePlanGridItemWidget(plan: plan))];
+      final children = [
+        defaultPlanGridItem,
+        ...plans.map((plan) => RoutinePlanGridItemWidget(plan: plan))
+      ];
 
       return Scaffold(
           appBar: AppBar(
@@ -65,45 +68,51 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
             ),
             actions: [
               IconButton(
-                  onPressed: _showMenuBottomSheet, icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 28))
+                  onPressed: _showMenuBottomSheet,
+                  icon:
+                      const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 28))
             ],
           ),
           body: Container(
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: themeGradient(context: context),
-        ),
-        child: SafeArea(
-          minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
-          bottom: false,
-          child: Column(spacing: 16, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            InformationContainerWithBackgroundImage(
-              image: 'images/man_coach.PNG',
-              color: Colors.black,
-              subtitle:
-                  "We use your training history to recommend plans. ${logs.isNotEmpty ? 'Tap to get a personalised plan.' : "Tap for a plan to start training."}",
-              onTap: _runMessage,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: themeGradient(context: context),
             ),
-            children.isNotEmpty
-                ? Expanded(
-                    child: GridView.count(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1,
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        children: children),
-                  )
-                : Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: const NoListEmptyState(
-                          message:
-                              "It might feel quiet now, but tap the + button to create a plan or ask TRNR coach for help."),
+            child: SafeArea(
+              minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
+              bottom: false,
+              child: Column(
+                  spacing: 16,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InformationContainerWithBackgroundImage(
+                      image: 'images/man_coach.PNG',
+                      color: Colors.black,
+                      subtitle:
+                          "We use your training history to recommend plans. ${logs.isNotEmpty ? 'Tap to get a personalised plan.' : "Tap for a plan to start training."}",
+                      onTap: _runMessage,
                     ),
-                  ),
-          ]),
-        ),
-      ));
+                    children.isNotEmpty
+                        ? Expanded(
+                            child: GridView.count(
+                                crossAxisCount: 2,
+                                childAspectRatio: 1,
+                                mainAxisSpacing: 10.0,
+                                crossAxisSpacing: 10.0,
+                                children: children),
+                          )
+                        : Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: const NoListEmptyState(
+                                  message:
+                                      "It might feel quiet now, but tap the + button to create a plan or ask TRNR coach for help."),
+                            ),
+                          ),
+                  ]),
+            ),
+          ));
     });
   }
 
@@ -137,7 +146,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
               size: 18,
             ),
             horizontalTitleGap: 6,
-            title: Text("Create new workout plan", style: Theme.of(context).textTheme.bodyLarge),
+            title: Text("Create new workout plan",
+                style: Theme.of(context).textTheme.bodyLarge),
             onTap: () {
               Navigator.of(context).pop();
               navigateToRoutinePlanEditor(context: context);
@@ -151,13 +161,20 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
   }
 
   Future<void> _runFunctionMessage() async {
-    final exerciseAndRoutineController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final exerciseAndRoutineController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final dateRange = theLastYearDateTimeRange();
 
-    final logs = exerciseAndRoutineController.whereLogsIsWithinRange(range: dateRange).toList();
+    final logs = exerciseAndRoutineController
+        .whereLogsIsWithinRange(range: dateRange)
+        .toList();
 
-    final weeksInLastQuarter = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
+    final weeksInLastQuarter = generateWeeksInRange(range: dateRange)
+        .reversed
+        .take(13)
+        .toList()
+        .reversed;
 
     final stringBuffer = StringBuffer();
 
@@ -165,9 +182,11 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
       for (final week in weeksInLastQuarter) {
         final startOfWeek = week.start;
         final endOfWeek = week.end;
-        final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+        final logsForTheWeek = logs.where((log) =>
+            log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
 
-        stringBuffer.writeln("For the week starting ${startOfWeek.withoutTime()} to ${endOfWeek.withoutTime()}");
+        stringBuffer.writeln(
+            "For the week starting ${startOfWeek.withoutTime()} to ${endOfWeek.withoutTime()}");
 
         stringBuffer.writeln();
 
@@ -177,17 +196,21 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
           stringBuffer.writeln("I did with the following exercises:");
 
           for (final exerciseLog in log.exerciseLogs) {
-            stringBuffer.writeln("${exerciseLog.exercise.name} [${exerciseLog.exercise.id}]");
+            stringBuffer.writeln(
+                "${exerciseLog.exercise.name} [${exerciseLog.exercise.id}]");
           }
 
           stringBuffer.writeln();
         }
       }
 
-      final archetypes = classifyTrainingArchetypes(logs: logs).map((archetype) => archetype.description).toList();
+      final archetypes = classifyTrainingArchetypes(logs: logs)
+          .map((archetype) => archetype.description)
+          .toList();
       final archetypesSummary = listWithAnd(strings: archetypes);
 
-      stringBuffer.writeln("These are my training behaviours: $archetypesSummary");
+      stringBuffer
+          .writeln("These are my training behaviours: $archetypesSummary");
     }
 
     final userInstruction = stringBuffer.toString();
@@ -197,8 +220,9 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     try {
       final json = await runMessageWithTools(
         systemInstruction: createRoutinePlanPrompt,
-        userInstruction:
-            userInstruction.isNotEmpty ? userInstruction : "I am a new user with no training history or preference.",
+        userInstruction: userInstruction.isNotEmpty
+            ? userInstruction
+            : "I am a new user with no training history or preference.",
       );
 
       if (json == null) {
@@ -246,8 +270,9 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                 "id": exercise.id,
                 "name": exercise.name,
                 "primary_muscle_group": exercise.primaryMuscleGroup.name,
-                "secondary_muscle_groups":
-                    exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
+                "secondary_muscle_groups": exercise.secondaryMuscleGroups
+                    .map((muscleGroup) => muscleGroup.name)
+                    .toList()
               })
           .toList(),
     };
@@ -261,7 +286,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
         extra: jsonEncode(listOfExerciseJsons));
 
     try {
-      final functionCallResult = await runMessageWithFunctionCallPayload(payload: functionCallPayload);
+      final functionCallResult =
+          await runMessageWithFunctionCallPayload(payload: functionCallPayload);
 
       if (functionCallResult == null) {
         _handleError();
@@ -274,7 +300,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
       NewRoutinePlanDto newRoutinePlanDto = NewRoutinePlanDto.fromJson(json);
 
       final routineTemplates = newRoutinePlanDto.workouts.map((newRoutineDto) {
-        final exerciseTemplates = _createExerciseTemplates(newRoutineDto.exercises, exercises);
+        final exerciseTemplates =
+            _createExerciseTemplates(newRoutineDto.exercises, exercises);
         return RoutineTemplateDto(
           id: "",
           name: newRoutineDto.workoutName,
@@ -300,7 +327,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
         if (mounted) {
           if (createdPlan != null) {
             for (final template in routineTemplates) {
-              final templateWithPlanId = template.copyWith(planId: createdPlan.id);
+              final templateWithPlanId =
+                  template.copyWith(planId: createdPlan.id);
               _saveTemplate(context: context, template: templateWithPlanId);
             }
           }
@@ -313,21 +341,28 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     }
   }
 
-  Future<RoutinePlanDto?> _savePlan({required BuildContext context, required RoutinePlanDto plan}) async {
-    final planController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+  Future<RoutinePlanDto?> _savePlan(
+      {required BuildContext context, required RoutinePlanDto plan}) async {
+    final planController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
     final createdPlan = await planController.savePlan(planDto: plan);
     return createdPlan;
   }
 
-  void _saveTemplate({required BuildContext context, required RoutineTemplateDto template}) async {
-    final templateController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+  void _saveTemplate(
+      {required BuildContext context,
+      required RoutineTemplateDto template}) async {
+    final templateController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
     await templateController.saveTemplate(templateDto: template);
   }
 
-  List<ExerciseLogDto> _createExerciseTemplates(List<String> exerciseIds, List<ExerciseDto> exercises) {
+  List<ExerciseLogDto> _createExerciseTemplates(
+      List<String> exerciseIds, List<ExerciseDto> exercises) {
     return exerciseIds
         .map((exerciseId) {
-          final exerciseInLibrary = exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
+          final exerciseInLibrary = exercises
+              .firstWhereOrNull((exercise) => exercise.id == exerciseId);
           if (exerciseInLibrary == null) return null;
           return ExerciseLogDto(
               id: exerciseInLibrary.id,

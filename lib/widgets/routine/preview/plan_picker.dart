@@ -11,7 +11,11 @@ class PlanPicker extends StatelessWidget {
   final List<RoutinePlanDto> plans;
   final void Function(RoutinePlanDto plan) onSelect;
 
-  const PlanPicker({super.key, required this.title, required this.plans, required this.onSelect});
+  const PlanPicker(
+      {super.key,
+      required this.title,
+      required this.plans,
+      required this.onSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +37,10 @@ class PlanPicker extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
-              children: [Text(title, style: Theme.of(context).textTheme.titleMedium), ...listTiles],
+              children: [
+                Text(title, style: Theme.of(context).textTheme.titleMedium),
+                ...listTiles
+              ],
             ),
           )
         : _EmptyState(onPressed: () {});
@@ -64,7 +71,10 @@ class _EmptyState extends StatelessWidget {
           const SizedBox(height: 24),
           SizedBox(
               width: double.infinity,
-              child: OpacityButtonWidgetTwo(onPressed: onPressed, label: "Create a workout plan", buttonColor: vibrantGreen))
+              child: OpacityButtonWidgetTwo(
+                  onPressed: onPressed,
+                  label: "Create a workout plan",
+                  buttonColor: vibrantGreen))
         ],
       ),
     );

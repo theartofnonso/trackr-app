@@ -13,16 +13,21 @@ class RoutineLogWidget extends StatelessWidget {
   final String trailing;
   final bool isEditable;
 
-  const RoutineLogWidget({super.key, required this.log, required this.trailing, this.isEditable = true});
+  const RoutineLogWidget(
+      {super.key,
+      required this.log,
+      required this.trailing,
+      this.isEditable = true});
 
   @override
   Widget build(BuildContext context) {
-
-    final completedExerciseLogsAndSets = loggedExercises(exerciseLogs: log.exerciseLogs);
+    final completedExerciseLogsAndSets =
+        loggedExercises(exerciseLogs: log.exerciseLogs);
 
     return ThemeListTile(
       child: ListTile(
-        onTap: () => navigateToRoutineLogPreview(context: context, log: log, isEditable: isEditable),
+        onTap: () => navigateToRoutineLogPreview(
+            context: context, log: log, isEditable: isEditable),
         leading: FaIcon(
           FontAwesomeIcons.personWalking,
           color: vibrantGreen,

@@ -14,7 +14,10 @@ class _DateViewModel {
   final DateTime selectedDateTime;
   final bool hasRoutineLog;
 
-  _DateViewModel({required this.dateTime, required this.selectedDateTime, this.hasRoutineLog = false});
+  _DateViewModel(
+      {required this.dateTime,
+      required this.selectedDateTime,
+      this.hasRoutineLog = false});
 }
 
 const int _kMonthOrigin = 1000;
@@ -22,7 +25,8 @@ const int _kMonthOrigin = 1000;
 /// A plug‑and‑play calendar widget that shows the current week by default and toggles
 /// to a month grid on tap of the header. No external [DateTime] dependency required.
 class Calendar extends StatefulWidget {
-  const Calendar({super.key, this.onSelectDate, this.logs, this.onMonthChanged});
+  const Calendar(
+      {super.key, this.onSelectDate, this.logs, this.onMonthChanged});
 
   /// Fired whenever the user selects a day.
   final void Function(DateTime dateTime)? onSelectDate;
@@ -34,8 +38,10 @@ class Calendar extends StatefulWidget {
   State<Calendar> createState() => _CalendarState();
 }
 
-class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin {
-  late final DateTime _anchor; // today without the time component – used as the origin for paging maths
+class _CalendarState extends State<Calendar>
+    with SingleTickerProviderStateMixin {
+  late final DateTime
+      _anchor; // today without the time component – used as the origin for paging maths
   late DateTime _selected;
   late DateTime _focused;
   late final PageController _monthCtl;
@@ -74,7 +80,8 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
 
   DateTime _mondayOf(DateTime d) => d.subtract(Duration(days: d.weekday - 1));
 
-  DateTime _monthByIndex(int pageIndex) => DateTime(_anchor.year, _anchor.month + (pageIndex - _kMonthOrigin), 1);
+  DateTime _monthByIndex(int pageIndex) =>
+      DateTime(_anchor.year, _anchor.month + (pageIndex - _kMonthOrigin), 1);
 
   void _onDateTap(DateTime d) {
     setState(() => _selected = d);
@@ -110,13 +117,16 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
           alignment: Alignment.topCenter,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              const double rowHeight = 60.0; // Adjust based on your item height + spacing
+              const double rowHeight =
+                  60.0; // Adjust based on your item height + spacing
               final int rowCount = _expanded ? _currentMonthWeeks : 1;
               final double height = rowHeight * rowCount;
 
               return SizedBox(
                 height: height,
-                child: _expanded ? _buildMonthPager(isDark) : _buildWeekGrid(isDark),
+                child: _expanded
+                    ? _buildMonthPager(isDark)
+                    : _buildWeekGrid(isDark),
               );
             },
           ),
@@ -131,7 +141,8 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
   Widget _buildWeekGrid(bool isDark) {
     final monday = _mondayOf(_anchor); // always anchor‑week
     final days = List.generate(7, (i) => monday.add(Duration(days: i)));
-    final logs = widget.logs ?? context.read<ExerciseAndRoutineController>().logs;
+    final logs =
+        widget.logs ?? context.read<ExerciseAndRoutineController>().logs;
 
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(), // <— not scrollable
@@ -193,10 +204,8 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
     final first = DateTime(monthStart.year, monthStart.month, 1);
     final last = DateTime(monthStart.year, monthStart.month + 1, 0);
     final logs = widget.logs ??
-        context
-            .read<ExerciseAndRoutineController>()
-            .logs
-            .where((l) => l.createdAt.isBetweenInclusive(from: first, to: last));
+        context.read<ExerciseAndRoutineController>().logs.where(
+            (l) => l.createdAt.isBetweenInclusive(from: first, to: last));
 
     final List<_DateViewModel?> out = [];
     for (int i = 1; i < first.weekday; i++) {
@@ -205,7 +214,8 @@ class _CalendarState extends State<Calendar> with SingleTickerProviderStateMixin
     for (int d = 1; d <= last.day; d++) {
       final date = DateTime(monthStart.year, monthStart.month, d);
       final has = logs.any((l) => l.createdAt.isSameDayMonthYear(date));
-      out.add(_DateViewModel(dateTime: date, selectedDateTime: _selected, hasRoutineLog: has));
+      out.add(_DateViewModel(
+          dateTime: date, selectedDateTime: _selected, hasRoutineLog: has));
     }
     while (out.length % 7 != 0) {
       out.add(null);
@@ -273,7 +283,10 @@ class _CalendarHeader extends StatelessWidget {
         itemCount: 7,
         itemBuilder: (_, index) => Text(
           ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][index],
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDarkMode ? Colors.white70 : Colors.black54),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: isDarkMode ? Colors.white70 : Colors.black54),
           textAlign: TextAlign.center,
         ),
       ),
@@ -287,7 +300,11 @@ class _Month extends StatelessWidget {
   final void Function(DateTime dateTime) onTap;
   final bool isDarkMode;
 
-  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, required this.isDarkMode});
+  const _Month(
+      {required this.dates,
+      required this.selectedDateTime,
+      required this.onTap,
+      required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -304,8 +321,10 @@ class _Month extends StatelessWidget {
           ? const SizedBox()
           : _Day(
               dateTime: dates[index]!.dateTime,
-              selected: dates[index]!.dateTime.isSameDayMonthYear(selectedDateTime),
-              currentDate: dates[index]!.dateTime.isSameDayMonthYear(DateTime.now()),
+              selected:
+                  dates[index]!.dateTime.isSameDayMonthYear(selectedDateTime),
+              currentDate:
+                  dates[index]!.dateTime.isSameDayMonthYear(DateTime.now()),
               hasRoutineLog: dates[index]!.hasRoutineLog,
               onTap: onTap,
               isDarkMode: isDarkMode,
@@ -333,10 +352,13 @@ class _Day extends StatelessWidget {
 
   Color _getBackgroundColor() => hasRoutineLog
       ? (isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen)
-      : (isDarkMode ? sapphireDark80.withValues(alpha: 0.5) : Colors.grey.shade200);
+      : (isDarkMode
+          ? sapphireDark80.withValues(alpha: 0.5)
+          : Colors.grey.shade200);
 
-  Color _getTextColor() =>
-      hasRoutineLog ? (isDarkMode ? vibrantGreen : Colors.black) : (isDarkMode ? Colors.white : Colors.black);
+  Color _getTextColor() => hasRoutineLog
+      ? (isDarkMode ? vibrantGreen : Colors.black)
+      : (isDarkMode ? Colors.white : Colors.black);
 
   Border? _dateBorder() {
     if (selected) return Border.all(color: Colors.blueGrey, width: 2);
@@ -350,14 +372,20 @@ class _Day extends StatelessWidget {
       onTap: () => onTap(dateTime),
       child: Container(
         padding: selected ? const EdgeInsets.all(2) : null,
-        decoration: BoxDecoration(border: _dateBorder(), borderRadius: BorderRadius.circular(2)),
+        decoration: BoxDecoration(
+            border: _dateBorder(), borderRadius: BorderRadius.circular(2)),
         child: Container(
           margin: const EdgeInsets.all(2),
-          decoration: BoxDecoration(color: _getBackgroundColor(), borderRadius: BorderRadius.circular(2)),
+          decoration: BoxDecoration(
+              color: _getBackgroundColor(),
+              borderRadius: BorderRadius.circular(2)),
           child: Center(
             child: Text(
               "${dateTime.day}",
-              style: GoogleFonts.ubuntu(fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor()),
+              style: GoogleFonts.ubuntu(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: _getTextColor()),
             ),
           ),
         ),

@@ -60,7 +60,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
           actions: [
             routineTemplate != null
                 ? IconButton(
-                    icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
+                    icon: const FaIcon(FontAwesomeIcons.solidSquareCheck,
+                        size: 28),
                     onPressed: _navigateBack,
                   )
                 : const IconButton(
@@ -83,7 +84,9 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                     ? Expanded(
                         child: SingleChildScrollView(
                           child: ExerciseLogListView(
-                              exerciseLogs: exerciseLogsToViewModels(exerciseLogs: routineTemplate.exerciseTemplates)),
+                              exerciseLogs: exerciseLogsToViewModels(
+                                  exerciseLogs:
+                                      routineTemplate.exerciseTemplates)),
                         ),
                       )
                     : Expanded(
@@ -105,7 +108,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                       Expanded(
                         child: TextField(
                           controller: _textEditingController,
-                          decoration: InputDecoration(hintText: "Describe your workout"),
+                          decoration: InputDecoration(
+                              hintText: "Describe your workout"),
                           cursorColor: isDarkMode ? Colors.white : Colors.black,
                           maxLines: null,
                           showCursor: true,
@@ -120,8 +124,9 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                           height: 50,
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color:
-                                isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen.withValues(alpha: 0.4),
+                            color: isDarkMode
+                                ? vibrantGreen.withValues(alpha: 0.1)
+                                : vibrantGreen.withValues(alpha: 0.4),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Center(
@@ -202,7 +207,10 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         ).exercises;
 
         await _recommendExercises(
-            tool: tool, systemInstruction: createRoutinePrompt, userInstruction: userInstruction, exercises: exercises);
+            tool: tool,
+            systemInstruction: createRoutinePrompt,
+            userInstruction: userInstruction,
+            exercises: exercises);
       }
     } catch (e) {
       _handleError();
@@ -227,8 +235,9 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                 "id": exercise.id,
                 "name": exercise.name,
                 "primary_muscle_group": exercise.primaryMuscleGroup.name,
-                "secondary_muscle_groups":
-                    exercise.secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList()
+                "secondary_muscle_groups": exercise.secondaryMuscleGroups
+                    .map((muscleGroup) => muscleGroup.name)
+                    .toList()
               })
           .toList(),
     };
@@ -242,7 +251,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         extra: jsonEncode(listOfExerciseJsons));
 
     try {
-      final functionCallResult = await runMessageWithFunctionCallPayload(payload: functionCallPayload);
+      final functionCallResult =
+          await runMessageWithFunctionCallPayload(payload: functionCallPayload);
 
       if (functionCallResult == null) {
         _handleError();
@@ -254,7 +264,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
 
       NewRoutineDto newRoutineDto = NewRoutineDto.fromJson(json);
 
-      final exerciseTemplates = _createExerciseTemplates(newRoutineDto.exercises, exercises);
+      final exerciseTemplates =
+          _createExerciseTemplates(newRoutineDto.exercises, exercises);
 
       setState(() {
         _routineTemplate = RoutineTemplateDto(
@@ -273,10 +284,12 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
     }
   }
 
-  List<ExerciseLogDto> _createExerciseTemplates(List<String> exerciseIds, List<ExerciseDto> exercises) {
+  List<ExerciseLogDto> _createExerciseTemplates(
+      List<String> exerciseIds, List<ExerciseDto> exercises) {
     return exerciseIds
         .map((exerciseId) {
-          final exerciseInLibrary = exercises.firstWhereOrNull((exercise) => exercise.id == exerciseId);
+          final exerciseInLibrary = exercises
+              .firstWhereOrNull((exercise) => exercise.id == exerciseId);
           if (exerciseInLibrary == null) return null;
           return ExerciseLogDto(
               id: exerciseInLibrary.id,
