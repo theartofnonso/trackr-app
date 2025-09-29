@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 // Removed Amplify auth flows
 import 'package:flutter/foundation.dart';
@@ -14,8 +12,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
-import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
+import 'package:tracker_app/dtos/db/routine_log_dto.dart';
+import 'package:tracker_app/dtos/db/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/repositories/mock/mock_exercise_repository.dart';
@@ -41,8 +39,8 @@ import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
 
 //
-import 'dtos/appsync/exercise_dto.dart';
-import 'dtos/appsync/routine_plan_dto.dart';
+import 'dtos/db/exercise_dto.dart';
+import 'dtos/db/routine_plan_dto.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_plan_arguments.dart';
 import 'dtos/viewmodels/routine_template_arguments.dart';
@@ -68,9 +66,7 @@ void main() async {
 
   SentryWidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Firebase removed - no Firebase services used in UI-only mode
 
   await SharedPrefs().init();
 
