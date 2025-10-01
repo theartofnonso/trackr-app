@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// ---------------------------------------------------------------------------
@@ -47,7 +48,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
       child: Container(
         height: height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(radiusLG),
         ),
         child: Stack(
           fit: StackFit.expand,
@@ -95,7 +96,7 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 6),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(radiusLG),
                       ),
                       child: const FaIcon(
                         Icons.chevron_right_rounded,

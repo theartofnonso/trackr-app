@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 
 class CustomWordMarkIcon extends StatelessWidget {
   final double? width;
@@ -20,7 +21,7 @@ class CustomWordMarkIcon extends StatelessWidget {
           padding ?? const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
       decoration: BoxDecoration(
         color: isDarkMode ? color.withValues(alpha: 0.1) : color,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(radiusXS),
       ),
       child: Text(label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(

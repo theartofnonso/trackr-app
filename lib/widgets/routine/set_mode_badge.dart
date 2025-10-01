@@ -30,7 +30,7 @@ class SetModeBadge extends StatelessWidget {
               color: isDarkMode
                   ? vibrantGreen.withValues(alpha: 0.1)
                   : vibrantGreen,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(radiusXS),
             ),
             child: Center(
               child: FaIcon(

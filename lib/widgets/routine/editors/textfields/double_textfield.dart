@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../colors.dart';
 
 class DoubleTextField extends StatelessWidget {
   final num value;
@@ -34,10 +35,10 @@ class DoubleTextField extends StatelessWidget {
       maxLength: maxLength,
       decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(radiusSM),
               borderSide: const BorderSide(color: Colors.transparent)),
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(radiusSM),
               borderSide: const BorderSide(color: Colors.transparent)),
           counterText: "",
           hintText: "${value > 0 ? value : '-'}"),

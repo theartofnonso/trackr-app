@@ -16,7 +16,7 @@ class ThemeListTile extends StatelessWidget {
           color: isDarkMode
               ? sapphireDark80
               : Colors.grey.shade200, // Background color
-          borderRadius: BorderRadius.circular(2), // Rounded corners
+          borderRadius: BorderRadius.circular(radiusMD), // Rounded corners
         ),
         child: child);
   }

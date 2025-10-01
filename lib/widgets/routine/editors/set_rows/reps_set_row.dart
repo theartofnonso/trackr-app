@@ -37,7 +37,7 @@ class RepsSetRow extends StatelessWidget {
     return Table(
       border: TableBorder.all(
           color: isDarkMode ? darkBorder : Colors.black38,
-          borderRadius: BorderRadius.circular(2)),
+          borderRadius: BorderRadius.circular(radiusSM)),
       columnWidths: <int, TableColumnWidth>{
         0: const FixedColumnWidth(50),
         1: const FlexColumnWidth(1),

@@ -214,7 +214,7 @@ class _Bar extends StatelessWidget {
             height: 20,
             decoration: BoxDecoration(
               color: Colors.grey.shade400,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(radiusSM),
             )),
         SizedBox(width: 16)
       ]),
@@ -236,7 +236,7 @@ class _Plate extends StatelessWidget {
       height: plate.height,
       margin: EdgeInsets.only(right: 3),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(2), color: sapphireDark),
+          borderRadius: BorderRadius.circular(radiusSM), color: sapphireDark),
       child: Center(
         child: Text("${weightWithConversion(value: plate.weight)}",
             textAlign: TextAlign.center,

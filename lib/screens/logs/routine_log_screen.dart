@@ -16,7 +16,6 @@ import '../../../dtos/exercise_log_dto.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/viewmodels/exercise_log_view_model.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
@@ -493,7 +492,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
             name: log.name,
             notes: log.notes,
             exerciseTemplates: exercises,
-            planId: RoutinePlanDto.defaultPlan.id,
+            planId: "",
             owner: "",
             createdAt: DateTime.now(),
             updatedAt: DateTime.now());
@@ -682,8 +681,8 @@ class _StatisticWidget extends StatelessWidget {
           color: isDarkMode
               ? sapphireDark80
               : Colors.grey.shade200, // Background color of the container
-          borderRadius:
-              BorderRadius.circular(2), // Border radius for rounded corners
+          borderRadius: BorderRadius.circular(
+              radiusMD), // Border radius for rounded corners
         ),
         child: Stack(children: [
           Column(

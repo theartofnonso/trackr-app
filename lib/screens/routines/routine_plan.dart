@@ -268,54 +268,51 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                 navigateToRoutineTemplateEditor(
                     context: context, arguments: arguments);
               }),
-          if (plan?.id != RoutinePlanDto.defaultPlan.id)
-            ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const FaIcon(
-                  FontAwesomeIcons.penToSquare,
-                  size: 18,
-                ),
-                horizontalTitleGap: 6,
-                title:
-                    Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _navigateToRoutinePlanEditor();
-                }),
-          if (plan?.id != RoutinePlanDto.defaultPlan.id)
-            ListTile(
+          ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(
-                FontAwesomeIcons.trash,
-                size: 16,
-                color: Colors.redAccent,
+                FontAwesomeIcons.penToSquare,
+                size: 18,
               ),
               horizontalTitleGap: 6,
-              title: Text("Delete",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(color: Colors.red)),
+              title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
               onTap: () {
                 Navigator.of(context).pop();
+                _navigateToRoutinePlanEditor();
+              }),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const FaIcon(
+              FontAwesomeIcons.trash,
+              size: 16,
+              color: Colors.redAccent,
+            ),
+            horizontalTitleGap: 6,
+            title: Text("Delete",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: Colors.red)),
+            onTap: () {
+              Navigator.of(context).pop();
 
-                if (plan != null) {
-                  showBottomSheetWithMultiActions(
-                      context: context,
-                      title: "Delete plan?",
-                      description: "Are you sure you want to delete this plan?",
-                      leftAction: Navigator.of(context).pop,
-                      rightAction: () {
-                        context.pop();
-                        _toggleLoadingState();
-                        _deleteRoutinePlan(plan: plan);
-                      },
-                      leftActionLabel: 'Cancel',
-                      rightActionLabel: 'Delete',
-                      isRightActionDestructive: true);
-                }
-              },
-            )
+              if (plan != null) {
+                showBottomSheetWithMultiActions(
+                    context: context,
+                    title: "Delete plan?",
+                    description: "Are you sure you want to delete this plan?",
+                    leftAction: Navigator.of(context).pop,
+                    rightAction: () {
+                      context.pop();
+                      _toggleLoadingState();
+                      _deleteRoutinePlan(plan: plan);
+                    },
+                    leftActionLabel: 'Cancel',
+                    rightActionLabel: 'Delete',
+                    isRightActionDestructive: true);
+              }
+            },
+          )
         ]));
   }
 
@@ -340,13 +337,9 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
   }
 
   void _loadData() {
-    if (widget.id == RoutinePlanDto.defaultPlan.id) {
-      _plan = RoutinePlanDto.defaultPlan;
-    } else {
-      final exerciseAndRoutineController =
-          Provider.of<ExerciseAndRoutineController>(context, listen: false);
-      _plan = exerciseAndRoutineController.planWhere(id: widget.id);
-    }
+    final exerciseAndRoutineController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    _plan = exerciseAndRoutineController.planWhere(id: widget.id);
   }
 
   @override

@@ -32,8 +32,8 @@ class SolidButtonWidget extends StatelessWidget {
           visualDensity: visualDensity,
           backgroundColor:
               WidgetStateProperty.all(buttonColor ?? Colors.transparent),
-          shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(2))),
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radiusMD))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
               return Colors.black

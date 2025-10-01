@@ -60,7 +60,7 @@ Future<void> displayBottomSheet(
                   padding: padding ?? const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                       color: isDarkMode ? darkSurface : Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(2)),
+                      borderRadius: BorderRadius.circular(radiusLG)),
                   child: SafeArea(child: child),
                 ),
               ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 
 import '../icons/custom_icon.dart';
 
@@ -45,8 +46,8 @@ class OpacityButtonWidgetTwo extends StatelessWidget {
           backgroundColor: WidgetStateProperty.all(
               _themeBackgroundColor(isDarkMode: isDarkMode) ??
                   _defaultBackgroundColor(isDarkMode: isDarkMode)),
-          shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(2))),
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radiusMD))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
               return Colors.black

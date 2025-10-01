@@ -28,7 +28,6 @@ import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../../widgets/routine/preview/routine_plan_grid_item.dart';
 
 class RoutinePlansScreen extends StatefulWidget {
@@ -53,15 +52,8 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
       final plans = List<RoutinePlanDto>.from(provider.plans);
 
-      final logs = provider.logs;
-
-      final defaultPlanGridItem =
-          RoutinePlanGridItemWidget(plan: RoutinePlanDto.defaultPlan);
-
-      final children = [
-        defaultPlanGridItem,
-        ...plans.map((plan) => RoutinePlanGridItemWidget(plan: plan))
-      ];
+      final children =
+          plans.map((plan) => RoutinePlanGridItemWidget(plan: plan)).toList();
 
       return Scaffold(
           appBar: AppBar(
@@ -69,12 +61,6 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
               icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
               onPressed: context.pop,
             ),
-            actions: [
-              IconButton(
-                  onPressed: _showMenuBottomSheet,
-                  icon:
-                      const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 28))
-            ],
           ),
           body: Container(
             height: double.infinity,
@@ -88,13 +74,6 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                   spacing: 16,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InformationContainerWithBackgroundImage(
-                      image: 'images/man_coach.PNG',
-                      color: Colors.black,
-                      subtitle:
-                          "We use your training history to recommend plans. ${logs.isNotEmpty ? 'Tap to get a personalised plan.' : "Tap for a plan to start training."}",
-                      onTap: _runMessage,
-                    ),
                     children.isNotEmpty
                         ? Expanded(
                             child: GridView.count(

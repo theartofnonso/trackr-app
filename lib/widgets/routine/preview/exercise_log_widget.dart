@@ -211,7 +211,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                 width: 1.0, // Border width
               ),
               borderRadius:
-                  BorderRadius.circular(2), // Optional: Rounded corners
+                  BorderRadius.circular(radiusMD), // Optional: Rounded corners
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,

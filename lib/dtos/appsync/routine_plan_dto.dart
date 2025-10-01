@@ -15,15 +15,6 @@ class RoutinePlanDto {
     required this.updatedAt,
   });
 
-  static final RoutinePlanDto defaultPlan = RoutinePlanDto(
-    id: "default",
-    name: "Default Plan",
-    notes: "Default routine plan",
-    owner: "system",
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
-  );
-
   Map<String, dynamic> toJson() {
     return {
       'id': id,

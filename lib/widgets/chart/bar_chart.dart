@@ -131,7 +131,7 @@ class CustomBarChart extends StatelessWidget {
             BarChartRodData(
                 width: barWidth(length: chartPoints.length),
                 toY: point.y.toDouble(),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(radiusXS),
                 color: barColors?[index] ??
                     (isDarkMode ? darkOnSurface : Colors.black))
           ],

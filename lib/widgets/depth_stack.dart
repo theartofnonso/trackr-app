@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../colors.dart';
 
 class DepthStack extends StatelessWidget {
   const DepthStack({
@@ -9,7 +10,7 @@ class DepthStack extends StatelessWidget {
     this.clipBehavior = Clip.none,
     this.basePadding = const EdgeInsets.symmetric(horizontal: 6),
     this.backgroundColor = Colors.white,
-    this.borderRadius = const BorderRadius.all(Radius.circular(2)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(radiusMD)),
   });
 
   final List<Widget> children;

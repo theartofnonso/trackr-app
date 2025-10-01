@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 
 enum LabelAlignment { left, center, right }
 
@@ -101,7 +102,7 @@ class _CenterAlignment extends StatelessWidget {
         width: double.infinity, // width of the divider (line thickness)
         decoration: BoxDecoration(
           color: dividerColor,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(radiusMD),
         ), // color of the divider
         margin: const EdgeInsets.symmetric(
             horizontal: 10), // add space around the divider

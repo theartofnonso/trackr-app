@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 
 class Legend extends StatelessWidget {
   final Color color;
@@ -23,7 +24,7 @@ class Legend extends StatelessWidget {
           height: 15,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(radiusXS),
           ),
         ),
         const SizedBox(width: 6),

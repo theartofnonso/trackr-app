@@ -18,7 +18,7 @@ class ListTileEmptyState extends StatelessWidget {
             height: 10,
             decoration: BoxDecoration(
               color: isDarkMode ? darkSurfaceContainer : Colors.grey.shade600,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(radiusMD),
             )),
         const SizedBox(height: 5),
         Container(

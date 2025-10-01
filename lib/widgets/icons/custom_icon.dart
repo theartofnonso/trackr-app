@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CustomIcon extends StatelessWidget {
@@ -28,7 +29,7 @@ class CustomIcon extends StatelessWidget {
       padding: padding ?? const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: isDarkMode ? color.withValues(alpha: 0.1) : color,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(radiusXS),
       ),
       child: Center(
         child: FaIcon(

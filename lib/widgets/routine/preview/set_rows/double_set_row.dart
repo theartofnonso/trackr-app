@@ -40,13 +40,15 @@ class DoubleSetRow extends StatelessWidget {
           color: pbs.isNotEmpty
               ? (isDarkMode ? darkSurfaceContainer : Colors.grey.shade200)
               : null,
-          borderRadius: BorderRadius.circular(2), // Rounded corners
+          borderRadius: BorderRadius.circular(radiusSM), // Rounded corners
         ),
         child: Row(spacing: 6, children: pbsForSet),
       ),
       child: Table(
           border: TableBorder.all(
-              color: color, borderRadius: BorderRadius.circular(2), width: 1),
+              color: color,
+              borderRadius: BorderRadius.circular(radiusSM),
+              width: 1),
           columnWidths: const <int, TableColumnWidth>{
             0: FlexColumnWidth(1),
             1: FlexColumnWidth(1),

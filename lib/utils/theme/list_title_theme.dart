@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TRKRListTileTheme {
@@ -7,7 +8,8 @@ class TRKRListTileTheme {
   static ListTileThemeData lightTheme = ListTileThemeData(
       textColor: Colors.black,
       iconColor: Colors.black,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMD)),
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
       titleTextStyle: GoogleFonts.ubuntu(
           fontWeight: FontWeight.w600, color: Colors.black, fontSize: 14),

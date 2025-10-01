@@ -21,3 +21,15 @@ const darkOnSurfaceSecondary =
 const darkBorder = Color.fromRGBO(70, 70, 70, 1); // Lightened dark border
 const darkBorderLight = Color.fromRGBO(50, 50, 50, 1); // Lightened dark border
 const darkDivider = Color.fromRGBO(60, 60, 60, 1); // Lightened dark divider
+
+// Border Radius System - More prominent and consistent
+const double radiusXS = 4.0; // Very small elements (badges, small buttons)
+const double radiusSM = 8.0; // Small elements (text fields, small containers)
+const double radiusMD = 12.0; // Medium elements (cards, buttons, input fields)
+const double radiusLG = 16.0; // Large elements (modals, large cards)
+const double radiusXL =
+    20.0; // Extra large elements (bottom sheets, major containers)
+const double radiusXXL =
+    24.0; // Very large elements (full-screen modals, major UI sections)
+const double radiusRound =
+    50.0; // Circular elements (floating action buttons, avatars)

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../colors.dart';
 
 class InformationContainer extends StatelessWidget {
   final Widget leadingIcon;
@@ -21,8 +22,8 @@ class InformationContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration:
-          BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
+      decoration: BoxDecoration(
+          color: color, borderRadius: BorderRadius.circular(radiusMD)),
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       width: double.infinity,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

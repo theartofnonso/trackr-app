@@ -58,7 +58,7 @@ class IconProgressBar extends StatelessWidget {
               height: height,
               decoration: BoxDecoration(
                 color: Colors.black54,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(radiusXS),
               ),
             ),
             // Filled track
@@ -68,7 +68,7 @@ class IconProgressBar extends StatelessWidget {
               width: trackWidth * progress,
               decoration: BoxDecoration(
                 color: fillColor,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(radiusXS),
               ),
             ),
             // Sliding icon

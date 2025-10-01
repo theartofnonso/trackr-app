@@ -127,7 +127,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                             color: isDarkMode
                                 ? vibrantGreen.withValues(alpha: 0.1)
                                 : vibrantGreen.withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(2),
+                            borderRadius: BorderRadius.circular(radiusMD),
                           ),
                           child: Center(
                             child: FaIcon(

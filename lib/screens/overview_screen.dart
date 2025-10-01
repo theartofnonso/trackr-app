@@ -348,7 +348,7 @@ class _NoScheduledTitle extends StatelessWidget {
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
           color: isDarkMode ? darkSurface : Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(2)),
+          borderRadius: BorderRadius.circular(radiusMD)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Text("Keep training to see future schedules",
             style: GoogleFonts.ubuntu(
@@ -489,7 +489,7 @@ class _TemplatesTile extends StatelessWidget {
           color: isDarkMode
               ? darkSurfaceContainer
               : Colors.black.withValues(alpha: 0.4),
-          borderRadius: BorderRadius.circular(2)),
+          borderRadius: BorderRadius.circular(radiusMD)),
       child: Center(
         child: FaIcon(
           FontAwesomeIcons.personWalking,
@@ -517,7 +517,7 @@ class _AddTile extends StatelessWidget {
             color: isDarkMode
                 ? darkSurfaceContainer
                 : Colors.black.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(2)),
+            borderRadius: BorderRadius.circular(radiusMD)),
         child: Center(
             child: Center(
           child: FaIcon(
@@ -545,7 +545,7 @@ class _SettingsTile extends StatelessWidget {
             color: isDarkMode
                 ? darkSurfaceContainer
                 : Colors.black.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(2)),
+            borderRadius: BorderRadius.circular(radiusMD)),
         child: Center(
             child: Center(
           child: FaIcon(
@@ -679,7 +679,7 @@ class _QuestionItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isDarkMode ? darkSurfaceVariant : Colors.white,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(radiusMD),
           border: Border.all(
             color: isDarkMode ? darkBorder : Colors.grey.shade200,
             width: 1,

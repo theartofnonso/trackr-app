@@ -30,7 +30,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
               color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(2)),
+              borderRadius: BorderRadius.circular(radiusMD)),
           child: Column(
               spacing: 14,
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TransparentInformationContainerLite extends StatelessWidget {
@@ -30,7 +31,7 @@ class TransparentInformationContainerLite extends StatelessWidget {
             color: isDarkMode
                 ? Colors.white70.withValues(alpha: 0.1)
                 : Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(2)),
+            borderRadius: BorderRadius.circular(radiusMD)),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -71,7 +71,7 @@ class _LinearBar extends StatelessWidget {
       decoration: BoxDecoration(
         color:
             isDarkMode || forceDarkMode ? Colors.black12 : Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(radiusXS),
       ),
       child: Row(
         children: [

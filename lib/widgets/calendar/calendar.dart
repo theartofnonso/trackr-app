@@ -371,12 +371,13 @@ class _Day extends StatelessWidget {
       child: Container(
         padding: selected ? const EdgeInsets.all(2) : null,
         decoration: BoxDecoration(
-            border: _dateBorder(), borderRadius: BorderRadius.circular(2)),
+            border: _dateBorder(),
+            borderRadius: BorderRadius.circular(radiusSM)),
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             color: _getBackgroundColor(),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(radiusXS),
           ),
           child: Center(
             child: Text(
