@@ -15,7 +15,7 @@ class SingleSetRow extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = isDarkMode ? Colors.white10 : Colors.black38;
+    final color = isDarkMode ? darkBorder : Colors.black38;
 
     final pbsForSet = pbs
         .map((pb) => PBIcon(
@@ -31,7 +31,7 @@ class SingleSetRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
           decoration: BoxDecoration(
             color: pbs.isNotEmpty
-                ? (isDarkMode ? sapphireDark80 : Colors.grey.shade200)
+                ? (isDarkMode ? darkSurfaceContainer : Colors.grey.shade200)
                 : null,
             borderRadius: BorderRadius.circular(2), // Rounded corners
           ),

@@ -14,7 +14,6 @@ import '../../colors.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
@@ -340,7 +339,7 @@ class _RoutineTemplateEditorScreenState
               : null,
           body: Container(
             decoration: BoxDecoration(
-              gradient: themeGradient(context: context),
+              color: isDarkMode ? darkBackground : Colors.white,
             ),
             child: SafeArea(
               bottom: false,

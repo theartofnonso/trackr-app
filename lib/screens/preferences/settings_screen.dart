@@ -92,7 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: themeGradient(context: context),
+          color: isDarkMode ? darkBackground : Colors.white,
         ),
         child: SafeArea(
           minimum: EdgeInsets.all(10),

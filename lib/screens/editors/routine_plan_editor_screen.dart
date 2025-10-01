@@ -11,7 +11,6 @@ import '../../colors.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../shared_prefs.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/routine_editors_utils.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
@@ -218,7 +217,7 @@ class _RoutinePlanEditorScreenState extends State<RoutinePlanEditorScreen> {
               ]),
           body: Container(
             decoration: BoxDecoration(
-              gradient: themeGradient(context: context),
+              color: isDarkMode ? darkBackground : Colors.white,
             ),
             child: SafeArea(
               bottom: false,

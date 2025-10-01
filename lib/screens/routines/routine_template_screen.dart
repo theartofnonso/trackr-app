@@ -234,7 +234,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         ),
         body: Container(
           decoration: BoxDecoration(
-            gradient: themeGradient(context: context),
+            color: isDarkMode ? darkBackground : Colors.white,
           ),
           child: SafeArea(
             bottom: false,

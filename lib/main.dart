@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'colors.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
@@ -302,7 +303,7 @@ class _MyAppState extends State<MyApp> {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor:
-            isDarkMode ? Colors.white : Colors.black, // status bar color
+            isDarkMode ? darkOnSurface : Colors.black, // status bar color
         systemNavigationBarIconBrightness:
             isDarkMode ? Brightness.dark : Brightness.light, // Icon Color
       ),

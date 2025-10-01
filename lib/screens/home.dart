@@ -5,16 +5,15 @@ import 'dart:io';
 // Removed Amplify usage for UI-only mode
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
+import '../colors.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'overview_screen.dart';
 
@@ -30,13 +29,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     return Scaffold(
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(
-          gradient: themeGradient(context: context),
+          color: isDarkMode ? darkBackground : Colors.white,
         ),
         child: RefreshIndicator(
           onRefresh: _loadAppData,

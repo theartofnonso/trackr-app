@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/widgets/search_bar.dart';
 
+import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
-import '../../../utils/general_utils.dart';
 import '../../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/preview/routine_template_grid_item.dart';
 
@@ -117,6 +117,9 @@ class _RoutineTemplateLibraryScreenState
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final children = _filteredTemplates
         .mapIndexed(
           (index, template) => GestureDetector(
@@ -136,7 +139,7 @@ class _RoutineTemplateLibraryScreenState
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: themeGradient(context: context),
+          color: isDarkMode ? darkBackground : Colors.white,
         ),
         child: SafeArea(
           bottom: false,

@@ -142,7 +142,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         body: Container(
           height: double.infinity,
           decoration: BoxDecoration(
-            gradient: themeGradient(context: context),
+            color: isDarkMode ? darkBackground : Colors.white,
           ),
           child: SafeArea(
             bottom: false,

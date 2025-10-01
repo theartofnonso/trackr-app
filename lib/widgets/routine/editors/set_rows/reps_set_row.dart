@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../colors.dart';
 import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
@@ -35,7 +36,7 @@ class RepsSetRow extends StatelessWidget {
 
     return Table(
       border: TableBorder.all(
-          color: isDarkMode ? Colors.white10 : Colors.black38,
+          color: isDarkMode ? darkBorder : Colors.black38,
           borderRadius: BorderRadius.circular(2)),
       columnWidths: <int, TableColumnWidth>{
         0: const FixedColumnWidth(50),

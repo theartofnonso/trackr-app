@@ -17,7 +17,7 @@ class ListTileEmptyState extends StatelessWidget {
             width: 160,
             height: 10,
             decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark : Colors.grey.shade600,
+              color: isDarkMode ? darkSurfaceContainer : Colors.grey.shade600,
               borderRadius: BorderRadius.circular(2),
             )),
         const SizedBox(height: 5),
@@ -25,7 +25,7 @@ class ListTileEmptyState extends StatelessWidget {
             width: 100,
             height: 10,
             decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark : Colors.grey.shade600,
+              color: isDarkMode ? darkSurfaceContainer : Colors.grey.shade600,
             ))
       ],
     );

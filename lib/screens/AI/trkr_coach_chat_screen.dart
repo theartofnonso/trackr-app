@@ -20,7 +20,6 @@ import '../../openAI/open_ai.dart';
 import '../../openAI/open_ai_response_format.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
@@ -72,7 +71,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
         ),
         body: Container(
           decoration: BoxDecoration(
-            gradient: themeGradient(context: context),
+            color: isDarkMode ? darkBackground : Colors.white,
           ),
           child: SafeArea(
             bottom: false,
@@ -110,7 +109,8 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                           controller: _textEditingController,
                           decoration: InputDecoration(
                               hintText: "Describe your workout"),
-                          cursorColor: isDarkMode ? Colors.white : Colors.black,
+                          cursorColor:
+                              isDarkMode ? darkOnSurface : Colors.black,
                           maxLines: null,
                           showCursor: true,
                           keyboardType: TextInputType.text,

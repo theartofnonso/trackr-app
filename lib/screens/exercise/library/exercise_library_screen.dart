@@ -11,7 +11,6 @@ import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../../utils/date_utils.dart';
-import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../widgets/buttons/opacity_button_widget.dart';
 import '../../../widgets/empty_states/no_list_empty_state.dart';
@@ -235,7 +234,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: themeGradient(context: context),
+          color: isDarkMode ? darkBackground : Colors.white,
         ),
         child: SafeArea(
           bottom: false,

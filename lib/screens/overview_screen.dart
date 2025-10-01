@@ -156,9 +156,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               child: Container(
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isDarkMode
-                      ? Colors.white.withValues(alpha: 0.1)
-                      : Colors.grey.shade200,
+                  color: isDarkMode ? darkSurface : Colors.grey.shade200,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -169,9 +167,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
                     },
                     const Spacer(),
                     CupertinoSlidingSegmentedControl<TrainingAndVolume>(
-                      backgroundColor:
-                          isDarkMode ? sapphireDark : Colors.grey.shade400,
-                      thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                      backgroundColor: isDarkMode
+                          ? darkSurfaceVariant
+                          : Colors.grey.shade400,
+                      thumbColor:
+                          isDarkMode ? darkSurfaceContainer : Colors.white,
                       groupValue: _trainingAndVolume,
                       children: {
                         TrainingAndVolume.training: SizedBox(
@@ -289,7 +289,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           const SizedBox(height: 10),
           LabelDivider(
             label: "Don't know what to train?",
-            labelColor: isDarkMode ? Colors.white70 : Colors.black,
+            labelColor: isDarkMode ? darkOnSurfaceVariant : Colors.black,
             dividerColor: sapphireLighter,
           ),
           const SizedBox(height: 6),
@@ -347,9 +347,7 @@ class _NoScheduledTitle extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: isDarkMode
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.grey.shade200,
+          color: isDarkMode ? darkSurface : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(2)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Text("Keep training to see future schedules",
@@ -365,7 +363,7 @@ class _NoScheduledTitle extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: isDarkMode
-                    ? Colors.black.withValues(alpha: 0.1)
+                    ? darkSurfaceContainer
                     : Colors.black.withValues(alpha: 0.4),
               ),
               child: Center(
@@ -402,9 +400,7 @@ class _ScheduledTitle extends StatelessWidget {
           ? Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isDarkMode
-                    ? vibrantGreen.withValues(alpha: 0.1)
-                    : vibrantGreen,
+                color: isDarkMode ? darkSurface : vibrantGreen,
               ),
               child:
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -439,9 +435,7 @@ class _ScheduledTitle extends StatelessWidget {
           : Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isDarkMode
-                    ? vibrantGreen.withValues(alpha: 0.1)
-                    : vibrantGreen,
+                color: isDarkMode ? darkSurface : vibrantGreen,
               ),
               child:
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -493,7 +487,7 @@ class _TemplatesTile extends StatelessWidget {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
           color: isDarkMode
-              ? vibrantBlue.withValues(alpha: 0.1)
+              ? darkSurfaceContainer
               : Colors.black.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(2)),
       child: Center(
@@ -521,7 +515,7 @@ class _AddTile extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
             color: isDarkMode
-                ? Colors.yellow.withValues(alpha: 0.1)
+                ? darkSurfaceContainer
                 : Colors.black.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(2)),
         child: Center(
@@ -549,7 +543,7 @@ class _SettingsTile extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
             color: isDarkMode
-                ? Colors.grey.withValues(alpha: 0.1)
+                ? darkSurfaceContainer
                 : Colors.black.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(2)),
         child: Center(
@@ -584,11 +578,12 @@ class _QuestionsForCoachSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color:
-                      isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
+                      isDarkMode ? darkSurfaceContainer : Colors.grey.shade300,
                 ),
                 child: Icon(
                   Icons.person,
-                  color: isDarkMode ? Colors.white : Colors.grey.shade600,
+                  color:
+                      isDarkMode ? darkOnSurfaceVariant : Colors.grey.shade600,
                   size: 24,
                 ),
               ),
@@ -598,7 +593,7 @@ class _QuestionsForCoachSection extends StatelessWidget {
                 style: GoogleFonts.ubuntu(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: isDarkMode ? Colors.white : Colors.black,
+                  color: isDarkMode ? darkOnSurface : Colors.black,
                 ),
               ),
             ],
@@ -683,13 +678,10 @@ class _QuestionItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color:
-              isDarkMode ? Colors.white.withValues(alpha: 0.05) : Colors.white,
+          color: isDarkMode ? darkSurfaceVariant : Colors.white,
           borderRadius: BorderRadius.circular(2),
           border: Border.all(
-            color: isDarkMode
-                ? Colors.white.withValues(alpha: 0.1)
-                : Colors.grey.shade200,
+            color: isDarkMode ? darkBorder : Colors.grey.shade200,
             width: 1,
           ),
         ),
@@ -700,7 +692,7 @@ class _QuestionItem extends StatelessWidget {
                 question,
                 style: GoogleFonts.ubuntu(
                   fontSize: 14,
-                  color: isDarkMode ? Colors.white : Colors.black87,
+                  color: isDarkMode ? darkOnSurface : Colors.black87,
                 ),
               ),
             ),
@@ -708,7 +700,7 @@ class _QuestionItem extends StatelessWidget {
             FaIcon(
               icon,
               size: 12,
-              color: isDarkMode ? Colors.white : Colors.grey.shade600,
+              color: isDarkMode ? darkOnSurfaceVariant : Colors.grey.shade600,
             ),
           ],
         ),

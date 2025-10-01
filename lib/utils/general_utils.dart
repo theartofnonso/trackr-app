@@ -287,20 +287,6 @@ final Map<int, Color> rpeIntensityToColor = {
   10: Color(0xFFFF0000), // Red - absolute limit
 };
 
-LinearGradient themeGradient({required BuildContext context}) {
-  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-  final isDarkMode = systemBrightness == Brightness.dark;
-
-  return LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      isDarkMode ? sapphireDark80 : Colors.white,
-      isDarkMode ? sapphireDark : Colors.white12,
-    ],
-  );
-}
-
 Widget getTrendIcon({required Trend trend}) {
   return switch (trend) {
     Trend.up => FaIcon(
@@ -455,7 +441,7 @@ Widget _weight(num value, String unit, BuildContext context) {
   final isDarkMode = systemBrightness == Brightness.dark;
   return CustomWordMarkIcon("${value.toStringAsFixed(1)} $unit",
       padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      color: isDarkMode ? Colors.white70 : Colors.grey.shade600);
+      color: isDarkMode ? darkOnSurfaceVariant : Colors.grey.shade600);
 }
 
 Widget summarizeProgression(

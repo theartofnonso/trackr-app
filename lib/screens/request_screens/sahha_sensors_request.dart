@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../colors.dart';
-import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/icons/apple_health_icon.dart';
 import '../../widgets/icons/google_health_icon.dart';
@@ -17,7 +16,8 @@ class SahhaSensorsRequestScreen extends StatefulWidget {
   const SahhaSensorsRequestScreen({super.key, required this.onRequest});
 
   @override
-  State<SahhaSensorsRequestScreen> createState() => _SahhaSensorsRequestScreenState();
+  State<SahhaSensorsRequestScreen> createState() =>
+      _SahhaSensorsRequestScreenState();
 }
 
 class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
@@ -40,10 +40,12 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            onPressed: Navigator.of(context).pop),
       ),
       body: Container(
-        decoration: BoxDecoration(gradient: themeGradient(context: context)),
+        decoration:
+            BoxDecoration(color: isDarkMode ? darkBackground : Colors.white),
         child: SafeArea(
           minimum: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -55,7 +57,10 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
               Text(
                 "Connect to $deviceOS",
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 20),
               Text(
@@ -105,7 +110,8 @@ class _SahhaSensorsRequestScreenState extends State<SahhaSensorsRequestScreen> {
   }
 
   Future<void> _openPlayStore() async {
-    final uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata&hl=en");
+    final uri = Uri.parse(
+        "https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata&hl=en");
 
     // Prefer launching in the Play-Store app; fall back to the browser.
     final launched = await launchUrl(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../colors.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
@@ -41,7 +42,7 @@ class WeightsAndRepsSetRow extends StatelessWidget {
 
     return Table(
       border: TableBorder.all(
-          color: isDarkMode ? Colors.white10 : Colors.black38,
+          color: isDarkMode ? darkBorder : Colors.black38,
           borderRadius: BorderRadius.circular(2)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{

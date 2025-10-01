@@ -36,7 +36,7 @@ class CSearchBar extends StatelessWidget {
             GoogleFonts.ubuntu(color: Colors.white70)),
         textStyle: WidgetStatePropertyAll<TextStyle>(
             GoogleFonts.ubuntu(color: Colors.white)),
-        backgroundColor: WidgetStatePropertyAll<Color>(sapphireDark),
+        backgroundColor: WidgetStatePropertyAll<Color>(darkSurface),
         shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(2.0),
         )));

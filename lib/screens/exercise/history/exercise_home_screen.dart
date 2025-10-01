@@ -9,10 +9,10 @@ import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart'
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
+import '../../../colors.dart';
 import '../../../dtos/appsync/exercise_dto.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
-import '../../../utils/general_utils.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../widgets/empty_states/not_found.dart';
 
@@ -49,6 +49,9 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final exercise = _exercise;
 
     if (exercise == null) return const NotFound();
@@ -161,7 +164,7 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
           body: Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              gradient: themeGradient(context: context),
+              color: isDarkMode ? darkBackground : Colors.white,
             ),
             child: SafeArea(
               bottom: false,

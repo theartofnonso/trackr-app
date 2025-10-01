@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../colors.dart';
 
 class IntTextField extends StatelessWidget {
   final int value;
@@ -26,7 +27,7 @@ class IntTextField extends StatelessWidget {
 
     return TextField(
       controller: controller,
-      cursorColor: isDarkMode ? Colors.white : Colors.black,
+      cursorColor: isDarkMode ? darkOnSurface : Colors.black,
       onChanged: (value) => onChanged(_parseIntOrDefault(value: value)),
       onTap: onTap,
       maxLength: maxLength,

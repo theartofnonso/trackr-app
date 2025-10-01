@@ -39,7 +39,10 @@ class TRKRTheme {
       tabBarTheme: TabBarThemeData(
         indicatorColor: Colors.black,
       ),
-      switchTheme: SwitchThemeData(thumbColor: WidgetStateColor.resolveWith((states) => Colors.grey.shade600),),
+      switchTheme: SwitchThemeData(
+        thumbColor:
+            WidgetStateColor.resolveWith((states) => Colors.grey.shade600),
+      ),
       menuBarTheme: TRKRMenuBarTheme.lightTheme,
       textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.white),
       floatingActionButtonTheme: TRKRFloatingActionButtonTheme.lightTheme);
@@ -53,13 +56,13 @@ class TRKRTheme {
         onSecondary: Colors.black,
         error: Colors.black,
         onError: Colors.white,
-        surface: sapphireDark,
-        onSurface: Colors.white,
+        surface: darkSurface,
+        onSurface: darkOnSurface,
       ),
       useMaterial3: true,
       fontFamily: "Ubuntu",
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: sapphireDark80,
+      scaffoldBackgroundColor: darkBackground,
       primaryColor: Colors.white,
       textTheme: TRKRTextTheme.darkTheme,
       iconTheme: TRKRIconTheme.darkTheme,
@@ -70,7 +73,9 @@ class TRKRTheme {
       tabBarTheme: TabBarThemeData(
         indicatorColor: Colors.white,
       ),
-      switchTheme: SwitchThemeData(thumbColor: WidgetStateColor.resolveWith((states) => Colors.white70),),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateColor.resolveWith((states) => Colors.white70),
+      ),
       menuBarTheme: TRKRMenuBarTheme.darkTheme,
       textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.white),
       navigationBarTheme: TRKRNavigationBarTheme.darkTheme);

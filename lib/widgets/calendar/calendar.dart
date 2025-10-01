@@ -247,7 +247,7 @@ class _CalendarTitleHeader extends StatelessWidget {
           Text(
             DateFormat('MMMM yyyy').format(date),
             style: GoogleFonts.ubuntu(
-              color: isDarkMode ? Colors.white : Colors.black,
+              color: isDarkMode ? darkOnSurface : Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
@@ -283,10 +283,8 @@ class _CalendarHeader extends StatelessWidget {
         itemCount: 7,
         itemBuilder: (_, index) => Text(
           ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][index],
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: isDarkMode ? Colors.white70 : Colors.black54),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: isDarkMode ? darkOnSurfaceVariant : Colors.black54),
           textAlign: TextAlign.center,
         ),
       ),
@@ -353,12 +351,12 @@ class _Day extends StatelessWidget {
   Color _getBackgroundColor() => hasRoutineLog
       ? (isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen)
       : (isDarkMode
-          ? sapphireDark80.withValues(alpha: 0.5)
+          ? darkSurface.withValues(alpha: 0.5)
           : Colors.grey.shade200);
 
   Color _getTextColor() => hasRoutineLog
       ? (isDarkMode ? vibrantGreen : Colors.black)
-      : (isDarkMode ? Colors.white : Colors.black);
+      : (isDarkMode ? darkOnSurface : Colors.black);
 
   Border? _dateBorder() {
     if (selected) return Border.all(color: Colors.blueGrey, width: 2);

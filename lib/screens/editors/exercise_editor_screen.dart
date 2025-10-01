@@ -12,7 +12,6 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../logger.dart';
-import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/dividers/label_divider.dart';
 import '../../widgets/list_tile.dart';
@@ -79,7 +78,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
           body: Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              gradient: themeGradient(context: context),
+              color: isDarkMode ? darkBackground : Colors.white,
             ),
             child: SafeArea(
               minimum: const EdgeInsets.all(10),

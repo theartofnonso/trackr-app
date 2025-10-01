@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../../colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
@@ -46,7 +47,7 @@ class DurationSetRow extends StatelessWidget {
 
     return Table(
       border: TableBorder.all(
-          color: isDarkMode ? Colors.white10 : Colors.black38,
+          color: isDarkMode ? darkBorder : Colors.black38,
           borderRadius: BorderRadius.circular(2)),
       columnWidths: <int, TableColumnWidth>{
         0: const FixedColumnWidth(50),

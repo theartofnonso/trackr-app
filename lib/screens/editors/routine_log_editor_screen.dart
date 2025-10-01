@@ -22,7 +22,6 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/date_utils.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/notifications_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
@@ -247,6 +246,9 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final routineLogEditorController =
         Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
@@ -311,7 +313,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
             ),
             body: Container(
               decoration: BoxDecoration(
-                gradient: themeGradient(context: context),
+                color: isDarkMode ? darkBackground : Colors.white,
               ),
               child: SafeArea(
                 minimum: EdgeInsets.symmetric(vertical: 10),

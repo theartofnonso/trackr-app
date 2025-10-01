@@ -12,7 +12,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/shareables/pbs_shareable.dart';
 import 'package:tracker_app/widgets/shareables/routine_log_shareable_lite.dart';
 import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart';
@@ -55,6 +54,9 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final updatedExerciseLogs =
         loggedExercises(exerciseLogs: widget.log.exerciseLogs);
 
@@ -140,7 +142,8 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
           ],
         ),
         body: Container(
-          decoration: BoxDecoration(gradient: themeGradient(context: context)),
+          decoration:
+              BoxDecoration(color: isDarkMode ? darkBackground : Colors.white),
           child: SafeArea(
             minimum: const EdgeInsets.symmetric(vertical: 10.0),
             child: Column(

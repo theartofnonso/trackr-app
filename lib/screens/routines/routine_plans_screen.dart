@@ -9,6 +9,7 @@ import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 import 'package:tracker_app/utils/training_archetype_utils.dart';
 
+import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/exercise_dto.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
@@ -23,7 +24,6 @@ import '../../shared_prefs.dart';
 import '../../strings/ai_prompts.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/dialog_utils.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -45,6 +45,9 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
@@ -76,7 +79,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
           body: Container(
             height: double.infinity,
             decoration: BoxDecoration(
-              gradient: themeGradient(context: context),
+              color: isDarkMode ? darkBackground : Colors.white,
             ),
             child: SafeArea(
               minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),

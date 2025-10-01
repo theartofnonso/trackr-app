@@ -11,11 +11,13 @@ class TRKRAppBarTheme {
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
       actionsIconTheme: TRKRIconTheme.lightTheme,
-      titleTextStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w700, color: Colors.black, fontSize: 16));
+      titleTextStyle: GoogleFonts.ubuntu(
+          fontWeight: FontWeight.w700, color: Colors.black, fontSize: 16));
 
   static AppBarTheme darkTheme = AppBarTheme(
-      backgroundColor: sapphireDark80,
-      foregroundColor: Colors.white,
+      backgroundColor: darkSurface,
+      foregroundColor: darkOnSurface,
       actionsIconTheme: TRKRIconTheme.darkTheme,
-      titleTextStyle: GoogleFonts.ubuntu(fontWeight: FontWeight.w700, color: Colors.white, fontSize: 16));
+      titleTextStyle: GoogleFonts.ubuntu(
+          fontWeight: FontWeight.w700, color: Colors.white, fontSize: 16));
 }

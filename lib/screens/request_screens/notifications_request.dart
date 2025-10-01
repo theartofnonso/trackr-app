@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../colors.dart';
-import '../../utils/general_utils.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
 
 class NotificationsRequestScreen extends StatefulWidget {
@@ -11,19 +10,26 @@ class NotificationsRequestScreen extends StatefulWidget {
   const NotificationsRequestScreen({super.key, required this.onRequest});
 
   @override
-  State<NotificationsRequestScreen> createState() => _NotificationsRequestScreenState();
+  State<NotificationsRequestScreen> createState() =>
+      _NotificationsRequestScreenState();
 }
 
-class _NotificationsRequestScreenState extends State<NotificationsRequestScreen> {
+class _NotificationsRequestScreenState
+    extends State<NotificationsRequestScreen> {
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            onPressed: Navigator.of(context).pop),
       ),
       body: Container(
-        decoration: BoxDecoration(gradient: themeGradient(context: context)),
+        decoration:
+            BoxDecoration(color: isDarkMode ? darkBackground : Colors.white),
         child: SafeArea(
           minimum: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -38,7 +44,10 @@ class _NotificationsRequestScreenState extends State<NotificationsRequestScreen>
               Text(
                 "Stay Alert",
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 20),
               Text(

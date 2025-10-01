@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
+import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../utils/general_utils.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/routine/preview/routine_log_widget.dart';
 
@@ -18,10 +18,15 @@ class RoutineLogsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogsForMonth =
-        Provider.of<ExerciseAndRoutineController>(context, listen: true).whereLogsIsSameMonth(dateTime: dateTime);
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
-    final logs = routineLogsForMonth.sorted((a, b) => b.createdAt.compareTo(a.createdAt));
+    final routineLogsForMonth =
+        Provider.of<ExerciseAndRoutineController>(context, listen: true)
+            .whereLogsIsSameMonth(dateTime: dateTime);
+
+    final logs = routineLogsForMonth
+        .sorted((a, b) => b.createdAt.compareTo(a.createdAt));
 
     final month = dateTime.formattedFullMonth();
 
@@ -29,13 +34,14 @@ class RoutineLogsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("$month Strength Training".toUpperCase()),
         leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28), onPressed: Navigator.of(context).pop),
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            onPressed: Navigator.of(context).pop),
         centerTitle: true,
       ),
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          gradient: themeGradient(context: context),
+          color: isDarkMode ? darkBackground : Colors.white,
         ),
         child: SafeArea(
           bottom: false,
@@ -48,7 +54,9 @@ class RoutineLogsScreen extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 150),
                           itemBuilder: (BuildContext context, int index) {
                             final log = logs[index];
-                            return RoutineLogWidget(log: log, trailing: log.createdAt.durationSinceOrDate());
+                            return RoutineLogWidget(
+                                log: log,
+                                trailing: log.createdAt.durationSinceOrDate());
                           },
                           separatorBuilder: (BuildContext context, int index) =>
                               Divider(color: Colors.transparent),
@@ -58,7 +66,8 @@ class RoutineLogsScreen extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: const NoListEmptyState(
-                            message: "It might feel quiet now, but your logged workouts will soon appear here."),
+                            message:
+                                "It might feel quiet now, but your logged workouts will soon appear here."),
                       ),
                     ),
             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 
 class SolidButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
@@ -53,7 +54,7 @@ class SolidButtonWidget extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
                       color: textColor ??
-                          (isDarkMode ? Colors.white : Colors.black))),
+                          (isDarkMode ? darkOnSurface : Colors.black))),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),

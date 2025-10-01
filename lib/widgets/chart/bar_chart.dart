@@ -67,7 +67,7 @@ class CustomBarChart extends StatelessWidget {
           )
         : Center(
             child: FaIcon(FontAwesomeIcons.chartSimple,
-                color: isDarkMode ? sapphireDark : Colors.grey.shade400,
+                color: isDarkMode ? darkSurfaceContainer : Colors.grey.shade400,
                 size: 120));
   }
 
@@ -133,7 +133,7 @@ class CustomBarChart extends StatelessWidget {
                 toY: point.y.toDouble(),
                 borderRadius: BorderRadius.circular(2),
                 color: barColors?[index] ??
-                    (isDarkMode ? Colors.white : Colors.black))
+                    (isDarkMode ? darkOnSurface : Colors.black))
           ],
           showingTooltipIndicators: showTopTitles ? [0] : null,
         );

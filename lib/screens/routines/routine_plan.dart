@@ -14,7 +14,6 @@ import '../../dtos/viewmodels/routine_plan_arguments.dart';
 import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
-import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -106,7 +105,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         body: Container(
           height: double.infinity,
           decoration: BoxDecoration(
-            gradient: themeGradient(context: context),
+            color: isDarkMode ? darkBackground : Colors.white,
           ),
           child: SafeArea(
             minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),

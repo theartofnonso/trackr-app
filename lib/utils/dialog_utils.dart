@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
@@ -14,7 +13,7 @@ void showSnackbar({required BuildContext context, required String message}) {
   final isDarkMode = systemBrightness == Brightness.dark;
 
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+      backgroundColor: isDarkMode ? darkSurface : Colors.grey.shade200,
       behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
@@ -36,7 +35,6 @@ void showSnackbar({required BuildContext context, required String message}) {
 Future<void> displayBottomSheet(
     {required BuildContext context,
     required Widget child,
-    Gradient? gradient,
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
@@ -61,10 +59,8 @@ Future<void> displayBottomSheet(
                   width: double.infinity,
                   padding: padding ?? const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                      color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(2),
-                      gradient:
-                          isDarkMode ? themeGradient(context: context) : null),
+                      color: isDarkMode ? darkSurface : Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(2)),
                   child: SafeArea(child: child),
                 ),
               ],
