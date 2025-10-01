@@ -5,12 +5,15 @@ class HorizontalStackedBars extends StatelessWidget {
   final List<int> weights;
   final List<Color> colors;
 
-  const HorizontalStackedBars({super.key, required this.weights, required this.colors});
+  const HorizontalStackedBars(
+      {super.key, required this.weights, required this.colors});
 
   @override
   Widget build(BuildContext context) {
     // Define the weights and colors for the bars
-    final List<_Bar> bars = weights.mapIndexed((index, value) => _Bar(weight: value, color: colors[index])).toList();
+    final List<_Bar> bars = weights
+        .mapIndexed((index, value) => _Bar(weight: value, color: colors[index]))
+        .toList();
     // Create a list of Expanded widgets based on the weights
     final List<Widget> weightedBars = bars.map((bar) {
       return Expanded(
@@ -22,11 +25,8 @@ class HorizontalStackedBars extends StatelessWidget {
       );
     }).toList();
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(2),
-      child: Row(
-        children: weightedBars,
-      ),
+    return Row(
+      children: weightedBars,
     );
   }
 }

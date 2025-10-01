@@ -421,7 +421,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             color: isDarkMode
                                 ? sapphireDark80
                                 : Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(5)),
+                            borderRadius: BorderRadius.circular(2)),
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

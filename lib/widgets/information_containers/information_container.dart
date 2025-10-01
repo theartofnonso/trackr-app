@@ -21,15 +21,20 @@ class InformationContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
+      decoration:
+          BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       width: double.infinity,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title.toUpperCase(), style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w700)),
+        Text(title.toUpperCase(),
+            style:
+                GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w700)),
         richDescription ??
             Padding(
               padding: const EdgeInsets.only(top: 6.0),
-              child: Text(description, style: GoogleFonts.ubuntu(fontSize: 14, fontWeight: FontWeight.w400, height: 2)),
+              child: Text(description,
+                  style: GoogleFonts.ubuntu(
+                      fontSize: 14, fontWeight: FontWeight.w400, height: 2)),
             ),
       ]),
     );

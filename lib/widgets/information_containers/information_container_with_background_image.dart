@@ -18,7 +18,6 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
     this.onTap,
     required this.color,
     this.height = 160,
-    this.borderRadius = 12,
     this.alignmentGeometry,
   });
 
@@ -34,9 +33,6 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
   /// Fixed height of the card; width stretches to parent.
   final double height;
 
-  /// Corner radius.
-  final double borderRadius;
-
   final Color color;
 
   final AlignmentGeometry? alignmentGeometry;
@@ -51,69 +47,66 @@ class InformationContainerWithBackgroundImage extends StatelessWidget {
       child: Container(
         height: height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: BorderRadius.circular(2),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadius),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              // 1️⃣ Background image
-              Image.asset(
-                image,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                alignment: alignmentGeometry ?? Alignment.topCenter,
-              ),
-              // 2️⃣ Gradient overlay (transparent → dark)
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        color, // semi‑opaque dark
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      // Text column expands; arrow stays fixed size.
-                      Expanded(
-                        child: Text(
-                          subtitle,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            height: 1.8,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ),
-                      if (callback != null)
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.only(bottom: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                          child: const FaIcon(
-                            Icons.chevron_right_rounded,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        )
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // 1️⃣ Background image
+            Image.asset(
+              image,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              alignment: alignmentGeometry ?? Alignment.topCenter,
+            ),
+            // 2️⃣ Gradient overlay (transparent → dark)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      color, // semi‑opaque dark
                     ],
                   ),
                 ),
-            ],
-          ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Text column expands; arrow stays fixed size.
+                  Expanded(
+                    child: Text(
+                      subtitle,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        height: 1.8,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ),
+                  if (callback != null)
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.only(bottom: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      child: const FaIcon(
+                        Icons.chevron_right_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    )
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -13,13 +13,13 @@ class LabelContainerDivider extends StatelessWidget {
 
   const LabelContainerDivider(
       {super.key,
-        required this.label,
-        required this.description,
-        required this.labelStyle,
-        this.child,
-        required this.descriptionStyle,
-        required this.dividerColor,
-        this.labelAlignment = LabelAlignment.left});
+      required this.label,
+      required this.description,
+      required this.labelStyle,
+      this.child,
+      required this.descriptionStyle,
+      required this.dividerColor,
+      this.labelAlignment = LabelAlignment.left});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,9 @@ class LabelContainerDivider extends StatelessWidget {
             child: Text(
               description,
               style: descriptionStyle,
-              textAlign: labelAlignment == LabelAlignment.center ? TextAlign.center : TextAlign.start,
+              textAlign: labelAlignment == LabelAlignment.center
+                  ? TextAlign.center
+                  : TextAlign.start,
             ))
       ],
     );
@@ -76,9 +78,9 @@ class _LeftAlignment extends StatelessWidget {
           width: double.infinity, // width of the divider (line thickness)
           decoration: BoxDecoration(
             color: dividerColor,
-            borderRadius: BorderRadius.circular(5),
           ), // color of the divider
-          margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+          margin: const EdgeInsets.symmetric(
+              horizontal: 10), // add space around the divider
         ),
       ),
     ]);
@@ -99,12 +101,15 @@ class _CenterAlignment extends StatelessWidget {
         width: double.infinity, // width of the divider (line thickness)
         decoration: BoxDecoration(
           color: dividerColor,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(2),
         ), // color of the divider
-        margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+        margin: const EdgeInsets.symmetric(
+            horizontal: 10), // add space around the divider
       ),
     );
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [divider, child, divider]);
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [divider, child, divider]);
   }
 }
 
@@ -123,9 +128,9 @@ class _RightAlignment extends StatelessWidget {
           width: double.infinity, // width of the divider (line thickness)
           decoration: BoxDecoration(
             color: dividerColor,
-            borderRadius: BorderRadius.circular(5),
           ), // color of the divider
-          margin: const EdgeInsets.symmetric(horizontal: 10), // add space around the divider
+          margin: const EdgeInsets.symmetric(
+              horizontal: 10), // add space around the divider
         ),
       ),
       child

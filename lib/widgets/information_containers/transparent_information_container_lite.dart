@@ -9,7 +9,12 @@ class TransparentInformationContainerLite extends StatelessWidget {
   final Widget? trailing;
 
   const TransparentInformationContainerLite(
-      {super.key, required this.content, this.richText, this.onTap, this.useOpacity = false, this.trailing});
+      {super.key,
+      required this.content,
+      this.richText,
+      this.onTap,
+      this.useOpacity = false,
+      this.trailing});
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +27,10 @@ class TransparentInformationContainerLite extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-            color: isDarkMode ? Colors.white70.withValues(alpha: 0.1) : Colors.grey.shade200,
-            borderRadius: BorderRadius.circular(5)),
+            color: isDarkMode
+                ? Colors.white70.withValues(alpha: 0.1)
+                : Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(2)),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,

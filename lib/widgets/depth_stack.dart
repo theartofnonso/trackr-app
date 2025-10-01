@@ -9,7 +9,7 @@ class DepthStack extends StatelessWidget {
     this.clipBehavior = Clip.none,
     this.basePadding = const EdgeInsets.symmetric(horizontal: 6),
     this.backgroundColor = Colors.white,
-    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(2)),
   });
 
   final List<Widget> children;
@@ -22,14 +22,14 @@ class DepthStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     assert(children.isNotEmpty, 'DepthStack requires at least one child');
 
     final hasMultipleChildren = children.length > 1;
-    final baseChildren = hasMultipleChildren ? children.sublist(0, children.length - 1) : [];
+    final baseChildren =
+        hasMultipleChildren ? children.sublist(0, children.length - 1) : [];
     final lastChild = children.last;
 
     final boxShadow = [
@@ -47,9 +47,9 @@ class DepthStack extends StatelessWidget {
       children: [
         // Base children with padding
         ...baseChildren.map((child) => Padding(
-          padding: basePadding,
-          child: child,
-        )),
+              padding: basePadding,
+              child: child,
+            )),
         // Handle last child based on number of children
         if (hasMultipleChildren)
           Positioned(

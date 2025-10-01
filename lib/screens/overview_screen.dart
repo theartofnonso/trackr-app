@@ -23,7 +23,6 @@ import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
 import '../widgets/calendar/calendar_logs.dart';
 import '../widgets/dividers/label_divider.dart';
-import '../widgets/monitors/full_animated_gauge.dart';
 import '../widgets/monthly_insights/log_streak_chart.dart';
 import '../widgets/monthly_insights/volume_chart.dart';
 import 'AI/trkr_coach_chat_screen.dart';
@@ -46,8 +45,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   bool _loading = false;
 
   DateTime? _selectedCalendarDate;
-
-  DateTimeRange? _calendarDateTimeRange;
 
   TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
 
@@ -137,17 +134,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
         Calendar(
             onSelectDate: _onSelectCalendarDateTime,
             onMonthChanged: _onMonthChanged),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
         StaggeredGrid.count(
-          crossAxisCount: 2,
+          crossAxisCount: 3,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
           children: [
             StaggeredGridTile.count(
-              crossAxisCellCount: 1,
+              crossAxisCellCount: 2,
               mainAxisCellCount: 1,
               child: predictedTemplate != null
                   ? _ScheduledTitle(
@@ -156,22 +151,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   : const _NoScheduledTitle(),
             ),
             StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: _LogStreakTile(
-                  dateTimeRange:
-                      _calendarDateTimeRange ?? thisMonthDateRange()),
-            ),
-            StaggeredGridTile.count(
-              crossAxisCellCount: 1,
+              crossAxisCellCount: 2,
               mainAxisCellCount: 2,
               child: Container(
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                    color: isDarkMode
-                        ? Colors.white.withValues(alpha: 0.1)
-                        : Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(5)),
+                  color: isDarkMode
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.grey.shade200,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -225,8 +213,18 @@ class _OverviewScreenState extends State<OverviewScreen> {
                 child: _AddTile(),
               ),
             ),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: GestureDetector(
+                onTap: () => navigateToSettings(context: context),
+                child: _SettingsTile(),
+              ),
+            ),
           ],
         ),
+        const SizedBox(height: 20),
+        _QuestionsForCoachSection(),
       ]),
     );
   }
@@ -288,17 +286,13 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   });
             },
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           LabelDivider(
             label: "Don't know what to train?",
             labelColor: isDarkMode ? Colors.white70 : Colors.black,
             dividerColor: sapphireLighter,
           ),
-          const SizedBox(
-            height: 6,
-          ),
+          const SizedBox(height: 6),
           ListTile(
             contentPadding: EdgeInsets.zero,
             horizontalTitleGap: 10,
@@ -338,53 +332,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _onMonthChanged(DateTimeRange dateRange) {
-    setState(() {
-      _calendarDateTimeRange = dateRange;
-    });
-  }
-}
-
-class _LogStreakTile extends StatelessWidget {
-  final DateTimeRange dateTimeRange;
-
-  const _LogStreakTile({required this.dateTimeRange});
-
-  @override
-  Widget build(BuildContext context) {
-    final exerciseAndRoutineController =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-    final routineLogs = exerciseAndRoutineController.whereLogsIsWithinRange(
-        range: dateTimeRange);
-
-    final routineLogsByDay =
-        groupBy(routineLogs, (log) => log.createdAt.withoutTime().day);
-
-    final monthlyProgress = routineLogsByDay.length;
-
-    final color = lowToHighIntensityColor(monthlyProgress / 12);
-
-    return GestureDetector(
-      onTap: () {
-        showBottomSheetWithNoAction(
-            context: context,
-            title: "Log Streak",
-            description:
-                "Streak is the number of days you engage in strength training each month, with an ideal target of 12 days.");
-      },
-      child: Container(
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(5)),
-        child: FullAnimatedGauge(
-          value: monthlyProgress,
-          min: 0,
-          max: 12,
-          label: "Days",
-        ),
-      ),
-    );
+    // Calendar month changed - can be used for future functionality
   }
 }
 
@@ -402,7 +350,7 @@ class _NoScheduledTitle extends StatelessWidget {
           color: isDarkMode
               ? Colors.white.withValues(alpha: 0.1)
               : Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(5)),
+          borderRadius: BorderRadius.circular(2)),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         Text("Keep training to see future schedules",
             style: GoogleFonts.ubuntu(
@@ -419,7 +367,6 @@ class _NoScheduledTitle extends StatelessWidget {
                 color: isDarkMode
                     ? Colors.black.withValues(alpha: 0.1)
                     : Colors.black.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(3),
               ),
               child: Center(
                 child: FaIcon(
@@ -455,10 +402,10 @@ class _ScheduledTitle extends StatelessWidget {
           ? Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                  color: isDarkMode
-                      ? vibrantGreen.withValues(alpha: 0.1)
-                      : vibrantGreen,
-                  borderRadius: BorderRadius.circular(5)),
+                color: isDarkMode
+                    ? vibrantGreen.withValues(alpha: 0.1)
+                    : vibrantGreen,
+              ),
               child:
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Text("${schedule.name} has been completed. Great job!",
@@ -476,7 +423,6 @@ class _ScheduledTitle extends StatelessWidget {
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: vibrantGreen.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(3),
                       ),
                       child: Center(
                         child: FaIcon(
@@ -493,10 +439,10 @@ class _ScheduledTitle extends StatelessWidget {
           : Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                  color: isDarkMode
-                      ? vibrantGreen.withValues(alpha: 0.1)
-                      : vibrantGreen,
-                  borderRadius: BorderRadius.circular(5)),
+                color: isDarkMode
+                    ? vibrantGreen.withValues(alpha: 0.1)
+                    : vibrantGreen,
+              ),
               child:
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Text("${schedule.name} is scheduled today!",
@@ -516,7 +462,6 @@ class _ScheduledTitle extends StatelessWidget {
                         color: isDarkMode
                             ? vibrantGreen.withValues(alpha: 0.1)
                             : Colors.black.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(3),
                       ),
                       child: Center(
                         child: FaIcon(
@@ -543,39 +488,21 @@ class _TemplatesTile extends StatelessWidget {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Container(
-      padding: EdgeInsets.all(12),
+      width: 25,
+      height: 25,
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-          color: isDarkMode ? vibrantBlue.withValues(alpha: 0.1) : vibrantBlue,
-          borderRadius: BorderRadius.circular(5)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Manage your training experience",
-            style: GoogleFonts.ubuntu(
-                fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
-        const Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              width: 25,
-              height: 25,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: isDarkMode
-                    ? vibrantBlue.withValues(alpha: 0.1)
-                    : Colors.black.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Center(
-                child: FaIcon(
-                  FontAwesomeIcons.personWalking,
-                  size: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
+          color: isDarkMode
+              ? vibrantBlue.withValues(alpha: 0.1)
+              : Colors.black.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(2)),
+      child: Center(
+        child: FaIcon(
+          FontAwesomeIcons.personWalking,
+          size: 28,
+          color: Colors.white,
         ),
-      ]),
+      ),
     );
   }
 }
@@ -589,40 +516,203 @@ class _AddTile extends StatelessWidget {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color:
-              isDarkMode ? Colors.yellow.withValues(alpha: 0.1) : Colors.yellow,
-          borderRadius: BorderRadius.circular(5)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Start a fresh session",
-            style: GoogleFonts.ubuntu(
-                fontSize: 20, height: 1.5, fontWeight: FontWeight.w600)),
-        const Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-                width: 25,
-                height: 25,
-                padding: const EdgeInsets.all(4),
+        width: 25,
+        height: 25,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+            color: isDarkMode
+                ? Colors.yellow.withValues(alpha: 0.1)
+                : Colors.black.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(2)),
+        child: Center(
+            child: Center(
+          child: FaIcon(
+            FontAwesomeIcons.plus,
+            size: 28,
+            color: Colors.white,
+          ),
+        )));
+  }
+}
+
+class _SettingsTile extends StatelessWidget {
+  const _SettingsTile();
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Container(
+        width: 25,
+        height: 25,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+            color: isDarkMode
+                ? Colors.grey.withValues(alpha: 0.1)
+                : Colors.black.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(2)),
+        child: Center(
+            child: Center(
+          child: FaIcon(
+            FontAwesomeIcons.gear,
+            size: 28,
+            color: Colors.white,
+          ),
+        )));
+  }
+}
+
+class _QuestionsForCoachSection extends StatelessWidget {
+  const _QuestionsForCoachSection();
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
-                  color: isDarkMode
-                      ? Colors.yellow.withValues(alpha: 0.1)
-                      : Colors.black.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(3),
+                  shape: BoxShape.circle,
+                  color:
+                      isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300,
                 ),
-                child: Center(
-                    child: Center(
-                  child: FaIcon(
-                    FontAwesomeIcons.plus,
-                    size: 14,
-                    color: Colors.white,
-                  ),
-                )))
+                child: Icon(
+                  Icons.person,
+                  color: isDarkMode ? Colors.white : Colors.grey.shade600,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                "Questions for your Coach",
+                style: GoogleFonts.ubuntu(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white : Colors.black,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _QuestionItem(
+            question: "Should I take any supplements for muscle growth?",
+            icon: FontAwesomeIcons.arrowRight,
+            onTap: () {
+              // Navigate to coach chat with this question
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TRKRCoachChatScreen(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 8),
+          _QuestionItem(
+            question: "How do I know if I'm progressing?",
+            icon: FontAwesomeIcons.arrowRight,
+            onTap: () {
+              // Navigate to coach chat with this question
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TRKRCoachChatScreen(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 8),
+          _QuestionItem(
+            question:
+                "Are free weights better than machines for building muscle?",
+            icon: FontAwesomeIcons.arrowRight,
+            onTap: () {
+              // Navigate to coach chat with this question
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TRKRCoachChatScreen(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 8),
+          _QuestionItem(
+            question: "How can I improve my workout recovery?",
+            icon: FontAwesomeIcons.arrowRight,
+            onTap: () {
+              // Navigate to coach chat with this question
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TRKRCoachChatScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuestionItem extends StatelessWidget {
+  const _QuestionItem({
+    required this.question,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String question;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color:
+              isDarkMode ? Colors.white.withValues(alpha: 0.05) : Colors.white,
+          borderRadius: BorderRadius.circular(2),
+          border: Border.all(
+            color: isDarkMode
+                ? Colors.white.withValues(alpha: 0.1)
+                : Colors.grey.shade200,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                question,
+                style: GoogleFonts.ubuntu(
+                  fontSize: 14,
+                  color: isDarkMode ? Colors.white : Colors.black87,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            FaIcon(
+              icon,
+              size: 12,
+              color: isDarkMode ? Colors.white : Colors.grey.shade600,
+            ),
           ],
         ),
-      ]),
+      ),
     );
   }
 }

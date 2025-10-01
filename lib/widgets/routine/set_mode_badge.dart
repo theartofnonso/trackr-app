@@ -9,7 +9,8 @@ class SetModeBadge extends StatelessWidget {
   final Widget child;
   final Offset? offset;
 
-  const SetModeBadge({super.key, required this.setDto, required this.child, this.offset});
+  const SetModeBadge(
+      {super.key, required this.setDto, required this.child, this.offset});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +27,10 @@ class SetModeBadge extends StatelessWidget {
             height: 18,
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen,
-              borderRadius: BorderRadius.circular(3),
+              color: isDarkMode
+                  ? vibrantGreen.withValues(alpha: 0.1)
+                  : vibrantGreen,
+              borderRadius: BorderRadius.circular(2),
             ),
             child: Center(
               child: FaIcon(

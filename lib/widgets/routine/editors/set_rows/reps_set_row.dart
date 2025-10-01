@@ -22,7 +22,8 @@ class RepsSetRow extends StatelessWidget {
     required this.onCheck,
     required this.controller,
     required this.onChangedReps,
-    required this.onTapRepsEditor, required this.editorType,
+    required this.onTapRepsEditor,
+    required this.editorType,
   });
 
   @override
@@ -33,8 +34,9 @@ class RepsSetRow extends StatelessWidget {
     int reps = (setDto).reps;
 
     return Table(
-      border:
-          TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.black38, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(
+          color: isDarkMode ? Colors.white10 : Colors.black38,
+          borderRadius: BorderRadius.circular(2)),
       columnWidths: <int, TableColumnWidth>{
         0: const FixedColumnWidth(50),
         1: const FlexColumnWidth(1),

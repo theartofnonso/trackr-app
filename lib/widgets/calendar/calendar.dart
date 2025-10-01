@@ -377,8 +377,9 @@ class _Day extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-              color: _getBackgroundColor(),
-              borderRadius: BorderRadius.circular(2)),
+            color: _getBackgroundColor(),
+            borderRadius: BorderRadius.circular(2),
+          ),
           child: Center(
             child: Text(
               "${dateTime.day}",

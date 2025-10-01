@@ -29,7 +29,8 @@ class InformationContainerLite extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-            color: isDarkMode ? color?.withValues(alpha: 0.1) : color, borderRadius: BorderRadius.circular(5)),
+            color: isDarkMode ? color?.withValues(alpha: 0.1) : color,
+            borderRadius: BorderRadius.circular(2)),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         child: Row(
           spacing: 20,
@@ -42,7 +43,7 @@ class InformationContainerLite extends StatelessWidget {
                             height: 1.5,
                             color: isDarkMode ? color : Colors.black,
                             fontWeight: FontWeight.w600))),
-            if(trailingWidget != null) trailingWidget
+            if (trailingWidget != null) trailingWidget
           ],
         ),
       ),

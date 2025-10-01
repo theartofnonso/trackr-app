@@ -10,13 +10,10 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/utils/date_utils.dart';
-import 'package:tracker_app/widgets/icons/linear_progress_bar_with_indicator.dart';
 
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
-import '../utils/dialog_utils.dart';
 import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
 import 'overview_screen.dart';
@@ -33,38 +30,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
-    final lastYearRange = yearToDateTimeRange(datetime: DateTime.now());
-    final logsForTheYear =
-        Provider.of<ExerciseAndRoutineController>(context, listen: true)
-            .whereLogsIsWithinRange(range: lastYearRange);
+    Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
     return Scaffold(
-      appBar: AppBar(
-          title: GestureDetector(
-            onTap: () {
-              showBottomSheetWithNoAction(
-                  context: context,
-                  title:
-                      "${logsForTheYear.length} of 144 sessions in ${DateTime.now().year}",
-                  description:
-                      "Your Streak counts the days you commit to strength training each month. Hit 12 sessions a month to stay on track for 144 in a year.");
-            },
-            child: Container(
-              color: Colors.transparent,
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: IconProgressBar(
-                progress: logsForTheYear.length / 144,
-                icon:
-                    FaIcon(FontAwesomeIcons.personWalking, color: Colors.green),
-              ),
-            ),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () => navigateToSettings(context: context),
-              icon: FaIcon(FontAwesomeIcons.gear),
-            )
-          ]),
       body: Container(
         height: double.infinity,
         decoration: BoxDecoration(

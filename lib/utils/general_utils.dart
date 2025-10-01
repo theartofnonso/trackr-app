@@ -319,7 +319,7 @@ Widget getTrendIcon({required Trend trend}) {
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: vibrantGreen.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(3),
+          borderRadius: BorderRadius.circular(2),
         ),
         child: Center(
           child: FaIcon(

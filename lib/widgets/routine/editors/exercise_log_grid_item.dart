@@ -42,7 +42,9 @@ class ExerciseLogGridItemWidget extends StatelessWidget {
 
     final children = exerciseLogDto.sets
         .map((setDto) => FaIcon(
-              setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
+              setDto.checked
+                  ? FontAwesomeIcons.solidSquareCheck
+                  : FontAwesomeIcons.solidSquareCheck,
               color: isPastRoutine && setDto.isNotEmpty()
                   ? vibrantGreen
                   : setDto.checked
@@ -64,42 +66,51 @@ class ExerciseLogGridItemWidget extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200, borderRadius: BorderRadius.circular(12)),
-          child: Column(spacing: 12, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Column(
+              color: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(2)),
+          child: Column(
+              spacing: 12,
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(exerciseLogDto.exercise.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                if (superSetExerciseDto != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.link,
-                          size: 10,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(exerciseLogDto.exercise.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    if (superSetExerciseDto != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            FaIcon(
+                              FontAwesomeIcons.link,
+                              size: 10,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                                child: Text(superSetExerciseDto.exercise.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall)),
+                          ],
                         ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                            child: Text(superSetExerciseDto.exercise.name,
-                                overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall)),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-            const Spacer(),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: children,
-            ),
-          ])),
+                      ),
+                  ],
+                ),
+                const Spacer(),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: children,
+                ),
+              ])),
     );
   }
 
@@ -136,7 +147,10 @@ class ExerciseLogGridItemWidget extends StatelessWidget {
               ),
               horizontalTitleGap: 6,
               title: Text("Remove",
-                  style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
+                  style: GoogleFonts.ubuntu(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16)),
               onTap: () {
                 Navigator.of(context).pop();
                 onRemoveLog();

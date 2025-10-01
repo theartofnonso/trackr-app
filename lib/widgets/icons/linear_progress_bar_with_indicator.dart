@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:tracker_app/colors.dart';
 
@@ -41,7 +39,8 @@ class IconProgressBar extends StatelessWidget {
     this.fillColor = vibrantGreen,
     this.iconSize = 24,
     this.animationDuration = const Duration(milliseconds: 800),
-  }) : assert(progress >= 0 && progress <= 1, 'progress must be between 0 and 1');
+  }) : assert(
+            progress >= 0 && progress <= 1, 'progress must be between 0 and 1');
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +75,8 @@ class IconProgressBar extends StatelessWidget {
             AnimatedPositioned(
               duration: animationDuration,
               left: iconLeft,
-              top: -(iconSize - height) / 2, // vertically center icon over track
+              top:
+                  -(iconSize - height) / 2, // vertically center icon over track
               child: SizedBox(
                 width: iconSize,
                 height: iconSize,

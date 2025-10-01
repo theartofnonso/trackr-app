@@ -30,13 +30,16 @@ class SingleSetRow extends StatelessWidget {
         label: Container(
           padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4),
           decoration: BoxDecoration(
-            color: pbs.isNotEmpty ? (isDarkMode ? sapphireDark80 : Colors.grey.shade200) : null,
-            borderRadius: BorderRadius.circular(5), // Rounded corners
+            color: pbs.isNotEmpty
+                ? (isDarkMode ? sapphireDark80 : Colors.grey.shade200)
+                : null,
+            borderRadius: BorderRadius.circular(2), // Rounded corners
           ),
           child: Row(spacing: 6, children: pbsForSet),
         ),
         child: Table(
-            border: TableBorder.all(color: color, borderRadius: BorderRadius.circular(5)),
+            border: TableBorder.all(
+                color: color, borderRadius: BorderRadius.circular(2)),
             columnWidths: const <int, TableColumnWidth>{
               0: FlexColumnWidth(),
             },

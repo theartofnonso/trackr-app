@@ -29,11 +29,14 @@ class SolidButtonWidget extends StatelessWidget {
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
-          backgroundColor: WidgetStateProperty.all(buttonColor ?? Colors.transparent),
-          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+          backgroundColor:
+              WidgetStateProperty.all(buttonColor ?? Colors.transparent),
+          shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(2))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-              return Colors.black.withValues(alpha: 0.3); // Defer to the widget's default.
+              return Colors.black
+                  .withValues(alpha: 0.3); // Defer to the widget's default.
             },
           ),
         ),
@@ -49,11 +52,15 @@ class SolidButtonWidget extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
-                      color: textColor ?? (isDarkMode ? Colors.white : Colors.black))),
+                      color: textColor ??
+                          (isDarkMode ? Colors.white : Colors.black))),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),
-                      child: SizedBox(height: 10, width: 10, child: CircularProgressIndicator(strokeWidth: 2)),
+                      child: SizedBox(
+                          height: 10,
+                          width: 10,
+                          child: CircularProgressIndicator(strokeWidth: 2)),
                     )
                   : const SizedBox.shrink()
             ],

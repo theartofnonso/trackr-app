@@ -7,7 +7,8 @@ class CustomWordMarkIcon extends StatelessWidget {
   final Color color;
   final String label;
 
-  const CustomWordMarkIcon(this.label, {super.key, this.width, this.height, this.padding, required this.color});
+  const CustomWordMarkIcon(this.label,
+      {super.key, this.width, this.height, this.padding, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +16,16 @@ class CustomWordMarkIcon extends StatelessWidget {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Container(
-      padding: padding ?? const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      padding:
+          padding ?? const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
       decoration: BoxDecoration(
         color: isDarkMode ? color.withValues(alpha: 0.1) : color,
-        borderRadius: BorderRadius.circular(3),
+        borderRadius: BorderRadius.circular(2),
       ),
       child: Text(label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: isDarkMode ? color : Colors.white, fontWeight: FontWeight.bold
-          )),
+              color: isDarkMode ? color : Colors.white,
+              fontWeight: FontWeight.bold)),
     );
   }
 }

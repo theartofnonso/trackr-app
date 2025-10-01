@@ -30,99 +30,96 @@ class RoutineLogShareableLite extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: RepaintBoundary(
-          key: routineLogGlobalKey,
-          child: Container(
-            decoration: BoxDecoration(
-              image: imageFile != null
-                  ? DecorationImage(
-                      image: imageFile.image,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter,
-                    )
-                  : null,
-              gradient: imageFile == null
-                  ? const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark80,
-                        sapphireDark,
-                      ],
-                    )
-                  : null,
-            ),
-            child: Stack(alignment: Alignment.center, children: [
-              if (imageFile != null)
-                Positioned.fill(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
+      child: RepaintBoundary(
+        key: routineLogGlobalKey,
+        child: Container(
+          decoration: BoxDecoration(
+            image: imageFile != null
+                ? DecorationImage(
+                    image: imageFile.image,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                  )
+                : null,
+            gradient: imageFile == null
+                ? const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark.withValues(alpha: 0.4),
+                      sapphireDark80,
                       sapphireDark,
                     ],
-                  )),
+                  )
+                : null,
+          ),
+          child: Stack(alignment: Alignment.center, children: [
+            if (imageFile != null)
+              Positioned.fill(
+                  child: Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    sapphireDark.withValues(alpha: 0.4),
+                    sapphireDark,
+                  ],
                 )),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(log.name,
-                            style: GoogleFonts.ubuntu(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                fontSize: 16)),
-                        subtitle: _DateDurationPBWidget(
-                            dateTime: log.createdAt,
-                            duration: log.duration(),
-                            pbs: pbs),
-                      ),
-                      RichText(
-                          text: TextSpan(
+              )),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(log.name,
+                          style: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              fontSize: 16)),
+                      subtitle: _DateDurationPBWidget(
+                          dateTime: log.createdAt,
+                          duration: log.duration(),
+                          pbs: pbs),
+                    ),
+                    RichText(
+                        text: TextSpan(
+                            text:
+                                "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
+                            style:
+                                GoogleFonts.ubuntu(fontWeight: FontWeight.w500),
+                            children: [
+                          const TextSpan(text: " "),
+                          TextSpan(
                               text:
-                                  "${log.exerciseLogs.length} ${pluralize(word: "Exercise", count: log.exerciseLogs.length)}",
+                                  "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
                               style: GoogleFonts.ubuntu(
-                                  fontWeight: FontWeight.w500),
-                              children: [
-                            const TextSpan(text: " "),
-                            TextSpan(
-                                text:
-                                    "x${log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length)} ${pluralize(word: "Set", count: log.exerciseLogs.fold(0, (sum, e) => sum + e.sets.length))}",
-                                style: GoogleFonts.ubuntu(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white70,
-                                    fontSize: 12)),
-                          ])),
-                    ]),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20.0, bottom: 20),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Spacer(),
-                      Image.asset(
-                        'images/framer_logo.png',
-                        fit: BoxFit.cover,
-                        height: 30, // Adjust the height as needed
-                      )
-                    ],
-                  ),
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white70,
+                                  fontSize: 12)),
+                        ])),
+                  ]),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Spacer(),
+                    Image.asset(
+                      'images/framer_logo.png',
+                      fit: BoxFit.cover,
+                      height: 30, // Adjust the height as needed
+                    )
+                  ],
                 ),
               ),
-            ]),
-          ),
+            ),
+          ]),
         ),
       ),
     );

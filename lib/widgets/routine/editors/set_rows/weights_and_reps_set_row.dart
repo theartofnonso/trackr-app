@@ -27,7 +27,8 @@ class WeightsAndRepsSetRow extends StatelessWidget {
     required this.onChangedWeight,
     required this.onTapWeightEditor,
     required this.onTapRepsEditor,
-    required this.controllers, required this.editorType,
+    required this.controllers,
+    required this.editorType,
   });
 
   @override
@@ -39,20 +40,21 @@ class WeightsAndRepsSetRow extends StatelessWidget {
     int reps = setDto.reps;
 
     return Table(
-      border:
-          TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.black38, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(
+          color: isDarkMode ? Colors.white10 : Colors.black38,
+          borderRadius: BorderRadius.circular(2)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-        0: const FixedColumnWidth(50),
-        1: const FlexColumnWidth(1),
-        2: const FlexColumnWidth(1),
-      }
+              0: const FixedColumnWidth(50),
+              1: const FlexColumnWidth(1),
+              2: const FlexColumnWidth(1),
+            }
           : <int, TableColumnWidth>{
-        0: const FixedColumnWidth(50),
-        1: const FlexColumnWidth(1),
-        2: const FlexColumnWidth(1),
-        3: const FixedColumnWidth(60),
-      },
+              0: const FixedColumnWidth(50),
+              1: const FlexColumnWidth(1),
+              2: const FlexColumnWidth(1),
+              3: const FixedColumnWidth(60),
+            },
       children: [
         TableRow(children: [
           TableCell(

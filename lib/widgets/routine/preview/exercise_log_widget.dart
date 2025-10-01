@@ -22,19 +22,23 @@ import '../preview/set_headers/single_set_header.dart';
 
 enum StrengthStatus {
   improving(
-    description: "🌟 You're getting stronger! Handling more volume with less effort shows fantastic adaptation. "
+    description:
+        "🌟 You're getting stronger! Handling more volume with less effort shows fantastic adaptation. "
         "Keep that momentum going and consider increasing the challenge next session—just remember to watch your recovery.",
   ),
   declining(
-    description: "📉 You're feeling a dip in strength. Double-check your sleep, nutrition, and stress levels—"
+    description:
+        "📉 You're feeling a dip in strength. Double-check your sleep, nutrition, and stress levels—"
         "a little extra rest or a small load reduction can help you bounce back stronger!",
   ),
   maintaining(
-    description: "🔄 Solid consistency! You've maintained performance levels well. "
+    description:
+        "🔄 Solid consistency! You've maintained performance levels well. "
         "Focus on refining technique and mind-muscle connection to build a perfect foundation for future gains.",
   ),
   potentialOvertraining(
-    description: "⚠️ Easy there—your body might be on the verge of overtraining. "
+    description:
+        "⚠️ Easy there—your body might be on the verge of overtraining. "
         "Consider a short deload or reduce your training volume for a week to fully recover, then ramp back up gradually.",
   ),
   none(
@@ -42,7 +46,8 @@ enum StrengthStatus {
         "Keep logging sessions, and we'll give you tailored feedback as you go!",
   ),
   insufficient(
-      description: "You’ve logged only one training. Great job! Log more sessions to identify trends over time.");
+      description:
+          "You’ve logged only one training. Great job! Log more sessions to identify trends over time.");
 
   const StrengthStatus({required this.description});
 
@@ -69,7 +74,8 @@ class ExerciseLogWidget extends StatefulWidget {
   final ExerciseLogDto exerciseLog;
   final ExerciseLogDto? superSet;
 
-  const ExerciseLogWidget({super.key, required this.exerciseLog, this.superSet});
+  const ExerciseLogWidget(
+      {super.key, required this.exerciseLog, this.superSet});
 
   @override
   State<ExerciseLogWidget> createState() => _ExerciseLogWidgetState();
@@ -91,25 +97,33 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     final exerciseType = exercise.type;
 
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final routineLogController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
-    final pastExerciseLogs =
-        routineLogController.whereExerciseLogsBefore(exercise: exercise, date: widget.exerciseLog.createdAt);
+    final pastExerciseLogs = routineLogController.whereExerciseLogsBefore(
+        exercise: exercise, date: widget.exerciseLog.createdAt);
 
-    final pastSets = routineLogController.wherePrevSetsForExercise(exercise: exercise);
+    final pastSets =
+        routineLogController.wherePrevSetsForExercise(exercise: exercise);
 
-    final pbs =
-        calculatePBs(pastExerciseLogs: pastExerciseLogs, exerciseType: exerciseType, exerciseLog: widget.exerciseLog);
+    final pbs = calculatePBs(
+        pastExerciseLogs: pastExerciseLogs,
+        exerciseType: exerciseType,
+        exerciseLog: widget.exerciseLog);
 
-    List<ExerciseLogDto> allExerciseLogs = routineLogController.exerciseLogsByExerciseId[exercise.id] ?? [];
+    List<ExerciseLogDto> allExerciseLogs =
+        routineLogController.exerciseLogsByExerciseId[exercise.id] ?? [];
 
     if (allExerciseLogs.length >= 5) {
-      allExerciseLogs = allExerciseLogs.reversed.toList().sublist(0, 5).reversed.toList();
+      allExerciseLogs =
+          allExerciseLogs.reversed.toList().sublist(0, 5).reversed.toList();
     } else {
-      allExerciseLogs = allExerciseLogs.reversed.toList().sublist(0).reversed.toList();
+      allExerciseLogs =
+          allExerciseLogs.reversed.toList().sublist(0).reversed.toList();
     }
 
-    final validLogs = allExerciseLogs.where((log) => log.sets.isNotEmpty).toList();
+    final validLogs =
+        allExerciseLogs.where((log) => log.sets.isNotEmpty).toList();
 
     StrengthStatus strengthStatus = StrengthStatus.none;
 
@@ -121,11 +135,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
       if (exerciseType == ExerciseType.weights) {
         final totalVolumes = validLogs.map((log) {
-          final volumes = log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
+          final volumes =
+              log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
           return volumes.sum;
         }).toList();
-        strengthStatus =
-            _analyzeVolumeRPERelationship(volumes: totalVolumes, rpes: averageRpeRatings, volume: 'Volume');
+        strengthStatus = _analyzeVolumeRPERelationship(
+            volumes: totalVolumes, rpes: averageRpeRatings, volume: 'Volume');
       }
 
       if (exerciseType == ExerciseType.bodyWeight) {
@@ -133,30 +148,40 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
           final reps = log.sets.map((set) => (set as RepsSetDto).reps);
           return reps.sum;
         }).toList();
-        strengthStatus = _analyzeVolumeRPERelationship(volumes: totalReps, rpes: averageRpeRatings, volume: 'Reps');
+        strengthStatus = _analyzeVolumeRPERelationship(
+            volumes: totalReps, rpes: averageRpeRatings, volume: 'Reps');
       }
 
       if (exerciseType == ExerciseType.duration) {
         final totalDuration = validLogs.map((log) {
-          final durations = log.sets.map((set) => (set as DurationSetDto).duration);
-          return durations.fold(Duration.zero, (sum, item) => sum + item).inMilliseconds;
+          final durations =
+              log.sets.map((set) => (set as DurationSetDto).duration);
+          return durations
+              .fold(Duration.zero, (sum, item) => sum + item)
+              .inMilliseconds;
         }).toList();
-        strengthStatus =
-            _analyzeVolumeRPERelationship(volumes: totalDuration, rpes: averageRpeRatings, volume: 'Duration');
+        strengthStatus = _analyzeVolumeRPERelationship(
+            volumes: totalDuration,
+            rpes: averageRpeRatings,
+            volume: 'Duration');
       }
     }
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => ExerciseHomeScreen(exercise: widget.exerciseLog.exercise)));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                ExerciseHomeScreen(exercise: widget.exerciseLog.exercise)));
       },
       child: Column(
         spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(widget.exerciseLog.exercise.name,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center),
           if (otherSuperSet != null)
             Wrap(
@@ -167,20 +192,26 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   size: 10,
                 ),
                 const SizedBox(width: 4),
-                Text(otherSuperSet.exercise.name, style: Theme.of(context).textTheme.bodyMedium),
+                Text(otherSuperSet.exercise.name,
+                    style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
           if (widget.exerciseLog.notes.isNotEmpty)
-            Text(widget.exerciseLog.notes, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+            Text(widget.exerciseLog.notes,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium),
           // if (chartPoints.isNotEmpty)
           Container(
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
             decoration: BoxDecoration(
               border: Border.all(
-                color: isDarkMode ? Colors.white10 : Colors.black38, // Border color
+                color: isDarkMode
+                    ? Colors.white10
+                    : Colors.black38, // Border color
                 width: 1.0, // Border width
               ),
-              borderRadius: BorderRadius.circular(5), // Optional: Rounded corners
+              borderRadius:
+                  BorderRadius.circular(2), // Optional: Rounded corners
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -188,23 +219,29 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               children: [
                 _metric == WeightAndRPE.weight
                     ? summarizeProgression(
-                        values: _weightsForExercise(pastSets: pastSets), context: context, textAlign: TextAlign.center)
+                        values: _weightsForExercise(pastSets: pastSets),
+                        context: context,
+                        textAlign: TextAlign.center)
                     : Text(strengthStatus.description,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontWeight: FontWeight.w400, fontSize: 13, height: 1.8)),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 13,
+                            height: 1.8)),
                 CupertinoSlidingSegmentedControl<WeightAndRPE>(
-                  backgroundColor: isDarkMode ? sapphireDark : Colors.grey.shade200,
+                  backgroundColor:
+                      isDarkMode ? sapphireDark : Colors.grey.shade200,
                   thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
                   groupValue: _metric,
                   children: {
                     WeightAndRPE.rpe: SizedBox(
-                        width: 100, child: Text(_volumeRepsDuration(), style: textStyle, textAlign: TextAlign.center)),
+                        width: 100,
+                        child: Text(_volumeRepsDuration(),
+                            style: textStyle, textAlign: TextAlign.center)),
                     WeightAndRPE.weight: SizedBox(
                         width: 50,
-                        child: Text(WeightAndRPE.weight.name, style: textStyle, textAlign: TextAlign.center)),
+                        child: Text(WeightAndRPE.weight.name,
+                            style: textStyle, textAlign: TextAlign.center)),
                   },
                   onValueChanged: (WeightAndRPE? value) {
                     if (value != null) {
@@ -218,13 +255,15 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             ),
           ),
           switch (exerciseType) {
-            ExerciseType.weights => DoubleSetHeader(firstLabel: weightUnit().toUpperCase(), secondLabel: 'REPS'),
+            ExerciseType.weights => DoubleSetHeader(
+                firstLabel: weightUnit().toUpperCase(), secondLabel: 'REPS'),
             ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
             ExerciseType.duration => SingleSetHeader(label: 'TIME'),
           },
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: SetsListview(type: exerciseType, sets: widget.exerciseLog.sets, pbs: pbs),
+            child: SetsListview(
+                type: exerciseType, sets: widget.exerciseLog.sets, pbs: pbs),
           )
         ],
       ),
@@ -232,7 +271,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   List<num> _weightsForExercise({required List<SetDto> pastSets}) {
-    return pastSets.reversed.map((set) => (set as WeightAndRepsSetDto).weight).toList();
+    return pastSets.reversed
+        .map((set) => (set as WeightAndRepsSetDto).weight)
+        .toList();
   }
 
   String _volumeRepsDuration() {
@@ -245,7 +286,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   }
 
   StrengthStatus _analyzeVolumeRPERelationship(
-      {required List<num> volumes, required List<int> rpes, required String volume}) {
+      {required List<num> volumes,
+      required List<int> rpes,
+      required String volume}) {
     if (volumes.isEmpty || rpes.isEmpty || volumes.length != rpes.length) {
       return StrengthStatus.none;
     }

@@ -8,7 +8,12 @@ class IntTextField extends StatelessWidget {
   final int? maxLength;
 
   const IntTextField(
-      {super.key, required this.value, required this.controller, required this.onChanged, required this.onTap, this.maxLength});
+      {super.key,
+      required this.value,
+      required this.controller,
+      required this.onChanged,
+      required this.onTap,
+      this.maxLength});
 
   int _parseIntOrDefault({required String value}) {
     return int.tryParse(value) ?? 0;
@@ -16,7 +21,6 @@ class IntTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -28,9 +32,11 @@ class IntTextField extends StatelessWidget {
       maxLength: maxLength,
       decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.transparent)),
+              borderRadius: BorderRadius.circular(2),
+              borderSide: const BorderSide(color: Colors.transparent)),
           enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(2), borderSide: const BorderSide(color: Colors.transparent)),
+              borderRadius: BorderRadius.circular(2),
+              borderSide: const BorderSide(color: Colors.transparent)),
           counterText: "",
           hintText: "${value > 0 ? value : '-'}"),
       keyboardType: TextInputType.number,

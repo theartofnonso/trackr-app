@@ -45,8 +45,9 @@ class DurationSetRow extends StatelessWidget {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Table(
-      border:
-          TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.black38, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(
+          color: isDarkMode ? Colors.white10 : Colors.black38,
+          borderRadius: BorderRadius.circular(2)),
       columnWidths: <int, TableColumnWidth>{
         0: const FixedColumnWidth(50),
         1: const FlexColumnWidth(1),
@@ -66,11 +67,13 @@ class DurationSetRow extends StatelessWidget {
                 child: Center(
                   child: editorType == RoutineEditorMode.edit || setDto.checked
                       ? Text(setDto.duration.hmsDigital(),
-                          style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600))
+                          style:
+                              GoogleFonts.ubuntu(fontWeight: FontWeight.w600))
                       : StopwatchTimer(
                           startTime: startTime,
                           digital: true,
-                          onChangedDuration: (Duration duration) => onUpdateDuration(duration, false)),
+                          onChangedDuration: (Duration duration) =>
+                              onUpdateDuration(duration, false)),
                 ),
               ),
             ),

@@ -683,7 +683,7 @@ class _StatisticWidget extends StatelessWidget {
               ? sapphireDark80
               : Colors.grey.shade200, // Background color of the container
           borderRadius:
-              BorderRadius.circular(5), // Border radius for rounded corners
+              BorderRadius.circular(2), // Border radius for rounded corners
         ),
         child: Stack(children: [
           Column(

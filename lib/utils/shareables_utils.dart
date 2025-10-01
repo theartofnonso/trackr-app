@@ -12,31 +12,40 @@ import '../widgets/buttons/opacity_button_widget_two.dart';
 import 'dialog_utils.dart';
 
 Future<ShareResult> captureImage(
-    {required GlobalKey key, required double pixelRatio, String message = "Shared from TRNR"}) async {
-  final RenderRepaintBoundary boundary = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    {required GlobalKey key,
+    required double pixelRatio,
+    String message = "Shared from TRNR"}) async {
+  final RenderRepaintBoundary boundary =
+      key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
   final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
-  final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  final ByteData? byteData =
+      await image.toByteData(format: ui.ImageByteFormat.png);
   final Uint8List pngBytes = byteData!.buffer.asUint8List();
   final Directory tempDir = await getTemporaryDirectory();
-  final File file = File('${tempDir.path}/${DateTime.now().microsecondsSinceEpoch}.png');
+  final File file =
+      File('${tempDir.path}/${DateTime.now().microsecondsSinceEpoch}.png');
   final newFile = await file.writeAsBytes(pngBytes, flush: true);
   final xFile = XFile(newFile.path);
   final List<XFile> files = [xFile];
-  final shareParams = ShareParams(files: files, previewThumbnail: xFile, title: message);
+  final shareParams =
+      ShareParams(files: files, previewThumbnail: xFile, title: message);
   return await SharePlus.instance.share(shareParams);
 }
 
 void onShare(
-    {required BuildContext context, required GlobalKey globalKey, EdgeInsetsGeometry? padding, required Widget child}) {
+    {required BuildContext context,
+    required GlobalKey globalKey,
+    EdgeInsetsGeometry? padding,
+    required Widget child}) {
   displayBottomSheet(
       context: context,
       isScrollControlled: true,
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-        RepaintBoundary(
-            key: globalKey,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            RepaintBoundary(
+              key: globalKey,
               child: Container(
                   decoration: BoxDecoration(
                       color: sapphireDark80,
@@ -50,24 +59,25 @@ void onShare(
                       )),
                   padding: padding ?? const EdgeInsets.all(12),
                   child: child),
-            )),
-        const SizedBox(height: 20),
-        SizedBox(
-          width: double.infinity,
-          child: OpacityButtonWidgetTwo(
-            onPressed: () {
-              Navigator.of(context).pop();
-              captureImage(key: globalKey, pixelRatio: 5).then((result) {
-                if (context.mounted) {
-                  if (result.status == ShareResultStatus.success) {
-                    showSnackbar(context: context, message: "Content Shared");
-                  }
-                }
-              });
-            },
-            label: "Share",
-            buttonColor: vibrantGreen,
-          ),
-        )
-      ]));
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: OpacityButtonWidgetTwo(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  captureImage(key: globalKey, pixelRatio: 5).then((result) {
+                    if (context.mounted) {
+                      if (result.status == ShareResultStatus.success) {
+                        showSnackbar(
+                            context: context, message: "Content Shared");
+                      }
+                    }
+                  });
+                },
+                label: "Share",
+                buttonColor: vibrantGreen,
+              ),
+            )
+          ]));
 }

@@ -30,7 +30,9 @@ class OpacityButtonWidget extends StatelessWidget {
   }
 
   Color _defaultBackgroundColor({required bool isDarkMode}) {
-    return isDarkMode ? Colors.white.withValues(alpha: 0.15) : Colors.grey.shade200;
+    return isDarkMode
+        ? Colors.white.withValues(alpha: 0.15)
+        : Colors.grey.shade200;
   }
 
   @override
@@ -42,11 +44,14 @@ class OpacityButtonWidget extends StatelessWidget {
         style: ButtonStyle(
           visualDensity: visualDensity,
           backgroundColor: WidgetStateProperty.all(
-              _themeBackgroundColor(isDarkMode: isDarkMode) ?? _defaultBackgroundColor(isDarkMode: isDarkMode)),
-          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+              _themeBackgroundColor(isDarkMode: isDarkMode) ??
+                  _defaultBackgroundColor(isDarkMode: isDarkMode)),
+          shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(2))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-              return Colors.black.withValues(alpha: 0.3); // Defer to the widget's default.
+              return Colors.black
+                  .withValues(alpha: 0.3); // Defer to the widget's default.
             },
           ),
         ),
@@ -58,7 +63,8 @@ class OpacityButtonWidget extends StatelessWidget {
               textAlign: TextAlign.start,
               style: textStyle ??
                   Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: _themeForegroundColor(isDarkMode: isDarkMode), fontWeight: FontWeight.bold)),
+                      color: _themeForegroundColor(isDarkMode: isDarkMode),
+                      fontWeight: FontWeight.bold)),
         ));
   }
 }
