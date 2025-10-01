@@ -151,53 +151,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   : const _NoScheduledTitle(),
             ),
             StaggeredGridTile.count(
-              crossAxisCellCount: 2,
-              mainAxisCellCount: 2,
-              child: Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: isDarkMode ? darkSurface : Colors.grey.shade200,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    switch (_trainingAndVolume) {
-                      TrainingAndVolume.training => LogStreakChart(),
-                      TrainingAndVolume.volume => VolumeChart(),
-                    },
-                    const Spacer(),
-                    CupertinoSlidingSegmentedControl<TrainingAndVolume>(
-                      backgroundColor: isDarkMode
-                          ? darkSurfaceVariant
-                          : Colors.grey.shade400,
-                      thumbColor:
-                          isDarkMode ? darkSurfaceContainer : Colors.white,
-                      groupValue: _trainingAndVolume,
-                      children: {
-                        TrainingAndVolume.training: SizedBox(
-                            width: 80,
-                            child: Text("Training",
-                                style: Theme.of(context).textTheme.bodySmall,
-                                textAlign: TextAlign.center)),
-                        TrainingAndVolume.volume: SizedBox(
-                            width: 80,
-                            child: Text("Volume",
-                                style: Theme.of(context).textTheme.bodySmall,
-                                textAlign: TextAlign.center)),
-                      },
-                      onValueChanged: (TrainingAndVolume? value) {
-                        if (value != null) {
-                          setState(() {
-                            _trainingAndVolume = value;
-                          });
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
               child: GestureDetector(

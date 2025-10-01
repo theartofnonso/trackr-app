@@ -95,22 +95,11 @@ class _SettingsScreenState extends State<SettingsScreen>
           color: isDarkMode ? darkBackground : Colors.white,
         ),
         child: SafeArea(
-          minimum: EdgeInsets.all(10),
+          minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InformationContainerWithBackgroundImage(
-                  image: 'images/recovery_girl.PNG',
-                  subtitle:
-                      "Loving TRNR? Your feedback helps us grow and improve.",
-                  color: Colors.black,
-                  onTap: _openStoreListing,
-                  alignmentGeometry: Alignment.center,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
                 if (Platform.isIOS)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,13 +203,6 @@ class _SettingsScreenState extends State<SettingsScreen>
                         style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("help us improve")),
                 ListTile(
-                    onTap: _visitTRKR,
-                    leading: FaIcon(FontAwesomeIcons.instagram,
-                        color: isDarkMode ? Colors.white70 : Colors.black38),
-                    title: Text("TRNR in the wild",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("follow us on socials")),
-                ListTile(
                     onTap: _logout,
                     leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
                         color: isDarkMode ? Colors.white70 : Colors.black38),
@@ -234,6 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     title: Text("Delete Account",
                         style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text(userEmail)),
+                const SizedBox(height: 20),
                 Center(
                   child: Text(_appVersion,
                       style: Theme.of(context).textTheme.bodySmall),

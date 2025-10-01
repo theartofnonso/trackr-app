@@ -359,7 +359,10 @@ class _Day extends StatelessWidget {
       : (isDarkMode ? darkOnSurface : Colors.black);
 
   Border? _dateBorder() {
-    if (selected) return Border.all(color: Colors.blueGrey, width: 2);
+    if (selected) {
+      return Border.all(
+          color: isDarkMode ? darkOnSurface : Colors.black, width: 2);
+    }
     if (currentDate) return Border.all(color: Colors.grey, width: 2);
     return null;
   }
