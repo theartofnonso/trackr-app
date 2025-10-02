@@ -7,8 +7,6 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
 import '../../../../utils/dialog_utils.dart';
-import '../../../timers/stopwatch_timer.dart';
-import '../set_check_button.dart';
 import '../set_delete_button.dart';
 
 class DurationSetRow extends StatelessWidget {
@@ -45,46 +43,33 @@ class DurationSetRow extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    return Table(
-      border: TableBorder.all(
-          color: isDarkMode ? darkBorder : Colors.black38,
-          borderRadius: BorderRadius.circular(radiusSM)),
-      columnWidths: <int, TableColumnWidth>{
-        0: const FixedColumnWidth(50),
-        1: const FlexColumnWidth(1),
-        2: const FixedColumnWidth(60),
-      },
-      children: [
-        TableRow(children: [
-          TableCell(
+    return (Table(
+        border: TableBorder.all(
+            color: isDarkMode ? darkBorder : Colors.black38,
+            borderRadius: BorderRadius.circular(radiusSM)),
+        columnWidths: <int, TableColumnWidth>{
+          0: const FixedColumnWidth(50),
+          1: const FlexColumnWidth(1),
+        },
+        children: [
+          TableRow(children: [
+            TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Center(child: SetDeleteButton(onDelete: onRemoved))),
+            TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
-              child: Center(child: SetDeleteButton(onDelete: onRemoved))),
-          TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: GestureDetector(
-              onTap: () => _selectTime(context: context),
-              child: SizedBox(
-                height: 50,
-                child: Center(
-                  child: editorType == RoutineEditorMode.edit || setDto.checked
-                      ? Text(setDto.duration.hmsDigital(),
-                          style:
-                              GoogleFonts.ubuntu(fontWeight: FontWeight.w600))
-                      : StopwatchTimer(
-                          startTime: startTime,
-                          digital: true,
-                          onChangedDuration: (Duration duration) =>
-                              onUpdateDuration(duration, false)),
+              child: GestureDetector(
+                onTap: () => _selectTime(context: context),
+                child: SizedBox(
+                  height: 50,
+                  child: Center(
+                    child: Text(setDto.duration.hmsDigital(),
+                        style: GoogleFonts.ubuntu(fontWeight: FontWeight.w600)),
+                  ),
                 ),
               ),
             ),
-          ),
-          if (editorType == RoutineEditorMode.log)
-            TableCell(
-                verticalAlignment: TableCellVerticalAlignment.middle,
-                child: SetCheckButton(setDto: setDto, onCheck: onCheck))
-        ])
-      ],
-    );
+          ])
+        ]));
   }
 }

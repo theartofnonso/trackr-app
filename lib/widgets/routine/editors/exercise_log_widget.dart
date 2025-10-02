@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
+import 'package:tracker_app/widgets/timers/circular_timer_widget.dart';
 import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/extensions/set_dtos_extensions.dart';
@@ -169,6 +170,35 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     _loadControllers();
   }
 
+  void _onTimerComplete(Duration duration) {
+    // Add a new set with the timer duration
+    final pastSets =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false)
+            .whereRecentSetsForExercise(exercise: _exerciseLog.exercise);
+
+    Provider.of<ExerciseLogController>(context, listen: false)
+        .addSet(exerciseLogId: _exerciseLog.id, pastSets: pastSets);
+
+    // Update the newly added set with the timer duration
+    final currentSets =
+        Provider.of<ExerciseLogController>(context, listen: false)
+            .whereExerciseLog(exerciseId: _exerciseLog.exercise.id)
+            .sets;
+
+    if (currentSets.isNotEmpty) {
+      final lastSet = currentSets.last as DurationSetDto;
+      final setIndex = currentSets.length - 1;
+      _updateDuration(
+        index: setIndex,
+        duration: duration,
+        setDto: lastSet,
+        shouldCheck: true,
+      );
+    }
+
+    _loadControllers();
+  }
+
   void _updateWeight(
       {required int index, required double weight, required SetDto setDto}) {
     final previousSets =
@@ -230,8 +260,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       required Duration duration,
       required SetDto setDto,
       required bool shouldCheck}) {
-    SetDto updatedSet = (setDto as DurationSetDto)
-        .copyWith(duration: duration, checked: shouldCheck);
+    // Duration sets are always automatically checked when logged
+    SetDto updatedSet =
+        (setDto as DurationSetDto).copyWith(duration: duration, checked: true);
     Provider.of<ExerciseLogController>(context, listen: false).updateDuration(
         exerciseLogId: _exerciseLog.id,
         index: index,
@@ -619,11 +650,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 18),
               tooltip: 'Weights and Reps Recommendations',
             ),
-          IconButton(
-            onPressed: _addSet,
-            icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),
-            tooltip: 'Add new set',
-          ),
+          if (withDurationOnly(type: exerciseType))
+            IconButton(
+              onPressed: _addSet,
+              icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),
+              tooltip: 'Add new set',
+            ),
         ],
       ),
       floatingActionButtonLocation: !isKeyboardOpen && isLowReadiness
@@ -677,6 +709,14 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Circular Timer for Duration exercises
+                      if (exerciseType == ExerciseType.duration)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: CircularTimerWidget(
+                            onTimerComplete: _onTimerComplete,
+                          ),
+                        ),
                       switch (exerciseType) {
                         ExerciseType.weights => WeightAndRepsSetHeader(
                             editorType: widget.editorType,
@@ -701,6 +741,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                           ],
                         ),
                       const SizedBox(height: 20),
+
                       switch (exerciseType) {
                         ExerciseType.weights => _WeightAndRepsSetListView(
                             sets: currentSets
