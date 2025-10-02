@@ -26,7 +26,32 @@ class RoutineTemplateDto {
       'notes': notes,
       'exercises':
           exerciseTemplates.map((exercise) => exercise.toJson()).toList(),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
+  }
+
+  factory RoutineTemplateDto.fromJson(Map<String, dynamic> json) {
+    final id = json['id'] ?? '';
+    final name = json['name'] ?? '';
+    final notes = json['notes'] ?? '';
+    final exercisesJson = json['exercises'] as List<dynamic>? ?? [];
+    final exerciseTemplates = exercisesJson
+        .map((exerciseJson) => ExerciseLogDto.fromJson(json: exerciseJson))
+        .toList();
+    final createdAt =
+        DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String());
+    final updatedAt =
+        DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String());
+
+    return RoutineTemplateDto(
+      id: id,
+      name: name,
+      notes: notes,
+      exerciseTemplates: exerciseTemplates,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
   }
 
   RoutineLogDto toLog() {
@@ -54,10 +79,8 @@ class RoutineTemplateDto {
       id: id ?? this.id,
       name: name ?? this.name,
       notes: notes ?? this.notes,
-      // Deep copy each ExerciseLogDto.
-      exerciseTemplates: exerciseTemplates != null
-          ? exerciseTemplates.map((e) => e.copyWith()).toList()
-          : this.exerciseTemplates.map((e) => e.copyWith()).toList(),
+      // Only deep copy if a new list is provided
+      exerciseTemplates: exerciseTemplates ?? this.exerciseTemplates,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

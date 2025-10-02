@@ -19,7 +19,6 @@ ExerciseDto makeExercise({
     type: type,
     primaryMuscleGroup: primary,
     secondaryMuscleGroups: secondary,
-    owner: '',
   );
 }
 

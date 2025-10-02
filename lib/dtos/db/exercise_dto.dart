@@ -6,10 +6,6 @@ class ExerciseDto {
   final String name;
   final MuscleGroup primaryMuscleGroup;
   final List<MuscleGroup> secondaryMuscleGroups;
-  final Uri? video;
-  final String? description;
-  final Uri? creditSource;
-  final String? credit;
   final ExerciseType type;
 
   ExerciseDto({
@@ -18,10 +14,6 @@ class ExerciseDto {
     required this.primaryMuscleGroup,
     required this.secondaryMuscleGroups,
     required this.type,
-    this.description,
-    this.video,
-    this.creditSource,
-    this.credit,
   });
 
   Map<String, Object> toJson() {
@@ -32,10 +24,6 @@ class ExerciseDto {
       'secondaryMuscleGroups':
           secondaryMuscleGroups.map((muscleGroup) => muscleGroup.name).toList(),
       'type': type.id,
-      'description': description ?? "",
-      'video': video?.toString() ?? "",
-      'creditSource': creditSource?.toString() ?? "",
-      'credit': credit ?? ""
     };
   }
 
@@ -54,24 +42,13 @@ class ExerciseDto {
         .toList();
     final typeJson = json["type"] ?? "";
     final type = ExerciseType.fromString(typeJson);
-    final video = json["video"];
-    final description = json["description"] ?? "";
-    final videoUri = video != null ? Uri.parse(video) : null;
-    final creditSource = json["creditSource"];
-    final creditSourceUri =
-        creditSource != null ? Uri.parse(creditSource) : null;
-    final credit = json["credit"] ?? "";
 
     return ExerciseDto(
         id: id,
         name: name,
         primaryMuscleGroup: primaryMuscleGroup,
         secondaryMuscleGroups: secondaryMuscleGroups,
-        type: type,
-        video: videoUri,
-        description: description,
-        creditSource: creditSourceUri,
-        credit: credit);
+        type: type);
   }
 
   ExerciseDto copyWith({
@@ -80,7 +57,6 @@ class ExerciseDto {
     MuscleGroup? primaryMuscleGroup,
     List<MuscleGroup>? secondaryMuscleGroups,
     ExerciseType? type,
-    String? description,
   }) {
     return ExerciseDto(
       id: id ?? this.id,
@@ -93,13 +69,12 @@ class ExerciseDto {
           : List<MuscleGroup>.from(this.secondaryMuscleGroups),
 
       type: type ?? this.type,
-      description: description ?? this.description,
     );
   }
 
   @override
   String toString() {
-    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: ${primaryMuscleGroup.name}, secondaryMuscleGroups: $secondaryMuscleGroups video: $video, description: $description, creditSource: $creditSource, credit: $credit, type: $type}';
+    return 'ExerciseDto{id: $id, name: $name, primaryMuscleGroup: ${primaryMuscleGroup.name}, secondaryMuscleGroups: $secondaryMuscleGroups, type: $type}';
   }
 
   @override

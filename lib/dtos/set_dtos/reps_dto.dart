@@ -55,10 +55,12 @@ class RepsSetDto extends SetDto {
 
   @override
   Map<String, dynamic> toJson() {
-    return super.toJson()
-      ..addAll({
-        'reps': reps,
-      });
+    return {
+      "value1": 0,
+      "value2": reps,
+      "checked": checked,
+      'reps': reps,
+    };
   }
 
   @override

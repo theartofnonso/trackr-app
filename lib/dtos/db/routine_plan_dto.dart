@@ -28,6 +28,29 @@ class RoutinePlanDto {
     };
   }
 
+  factory RoutinePlanDto.fromJson(Map<String, dynamic> json) {
+    final id = json['id'] ?? '';
+    final name = json['name'] ?? '';
+    final notes = json['notes'] ?? '';
+    final templatesJson = json['templates'] as List<dynamic>? ?? [];
+    final templates = templatesJson
+        .map((templateJson) => RoutineTemplateDto.fromJson(templateJson))
+        .toList();
+    final createdAt =
+        DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String());
+    final updatedAt =
+        DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String());
+
+    return RoutinePlanDto(
+      id: id,
+      name: name,
+      notes: notes,
+      templates: templates,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
   RoutinePlanDto copyWith({
     String? id,
     String? name,

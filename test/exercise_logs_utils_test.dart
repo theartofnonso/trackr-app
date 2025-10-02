@@ -35,22 +35,19 @@ void main() {
       name: 'Bench Press',
       type: ExerciseType.weights,
       primaryMuscleGroup: MuscleGroup.chest,
-      secondaryMuscleGroups: [],
-      owner: '');
+      secondaryMuscleGroups: []);
   final bodyWeightExercise = ExerciseDto(
       id: 'ex_body',
       name: 'Push-ups',
       type: ExerciseType.bodyWeight,
       primaryMuscleGroup: MuscleGroup.chest,
-      secondaryMuscleGroups: [],
-      owner: '');
+      secondaryMuscleGroups: []);
   final durationExercise = ExerciseDto(
       id: 'ex_duration',
       name: 'Plank',
       type: ExerciseType.duration,
       primaryMuscleGroup: MuscleGroup.abs,
-      secondaryMuscleGroups: [],
-      owner: '');
+      secondaryMuscleGroups: []);
 
   // Mock Exercise Logs
   ExerciseLogDto makeLog(ExerciseDto exercise, List<SetDto> sets,

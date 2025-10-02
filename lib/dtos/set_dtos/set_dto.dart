@@ -31,24 +31,10 @@ abstract class SetDto {
   String summary();
 
   Map<String, dynamic> toJson() {
-    if (this is WeightAndRepsSetDto) {
-      final weightAndRepSet = this as WeightAndRepsSetDto;
-      return {
-        "value1": weightAndRepSet.weight,
-        "value2": weightAndRepSet.reps,
-        "checked": _isChecked,
-      };
-    } else if (this is RepsSetDto) {
-      final repSet = this as RepsSetDto;
-      return {"value1": 0, "value2": repSet.reps, "checked": _isChecked};
-    } else {
-      final durationSet = this as DurationSetDto;
-      return {
-        "value1": 0,
-        "value2": durationSet.duration.inMilliseconds,
-        "checked": _isChecked,
-      };
-    }
+    // This method should be overridden by concrete implementations
+    // to avoid type checking overhead
+    throw UnimplementedError(
+        'toJson must be implemented by concrete SetDto classes');
   }
 
   factory SetDto.fromJson(Map<String, dynamic> json,

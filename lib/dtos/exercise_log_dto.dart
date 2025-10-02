@@ -47,16 +47,10 @@ class ExerciseLogDto {
       routineLogId: routineLogId ?? this.routineLogId,
       superSetId: superSetId ?? this.superSetId,
 
-      // If a new ExerciseDto is provided, copy it deeply.
-      // Otherwise, copy the existing ExerciseDto if it is not null.
-      exercise:
-          exercise != null ? exercise.copyWith() : this.exercise.copyWith(),
+      // Only deep copy if new values are provided
+      exercise: exercise ?? this.exercise,
       notes: notes ?? this.notes,
-
-      // Deep copy for the list of SetDto items.
-      sets: sets != null
-          ? sets.map((s) => s.copyWith()).toList()
-          : this.sets.map((s) => s.copyWith()).toList(),
+      sets: sets ?? this.sets,
 
       createdAt: createdAt ?? this.createdAt,
     );
@@ -66,6 +60,7 @@ class ExerciseLogDto {
       {String? routineLogId,
       DateTime? createdAt,
       required Map<String, dynamic> json}) {
+    final id = json["id"] ?? "";
     final superSetId = json["superSetId"] ?? "";
     final exerciseJson = json["exercise"];
     final exercise = ExerciseDto.fromJson(exerciseJson);
@@ -87,7 +82,7 @@ class ExerciseLogDto {
     }
 
     final exerciseLog = ExerciseLogDto(
-        id: exercise.id,
+        id: id,
         routineLogId: routineLogId,
         superSetId: superSetId,
         exercise: exercise,

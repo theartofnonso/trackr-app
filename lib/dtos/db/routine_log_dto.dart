@@ -51,11 +51,49 @@ class RoutineLogDto {
       'templateId': templateId,
       'name': name,
       'notes': notes,
+      'summary': summary ?? '',
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'exercises': exerciseLogs.map((exercise) => exercise.toJson()).toList(),
       'readiness': readinessScore,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
+  }
+
+  factory RoutineLogDto.fromJson(Map<String, dynamic> json) {
+    final id = json['id'] ?? '';
+    final templateId = json['templateId'] ?? '';
+    final name = json['name'] ?? '';
+    final notes = json['notes'] ?? '';
+    final summary = json['summary'];
+    final startTime =
+        DateTime.parse(json['startTime'] ?? DateTime.now().toIso8601String());
+    final endTime =
+        DateTime.parse(json['endTime'] ?? DateTime.now().toIso8601String());
+    final exercisesJson = json['exercises'] as List<dynamic>? ?? [];
+    final exerciseLogs = exercisesJson
+        .map((exerciseJson) => ExerciseLogDto.fromJson(json: exerciseJson))
+        .toList();
+    final readinessScore = json['readiness'] ?? 0;
+    final createdAt =
+        DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String());
+    final updatedAt =
+        DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String());
+
+    return RoutineLogDto(
+      id: id,
+      templateId: templateId,
+      name: name,
+      notes: notes,
+      summary: summary,
+      startTime: startTime,
+      endTime: endTime,
+      exerciseLogs: exerciseLogs,
+      readinessScore: readinessScore,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
   }
 
   factory RoutineLogDto.fromCachedLog({required Map<String, dynamic> json}) {
@@ -107,11 +145,8 @@ class RoutineLogDto {
       readinessScore: readinessScore ?? this.readinessScore,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      // Deep copy the list. For any new list passed in, we clone its items;
-      // otherwise, we clone the existing list if it's not null.
-      exerciseLogs: exerciseLogs != null
-          ? exerciseLogs.map((e) => e.copyWith()).toList()
-          : this.exerciseLogs.map((e) => e.copyWith()).toList(),
+      // Only deep copy if a new list is provided
+      exerciseLogs: exerciseLogs ?? this.exerciseLogs,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

@@ -56,10 +56,12 @@ class DurationSetDto extends SetDto {
 
   @override
   Map<String, dynamic> toJson() {
-    return super.toJson()
-      ..addAll({
-        'duration': duration.inMilliseconds,
-      });
+    return {
+      "value1": 0,
+      "value2": duration.inMilliseconds,
+      "checked": checked,
+      'duration': duration.inMilliseconds,
+    };
   }
 
   @override

@@ -63,11 +63,13 @@ class WeightAndRepsSetDto extends SetDto {
 
   @override
   Map<String, dynamic> toJson() {
-    return super.toJson()
-      ..addAll({
-        'weight': weight,
-        'reps': reps,
-      });
+    return {
+      "value1": weight,
+      "value2": reps,
+      "checked": checked,
+      'weight': weight,
+      'reps': reps,
+    };
   }
 
   double volume() {

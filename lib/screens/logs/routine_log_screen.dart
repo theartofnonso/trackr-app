@@ -245,63 +245,59 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                                 "Here's a breakdown of the muscle groups in your ${updatedLog.name} workout session.",
                             muscleGroup: muscleGroupFamilyFrequencies,
                             minimized: false),
-                        if (updatedLog.templateId.isNotEmpty &&
-                            true)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 10,
-                            children: [
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  trendSummary.trend == Trend.none
-                                      ? const SizedBox.shrink()
-                                      : getTrendIcon(trend: trendSummary.trend),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          text: volumeInKOrM(avgVolume),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall,
-                                          children: [
-                                            TextSpan(
-                                              text: " ",
-                                            ),
-                                            TextSpan(
-                                              text: weightUnit().toUpperCase(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        "Session AVERAGE".toUpperCase(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 10,
+                          children: [
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 10,
+                              children: [
+                                trendSummary.trend == Trend.none
+                                    ? const SizedBox.shrink()
+                                    : getTrendIcon(trend: trendSummary.trend),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        text: volumeInKOrM(avgVolume),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodySmall,
+                                            .headlineSmall,
+                                        children: [
+                                          TextSpan(
+                                            text: " ",
+                                          ),
+                                          TextSpan(
+                                            text: weightUnit().toUpperCase(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Text(trendSummary.summary,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          color: isDarkMode
-                                              ? Colors.white70
-                                              : Colors.black)),
-                            ],
-                          ),
+                                    ),
+                                    Text(
+                                      "Session AVERAGE".toUpperCase(),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            Text(trendSummary.summary,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : Colors.black)),
+                          ],
+                        ),
                         ExerciseLogListView(
                             exerciseLogs: _exerciseLogsToViewModels(
                                 exerciseLogs: completedExerciseLogs)),

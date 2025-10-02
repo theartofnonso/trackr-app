@@ -16,7 +16,6 @@ void main() {
     primaryMuscleGroup: MuscleGroup.hamstrings,
     secondaryMuscleGroups: [MuscleGroup.hamstrings],
     type: ExerciseType.weights,
-    owner: "",
   );
 
   final plankExercise = ExerciseDto(
@@ -25,7 +24,6 @@ void main() {
     primaryMuscleGroup: MuscleGroup.abs,
     secondaryMuscleGroups: [MuscleGroup.hamstrings],
     type: ExerciseType.duration,
-    owner: "",
   );
 
   final benchPressExercise = ExerciseDto(
@@ -34,7 +32,6 @@ void main() {
     primaryMuscleGroup: MuscleGroup.chest,
     secondaryMuscleGroups: [MuscleGroup.hamstrings],
     type: ExerciseType.weights,
-    owner: "",
   );
 
   // Mock exercise logs
