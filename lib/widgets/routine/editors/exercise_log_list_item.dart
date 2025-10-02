@@ -11,9 +11,7 @@ class ExerciseLogListItemWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLogDto;
   final RoutineEditorMode editorType;
   final ExerciseLogDto? superSet;
-  final VoidCallback? onRemoveSuperSet;
   final VoidCallback? onRemoveLog;
-  final VoidCallback? onSuperSet;
   final VoidCallback? onReplaceLog;
   final bool showConnector;
   final bool isLastItem;
@@ -23,9 +21,7 @@ class ExerciseLogListItemWidget extends StatelessWidget {
     required this.exerciseLogDto,
     required this.editorType,
     this.superSet,
-    this.onRemoveSuperSet,
     this.onRemoveLog,
-    this.onSuperSet,
     this.onReplaceLog,
     this.showConnector = true,
     this.isLastItem = false,
@@ -221,26 +217,6 @@ class ExerciseLogListItemWidget extends StatelessWidget {
                 _navigateToExerciseEditor(context);
               },
             ),
-
-            if (superSet != null)
-              ListTile(
-                leading: const FaIcon(FontAwesomeIcons.link, size: 16),
-                title: const Text("Remove from Superset"),
-                onTap: () {
-                  Navigator.pop(context);
-                  onRemoveSuperSet?.call();
-                },
-              )
-            else
-              ListTile(
-                leading: const FaIcon(FontAwesomeIcons.link, size: 16),
-                title: const Text("Add to Superset"),
-                onTap: () {
-                  Navigator.pop(context);
-                  onSuperSet?.call();
-                },
-              ),
-
             ListTile(
               leading:
                   const FaIcon(FontAwesomeIcons.arrowRightArrowLeft, size: 16),
