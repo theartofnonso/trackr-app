@@ -650,7 +650,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 18),
               tooltip: 'Weights and Reps Recommendations',
             ),
-          if (withDurationOnly(type: exerciseType))
+          if (withReps(type: exerciseType))
             IconButton(
               onPressed: _addSet,
               icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),

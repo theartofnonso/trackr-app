@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
 import '../dtos/db/exercise_dto.dart';
@@ -46,15 +47,17 @@ class ExerciseLogRepository {
       // Return a default exercise log if not found
       return ExerciseLogDto(
         id: exerciseId,
+        routineLogId: "",
+        superSetId: "",
         exercise: ExerciseDto(
           id: exerciseId,
           name: "Unknown Exercise",
           type: ExerciseType.weights,
-          muscleGroups: [],
+          primaryMuscleGroup: MuscleGroup.chest,
+          secondaryMuscleGroups: [],
         ),
         sets: [],
-        startTime: DateTime.now(),
-        endTime: DateTime.now(),
+        createdAt: DateTime.now(),
       );
     }
   }
