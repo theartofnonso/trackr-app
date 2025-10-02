@@ -141,7 +141,6 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
               routineLogId: "",
               superSetId: "",
               exercise: exerciseInLibrary,
-              notes: exerciseInLibrary.description ?? "",
               sets: [SetDto.newType(type: exerciseInLibrary.type)],
               createdAt: DateTime.now());
         })

@@ -40,7 +40,6 @@ void main() {
     routineLogId: "routineLogId2",
     exercise: lyingLegCurlExercise,
     superSetId: "superSetId",
-    notes: "notes",
     sets: [
       WeightAndRepsSetDto(
           weight: 80, reps: 5, checked: true, dateTime: DateTime.now()),
@@ -57,7 +56,6 @@ void main() {
     routineLogId: "routineLogId1",
     superSetId: "superSetId",
     exercise: plankExercise,
-    notes: "notes",
     sets: [
       DurationSetDto(
           duration: Duration(milliseconds: 120000),
@@ -80,7 +78,6 @@ void main() {
     routineLogId: "routineLogId1",
     superSetId: "superSetId",
     exercise: benchPressExercise,
-    notes: "notes",
     sets: [
       WeightAndRepsSetDto(
           weight: 80, reps: 15, checked: true, dateTime: DateTime.now()),
@@ -109,26 +106,6 @@ void main() {
         exerciseLogRepository.exerciseLogs
             .firstWhereOrNull((log) => log.id == legCurlExerciseLog.id),
         null);
-  });
-
-  test("Update Exercise Log notes", () {
-    final exerciseLogRepository = ExerciseLogRepository();
-    exerciseLogRepository.loadExerciseLogs(exerciseLogs: [
-      legCurlExerciseLog,
-      plankExerciseLog,
-      benchPressExerciseLog
-    ]);
-
-    // Act
-    exerciseLogRepository.updateExerciseLogNotes(
-        exerciseLogId: plankExerciseLog.id, value: 'This works your core');
-
-    // Assert
-    expect(
-        exerciseLogRepository.exerciseLogs
-            .firstWhereOrNull((log) => log.id == plankExerciseLog.id)
-            ?.notes,
-        'This works your core');
   });
 
   test("Super set Exercise Logs", () {
@@ -409,7 +386,6 @@ void main() {
       routineLogId: "routineLogId2",
       exercise: lyingLegCurlExercise,
       superSetId: "superSetId",
-      notes: "notes",
       sets: [
         WeightAndRepsSetDto(
             weight: 80, reps: 5, checked: true, dateTime: DateTime.now()),
@@ -426,7 +402,6 @@ void main() {
       routineLogId: "routineLogId1",
       superSetId: "superSetId",
       exercise: benchPressExercise,
-      notes: "notes",
       sets: [
         WeightAndRepsSetDto(
             weight: 80, reps: 15, checked: true, dateTime: DateTime.now()),

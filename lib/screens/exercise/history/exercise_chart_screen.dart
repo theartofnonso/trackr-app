@@ -276,24 +276,6 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
               ),
             ],
           ),
-          if (exercise.description != null)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  exercise.description != null
-                      ? "${exercise.description}."
-                      : "No notes",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.ubuntu(
-                      fontSize: 14,
-                      color: isDarkMode ? Colors.white70 : Colors.black,
-                      height: 1.8,
-                      fontWeight: FontWeight.w400),
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
           Padding(
             padding: const EdgeInsets.only(right: 20, bottom: 20),
             child: Column(

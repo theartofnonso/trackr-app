@@ -100,10 +100,8 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
       )
     ];
 
-    final hasVideo = (exercise.video?.data) != null;
-
     return DefaultTabController(
-        length: hasVideo ? 3 : 2,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
               leading: IconButton(
@@ -126,13 +124,6 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
                               .textTheme
                               .bodySmall
                               ?.copyWith(fontWeight: FontWeight.w600))),
-                  if (hasVideo)
-                    Tab(
-                        child: Text("Video",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w600))),
                 ],
               ),
               actions: [

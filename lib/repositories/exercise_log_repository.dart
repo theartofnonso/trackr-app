@@ -114,19 +114,6 @@ class ExerciseLogRepository {
     _exerciseLogs = newExerciseLogs;
   }
 
-  void updateExerciseLogNotes(
-      {required String exerciseLogId, required String value}) {
-    final exerciseLogIndex =
-        _indexWhereExerciseLog(exerciseLogId: exerciseLogId);
-
-    if (exerciseLogIndex == -1) {
-      return;
-    }
-
-    final exerciseLog = _exerciseLogs[exerciseLogIndex];
-    _exerciseLogs[exerciseLogIndex] = exerciseLog.copyWith(notes: value);
-  }
-
   void addSuperSets(
       {required String firstExerciseLogId,
       required String secondExerciseLogId,
@@ -306,13 +293,12 @@ class ExerciseLogRepository {
   /// Helper functions
 
   ExerciseLogDto _createExerciseLog(ExerciseDto exercise,
-      {String notes = "", List<SetDto> pastSets = const []}) {
+      {List<SetDto> pastSets = const []}) {
     return ExerciseLogDto(
         id: exercise.id,
         routineLogId: "",
         superSetId: "",
         exercise: exercise,
-        notes: notes,
         sets: pastSets,
         createdAt: DateTime.now());
   }

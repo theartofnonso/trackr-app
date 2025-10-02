@@ -53,8 +53,7 @@ void main() {
   ExerciseLogDto makeLog(ExerciseDto exercise, List<SetDto> sets,
       {DateTime? createdAt,
       String routineLogId = 'log1',
-      String superSetId = '',
-      String notes = ''}) {
+      String superSetId = ''}) {
     return ExerciseLogDto(
       id: exercise.id,
       exercise: exercise,
@@ -62,7 +61,6 @@ void main() {
       routineLogId: routineLogId,
       superSetId: superSetId,
       createdAt: createdAt ?? DateTime.now(),
-      notes: notes,
     );
   }
 

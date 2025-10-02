@@ -97,22 +97,12 @@ class MockExerciseRepository {
         .map((muscleGroup) => MuscleGroup.fromString(muscleGroup))
         .toList();
     final typeString = json["type"];
-    final video = json["video"];
-    final videoUri = video != null ? Uri.parse(video) : null;
-    final description = json["description"];
-    final creditSource = json["creditSource"];
-    final creditSourceUri = video != null ? Uri.parse(creditSource) : null;
-    final credit = json["credit"];
     return ExerciseDto(
       id: id,
       name: name,
       primaryMuscleGroup: primaryMuscleGroup,
       secondaryMuscleGroups: secondaryMuscleGroups,
       type: ExerciseType.fromString(typeString),
-      video: videoUri,
-      description: description,
-      creditSource: creditSourceUri,
-      credit: credit,
     );
   }
 }

@@ -73,13 +73,6 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateExerciseLogNotes(
-      {required String exerciseLogId, required String value}) {
-    _exerciseLogRepository.updateExerciseLogNotes(
-        exerciseLogId: exerciseLogId, value: value);
-    _cache();
-  }
-
   void superSetExerciseLogs(
       {required String firstExerciseLogId,
       required String secondExerciseLogId,

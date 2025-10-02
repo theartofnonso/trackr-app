@@ -126,11 +126,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
-          if (widget.exerciseLog.notes.isNotEmpty)
-            Text(widget.exerciseLog.notes,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium),
-          // if (chartPoints.isNotEmpty)
           Container(
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
             decoration: BoxDecoration(

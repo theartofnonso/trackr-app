@@ -393,49 +393,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     });
   }
 
-  void _toggleNotes() {
-    setState(() {
-      _showNotes = !_showNotes;
-    });
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        // Get theme data from the current context
-        final brightness = MediaQuery.of(context).platformBrightness;
-        final isDarkMode = brightness == Brightness.dark;
-
-        // 1. Pull the current version from provider, not from the parameter
-        final currentNotes =
-            Provider.of<ExerciseLogController>(context, listen: false)
-                .whereExerciseLog(exerciseId: _exerciseLog.id)
-                .notes;
-
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: TextField(
-            controller: TextEditingController(text: currentNotes),
-            cursorColor: isDarkMode ? Colors.white : Colors.black,
-            onChanged: (value) => _updateExerciseLogNotes(value: value),
-            autofocus: true,
-            decoration: InputDecoration(
-              hintText: "Enter notes",
-              contentPadding: EdgeInsets.all(16.0),
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-            ),
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            textCapitalization: TextCapitalization.sentences,
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -661,11 +618,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             },
             child: Text(exerciseLog.exercise.name)),
         actions: [
-          IconButton(
-            onPressed: _toggleNotes,
-            icon: const FaIcon(FontAwesomeIcons.noteSticky, size: 18),
-            tooltip: 'Notes',
-          ),
           if (withWeightsOnly(type: exerciseType))
             IconButton(
               onPressed: _show1RMRecommendations,

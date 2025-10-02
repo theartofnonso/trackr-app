@@ -9,7 +9,6 @@ class ExerciseLogDto {
   final String? routineLogId;
   final String superSetId;
   final ExerciseDto exercise;
-  final String notes;
   final List<SetDto> sets;
   final DateTime createdAt;
 
@@ -18,7 +17,6 @@ class ExerciseLogDto {
       required this.routineLogId,
       required this.superSetId,
       required this.exercise,
-      required this.notes,
       required this.sets,
       required this.createdAt});
 
@@ -28,7 +26,6 @@ class ExerciseLogDto {
     return {
       "superSetId": superSetId,
       "exercise": exercise.toJson(),
-      "notes": notes,
       "sets": setJsons,
     };
   }
@@ -38,7 +35,6 @@ class ExerciseLogDto {
     String? routineLogId,
     String? superSetId,
     ExerciseDto? exercise,
-    String? notes,
     List<SetDto>? sets,
     DateTime? createdAt,
   }) {
@@ -49,7 +45,6 @@ class ExerciseLogDto {
 
       // Only deep copy if new values are provided
       exercise: exercise ?? this.exercise,
-      notes: notes ?? this.notes,
       sets: sets ?? this.sets,
 
       createdAt: createdAt ?? this.createdAt,
@@ -64,7 +59,6 @@ class ExerciseLogDto {
     final superSetId = json["superSetId"] ?? "";
     final exerciseJson = json["exercise"];
     final exercise = ExerciseDto.fromJson(exerciseJson);
-    final notes = json["notes"] ?? "";
     final setsInJsons = json["sets"] as List<dynamic>;
     List<SetDto> sets = [];
     if (setsInJsons.isNotEmpty && setsInJsons.first is String) {
@@ -86,7 +80,6 @@ class ExerciseLogDto {
         routineLogId: routineLogId,
         superSetId: superSetId,
         exercise: exercise,
-        notes: notes,
         sets: sets,
         createdAt: createdAt ?? DateTime.now());
 
@@ -95,6 +88,6 @@ class ExerciseLogDto {
 
   @override
   String toString() {
-    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, sets: $sets, createdAt: $createdAt}';
+    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, sets: $sets, createdAt: $createdAt}';
   }
 }

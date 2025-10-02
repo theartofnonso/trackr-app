@@ -128,13 +128,10 @@ String copyRoutineAsText(
     }
   }
 
-  for (var exerciseLog in exerciseLogs) {
+  for (final exerciseLog in exerciseLogs) {
     var exercise = exerciseLog.exercise;
     routineText.writeln("\n- Exercise: ${exercise.name}");
     routineText.writeln("  Muscle Group: ${exercise.primaryMuscleGroup.name}");
-    if (exerciseLog.notes.isNotEmpty) {
-      routineText.writeln("  Notes: ${exerciseLog.notes}");
-    }
     for (var i = 0; i < exerciseLog.sets.length; i++) {
       switch (exerciseLog.exercise.type) {
         case ExerciseType.weights:

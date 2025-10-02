@@ -40,6 +40,5 @@ ExerciseLogDto makeLog({
     createdAt: createdAt ?? DateTime.now(),
     routineLogId: 'routine1',
     superSetId: '',
-    notes: '',
   );
 }
