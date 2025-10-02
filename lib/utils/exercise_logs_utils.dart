@@ -471,7 +471,6 @@ RoutineLogDto routineWithLoggedExercises({required RoutineLogDto log}) {
 /// Deload Logic
 /// Tier selection < 0.30 = poor, 0.30 to 0.49 = good, 0.50 to 0.69 = great, >= 0.70 = optimal
 /// Volume scaling - Keeps sets.length x volumeFactor, rounded, minus 1
-/// Intensity scaling - Multiplies each set's weight and rpeRating by intensityFactor
 
 class DeloadConfig {
   const DeloadConfig(this.volumeFactor, this.intensityFactor);
