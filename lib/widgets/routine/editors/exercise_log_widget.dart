@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -35,7 +37,6 @@ import '../../buttons/opacity_button_widget_two.dart';
 import '../../depth_stack.dart';
 import '../../empty_states/no_list_empty_state.dart';
 import '../../information_containers/transparent_information_container_lite.dart';
-import '../../monitors/progression_half_animated_gauge.dart';
 import '../../weight_plate_calculator.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
@@ -270,24 +271,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       ExerciseType.bodyWeight => (currentSet as RepsSetDto).reps,
       ExerciseType.duration => 0,
     };
-
-    if (checked) {
-      displayBottomSheet(
-          context: context,
-          child: _RPERatingSlider(
-            maxReps: maxReps,
-            rpeRating: currentSet.rpeRating.toDouble(),
-            onSelectRating: (int rpeRating) {
-              final updatedSetWithRpeRating =
-                  updatedSet.copyWith(rpeRating: rpeRating);
-              Provider.of<ExerciseLogController>(context, listen: false)
-                  .updateRpeRating(
-                      exerciseLogId: _exerciseLog.id,
-                      index: index,
-                      setDto: updatedSetWithRpeRating);
-            },
-          ));
-    }
   }
 
   void _checkWeightRange({required double weight, required int index}) {
@@ -637,7 +620,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
             return TrainingData(
                 reps: (set as WeightAndRepsSetDto).reps,
                 weight: set.weight,
-                rpe: set.rpeRating,
                 date: set.dateTime);
           }).toList()
         : <TrainingData>[];
@@ -743,45 +725,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               spacing: 20,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (exerciseType == ExerciseType.weights &&
-                    widget.editorType == RoutineEditorMode.log &&
-                    !isEmptySets)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (withReps(type: exerciseType))
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: 180,
-                            minHeight: 130,
-                          ),
-                          child: ClipRect(
-                            clipBehavior: Clip.none, // A
-                            child: ProgressionHalfAnimatedGauge(
-                              value: trainingIntensityReport.averageRPE
-                                  .roundToDouble(),
-                              min: 0,
-                              max: 10,
-                              label: "AVG RPE",
-                              report: trainingIntensityReport,
-                            ),
-                          ),
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          trainingIntensityReport.explanation,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  height: 1.8),
-                        ),
-                      ),
-                    ],
-                  ),
                 Padding(
                   padding: const EdgeInsets.only(top: 6.0),
                   child: Column(
@@ -876,15 +819,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                       },
                       trailing: CustomIcon(Icons.chevron_right_rounded,
                           color: Colors.white)),
-                Text(
-                  "RPE (Rate of Perceived Exertion) measures how hard your set feels based on effort, fatigue, and how close you are to failure. Your rating of ${trainingIntensityReport.averageRPE.roundToDouble()} helps us understand how challenging the set was, so we can make smarter weight suggestions.",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      height: 1.8,
-                      color:
-                          isDarkMode ? Colors.white70 : Colors.grey.shade800),
-                )
               ],
             ),
           ),
@@ -1166,105 +1100,3 @@ class _OneRepMaxSliderState extends State<_OneRepMaxSlider> {
     _weight = _weightForPercentage(reps: 10);
   }
 }
-
-class _RPERatingSlider extends StatefulWidget {
-  final double rpeRating;
-  final void Function(int rpeRating) onSelectRating;
-  final int maxReps;
-
-  const _RPERatingSlider(
-      {this.rpeRating = 5,
-      required this.onSelectRating,
-      required this.maxReps});
-
-  @override
-  State<_RPERatingSlider> createState() => _RPERatingSliderState();
-}
-
-class _RPERatingSliderState extends State<_RPERatingSlider> {
-  double _rpeRating = 5;
-
-  String _lastTwoReps({required int maxReps}) =>
-      maxReps <= 1 ? "$maxReps" : "${maxReps - 1} & $maxReps";
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-            "How hard was it to complete ${pluralize(word: "rep", count: widget.maxReps)} ${_lastTwoReps(maxReps: widget.maxReps)}?",
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w400,
-                color: isDarkMode ? Colors.white70 : Colors.black)),
-        const SizedBox(height: 12),
-        Text(
-          _ratingDescription(_rpeRating),
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: 12),
-        Slider(
-            value: _rpeRating,
-            onChanged: onChanged,
-            min: 5,
-            max: 10,
-            divisions: 5,
-            thumbColor: vibrantGreen),
-        const SizedBox(height: 10),
-        SizedBox(
-            width: double.infinity,
-            child: OpacityButtonWidgetTwo(
-                label: "save rating".toUpperCase(),
-                buttonColor: vibrantGreen,
-                onPressed: onSelectRepRange)),
-      ],
-    );
-  }
-
-  void onChanged(double value) {
-    HapticFeedback.heavyImpact();
-
-    setState(() {
-      _rpeRating = value;
-    });
-  }
-
-  void onSelectRepRange() {
-    Navigator.of(context).pop();
-    final absoluteRating = _rpeRating.floor();
-    widget.onSelectRating(absoluteRating);
-  }
-
-  String _ratingDescription(double rating) {
-    final absoluteRating = rating.floor();
-
-    final rpeDescription = _repToRPE[absoluteRating] ?? _repToRPE[5]!;
-
-    return "$rpeDescription ${pluralize(word: "rep", count: widget.maxReps)} ${_lastTwoReps(maxReps: widget.maxReps)}";
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _rpeRating = widget.rpeRating < 5 ? 5 : widget.rpeRating;
-  }
-}
-
-Map<int, String> _repToRPE = {
-  1: "😌 Effortless — pure warm-up",
-  2: "🙂 Very easy — lots left in the tank",
-  3: "😊 Easy — could do more",
-  4: "😅 Comfortable — moving well",
-  5: "😮‍💨 Not Challenging at all for",
-  6: "🔥 Challenging to complete",
-  7: "😣 Pushed myself hard for",
-  8: "🥵 Pushed myself harder for",
-  9: "🤯 Struggling to complete",
-  10: "💀 Struggled to complete",
-};

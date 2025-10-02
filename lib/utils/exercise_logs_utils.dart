@@ -515,24 +515,21 @@ List<SetDto> calculateDeload(
   int clampInt(double value, {required int min, required int max}) =>
       value.round().clamp(min, max);
 
-  // 3. Clone the first [keepCount] sets & scale weight / RPE / reps
+  // 3. Clone the first [keepCount] sets & scale weight / reps
   final reducedSets = sets.take(keepCount).map((set) {
-    final scaledRpe =
-        (set.rpeRating * rule.intensityFactor).clamp(1, 10).toInt();
-
     switch (original.exercise.type) {
       case ExerciseType.weights:
         final weightSet = set as WeightAndRepsSetDto;
         final scaledWeight = (weightSet.weight * rule.intensityFactor);
         final reducedWeight = (scaledWeight * 100).round() / 100;
-        return weightSet.copyWith(weight: reducedWeight, rpeRating: scaledRpe);
+        return weightSet.copyWith(weight: reducedWeight);
       case ExerciseType.bodyWeight:
         final repsSet = set as RepsSetDto;
         final scaledReps = repsSet.reps * rule.intensityFactor;
         final reducedReps = clampInt(scaledReps, min: 1, max: repsSet.reps);
-        return repsSet.copyWith(reps: reducedReps, rpeRating: scaledRpe);
+        return repsSet.copyWith(reps: reducedReps);
       case ExerciseType.duration:
-        return set.copyWith(rpeRating: scaledRpe);
+        return set.copyWith();
     }
   }).toList();
 

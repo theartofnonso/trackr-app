@@ -8,19 +8,26 @@ import '../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../enums/exercise_type_enums.dart';
 
 List<SetDto> personalBestSets({required List<SetDto> sets}) {
-  final groupedByReps = groupBy(sets, (set) => (set as WeightAndRepsSetDto).reps);
+  final groupedByReps =
+      groupBy(sets, (set) => (set as WeightAndRepsSetDto).reps);
 
   final setsWithHeaviestWeight = <SetDto>[];
 
   for (var group in groupedByReps.entries) {
-    final weights = group.value.map((set) => (set as WeightAndRepsSetDto).weight);
+    final weights =
+        group.value.map((set) => (set as WeightAndRepsSetDto).weight);
     final heaviestWeight = weights.max;
-    setsWithHeaviestWeight
-        .add(WeightAndRepsSetDto(weight: heaviestWeight, reps: group.key, checked: false, dateTime: DateTime.now()));
+    setsWithHeaviestWeight.add(WeightAndRepsSetDto(
+        weight: heaviestWeight,
+        reps: group.key,
+        checked: false,
+        dateTime: DateTime.now()));
   }
 
   // Sort by value2
-  setsWithHeaviestWeight.sort((a, b) => (a as WeightAndRepsSetDto).reps.compareTo((b as WeightAndRepsSetDto).reps));
+  setsWithHeaviestWeight.sort((a, b) => (a as WeightAndRepsSetDto)
+      .reps
+      .compareTo((b as WeightAndRepsSetDto).reps));
 
   return setsWithHeaviestWeight;
 }
@@ -29,11 +36,11 @@ List<String> generateSetSummaries(ExerciseLogDto exerciseLog) {
   final setSummaries = exerciseLog.sets.mapIndexed((index, set) {
     return switch (exerciseLog.exercise.type) {
       ExerciseType.weights =>
-        "Set ${index + 1}: ${exerciseLog.sets[index].summary()} and Rate of Perceived Exertion is ${exerciseLog.sets[index].rpeRating}",
+        "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
       ExerciseType.bodyWeight =>
-        "Set ${index + 1}: ${exerciseLog.sets[index].summary()} and Rate of Perceived Exertion is ${exerciseLog.sets[index].rpeRating}",
+        "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
       ExerciseType.duration =>
-        "Set ${index + 1}: ${exerciseLog.sets[index].summary()} and Rate of Perceived Exertion is ${exerciseLog.sets[index].rpeRating}",
+        "Set ${index + 1}: ${exerciseLog.sets[index].summary()}",
     };
   }).toList();
   return setSummaries;
@@ -48,7 +55,8 @@ List<WeightAndRepsSetDto> markHighestWeightSets(List<SetDto> sets) {
 
   final weightSets = sets.whereType<WeightAndRepsSetDto>().toList();
 
-  final maxWeight = weightSets.map((s) => s.weight).reduce((a, b) => a > b ? a : b);
+  final maxWeight =
+      weightSets.map((s) => s.weight).reduce((a, b) => a > b ? a : b);
 
   // Map original list and update working sets
   return weightSets.map((set) {
@@ -56,7 +64,6 @@ List<WeightAndRepsSetDto> markHighestWeightSets(List<SetDto> sets) {
         weight: set.weight,
         reps: set.reps,
         checked: set.checked,
-        rpeRating: set.rpeRating,
         isWorkingSet: set.weight == maxWeight,
         dateTime: DateTime.now());
   }).toList();
@@ -69,7 +76,8 @@ List<WeightAndRepsSetDto> markHeaviestVolumeSets(List<SetDto> sets) {
 
   final weightSets = sets.whereType<WeightAndRepsSetDto>().toList();
 
-  final maxVolume = weightSets.map((s) => s.volume()).reduce((a, b) => a > b ? a : b);
+  final maxVolume =
+      weightSets.map((s) => s.volume()).reduce((a, b) => a > b ? a : b);
 
   // Map original list and update working sets
   return weightSets.map((set) {
@@ -77,7 +85,6 @@ List<WeightAndRepsSetDto> markHeaviestVolumeSets(List<SetDto> sets) {
         weight: set.weight,
         reps: set.reps,
         checked: set.checked,
-        rpeRating: set.rpeRating,
         isWorkingSet: set.volume() == maxVolume,
         dateTime: DateTime.now());
   }).toList();
@@ -97,7 +104,6 @@ List<RepsSetDto> markHighestRepsSets(List<SetDto> sets) {
     return RepsSetDto(
         reps: set.reps,
         checked: set.checked,
-        rpeRating: set.rpeRating,
         isWorkingSet: set.reps == maxReps,
         dateTime: DateTime.now());
   }).toList();
@@ -110,14 +116,14 @@ List<DurationSetDto> markHighestDurationSets(List<SetDto> sets) {
 
   final durationSets = sets.whereType<DurationSetDto>().toList();
 
-  final maxDuration = durationSets.map((s) => s.duration).reduce((a, b) => a > b ? a : b);
+  final maxDuration =
+      durationSets.map((s) => s.duration).reduce((a, b) => a > b ? a : b);
 
   // Map original list and update working sets
   return durationSets.map((set) {
     return DurationSetDto(
         duration: set.duration,
         checked: set.checked,
-        rpeRating: set.rpeRating,
         isWorkingSet: set.duration == maxDuration,
         dateTime: DateTime.now());
   }).toList();
@@ -175,7 +181,8 @@ bool _allRepsSetsEmpty(List<SetDto> sets) {
   return sets.every((set) => set.isEmpty());
 }
 
-bool hasEmptyValues({required List<SetDto> sets, required ExerciseType exerciseType}) {
+bool hasEmptyValues(
+    {required List<SetDto> sets, required ExerciseType exerciseType}) {
   return switch (exerciseType) {
     ExerciseType.weights => _allWeightsSetsEmpty(sets),
     ExerciseType.bodyWeight => _allRepsSetsEmpty(sets),

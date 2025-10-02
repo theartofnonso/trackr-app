@@ -8,21 +8,20 @@ class DurationSetDto extends SetDto {
   const DurationSetDto({
     required this.duration,
     super.checked = false,
-    super.rpeRating = 4,
     super.isWorkingSet = false,
     required super.dateTime,
   });
 
   factory DurationSetDto.defaultSet() => DurationSetDto(
-    duration: Duration.zero,
-    dateTime: DateTime.now(),
-  );
+        duration: Duration.zero,
+        dateTime: DateTime.now(),
+      );
 
-  factory DurationSetDto.fromJson(Map<String, dynamic> json, {required DateTime dateTime}) {
+  factory DurationSetDto.fromJson(Map<String, dynamic> json,
+      {required DateTime dateTime}) {
     return DurationSetDto(
       duration: Duration(milliseconds: (json['duration'] as num).toInt()),
       checked: json['checked'] as bool,
-      rpeRating: json['rpeRating'] as int,
       isWorkingSet: json['isWorkingSet'] as bool,
       dateTime: dateTime,
     );
@@ -41,14 +40,12 @@ class DurationSetDto extends SetDto {
   DurationSetDto copyWith({
     Duration? duration,
     bool? checked,
-    int? rpeRating,
     bool? isWorkingSet,
     DateTime? dateTime,
   }) {
     return DurationSetDto(
       duration: duration ?? this.duration,
       checked: checked ?? this.checked,
-      rpeRating: rpeRating ?? this.rpeRating,
       isWorkingSet: isWorkingSet ?? this.isWorkingSet,
       dateTime: dateTime ?? this.dateTime,
     );
@@ -69,7 +66,6 @@ class DurationSetDto extends SetDto {
   String toString() => 'DurationSetDto('
       'duration: $duration, '
       'checked: $checked, '
-      'rpeRating: $rpeRating, '
       'isWorkingSet: $isWorkingSet, '
       'dateTime: $dateTime'
       ')';

@@ -1,11 +1,7 @@
-import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dtos/duration_set_dto.dart';
-import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
@@ -14,7 +10,6 @@ import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
-import '../../../utils/data_trend_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../preview/set_headers/double_set_header.dart';
@@ -54,22 +49,6 @@ enum StrengthStatus {
   final String description;
 }
 
-enum WeightAndRPE {
-  weight(
-      name: "Weight",
-      description:
-          "Track your heaviest weight lifted. An upward trend highlights your strength gains and consistent improvement over time."),
-  rpe(
-      name: "Volume and RPE",
-      description:
-          "Volume shows how much work you do, while RPE reveals how hard it feels. An upward volume trend shows you’re progressively handling more work. While a downward RPE trend at the same workload suggests the exercises are feeling easier.");
-
-  const WeightAndRPE({required this.name, required this.description});
-
-  final String name;
-  final String description;
-}
-
 class ExerciseLogWidget extends StatefulWidget {
   final ExerciseLogDto exerciseLog;
   final ExerciseLogDto? superSet;
@@ -82,12 +61,8 @@ class ExerciseLogWidget extends StatefulWidget {
 }
 
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
-  WeightAndRPE _metric = WeightAndRPE.rpe;
-
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodySmall;
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -120,51 +95,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     } else {
       allExerciseLogs =
           allExerciseLogs.reversed.toList().sublist(0).reversed.toList();
-    }
-
-    final validLogs =
-        allExerciseLogs.where((log) => log.sets.isNotEmpty).toList();
-
-    StrengthStatus strengthStatus = StrengthStatus.none;
-
-    if (_metric == WeightAndRPE.rpe) {
-      final averageRpeRatings = validLogs.map((log) {
-        final rpeRatings = log.sets.map((set) => set.rpeRating);
-        return rpeRatings.average.ceil();
-      }).toList();
-
-      if (exerciseType == ExerciseType.weights) {
-        final totalVolumes = validLogs.map((log) {
-          final volumes =
-              log.sets.map((set) => (set as WeightAndRepsSetDto).volume());
-          return volumes.sum;
-        }).toList();
-        strengthStatus = _analyzeVolumeRPERelationship(
-            volumes: totalVolumes, rpes: averageRpeRatings, volume: 'Volume');
-      }
-
-      if (exerciseType == ExerciseType.bodyWeight) {
-        final totalReps = validLogs.map((log) {
-          final reps = log.sets.map((set) => (set as RepsSetDto).reps);
-          return reps.sum;
-        }).toList();
-        strengthStatus = _analyzeVolumeRPERelationship(
-            volumes: totalReps, rpes: averageRpeRatings, volume: 'Reps');
-      }
-
-      if (exerciseType == ExerciseType.duration) {
-        final totalDuration = validLogs.map((log) {
-          final durations =
-              log.sets.map((set) => (set as DurationSetDto).duration);
-          return durations
-              .fold(Duration.zero, (sum, item) => sum + item)
-              .inMilliseconds;
-        }).toList();
-        strengthStatus = _analyzeVolumeRPERelationship(
-            volumes: totalDuration,
-            rpes: averageRpeRatings,
-            volume: 'Duration');
-      }
     }
 
     return GestureDetector(
@@ -217,40 +147,10 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 14,
               children: [
-                _metric == WeightAndRPE.weight
-                    ? summarizeProgression(
-                        values: _weightsForExercise(pastSets: pastSets),
-                        context: context,
-                        textAlign: TextAlign.center)
-                    : Text(strengthStatus.description,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 13,
-                            height: 1.8)),
-                CupertinoSlidingSegmentedControl<WeightAndRPE>(
-                  backgroundColor:
-                      isDarkMode ? sapphireDark : Colors.grey.shade200,
-                  thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
-                  groupValue: _metric,
-                  children: {
-                    WeightAndRPE.rpe: SizedBox(
-                        width: 100,
-                        child: Text(_volumeRepsDuration(),
-                            style: textStyle, textAlign: TextAlign.center)),
-                    WeightAndRPE.weight: SizedBox(
-                        width: 50,
-                        child: Text(WeightAndRPE.weight.name,
-                            style: textStyle, textAlign: TextAlign.center)),
-                  },
-                  onValueChanged: (WeightAndRPE? value) {
-                    if (value != null) {
-                      setState(() {
-                        _metric = value;
-                      });
-                    }
-                  },
-                ),
+                summarizeProgression(
+                    values: _weightsForExercise(pastSets: pastSets),
+                    context: context,
+                    textAlign: TextAlign.center)
               ],
             ),
           ),
@@ -274,60 +174,5 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     return pastSets.reversed
         .map((set) => (set as WeightAndRepsSetDto).weight)
         .toList();
-  }
-
-  String _volumeRepsDuration() {
-    final exerciseType = widget.exerciseLog.exercise.type;
-    return switch (exerciseType) {
-      ExerciseType.weights => "Volume and RPE",
-      ExerciseType.bodyWeight => "Reps and RPE",
-      ExerciseType.duration => "Time and RPE",
-    };
-  }
-
-  StrengthStatus _analyzeVolumeRPERelationship(
-      {required List<num> volumes,
-      required List<int> rpes,
-      required String volume}) {
-    if (volumes.isEmpty || rpes.isEmpty || volumes.length != rpes.length) {
-      return StrengthStatus.none;
-    }
-
-    if (volumes.length == 1) {
-      return StrengthStatus.insufficient;
-    }
-
-    final volumeTrend = detectTrend(volumes);
-    final rpeTrend = detectTrend(rpes); // example threshold
-
-    if (volumeTrend == Trend.up) {
-      if (rpeTrend == Trend.down || rpeTrend == Trend.stable) {
-        return StrengthStatus.improving;
-      } else if (rpeTrend == Trend.up) {
-        return StrengthStatus.potentialOvertraining;
-      }
-    }
-
-    if (volumeTrend == Trend.stable) {
-      if (rpeTrend == Trend.down) {
-        return StrengthStatus.improving;
-      } else if (rpeTrend == Trend.stable) {
-        return StrengthStatus.maintaining;
-      } else if (rpeTrend == Trend.up) {
-        return StrengthStatus.declining;
-      }
-    }
-
-    if (volumeTrend == Trend.down) {
-      if (rpeTrend == Trend.up) {
-        return StrengthStatus.potentialOvertraining;
-      } else if (rpeTrend == Trend.stable) {
-        return StrengthStatus.maintaining;
-      } else if (rpeTrend == Trend.down) {
-        return StrengthStatus.declining;
-      }
-    }
-
-    return StrengthStatus.maintaining;
   }
 }
