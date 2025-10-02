@@ -151,7 +151,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: Column(
                         spacing: 12,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -679,7 +679,7 @@ class _StatisticWidget extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isDarkMode
-              ? sapphireDark80
+              ? darkSurface
               : Colors.grey.shade200, // Background color of the container
           borderRadius: BorderRadius.circular(
               radiusMD), // Border radius for rounded corners

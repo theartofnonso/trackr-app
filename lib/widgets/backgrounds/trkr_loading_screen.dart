@@ -28,7 +28,9 @@ class TRKRLoadingScreen extends StatelessWidget {
       body: Container(
           width: double.infinity,
           height: double.infinity,
-          color: isDarkMode ? sapphireDark.withValues(alpha:opacity) : Colors.white,
+          color: isDarkMode
+              ? darkSurface.withValues(alpha: opacity)
+              : Colors.white,
           child: Stack(
             children: [
               if (action != null)
@@ -38,7 +40,8 @@ class TRKRLoadingScreen extends StatelessWidget {
                     child: SafeArea(
                       minimum: const EdgeInsets.all(10.0),
                       child: IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+                        icon: const FaIcon(FontAwesomeIcons.squareXmark,
+                            size: 28),
                         onPressed: action,
                       ),
                     ),

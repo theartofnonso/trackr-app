@@ -46,8 +46,8 @@ class RoutineLogShareableLite extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark80,
-                      sapphireDark,
+                      darkSurfaceContainer,
+                      darkSurface,
                     ],
                   )
                 : null,
@@ -61,8 +61,8 @@ class RoutineLogShareableLite extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    sapphireDark.withValues(alpha: 0.4),
-                    sapphireDark,
+                    darkSurface.withValues(alpha: 0.4),
+                    darkSurface,
                   ],
                 )),
               )),

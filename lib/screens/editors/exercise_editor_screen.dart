@@ -106,7 +106,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                         LabelDivider(
                           label: "Select muscle group to train".toUpperCase(),
                           labelColor: isDarkMode ? Colors.white : Colors.black,
-                          dividerColor: sapphireLighter,
+                          dividerColor: darkDivider,
                           fontSize: 14,
                         ),
                         Text(
@@ -151,7 +151,7 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
                                 "Choose how to log this exercise".toUpperCase(),
                             labelColor:
                                 isDarkMode ? Colors.white : Colors.black,
-                            dividerColor: sapphireLighter,
+                            dividerColor: darkDivider,
                             fontSize: 14,
                           ),
                           Text(

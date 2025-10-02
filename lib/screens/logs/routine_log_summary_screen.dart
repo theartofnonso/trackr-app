@@ -20,7 +20,6 @@ import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_log_dto.dart';
 import '../../enums/posthog_analytics_event.dart';
-import '../../urls.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
 import '../../utils/routine_utils.dart';
@@ -202,7 +201,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     final updatedLog =
         widget.log.copyWith(exerciseLogs: listOfCompletedExercises);
 
-    final workoutLogLink = "$shareableRoutineLogUrl/${updatedLog.id}";
     final workoutLogText = copyRoutineAsText(
         routineType: RoutinePreviewType.log,
         name: updatedLog.name,
@@ -213,36 +211,6 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
         context: context,
         isScrollControlled: true,
         child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.link,
-              size: 18,
-            ),
-            horizontalTitleGap: 10,
-            title: Text(
-              "Copy as Link",
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    overflow: TextOverflow.ellipsis,
-                  ),
-              maxLines: 1,
-            ),
-            subtitle: Text(workoutLogLink),
-            onTap: () {
-              Posthog().capture(
-                  eventName:
-                      PostHogAnalyticsEvent.shareRoutineLogAsLink.displayName);
-              HapticFeedback.heavyImpact();
-              final data = ClipboardData(text: workoutLogLink);
-              Clipboard.setData(data).then((_) {
-                if (mounted) {
-                  Navigator.of(context).pop();
-                  showSnackbar(
-                      context: context, message: "Workout log link copied");
-                }
-              });
-            },
-          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const FaIcon(
@@ -299,7 +267,7 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               LabelDivider(
                 label: "Don't like the vibe?",
                 labelColor: isDarkMode ? Colors.white70 : Colors.black,
-                dividerColor: sapphireLighter,
+                dividerColor: darkDivider,
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,

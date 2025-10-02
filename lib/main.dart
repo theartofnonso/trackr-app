@@ -119,22 +119,7 @@ final _router = GoRouter(
     GoRoute(
         path: "/", // Define the path for Home Screen
         builder: (context, state) => const Home(),
-        routes: [
-          GoRoute(
-            path: "shared-workout/:id",
-            builder: (context, state) {
-              final id = state.pathParameters['id'] ?? "";
-              return RoutineTemplateScreen(id: id);
-            },
-          ),
-          GoRoute(
-            path: "shared-workout-log/:id",
-            builder: (context, state) {
-              final id = state.pathParameters['id'] ?? "";
-              return RoutineLogScreen(id: id, showSummary: false);
-            },
-          )
-        ]),
+        routes: []),
     GoRoute(
       path: RoutineLogEditorScreen.routeName,
       builder: (context, state) {

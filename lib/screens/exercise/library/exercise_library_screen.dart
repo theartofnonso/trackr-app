@@ -287,7 +287,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                                         child: Divider(
                                           height: 0.5,
                                           color: isDarkMode
-                                              ? sapphireLighter
+                                              ? darkDivider
                                               : Colors.grey.shade200,
                                         ),
                                       )

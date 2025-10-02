@@ -147,10 +147,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 14,
               children: [
-                summarizeProgression(
-                    values: _weightsForExercise(pastSets: pastSets),
-                    context: context,
-                    textAlign: TextAlign.center)
+                if (exerciseType == ExerciseType.weights)
+                  summarizeProgression(
+                      values: _weightsForExercise(pastSets: pastSets),
+                      context: context,
+                      textAlign: TextAlign.center)
               ],
             ),
           ),
@@ -172,7 +173,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
   List<num> _weightsForExercise({required List<SetDto> pastSets}) {
     return pastSets.reversed
-        .map((set) => (set as WeightAndRepsSetDto).weight)
+        .whereType<WeightAndRepsSetDto>()
+        .map((set) => set.weight)
         .toList();
   }
 }

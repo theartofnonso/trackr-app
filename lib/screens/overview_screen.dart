@@ -227,7 +227,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           LabelDivider(
             label: "Don't know what to train?",
             labelColor: isDarkMode ? darkOnSurfaceVariant : Colors.black,
-            dividerColor: sapphireLighter,
+            dividerColor: darkDivider,
           ),
           const SizedBox(height: 6),
           ListTile(
@@ -356,6 +356,7 @@ class _ScheduledTitle extends StatelessWidget {
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: vibrantGreen.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(radiusMD),
                       ),
                       child: Center(
                         child: FaIcon(
@@ -393,6 +394,7 @@ class _ScheduledTitle extends StatelessWidget {
                         color: isDarkMode
                             ? vibrantGreen.withValues(alpha: 0.1)
                             : Colors.black.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(radiusMD),
                       ),
                       child: Center(
                         child: FaIcon(

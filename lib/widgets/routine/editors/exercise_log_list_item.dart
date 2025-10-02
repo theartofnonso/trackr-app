@@ -65,7 +65,7 @@ class ExerciseLogListItemWidget extends StatelessWidget {
                     // Checkmark circle
                     FaIcon(
                       FontAwesomeIcons.solidSquareCheck,
-                      color: isCompleted ? vibrantGreen : sapphireDark,
+                      color: isCompleted ? vibrantGreen : darkSurface,
                       size: 30,
                     ),
                     const SizedBox(width: 16),

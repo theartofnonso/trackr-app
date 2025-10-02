@@ -48,13 +48,13 @@ void onShare(
               key: globalKey,
               child: Container(
                   decoration: BoxDecoration(
-                      color: sapphireDark80,
+                      color: darkSurfaceContainer,
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          sapphireDark80,
-                          sapphireDark,
+                          darkSurfaceContainer,
+                          darkSurface,
                         ],
                       )),
                   padding: padding ?? const EdgeInsets.all(12),

@@ -20,7 +20,6 @@ import '../../enums/chart_unit_enum.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../enums/routine_preview_type_enum.dart';
-import '../../urls.dart';
 import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -404,7 +403,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
                             title: "Training Volume",
                             color: isDarkMode
-                                ? sapphireDark80
+                                ? darkSurfaceContainer
                                 : Colors.grey.shade200,
                             description:
                                 "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
@@ -418,7 +417,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                             color: isDarkMode
-                                ? sapphireDark80
+                                ? darkSurfaceContainer
                                 : Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(radiusMD)),
                         padding: const EdgeInsets.symmetric(vertical: 20),
@@ -501,10 +500,11 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                             CupertinoSlidingSegmentedControl<
                                 _OriginalNewValues>(
                               backgroundColor: isDarkMode
-                                  ? sapphireDark
+                                  ? darkSurface
                                   : Colors.grey.shade200,
-                              thumbColor:
-                                  isDarkMode ? sapphireDark80 : Colors.white,
+                              thumbColor: isDarkMode
+                                  ? darkSurfaceContainer
+                                  : Colors.white,
                               groupValue: _originalNewValues,
                               children: {
                                 _OriginalNewValues.originalValues: SizedBox(
@@ -670,7 +670,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     final template = _template;
 
     if (template != null) {
-      final workoutLink = "$shareableRoutineUrl/${template.id}";
       final workoutText = copyRoutineAsText(
           routineType: RoutinePreviewType.template,
           name: template.name,
@@ -681,36 +680,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
           context: context,
           isScrollControlled: true,
           child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.link,
-                size: 18,
-              ),
-              horizontalTitleGap: 10,
-              title: Text(
-                "Copy as Link",
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                maxLines: 1,
-              ),
-              subtitle: Text(workoutLink),
-              onTap: () {
-                Posthog().capture(
-                    eventName: PostHogAnalyticsEvent
-                        .shareRoutineTemplateAsLink.displayName);
-                HapticFeedback.heavyImpact();
-                final data = ClipboardData(text: workoutLink);
-                Clipboard.setData(data).then((_) {
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                    showSnackbar(
-                        context: context, message: "Workout link copied");
-                  }
-                });
-              },
-            ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const FaIcon(

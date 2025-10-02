@@ -97,7 +97,7 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
             child: LabelDivider(
                 label: "Available Weights (${weightUnit()})".toUpperCase(),
                 labelColor: isDarkMode ? Colors.white70 : Colors.black,
-                dividerColor: sapphireLighter),
+                dividerColor: darkDivider),
           ),
           const SizedBox(height: 10),
           SingleChildScrollView(
@@ -113,7 +113,7 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
             child: LabelDivider(
               label: "Available Bar (${weightUnit()})".toUpperCase(),
               labelColor: isDarkMode ? Colors.white70 : Colors.black,
-              dividerColor: sapphireLighter,
+              dividerColor: darkDivider,
               leftToRight: true,
             ),
           ),
@@ -207,7 +207,7 @@ class _Bar extends StatelessWidget {
                       color: Colors.black,
                       fontWeight: FontWeight.bold)),
             )),
-        Container(width: 15, height: 40, color: sapphireDark),
+        Container(width: 15, height: 40, color: darkSurface),
         ...plates.map((plate) => _Plate(plate: plate)),
         Container(
             width: 10,
@@ -236,7 +236,7 @@ class _Plate extends StatelessWidget {
       height: plate.height,
       margin: EdgeInsets.only(right: 3),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radiusSM), color: sapphireDark),
+          borderRadius: BorderRadius.circular(radiusSM), color: darkSurface),
       child: Center(
         child: Text("${weightWithConversion(value: plate.weight)}",
             textAlign: TextAlign.center,
