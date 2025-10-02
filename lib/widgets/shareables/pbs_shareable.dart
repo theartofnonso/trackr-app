@@ -95,13 +95,13 @@ class PBsShareable extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           FaIcon(FontAwesomeIcons.solidStar,
-                              color: Colors.green, size: 14),
+                              color: vibrantGreen, size: 14),
                           SizedBox(width: 8),
                           FaIcon(FontAwesomeIcons.solidStar,
                               color: vibrantGreen, size: 16),
                           SizedBox(width: 8),
                           FaIcon(FontAwesomeIcons.solidStar,
-                              color: Colors.green, size: 14)
+                              color: vibrantGreen, size: 14)
                         ]),
                     value != null
                         ? Padding(

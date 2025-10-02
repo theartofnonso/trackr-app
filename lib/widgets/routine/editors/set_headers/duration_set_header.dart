@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
 
@@ -28,13 +29,15 @@ class DurationSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("TIME", style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
+            child: Text("TIME",
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center),
           ),
           if (editorType == RoutineEditorMode.log)
             const TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Icon(
-                  Icons.check,
+                child: FaIcon(
+                  FontAwesomeIcons.check,
                   size: 12,
                 ))
         ]),

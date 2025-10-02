@@ -36,8 +36,9 @@ class ExerciseLogListItemWidget extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    // For now, we'll consider an exercise completed if it has sets
-    final isCompleted = exerciseLogDto.sets.isNotEmpty;
+    // An exercise is completed only if all sets are checked
+    final isCompleted = exerciseLogDto.sets.isNotEmpty &&
+        exerciseLogDto.sets.every((set) => set.checked);
 
     return Column(
       children: [
@@ -62,30 +63,10 @@ class ExerciseLogListItemWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     // Checkmark circle
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(radiusXS),
-                        color: isCompleted
-                            ? (isDarkMode
-                                ? darkSurfaceContainer
-                                : Colors.grey.shade200)
-                            : (isDarkMode
-                                ? darkSurfaceContainer
-                                : Colors.grey.shade200),
-                        border: Border.all(
-                          color: isDarkMode ? darkBorder : Colors.grey.shade400,
-                          width: 1,
-                        ),
-                      ),
-                      child: isCompleted
-                          ? Icon(
-                              Icons.check,
-                              size: 16,
-                              color: isDarkMode ? darkOnSurface : Colors.black,
-                            )
-                          : null,
+                    FaIcon(
+                      FontAwesomeIcons.solidSquareCheck,
+                      color: isCompleted ? vibrantGreen : sapphireDark,
+                      size: 30,
                     ),
                     const SizedBox(width: 16),
 
