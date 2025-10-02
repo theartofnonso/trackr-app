@@ -14,7 +14,7 @@ import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 import 'package:tracker_app/utils/routine_editors_utils.dart';
-import 'package:tracker_app/widgets/routine/editors/exercise_log_grid_item.dart';
+import 'package:tracker_app/widgets/routine/editors/exercise_log_list_item.dart';
 import 'package:tracker_app/widgets/timers/stopwatch_timer.dart';
 
 import '../../colors.dart';
@@ -269,13 +269,17 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
 
     final avgWorkoutDuration = _averageWorkoutDuration();
 
-    final children = exerciseLogs.map((exerciseLog) {
-      return ExerciseLogGridItemWidget(
+    final children = exerciseLogs.asMap().entries.map((entry) {
+      final index = entry.key;
+      final exerciseLog = entry.value;
+      final isLastItem = index == exerciseLogs.length - 1;
+
+      return ExerciseLogListItemWidget(
         editorType: widget.mode,
         exerciseLogDto: exerciseLog,
         superSet: whereOtherExerciseInSuperSet(
             firstExercise: exerciseLog, exercises: exerciseLogs),
-        onRemoveSuperSet: (String superSetId) {
+        onRemoveSuperSet: () {
           exerciseLogController.removeSuperSet(
               superSetId: exerciseLog.superSetId);
         },
@@ -286,6 +290,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
             _showSuperSetExercisePicker(firstExerciseLog: exerciseLog),
         onReplaceLog: () =>
             _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
+        isLastItem: isLastItem,
       );
     }).toList();
 
@@ -337,13 +342,11 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
                     if (exerciseLogs.isNotEmpty)
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: GridView.count(
-                              crossAxisCount: 2,
-                              childAspectRatio: 1,
-                              mainAxisSpacing: 10.0,
-                              crossAxisSpacing: 10.0,
-                              children: children),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: ListView.builder(
+                            itemCount: children.length,
+                            itemBuilder: (context, index) => children[index],
+                          ),
                         ),
                       ),
                     if (exerciseLogs.isNotEmpty)
