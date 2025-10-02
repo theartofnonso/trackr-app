@@ -23,7 +23,7 @@ import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
 import '../widgets/calendar/calendar_logs.dart';
 import '../widgets/dividers/label_divider.dart';
-import 'AI/trkr_coach_chat_screen.dart';
+import 'AI/coach_chat_screen.dart';
 
 enum TrainingAndVolume {
   training,
@@ -181,7 +181,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void _switchToAIContext() async {
     final result = await navigateWithSlideTransition(
         context: context,
-        child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
+        child: const CoachChatScreen()) as RoutineTemplateDto?;
     if (result != null) {
       if (mounted) {
         final log = result.toLog();
@@ -310,7 +310,7 @@ class _QuestionsForCoachSection extends StatelessWidget {
               // Navigate to coach chat with this question
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const TRKRCoachChatScreen(),
+                  builder: (context) => const CoachChatScreen(),
                 ),
               );
             },
@@ -323,7 +323,7 @@ class _QuestionsForCoachSection extends StatelessWidget {
               // Navigate to coach chat with this question
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const TRKRCoachChatScreen(),
+                  builder: (context) => const CoachChatScreen(),
                 ),
               );
             },
@@ -337,7 +337,7 @@ class _QuestionsForCoachSection extends StatelessWidget {
               // Navigate to coach chat with this question
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const TRKRCoachChatScreen(),
+                  builder: (context) => const CoachChatScreen(),
                 ),
               );
             },
@@ -350,7 +350,7 @@ class _QuestionsForCoachSection extends StatelessWidget {
               // Navigate to coach chat with this question
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => const TRKRCoachChatScreen(),
+                  builder: (context) => const CoachChatScreen(),
                 ),
               );
             },
