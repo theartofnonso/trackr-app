@@ -43,8 +43,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   /// Holds a list of [ExerciseDto] that has been recently logged
   late List<ExerciseDto> _recentExercises; // injected
 
-  bool _shouldShowOwnerExercises = false;
-
   /// Search through the list of exercises
   ///
   /// Calculates a 'relevance' score for an ExerciseDto based on the query parts.
@@ -104,12 +102,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       filteredExercises = filteredExercises
           .where((ex) => _selectedMuscleGroups.contains(ex.primaryMuscleGroup))
           .toList();
-    }
-
-    // Filter to owner exercises if needed
-    if (_shouldShowOwnerExercises) {
-      filteredExercises =
-          filteredExercises.where((ex) => ex.owner.isNotEmpty).toList();
     }
 
     // If the user typed nothing, you can simply show the entire filtered list
@@ -255,12 +247,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   scrollDirection: Axis.horizontal,
                   child: Row(children: [
-                    OpacityButtonWidget(
-                        onPressed: _toggleOwnerExercises,
-                        buttonColor:
-                            _shouldShowOwnerExercises ? vibrantGreen : null,
-                        label: "Your Exercises".toUpperCase()),
-                    const SizedBox(width: 6),
                     ...muscleGroups.sublist(0, muscleGroupScrollViewHalf),
                   ])),
               SingleChildScrollView(
@@ -354,13 +340,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 exerciseType != null ? exercise.type == widget.type : true)
             .toList();
 
-    _runSearch();
-  }
-
-  void _toggleOwnerExercises() {
-    setState(() {
-      _shouldShowOwnerExercises = !_shouldShowOwnerExercises;
-    });
     _runSearch();
   }
 

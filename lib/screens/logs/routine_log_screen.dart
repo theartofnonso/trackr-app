@@ -246,7 +246,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
                             muscleGroup: muscleGroupFamilyFrequencies,
                             minimized: false),
                         if (updatedLog.templateId.isNotEmpty &&
-                            updatedLog.owner == SharedPrefs().userId)
+                            true)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             spacing: 10,

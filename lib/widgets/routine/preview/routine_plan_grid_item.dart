@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 import '../../../colors.dart';
-import '../../../controllers/exercise_and_routine_controller.dart';
 import '../../../dtos/db/routine_plan_dto.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
@@ -19,14 +17,7 @@ class RoutinePlanGridItemWidget extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final exerciseAndRoutineController =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-    final routineTemplates = exerciseAndRoutineController.templates
-        .where((template) => template.planId == plan.id)
-        .toList();
-
-    final exerciseTemplates = routineTemplates
+    final exerciseTemplates = plan.templates
         .expand((routineTemplate) => routineTemplate.exerciseTemplates);
     return GestureDetector(
       onTap: () => navigateToRoutinePlanPreview(context: context, plan: plan),
@@ -84,7 +75,7 @@ class RoutinePlanGridItemWidget extends StatelessWidget {
                           width: 6,
                         ),
                         Text(
-                          "${routineTemplates.length} ${pluralize(word: "Session", count: routineTemplates.length)}",
+                          "${plan.templates.length} ${pluralize(word: "Session", count: plan.templates.length)}",
                           style: Theme.of(context).textTheme.bodyMedium,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,

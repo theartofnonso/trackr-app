@@ -42,7 +42,7 @@ class ExerciseDto {
   // Removed Amplify model conversion
 
   factory ExerciseDto.fromJson(Map<String, dynamic> json,
-      {String? exerciseId, String? owner}) {
+      {String? exerciseId}) {
     final id = exerciseId ?? json["id"] ?? "";
     final name = json["name"] ?? "";
     final primaryMuscleGroupString = json["primaryMuscleGroup"] ?? "";

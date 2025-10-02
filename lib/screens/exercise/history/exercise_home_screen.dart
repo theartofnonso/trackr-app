@@ -7,7 +7,6 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_chart_screen.dart';
 import 'package:tracker_app/screens/exercise/history/history_screen.dart';
-import 'package:tracker_app/shared_prefs.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/db/exercise_dto.dart';
@@ -107,60 +106,57 @@ class _ExerciseHomeScreenState extends State<ExerciseHomeScreen> {
         length: hasVideo ? 3 : 2,
         child: Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
-              onPressed: context.pop,
-            ),
-            title: Text(exercise.name),
-            bottom: TabBar(
-              dividerColor: Colors.transparent,
-              tabs: [
-                Tab(
-                    child: Text("Summary",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontWeight: FontWeight.w600))),
-                Tab(
-                    child: Text("History",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontWeight: FontWeight.w600))),
-                if (hasVideo)
+              leading: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
+                onPressed: context.pop,
+              ),
+              title: Text(exercise.name),
+              bottom: TabBar(
+                dividerColor: Colors.transparent,
+                tabs: [
                   Tab(
-                      child: Text("Video",
+                      child: Text("Summary",
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
                               ?.copyWith(fontWeight: FontWeight.w600))),
-              ],
-            ),
-            actions: exercise.owner == SharedPrefs().userId
-                ? [
-                    MenuAnchor(
-                      builder: (BuildContext context, MenuController controller,
-                          Widget? child) {
-                        return IconButton(
-                          onPressed: () {
-                            if (controller.isOpen) {
-                              controller.close();
-                            } else {
-                              controller.open();
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.more_vert_rounded,
-                            size: 24,
-                          ),
-                          tooltip: 'Show menu',
-                        );
+                  Tab(
+                      child: Text("History",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w600))),
+                  if (hasVideo)
+                    Tab(
+                        child: Text("Video",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(fontWeight: FontWeight.w600))),
+                ],
+              ),
+              actions: [
+                MenuAnchor(
+                  builder: (BuildContext context, MenuController controller,
+                      Widget? child) {
+                    return IconButton(
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
                       },
-                      menuChildren: menuActions,
-                    )
-                  ]
-                : null,
-          ),
+                      icon: const Icon(
+                        Icons.more_vert_rounded,
+                        size: 24,
+                      ),
+                      tooltip: 'Show menu',
+                    );
+                  },
+                  menuChildren: menuActions,
+                )
+              ]),
           body: Container(
             width: double.infinity,
             decoration: BoxDecoration(

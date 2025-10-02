@@ -38,10 +38,6 @@ class MockRoutineTemplateRepository {
     return _templates.firstWhereOrNull((dto) => dto.id == id);
   }
 
-  RoutineTemplateDto? templateWherePlanId({required String id}) {
-    return _templates.firstWhereOrNull((dto) => dto.planId == id);
-  }
-
   void clear() {
     _templates.clear();
   }

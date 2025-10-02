@@ -72,7 +72,6 @@ class _RoutineTemplateLibraryScreenState
         Provider.of<ExerciseAndRoutineController>(context, listen: false)
             .templates
             .where((template) => !widget.excludeTemplates.contains(template))
-            .where((template) => template.planId.isEmpty)
             .toList();
 
     // If the user typed nothing, you can simply show the entire filtered list
@@ -183,7 +182,6 @@ class _RoutineTemplateLibraryScreenState
         Provider.of<ExerciseAndRoutineController>(context, listen: false)
             .templates
             .where((template) => !widget.excludeTemplates.contains(template))
-            .where((template) => template.planId.isEmpty)
             .toList();
 
     _runSearch();
