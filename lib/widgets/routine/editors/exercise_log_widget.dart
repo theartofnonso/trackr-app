@@ -66,7 +66,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   List<TextEditingController> _repsControllers = [];
   List<DateTime> _durationControllers = [];
 
-  bool _showNotes = false;
+  final bool _showNotes = false;
 
   SetDto? _selectedSetDto;
 
