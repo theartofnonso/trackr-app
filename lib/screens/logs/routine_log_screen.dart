@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -117,27 +119,21 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
     return Scaffold(
         appBar: AppBar(
-            leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-              onPressed: context.pop,
-            ),
-            title: Text(updatedLog.name),
-            actions: updatedLog.owner == SharedPrefs().userId &&
-                    widget.isEditable
-                ? [
-                    IconButton(
-                        onPressed: () => _onShareLog(log: updatedLog),
-                        icon: const FaIcon(FontAwesomeIcons.arrowUpFromBracket,
-                            size: 18)),
-                  ]
-                : []),
-        floatingActionButton:
-            updatedLog.owner == SharedPrefs().userId && widget.isEditable
-                ? FloatingActionButton(
-                    heroTag: "routine_log_screen",
-                    onPressed: _showBottomSheet,
-                    child: const FaIcon(FontAwesomeIcons.penToSquare))
-                : null,
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
+            onPressed: context.pop,
+          ),
+          title: Text(updatedLog.name),
+          actions: [
+            IconButton(
+                onPressed: _editLog,
+                icon: const FaIcon(FontAwesomeIcons.penToSquare, size: 18)),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+            heroTag: "routine_log_screen",
+            onPressed: () => _onShareLog(log: updatedLog),
+            child: const FaIcon(FontAwesomeIcons.arrowUpFromBracket)),
         body: Container(
           height: double.infinity,
           decoration: BoxDecoration(
@@ -348,49 +344,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     }
   }
 
-  void _showBottomSheet() {
-    displayBottomSheet(
-        context: context,
-        child: Column(children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.solidPenToSquare, size: 18),
-            horizontalTitleGap: 6,
-            title: Text("Edit Log"),
-            onTap: _editLog,
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.solidClock, size: 18),
-            horizontalTitleGap: 6,
-            title: Text("Edit duration"),
-            onTap: _editDuration,
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.download, size: 18),
-            horizontalTitleGap: 6,
-            title: Text("Save as template"),
-            onTap: _createTemplate,
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.trash,
-              size: 18,
-              color: Colors.red,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Delete log",
-                style: GoogleFonts.ubuntu(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16)),
-            onTap: _deleteLog,
-          ),
-        ]));
-  }
-
   void _onShareLog({required RoutineLogDto log}) {
     navigateToShareableScreen(context: context, log: log);
   }
@@ -421,8 +374,8 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
   }
 
   void _editLog() async {
-    Navigator.of(context).pop();
     final log = _log;
+    print('log: $log');
     if (log != null) {
       final copyOfLog = log.copyWith();
       final arguments = RoutineLogArguments(
@@ -438,83 +391,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
               context: context,
               child: RoutineLogSummaryScreen(log: updatedLog));
         }
-      }
-    }
-  }
-
-  void _editDuration() {
-    Navigator.of(context).pop();
-    final log = _log;
-    if (log != null) {
-      showDatetimeRangePicker(
-          context: context,
-          initialDateTimeRange:
-              DateTimeRange(start: log.startTime, end: log.endTime),
-          onChangedDateTimeRange: (DateTimeRange datetimeRange) async {
-            Navigator.of(context).pop();
-            final updatedLog = log.copyWith(
-                startTime: datetimeRange.start,
-                endTime: datetimeRange.end,
-                createdAt: datetimeRange.start,
-                updatedAt: DateTime.now());
-            await Provider.of<ExerciseAndRoutineController>(context,
-                    listen: false)
-                .updateLog(log: updatedLog);
-            setState(() {
-              _log = updatedLog;
-            });
-          });
-    }
-  }
-
-  void _createTemplate() async {
-    Navigator.of(context).pop();
-
-    final log = _log;
-    if (log != null) {
-      _showLoadingScreen();
-
-      try {
-        final exercises = log.exerciseLogs.map((exerciseLog) {
-          final uncheckedSets = exerciseLog.sets
-              .map((set) => set.copyWith(checked: false))
-              .toList();
-
-          /// [Exercise.duration] exercises do not have sets in templates
-          /// This is because we only need to store the duration of the exercise in [RoutineEditorType.log] i.e data is log in realtime
-          final sets = withDurationOnly(type: exerciseLog.exercise.type)
-              ? <SetDto>[]
-              : uncheckedSets;
-          return exerciseLog.copyWith(sets: sets);
-        }).toList();
-        final templateToCreate = RoutineTemplateDto(
-            id: "",
-            name: log.name,
-            notes: log.notes,
-            exerciseTemplates: exercises,
-            planId: "",
-            owner: "",
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now());
-
-        final createdTemplate = await Provider.of<ExerciseAndRoutineController>(
-                context,
-                listen: false)
-            .saveTemplate(templateDto: templateToCreate);
-        if (mounted) {
-          if (createdTemplate != null) {
-            navigateToRoutineTemplatePreview(
-                context: context, template: createdTemplate);
-          }
-        }
-      } catch (_) {
-        if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to create template");
-        }
-      } finally {
-        _hideLoadingScreen();
       }
     }
   }

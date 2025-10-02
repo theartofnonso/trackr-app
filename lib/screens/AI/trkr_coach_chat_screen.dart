@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracker_app/colors.dart';
-import 'package:tracker_app/widgets/information_containers/information_container_with_background_image.dart';
+import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../utils/dialog_utils.dart';
@@ -75,13 +75,11 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                         ),
                       )
                     : Expanded(
-                        child: InformationContainerWithBackgroundImage(
-                          image: 'images/recovery_girl.PNG',
-                          subtitle:
-                              "TRNR can help you create new workouts tailored to your goals. You can start by asking for help, like: \n👍 Show me leg exercises using barbells only.\n👍 What exercises should I do for a full-body workout with dumbbells only?",
-                          color: Colors.black,
-                          height: 160,
-                          alignmentGeometry: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: const NoListEmptyState(
+                              message:
+                                  "Please describe your workout or plan to get started with your Coach."),
                         ),
                       ),
                 const SizedBox(height: 10),
@@ -94,7 +92,7 @@ class _TRKRCoachChatScreenState extends State<TRKRCoachChatScreen> {
                         child: TextField(
                           controller: _textEditingController,
                           decoration: InputDecoration(
-                              hintText: "Describe your workout"),
+                              hintText: "What do you want to train?"),
                           cursorColor:
                               isDarkMode ? darkOnSurface : Colors.black,
                           maxLines: null,

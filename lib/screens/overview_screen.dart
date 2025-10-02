@@ -1,4 +1,5 @@
-import 'package:collection/collection.dart';
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,56 +44,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   DateTime? _selectedCalendarDate;
 
-  String _predictTemplate({required List<RoutineLogDto> logs}) {
-    if (logs.isEmpty) {
-      return "";
-    }
-
-    final currentWeekday = DateTime.now().weekday;
-    final sameWeekdayLogs =
-        logs.where((log) => log.createdAt.weekday == currentWeekday).toList();
-
-    final logsToConsider = sameWeekdayLogs.isNotEmpty ? sameWeekdayLogs : logs;
-
-    final counts = <String, int>{};
-    final latestDates = <String, DateTime>{};
-
-    for (final log in logsToConsider) {
-      final templateId = log.templateId;
-      counts[templateId] = (counts[templateId] ?? 0) + 1;
-
-      final currentLatest = latestDates[templateId];
-      if (currentLatest == null || log.createdAt.isAfter(currentLatest)) {
-        latestDates[templateId] = log.createdAt;
-      }
-    }
-
-    final maxCount =
-        counts.values.fold(0, (max, count) => count > max ? count : max);
-    final candidates = counts.entries
-        .where((entry) => entry.value == maxCount)
-        .map((entry) => entry.key)
-        .toList();
-
-    if (candidates.length == 1) {
-      return candidates.first;
-    }
-
-    // Resolve tie by selecting the most recent date
-    String selectedId = candidates.first;
-    DateTime latestDate = latestDates[selectedId]!;
-
-    for (final id in candidates.skip(1)) {
-      final date = latestDates[id]!;
-      if (date.isAfter(latestDate)) {
-        selectedId = id;
-        latestDate = date;
-      }
-    }
-
-    return selectedId;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
@@ -112,15 +63,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final logsInLastQuarter =
         exerciseAndRoutineController.whereLogsIsWithinRange(range: lastQuarter);
 
-    final predictedTemplateId = _predictTemplate(logs: logsInLastQuarter);
-
-    final predictedTemplate = templates
-        .firstWhereOrNull((template) => template.id == predictedTemplateId);
-
-    final hasPredictedTemplateBeenLogged = logsForCurrentDay.firstWhereOrNull(
-            (log) => log.templateId == predictedTemplate?.id) !=
-        null;
-
     return SingleChildScrollView(
       child: Column(children: [
         Calendar(
@@ -129,19 +71,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
         const SizedBox(height: 10),
         CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
         StaggeredGrid.count(
-          crossAxisCount: 3,
+          crossAxisCount: 4,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
           children: [
-            StaggeredGridTile.count(
-              crossAxisCellCount: 2,
-              mainAxisCellCount: 1,
-              child: predictedTemplate != null
-                  ? _ScheduledTitle(
-                      schedule: predictedTemplate,
-                      isLogged: hasPredictedTemplateBeenLogged)
-                  : const _NoScheduledTitle(),
-            ),
             StaggeredGridTile.count(
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
@@ -270,145 +203,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _onMonthChanged(DateTimeRange dateRange) {
     // Calendar month changed - can be used for future functionality
-  }
-}
-
-class _NoScheduledTitle extends StatelessWidget {
-  const _NoScheduledTitle();
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: isDarkMode ? darkSurface : Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(radiusMD)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-        Text("Keep training to see future schedules",
-            style: GoogleFonts.ubuntu(
-                fontSize: 18, height: 1.5, fontWeight: FontWeight.w600)),
-        const Spacer(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              width: 25,
-              height: 25,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: isDarkMode
-                    ? darkSurfaceContainer
-                    : Colors.black.withValues(alpha: 0.4),
-              ),
-              child: Center(
-                child: FaIcon(
-                  FontAwesomeIcons.calendarDay,
-                  size: 14,
-                  color: Colors.white,
-                ),
-              ),
-            )
-          ],
-        ),
-      ]),
-    );
-  }
-}
-
-class _ScheduledTitle extends StatelessWidget {
-  const _ScheduledTitle({required this.schedule, required this.isLogged});
-
-  final RoutineTemplateDto schedule;
-
-  final bool isLogged;
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return GestureDetector(
-      onTap: () => navigateToRoutineTemplatePreview(
-          context: context, template: schedule),
-      child: isLogged
-          ? Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isDarkMode ? darkSurface : vibrantGreen,
-              ),
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                Text("${schedule.name} has been completed. Great job!",
-                    style: GoogleFonts.ubuntu(
-                        fontSize: 18,
-                        height: 1.5,
-                        fontWeight: FontWeight.w600)),
-                const Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: vibrantGreen.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(radiusMD),
-                      ),
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.check,
-                          color: vibrantGreen,
-                          size: 14,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ]),
-            )
-          : Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isDarkMode ? darkSurface : vibrantGreen,
-              ),
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                Text("${schedule.name} is scheduled today!",
-                    style: GoogleFonts.ubuntu(
-                        fontSize: 18,
-                        height: 1.5,
-                        fontWeight: FontWeight.w600)),
-                const Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: 25,
-                      height: 25,
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: isDarkMode
-                            ? vibrantGreen.withValues(alpha: 0.1)
-                            : Colors.black.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(radiusMD),
-                      ),
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.calendarDay,
-                          color: isDarkMode ? vibrantGreen : Colors.white,
-                          size: 14,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ]),
-            ),
-    );
   }
 }
 

@@ -15,8 +15,6 @@ class SingleSetRow extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = isDarkMode ? darkBorder : Colors.black38;
-
     final pbsForSet = pbs
         .map((pb) => PBIcon(
               label: pb.pb.name,
@@ -37,26 +35,28 @@ class SingleSetRow extends StatelessWidget {
           ),
           child: Row(spacing: 6, children: pbsForSet),
         ),
-        child: Table(
-            border: TableBorder.all(
-                color: color, borderRadius: BorderRadius.circular(radiusSM)),
-            columnWidths: const <int, TableColumnWidth>{
-              0: FlexColumnWidth(),
-            },
-            children: <TableRow>[
-              TableRow(children: [
-                TableCell(
-                  verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text(
-                      label,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isDarkMode ? darkSurface : Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(radiusSM),
+          ),
+          child: Table(columnWidths: const <int, TableColumnWidth>{
+            0: FlexColumnWidth(),
+          }, children: <TableRow>[
+            TableRow(children: [
+              TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              ]),
-            ]));
+              ),
+            ]),
+          ]),
+        ));
   }
 }

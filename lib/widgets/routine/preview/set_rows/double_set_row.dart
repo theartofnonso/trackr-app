@@ -20,8 +20,6 @@ class DoubleSetRow extends StatelessWidget {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    final color = isDarkMode ? darkBorder : Colors.black38;
-
     final pbsForSet = pbs
         .map((pb) => PBIcon(
               label: pb.pb.name,
@@ -44,36 +42,36 @@ class DoubleSetRow extends StatelessWidget {
         ),
         child: Row(spacing: 6, children: pbsForSet),
       ),
-      child: Table(
-          border: TableBorder.all(
-              color: color,
-              borderRadius: BorderRadius.circular(radiusSM),
-              width: 1),
-          columnWidths: const <int, TableColumnWidth>{
-            0: FlexColumnWidth(1),
-            1: FlexColumnWidth(1),
-          },
-          children: <TableRow>[
-            TableRow(children: [
-              TableCell(
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDarkMode ? darkSurface : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(radiusSM),
+        ),
+        child: Table(columnWidths: const <int, TableColumnWidth>{
+          0: FlexColumnWidth(1),
+          1: FlexColumnWidth(1),
+        }, children: <TableRow>[
+          TableRow(children: [
+            TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Text(first,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center),
+              ),
+            ),
+            TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Text(first,
+                  child: Text(second,
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center),
-                ),
-              ),
-              TableCell(
-                  verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text(second,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        textAlign: TextAlign.center),
-                  ))
-            ]),
+                ))
           ]),
+        ]),
+      ),
     );
   }
 }
