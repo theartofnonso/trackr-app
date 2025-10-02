@@ -17,27 +17,37 @@ class LogStreakChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final routineLogController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final dateRange = theLastYearDateTimeRange();
 
-    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange).toList();
+    final logs =
+        routineLogController.whereLogsIsWithinRange(range: dateRange).toList();
 
-    final weeksInLastQuarter = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
+    final weeksInLastQuarter = generateWeeksInRange(range: dateRange)
+        .reversed
+        .take(13)
+        .toList()
+        .reversed;
 
     List<String> months = [];
     List<int> days = [];
     for (final week in weeksInLastQuarter) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
-      final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
-      final routineLogsByDay = groupBy(logsForTheWeek, (log) => log.createdAt.withoutTime().day);
+      final logsForTheWeek = logs.where((log) =>
+          log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+      final routineLogsByDay =
+          groupBy(logsForTheWeek, (log) => log.createdAt.withoutTime().day);
       days.add(routineLogsByDay.length);
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final chartPoints = days.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    final chartPoints = days
+        .mapIndexed((index, value) =>
+            ChartPointDto(x: index.toDouble(), y: value.toDouble()))
+        .toList();
 
     final trendSummary = _analyzeWeeklyTrends(daysTrained: days);
 
@@ -48,7 +58,9 @@ class LogStreakChart extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 10,
           children: [
-            trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
+            trendSummary.trend == Trend.none
+                ? const SizedBox.shrink()
+                : getTrendIcon(trend: trendSummary.trend),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -77,7 +89,10 @@ class LogStreakChart extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(trendSummary.summary,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400)),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w400)),
         const SizedBox(height: 30),
         LineChartWidget(
           chartPoints: chartPoints,
@@ -92,13 +107,13 @@ class LogStreakChart extends StatelessWidget {
   }
 
   TrendSummary _analyzeWeeklyTrends({required List<int> daysTrained}) {
-
     // 1. If there's no data, return immediately
     if (daysTrained.isEmpty) {
       return TrendSummary(
         trend: Trend.none,
         average: 0,
-        summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!",
+        summary:
+            "🤔 No training data available yet. Log some sessions to start tracking your progress!",
       );
     }
 
@@ -109,14 +124,16 @@ class LogStreakChart extends StatelessWidget {
       return TrendSummary(
         trend: Trend.none,
         average: 0,
-        summary: "🌟 You’ve logged your first week: $singleWeek day(s) of training."
+        summary:
+            "🌟 You’ve logged your first week: $singleWeek day(s) of training."
             " Great job! Log more weeks to identify trends over time.",
       );
     }
 
     // 3. Now we can safely do sublist & reduce because we have at least 2 entries
     final previousDays = daysTrained.sublist(0, daysTrained.length - 1);
-    final averageOfPrevious = (previousDays.reduce((a, b) => a + b) / previousDays.length).round();
+    final averageOfPrevious =
+        (previousDays.reduce((a, b) => a + b) / previousDays.length).round();
 
     // 4. Identify the last week's days trained
     final recentWeekDays = daysTrained.last;
@@ -135,7 +152,8 @@ class LogStreakChart extends StatelessWidget {
     final differenceIsZero = (difference == 0);
 
     final bool averageIsZero = (averageOfPrevious == 0);
-    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
+    final double percentageChange =
+        averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
 
     // 6. Decide the trend
     const threshold = 5; // ±5% threshold

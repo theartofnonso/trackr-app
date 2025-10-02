@@ -20,9 +20,11 @@ class RepsSetDto extends SetDto {
       {required DateTime dateTime}) {
     return RepsSetDto(
       reps: (json['reps'] as num).toInt(),
-      checked: json['checked'] as bool,
-      isWorkingSet: json['isWorkingSet'] as bool,
-      dateTime: dateTime,
+      checked: json['checked'] as bool? ?? false,
+      isWorkingSet: json['isWorkingSet'] as bool? ?? false,
+      dateTime: json['dateTime'] != null
+          ? DateTime.parse(json['dateTime'] as String)
+          : dateTime,
     );
   }
 
@@ -56,10 +58,10 @@ class RepsSetDto extends SetDto {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "value1": 0,
-      "value2": reps,
+      "reps": reps,
       "checked": checked,
-      'reps': reps,
+      "isWorkingSet": isWorkingSet,
+      "dateTime": dateTime.toIso8601String(),
     };
   }
 

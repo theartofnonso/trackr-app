@@ -21,9 +21,11 @@ class DurationSetDto extends SetDto {
       {required DateTime dateTime}) {
     return DurationSetDto(
       duration: Duration(milliseconds: (json['duration'] as num).toInt()),
-      checked: json['checked'] as bool,
-      isWorkingSet: json['isWorkingSet'] as bool,
-      dateTime: dateTime,
+      checked: json['checked'] as bool? ?? false,
+      isWorkingSet: json['isWorkingSet'] as bool? ?? false,
+      dateTime: json['dateTime'] != null
+          ? DateTime.parse(json['dateTime'] as String)
+          : dateTime,
     );
   }
 
@@ -57,10 +59,10 @@ class DurationSetDto extends SetDto {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "value1": 0,
-      "value2": duration.inMilliseconds,
+      "duration": duration.inMilliseconds,
       "checked": checked,
-      'duration': duration.inMilliseconds,
+      "isWorkingSet": isWorkingSet,
+      "dateTime": dateTime.toIso8601String(),
     };
   }
 

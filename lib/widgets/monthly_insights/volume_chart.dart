@@ -61,8 +61,8 @@ class VolumeChart extends StatelessWidget {
     }
 
     final chartPoints = volumes
-        .mapIndexed(
-            (index, value) => ChartPointDto(index.toDouble(), value.toDouble()))
+        .mapIndexed((index, value) =>
+            ChartPointDto(x: index.toDouble(), y: value.toDouble()))
         .toList();
 
     final trendSummary = _analyzeWeeklyTrends(volumes: volumes);

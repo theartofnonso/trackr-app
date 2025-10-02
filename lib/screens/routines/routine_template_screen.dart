@@ -104,7 +104,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         : 0.0;
 
     final volumeChartPoints = allLoggedVolumesForTemplate
-        .mapIndexed((index, volume) => ChartPointDto(index, volume))
+        .mapIndexed((index, volume) => ChartPointDto(x: index, y: volume))
         .toList();
 
     final trendSummary =

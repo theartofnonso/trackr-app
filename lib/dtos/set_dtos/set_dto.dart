@@ -39,21 +39,30 @@ abstract class SetDto {
 
   factory SetDto.fromJson(Map<String, dynamic> json,
       {required ExerciseType exerciseType, required DateTime datetime}) {
-    final value1 = json["value1"] as num;
-    final value2 = json["value2"] as num;
-    final checked = json["checked"] as bool;
+    final checked = json["checked"] as bool? ?? false;
+    final isWorkingSet = json["isWorkingSet"] as bool? ?? false;
+    final dateTime = json["dateTime"] != null
+        ? DateTime.parse(json["dateTime"] as String)
+        : datetime;
+
     return switch (exerciseType) {
       ExerciseType.weights => WeightAndRepsSetDto(
-          weight: value1.toDouble(),
-          reps: value2.toInt(),
+          weight: (json["weight"] as num?)?.toDouble() ?? 0.0,
+          reps: (json["reps"] as num?)?.toInt() ?? 0,
           checked: checked,
-          dateTime: datetime),
-      ExerciseType.bodyWeight =>
-        RepsSetDto(reps: value2.toInt(), checked: checked, dateTime: datetime),
+          isWorkingSet: isWorkingSet,
+          dateTime: dateTime),
+      ExerciseType.bodyWeight => RepsSetDto(
+          reps: (json["reps"] as num?)?.toInt() ?? 0,
+          checked: checked,
+          isWorkingSet: isWorkingSet,
+          dateTime: dateTime),
       ExerciseType.duration => DurationSetDto(
-          duration: Duration(milliseconds: value2.toInt()),
+          duration:
+              Duration(milliseconds: (json["duration"] as num?)?.toInt() ?? 0),
           checked: checked,
-          dateTime: datetime),
+          isWorkingSet: isWorkingSet,
+          dateTime: dateTime),
     };
   }
 

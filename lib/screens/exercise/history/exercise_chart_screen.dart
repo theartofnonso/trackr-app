@@ -77,7 +77,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         .toList();
     setState(() {
       _chartPoints = sets
-          .mapIndexed((index, set) => ChartPointDto(index, (set).weight))
+              .mapIndexed((index, set) => ChartPointDto(x: index, y: (set).weight))
           .toList();
       _summaryType = SummaryType.weight;
       _chartUnit = ChartUnit.weight;
@@ -90,7 +90,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         .toList();
     setState(() {
       _chartPoints = values
-          .mapIndexed((index, value) => ChartPointDto(index, value))
+              .mapIndexed((index, value) => ChartPointDto(x: index, y: value))
           .toList();
       _summaryType = SummaryType.setVolume;
       _chartUnit = ChartUnit.weight;
@@ -103,7 +103,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         .toList();
     setState(() {
       _chartPoints = values
-          .mapIndexed((index, value) => ChartPointDto(index, value))
+              .mapIndexed((index, value) => ChartPointDto(x: index, y: value))
           .toList();
       _summaryType = SummaryType.sessionReps;
       _chartUnit = ChartUnit.weight;
@@ -116,7 +116,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
         .toList();
     setState(() {
       _chartPoints = values
-          .mapIndexed((index, value) => ChartPointDto(index, value))
+              .mapIndexed((index, value) => ChartPointDto(x: index, y: value))
           .toList();
       _summaryType = SummaryType.mostReps;
       _chartUnit = ChartUnit.weight;
@@ -130,7 +130,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values
           .mapIndexed(
-              (index, value) => ChartPointDto(index, value.inMilliseconds))
+                  (index, value) => ChartPointDto(x: index, y: value.inMilliseconds))
           .toList();
       _summaryType = SummaryType.bestTime;
       _chartUnit = ChartUnit.duration;
@@ -144,7 +144,7 @@ class _ExerciseChartScreenState extends State<ExerciseChartScreen> {
     setState(() {
       _chartPoints = values
           .mapIndexed(
-              (index, value) => ChartPointDto(index, value.inMilliseconds))
+                  (index, value) => ChartPointDto(x: index, y: value.inMilliseconds))
           .toList();
       _summaryType = SummaryType.sessionTimes;
       _chartUnit = ChartUnit.duration;

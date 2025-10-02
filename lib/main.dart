@@ -15,7 +15,6 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/db/routine_log_dto.dart';
 import 'package:tracker_app/dtos/db/routine_template_dto.dart';
-import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
 import 'package:tracker_app/repositories/mock/mock_exercise_repository.dart';
 import 'package:tracker_app/repositories/mock/mock_routine_log_repository.dart';
 import 'package:tracker_app/repositories/mock/mock_routine_plan_repository.dart';
@@ -39,7 +38,6 @@ import 'package:tracker_app/utils/theme/theme.dart';
 //
 import 'dtos/db/exercise_dto.dart';
 import 'dtos/db/routine_plan_dto.dart';
-import 'dtos/viewmodels/past_routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
 import 'logger.dart';
 
@@ -134,15 +132,15 @@ final _router = GoRouter(
     GoRoute(
       path: PastRoutineLogEditorScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as PastRoutineLogArguments;
-        return PastRoutineLogEditorScreen(log: args.log);
+        final log = state.extra as RoutineLogDto;
+        return PastRoutineLogEditorScreen(log: log);
       },
     ),
     GoRoute(
       path: ExerciseEditorScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as ExerciseEditorArguments?;
-        return ExerciseEditorScreen(exercise: args?.exercise);
+        final exercise = state.extra as ExerciseDto?;
+        return ExerciseEditorScreen(exercise: exercise);
       },
     ),
     GoRoute(

@@ -5,7 +5,6 @@ import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../utils/navigation_utils.dart';
-import '../../../dtos/viewmodels/exercise_editor_arguments.dart';
 
 class ExerciseLogListItemWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLogDto;
@@ -167,9 +166,8 @@ class ExerciseLogListItemWidget extends StatelessWidget {
   }
 
   void _navigateToExerciseEditor(BuildContext context) {
-    final arguments =
-        ExerciseEditorArguments(exercise: exerciseLogDto.exercise);
-    navigateToExerciseEditor(context: context, arguments: arguments);
+    final exercise = exerciseLogDto.exercise;
+    navigateToExerciseEditor(context: context, exercise: exercise);
   }
 
   void _navigateToExerciseLogEditor(BuildContext context) {

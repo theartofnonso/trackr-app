@@ -19,7 +19,7 @@ class RoutineTemplateDto {
     required this.updatedAt,
   });
 
-  Map<String, Object> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       "id": id,
       'name': name,

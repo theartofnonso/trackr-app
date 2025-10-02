@@ -26,9 +26,11 @@ class WeightAndRepsSetDto extends SetDto {
     return WeightAndRepsSetDto(
       weight: (json['weight'] as num).toDouble(),
       reps: (json['reps'] as num).toInt(),
-      checked: json['isChecked'] as bool,
-      isWorkingSet: json['isWorkingSet'] as bool,
-      dateTime: dateTime,
+      checked: json['checked'] as bool? ?? false,
+      isWorkingSet: json['isWorkingSet'] as bool? ?? false,
+      dateTime: json['dateTime'] != null
+          ? DateTime.parse(json['dateTime'] as String)
+          : dateTime,
     );
   }
 
@@ -64,11 +66,11 @@ class WeightAndRepsSetDto extends SetDto {
   @override
   Map<String, dynamic> toJson() {
     return {
-      "value1": weight,
-      "value2": reps,
+      "weight": weight,
+      "reps": reps,
       "checked": checked,
-      'weight': weight,
-      'reps': reps,
+      "isWorkingSet": isWorkingSet,
+      "dateTime": dateTime.toIso8601String(),
     };
   }
 

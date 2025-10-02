@@ -11,35 +11,36 @@ class RoutineUserDto {
   final DateTime dateOfBirth;
   final TRKRGender gender;
 
-  RoutineUserDto(
-      {required this.id,
-      required this.name,
-      required this.cognitoUserId,
-      required this.email,
-      required this.weight,
-      required this.height,
-      required this.trainingHistory,
-      required this.dateOfBirth,
-      required this.gender});
+  RoutineUserDto({
+    required this.id,
+    required this.cognitoUserId,
+    required this.name,
+    required this.email,
+    required this.weight,
+    required this.height,
+    required this.trainingHistory,
+    required this.dateOfBirth,
+    required this.gender,
+  });
 
   factory RoutineUserDto.fromJson(Map<String, dynamic> json, {String id = ""}) {
-    final cognitoUserId = json["cognitoUserId"] ?? "";
-    final name = json["name"] ?? "";
-    final email = json["email"] ?? "";
-    final trainingHistory = json["trainingHistory"] ?? "";
-    final weight = (json["weight"]) ?? 0.0;
-    final height = (json["height"]) ?? 0;
+    final cognitoUserId = json["cognitoUserId"] as String? ?? "";
+    final name = json["name"] as String? ?? "";
+    final email = json["email"] as String? ?? "";
+    final trainingHistory = json["trainingHistory"] as String? ?? "";
+    final weight = (json["weight"] as num?)?.toDouble() ?? 0.0;
+    final height = (json["height"] as num?)?.toDouble() ?? 0.0;
     final dateOfBirthMillisecondsSinceEpoch =
-        (json["dob"]) as int? ?? DateTime.now().millisecondsSinceEpoch;
+        json["dob"] as int? ?? DateTime.now().millisecondsSinceEpoch;
     final dateOfBirth =
         DateTime.fromMillisecondsSinceEpoch(dateOfBirthMillisecondsSinceEpoch);
-    final genderString = json["gender"] ?? "";
+    final genderString = json["gender"] as String? ?? "";
     final gender = TRKRGender.fromString(genderString);
 
     return RoutineUserDto(
         id: id,
-        name: name,
         cognitoUserId: cognitoUserId,
+        name: name,
         email: email,
         weight: weight,
         height: height,
@@ -48,7 +49,7 @@ class RoutineUserDto {
         gender: gender);
   }
 
-  Map<String, Object> toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'cognitoUserId': cognitoUserId,
