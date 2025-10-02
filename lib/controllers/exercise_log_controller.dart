@@ -73,24 +73,6 @@ class ExerciseLogController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void superSetExerciseLogs(
-      {required String firstExerciseLogId,
-      required String secondExerciseLogId,
-      required String superSetId}) {
-    _exerciseLogRepository.addSuperSets(
-        firstExerciseLogId: firstExerciseLogId,
-        secondExerciseLogId: secondExerciseLogId,
-        superSetId: superSetId);
-    _cache();
-    notifyListeners();
-  }
-
-  void removeSuperSet({required String superSetId}) {
-    _exerciseLogRepository.removeSuperSet(superSetId: superSetId);
-    _cache();
-    notifyListeners();
-  }
-
   void addSet({required String exerciseLogId, required List<SetDto> pastSets}) {
     _exerciseLogRepository.addSet(
         exerciseLogId: exerciseLogId, pastSets: pastSets);

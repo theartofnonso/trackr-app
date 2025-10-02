@@ -17,8 +17,6 @@ class ExerciseLogGridItemWidget extends StatelessWidget {
   /// ExerciseLogDto callbacks
   final VoidCallback onRemoveLog;
   final VoidCallback onReplaceLog;
-  final VoidCallback onSuperSet;
-  final void Function(String superSetId) onRemoveSuperSet;
 
   final bool isPastRoutine;
 
@@ -29,8 +27,6 @@ class ExerciseLogGridItemWidget extends StatelessWidget {
       this.superSet,
       required this.onRemoveLog,
       required this.onReplaceLog,
-      required this.onSuperSet,
-      required this.onRemoveSuperSet,
       this.isPastRoutine = false});
 
   @override
@@ -126,16 +122,6 @@ class ExerciseLogGridItemWidget extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pop();
               onReplaceLog();
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.link, size: 18),
-            horizontalTitleGap: 6,
-            title: Text("Superset"),
-            onTap: () {
-              Navigator.of(context).pop();
-              onSuperSet();
             },
           ),
           ListTile(

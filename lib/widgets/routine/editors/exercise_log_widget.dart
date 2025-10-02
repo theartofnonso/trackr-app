@@ -99,11 +99,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     }
   }
 
-  void _updateExerciseLogNotes({required String value}) {
-    Provider.of<ExerciseLogController>(context, listen: false)
-        .updateExerciseLogNotes(exerciseLogId: _exerciseLog.id, value: value);
-  }
-
   void _loadControllers() {
     _clearControllers();
 
