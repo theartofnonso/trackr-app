@@ -321,7 +321,7 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
                 color: isDarkMode ? darkBackground : Colors.white,
               ),
               child: SafeArea(
-                minimum: EdgeInsets.symmetric(vertical: 10),
+                minimum: EdgeInsets.symmetric(vertical: 20),
                 child: Column(
                   spacing: 20,
                   children: [
