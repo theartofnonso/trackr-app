@@ -39,8 +39,24 @@ class ExerciseLogRepository {
   }
 
   ExerciseLogDto whereExerciseLog({required String exerciseId}) {
-    return _exerciseLogs
-        .firstWhere((exerciseLog) => exerciseLog.id == exerciseId);
+    try {
+      return _exerciseLogs
+          .firstWhere((exerciseLog) => exerciseLog.id == exerciseId);
+    } catch (e) {
+      // Return a default exercise log if not found
+      return ExerciseLogDto(
+        id: exerciseId,
+        exercise: ExerciseDto(
+          id: exerciseId,
+          name: "Unknown Exercise",
+          type: ExerciseType.weights,
+          muscleGroups: [],
+        ),
+        sets: [],
+        startTime: DateTime.now(),
+        endTime: DateTime.now(),
+      );
+    }
   }
 
   void removeExerciseLog({required String logId}) {
