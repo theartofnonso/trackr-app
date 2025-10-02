@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
+import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
 import '../dtos/appsync/routine_log_dto.dart';
@@ -23,8 +22,6 @@ import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
 import '../widgets/calendar/calendar_logs.dart';
 import '../widgets/dividers/label_divider.dart';
-import '../widgets/monthly_insights/log_streak_chart.dart';
-import '../widgets/monthly_insights/volume_chart.dart';
 import 'AI/trkr_coach_chat_screen.dart';
 
 enum TrainingAndVolume {
@@ -45,8 +42,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   bool _loading = false;
 
   DateTime? _selectedCalendarDate;
-
-  TrainingAndVolume _trainingAndVolume = TrainingAndVolume.training;
 
   String _predictTemplate({required List<RoutineLogDto> logs}) {
     if (logs.isEmpty) {
@@ -100,9 +95,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     /// Be notified of changes
@@ -162,15 +154,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               crossAxisCellCount: 1,
               mainAxisCellCount: 1,
               child: GestureDetector(
-                onTap: _showNewBottomSheet,
-                child: _AddTile(),
-              ),
-            ),
-            StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: GestureDetector(
-                onTap: () => navigateToSettings(context: context),
+                onTap: () => _showNewBottomSheet(),
                 child: _SettingsTile(),
               ),
             ),
@@ -451,34 +435,6 @@ class _TemplatesTile extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _AddTile extends StatelessWidget {
-  const _AddTile();
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return Container(
-        width: 25,
-        height: 25,
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-            color: isDarkMode
-                ? darkSurfaceContainer
-                : Colors.black.withValues(alpha: 0.4),
-            borderRadius: BorderRadius.circular(radiusMD)),
-        child: Center(
-            child: Center(
-          child: FaIcon(
-            FontAwesomeIcons.plus,
-            size: 28,
-            color: Colors.white,
-          ),
-        )));
   }
 }
 

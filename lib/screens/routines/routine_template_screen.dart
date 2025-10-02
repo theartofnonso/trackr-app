@@ -16,7 +16,6 @@ import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
-import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../enums/chart_unit_enum.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
@@ -600,22 +599,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     });
   }
 
-  void _navigateToRoutineTemplateEditor() async {
-    final template = _template;
-    if (template != null) {
-      final copyOfTemplate = template.copyWith();
-      final arguments = RoutineTemplateArguments(
-          template: copyOfTemplate, planId: copyOfTemplate.planId);
-      final updatedTemplate = await navigateToRoutineTemplateEditor(
-          context: context, arguments: arguments);
-      if (updatedTemplate != null) {
-        setState(() {
-          _template = updatedTemplate;
-        });
-      }
-    }
-  }
-
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) {
     final template = _template;
     if (template != null) {
@@ -761,19 +744,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         context: context,
         isScrollControlled: true,
         child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.penToSquare,
-              size: 18,
-            ),
-            horizontalTitleGap: 10,
-            title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              _navigateToRoutineTemplateEditor();
-            },
-          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const FaIcon(

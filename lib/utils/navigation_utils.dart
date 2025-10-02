@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
-import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
@@ -11,13 +10,10 @@ import '../dtos/appsync/exercise_dto.dart';
 import '../dtos/appsync/routine_log_dto.dart';
 import '../dtos/appsync/routine_plan_dto.dart';
 import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/viewmodels/past_routine_log_arguments.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
-import '../dtos/viewmodels/routine_plan_arguments.dart';
-import '../dtos/viewmodels/routine_template_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';
 import '../screens/editors/routine_log_editor_screen.dart';
-import '../screens/editors/routine_plan_editor_screen.dart';
-import '../screens/editors/routine_template_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/routines/routine_plan.dart';
 import '../screens/routines/routine_plans_screen.dart';
@@ -28,21 +24,6 @@ Future<ExerciseDto?> navigateToExerciseEditor(
   final exercise = await context.push(ExerciseEditorScreen.routeName,
       extra: arguments) as ExerciseDto?;
   return exercise;
-}
-
-Future<RoutineTemplateDto?> navigateToRoutineTemplateEditor(
-    {required BuildContext context,
-    required RoutineTemplateArguments arguments}) async {
-  final template = await context.push(RoutineTemplateEditorScreen.routeName,
-      extra: arguments) as RoutineTemplateDto?;
-  return template;
-}
-
-Future<RoutinePlanDto?> navigateToRoutinePlanEditor(
-    {required BuildContext context, RoutinePlanArguments? arguments}) async {
-  final plan = await context.push(RoutinePlanEditorScreen.routeName,
-      extra: arguments) as RoutinePlanDto?;
-  return plan;
 }
 
 void navigateToPastRoutineLogEditor(

@@ -10,8 +10,6 @@ import 'package:tracker_app/utils/string_utils.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/appsync/routine_plan_dto.dart';
 import '../../dtos/appsync/routine_template_dto.dart';
-import '../../dtos/viewmodels/routine_plan_arguments.dart';
-import '../../dtos/viewmodels/routine_template_arguments.dart';
 import '../../shared_prefs.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/navigation_utils.dart';
@@ -224,21 +222,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
     }
   }
 
-  void _navigateToRoutinePlanEditor() async {
-    final plan = _plan;
-    if (plan != null) {
-      final copyOfPlan = plan.copyWith();
-      final arguments = RoutinePlanArguments(plan: copyOfPlan);
-      final updatedPlan = await navigateToRoutinePlanEditor(
-          context: context, arguments: arguments);
-      if (updatedPlan != null) {
-        setState(() {
-          _plan = updatedPlan;
-        });
-      }
-    }
-  }
-
   void _toggleLoadingState() {
     setState(() {
       _loading = !_loading;
@@ -252,34 +235,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         context: context,
         isScrollControlled: true,
         child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.solidSquarePlus,
-                size: 18,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Add new workout",
-                  style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                final arguments =
-                    RoutineTemplateArguments(planId: plan?.id ?? "");
-                navigateToRoutineTemplateEditor(
-                    context: context, arguments: arguments);
-              }),
-          ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.penToSquare,
-                size: 18,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Edit", style: Theme.of(context).textTheme.bodyLarge),
-              onTap: () {
-                Navigator.of(context).pop();
-                _navigateToRoutinePlanEditor();
-              }),
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const FaIcon(

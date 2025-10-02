@@ -7,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +14,6 @@ import 'package:tracker_app/colors.dart';
 // Removed GraphQL delete mutations for UI-only mode
 import 'package:tracker_app/screens/request_screens/notifications_request.dart';
 import 'package:tracker_app/shared_prefs.dart';
-import 'package:tracker_app/urls.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../utils/dialog_utils.dart';
@@ -24,8 +22,6 @@ import '../../utils/navigation_utils.dart';
 import '../../utils/uri_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/dividers/label_divider.dart';
-import '../../widgets/information_containers/information_container_with_background_image.dart';
-import '../exercise/library/exercise_library_screen.dart';
 
 enum WeightUnit {
   kg("kg"),
@@ -112,8 +108,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                               LabelDivider(
                                 label: "Notifications",
                                 labelColor:
-                                    isDarkMode ? Colors.white : Colors.black,
-                                dividerColor: sapphireLighter,
+                                    isDarkMode ? darkOnSurface : Colors.black,
+                                dividerColor: isDarkMode
+                                    ? darkDivider
+                                    : Colors.grey.shade300,
                                 fontSize: 14,
                               ),
                               const SizedBox(height: 8),
@@ -126,7 +124,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       ?.copyWith(
                                           fontWeight: FontWeight.w400,
                                           color: isDarkMode
-                                              ? Colors.white70
+                                              ? darkOnSurfaceVariant
                                               : Colors.black)),
                             ]),
                       ),
@@ -146,7 +144,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                     color: isDarkMode
-                                        ? Colors.white
+                                        ? darkOnSurface
                                         : Colors.black)),
                         trailing: FaIcon(
                           FontAwesomeIcons.solidBell,
@@ -162,8 +160,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                   subtitle: Text("Choose kg or lbs"),
                   trailing: CupertinoSlidingSegmentedControl<WeightUnit>(
                     backgroundColor:
-                        isDarkMode ? sapphireDark : Colors.grey.shade400,
-                    thumbColor: isDarkMode ? sapphireDark80 : Colors.white,
+                        isDarkMode ? darkSurfaceVariant : Colors.grey.shade400,
+                    thumbColor:
+                        isDarkMode ? darkSurfaceContainer : Colors.white,
                     groupValue: _weightUnit,
                     children: {
                       WeightUnit.kg: SizedBox(
@@ -188,31 +187,26 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                 ),
                 ListTile(
-                  onTap: _navigateToExerciseLibrary,
-                  leading: FaIcon(FontAwesomeIcons.personWalking,
-                      color: isDarkMode ? Colors.white70 : Colors.black38),
-                  title: Text("Exercises",
-                      style: Theme.of(context).textTheme.titleMedium),
-                  subtitle: Text("manage exercises"),
-                ),
-                ListTile(
                     onTap: _sendFeedback,
                     leading: FaIcon(FontAwesomeIcons.solidPaperPlane,
-                        color: isDarkMode ? Colors.white70 : Colors.black38),
+                        color:
+                            isDarkMode ? darkOnSurfaceVariant : Colors.black38),
                     title: Text("Feedback",
                         style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text("help us improve")),
                 ListTile(
                     onTap: _logout,
                     leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
-                        color: isDarkMode ? Colors.white70 : Colors.black38),
+                        color:
+                            isDarkMode ? darkOnSurfaceVariant : Colors.black38),
                     title: Text("Logout",
                         style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text(userEmail)),
                 ListTile(
                     onTap: _delete,
                     leading: FaIcon(FontAwesomeIcons.xmark,
-                        color: isDarkMode ? Colors.white70 : Colors.black38),
+                        color:
+                            isDarkMode ? darkOnSurfaceVariant : Colors.black38),
                     title: Text("Delete Account",
                         style: Theme.of(context).textTheme.titleMedium),
                     subtitle: Text(userEmail)),
@@ -243,12 +237,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
   }
 
-  void _openStoreListing() {
-    final InAppReview inAppReview = InAppReview.instance;
-
-    inAppReview.openStoreListing(appStoreId: appStoreId);
-  }
-
   void _sendFeedback() async {
     final Uri emailUri = Uri(
       scheme: 'mailto',
@@ -261,11 +249,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     await openUrl(url: emailUri.toString(), context: context);
   }
 
-  void _navigateToExerciseLibrary() {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const ExerciseLibraryScreen(readOnly: true)));
-  }
-
   void _clearAppData() async {
     Posthog().reset();
     SharedPrefs().clear();
@@ -273,46 +256,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     if (mounted) {
       Provider.of<ExerciseAndRoutineController>(context, listen: false).clear();
     }
-  }
-
-  void _visitTRKR() {
-    displayBottomSheet(
-        context: context,
-        child: Column(children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.globe, size: 18),
-            horizontalTitleGap: 6,
-            title: Text("On the web",
-                style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              openUrl(url: trackrWebUrl, context: context);
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.instagram, size: 20),
-            horizontalTitleGap: 6,
-            title: Text("On Instagram",
-                style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              openUrl(url: instagramUrl, context: context);
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.whatsapp, size: 20),
-            horizontalTitleGap: 6,
-            title: Text("Join our Whatsapp community",
-                style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              openUrl(url: whatsappUrl, context: context);
-            },
-          )
-        ]));
   }
 
   void _turnOnNotification() async {

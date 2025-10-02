@@ -16,7 +16,6 @@ import 'package:tracker_app/controllers/exercise_log_controller.dart';
 import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
 import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
 import 'package:tracker_app/dtos/viewmodels/exercise_editor_arguments.dart';
-import 'package:tracker_app/dtos/viewmodels/past_routine_log_arguments.dart';
 import 'package:tracker_app/repositories/mock/mock_exercise_repository.dart';
 import 'package:tracker_app/repositories/mock/mock_routine_log_repository.dart';
 import 'package:tracker_app/repositories/mock/mock_routine_plan_repository.dart';
@@ -25,8 +24,6 @@ import 'package:tracker_app/repositories/exercise_log_repository.dart';
 import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 import 'package:tracker_app/screens/editors/routine_log_editor_screen.dart';
-import 'package:tracker_app/screens/editors/routine_plan_editor_screen.dart';
-import 'package:tracker_app/screens/editors/routine_template_editor_screen.dart';
 import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/home.dart';
 import 'package:tracker_app/screens/logs/routine_log_screen.dart';
@@ -42,9 +39,8 @@ import 'package:tracker_app/utils/theme/theme.dart';
 //
 import 'dtos/appsync/exercise_dto.dart';
 import 'dtos/appsync/routine_plan_dto.dart';
+import 'dtos/viewmodels/past_routine_log_arguments.dart';
 import 'dtos/viewmodels/routine_log_arguments.dart';
-import 'dtos/viewmodels/routine_plan_arguments.dart';
-import 'dtos/viewmodels/routine_template_arguments.dart';
 import 'logger.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -148,21 +144,6 @@ final _router = GoRouter(
           mode: args.editorMode,
           cached: args.cached,
         );
-      },
-    ),
-    GoRoute(
-      path: RoutineTemplateEditorScreen.routeName,
-      builder: (context, state) {
-        final args = state.extra as RoutineTemplateArguments;
-        return RoutineTemplateEditorScreen(
-            template: args.template, planId: args.planId);
-      },
-    ),
-    GoRoute(
-      path: RoutinePlanEditorScreen.routeName,
-      builder: (context, state) {
-        final args = state.extra as RoutinePlanArguments?;
-        return RoutinePlanEditorScreen(plan: args?.plan);
       },
     ),
     GoRoute(
