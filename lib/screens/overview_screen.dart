@@ -11,8 +11,8 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
-import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/db/routine_log_dto.dart';
+import '../dtos/db/routine_template_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../utils/date_utils.dart';
@@ -147,7 +147,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
                         notes: "",
                         startTime: datetimeRange.start,
                         endTime: datetimeRange.end,
-                        owner: "",
                         createdAt: datetimeRange.start,
                         updatedAt: datetimeRange.end);
                     navigateWithSlideTransition(

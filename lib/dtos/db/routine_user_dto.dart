@@ -10,7 +10,6 @@ class RoutineUserDto {
   final num height;
   final DateTime dateOfBirth;
   final TRKRGender gender;
-  final String owner;
 
   RoutineUserDto(
       {required this.id,
@@ -19,7 +18,6 @@ class RoutineUserDto {
       required this.email,
       required this.weight,
       required this.height,
-      required this.owner,
       required this.trainingHistory,
       required this.dateOfBirth,
       required this.gender});
@@ -45,7 +43,6 @@ class RoutineUserDto {
         email: email,
         weight: weight,
         height: height,
-        owner: json["owner"] ?? "",
         trainingHistory: trainingHistory,
         dateOfBirth: dateOfBirth,
         gender: gender);
@@ -73,7 +70,6 @@ class RoutineUserDto {
     String? trainingHistory,
     num? weight,
     num? height,
-    String? owner,
     DateTime? dateOfBirth,
     TRKRGender? gender,
   }) {
@@ -85,13 +81,12 @@ class RoutineUserDto {
         trainingHistory: trainingHistory ?? this.trainingHistory,
         weight: weight ?? this.weight,
         height: height ?? this.height,
-        owner: owner ?? this.owner,
         gender: gender ?? this.gender,
         dateOfBirth: dateOfBirth ?? this.dateOfBirth);
   }
 
   @override
   String toString() {
-    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, trainingHistory: $trainingHistory, email: $email, weight: $weight, height: $height dateOfBirth: $dateOfBirth, gender: $gender, owner: $owner}';
+    return 'RoutineUserDto{id: $id, cognitoUserId: $cognitoUserId, name: $name, trainingHistory: $trainingHistory, email: $email, weight: $weight, height: $height dateOfBirth: $dateOfBirth, gender: $gender}';
   }
 }

@@ -9,7 +9,7 @@ import 'package:tracker_app/utils/dialog_utils.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/appsync/exercise_dto.dart';
+import '../../dtos/db/exercise_dto.dart';
 import '../../enums/exercise_type_enums.dart';
 import '../../logger.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
@@ -253,12 +253,12 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
       _showSnackbar("Please provide a name for this exercise");
     } else {
       final exercise = ExerciseDto(
-          id: "",
-          name: exerciseName,
-          primaryMuscleGroup: _primaryMuscleGroup,
-          secondaryMuscleGroups: [],
-          type: _exerciseType,
-          owner: "");
+        id: "",
+        name: exerciseName,
+        primaryMuscleGroup: _primaryMuscleGroup,
+        secondaryMuscleGroups: [],
+        type: _exerciseType,
+      );
 
       await Provider.of<ExerciseAndRoutineController>(context, listen: false)
           .saveExercise(exerciseDto: exercise);

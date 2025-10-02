@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
+import '../dtos/db/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
 

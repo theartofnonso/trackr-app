@@ -21,8 +21,6 @@ class RoutineLogDto {
 
   final List<ExerciseLogDto> exerciseLogs;
 
-  final String owner;
-
   final int readinessScore;
 
   final DateTime createdAt;
@@ -38,7 +36,6 @@ class RoutineLogDto {
     this.summary,
     required this.startTime,
     required this.endTime,
-    required this.owner,
     this.readinessScore = 0,
     required this.createdAt,
     required this.updatedAt,
@@ -82,7 +79,6 @@ class RoutineLogDto {
       summary: summary,
       startTime: startTime,
       endTime: endTime,
-      owner: "",
       readinessScore: readinessScore,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
@@ -98,7 +94,6 @@ class RoutineLogDto {
     DateTime? startTime,
     DateTime? endTime,
     List<ExerciseLogDto>? exerciseLogs,
-    String? owner,
     int? readinessScore,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -117,7 +112,6 @@ class RoutineLogDto {
       exerciseLogs: exerciseLogs != null
           ? exerciseLogs.map((e) => e.copyWith()).toList()
           : this.exerciseLogs.map((e) => e.copyWith()).toList(),
-      owner: owner ?? this.owner,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -125,7 +119,7 @@ class RoutineLogDto {
 
   @override
   String toString() {
-    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, readinessScore: $readinessScore, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutineLogDto{id: $id, templateId: $templateId, name: $name, notes: $notes, summary: $summary, readinessScore: $readinessScore, startTime: $startTime, endTime: $endTime, exerciseLogs: $exerciseLogs, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   double get volume =>

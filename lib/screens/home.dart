@@ -11,7 +11,7 @@ import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../colors.dart';
-import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/db/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../utils/navigation_utils.dart';

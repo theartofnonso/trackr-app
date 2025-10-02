@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:tracker_app/dtos/appsync/routine_template_dto.dart';
+import 'package:tracker_app/dtos/db/routine_template_dto.dart';
 
 class MockRoutineTemplateRepository {
   List<RoutineTemplateDto> _templates = [];

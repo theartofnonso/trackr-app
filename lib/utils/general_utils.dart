@@ -9,7 +9,7 @@ import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/widgets/icons/custom_wordmark_icon.dart';
 
 import '../colors.dart';
-import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/db/routine_log_dto.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../enums/routine_editor_type_enums.dart';
 import '../shared_prefs.dart';
@@ -315,7 +315,6 @@ void logEmptyRoutine({required BuildContext context, String? workoutVideoUrl}) {
       notes: "",
       startTime: DateTime.now(),
       endTime: DateTime.now(),
-      owner: "",
       createdAt: DateTime.now(),
       updatedAt: DateTime.now());
 

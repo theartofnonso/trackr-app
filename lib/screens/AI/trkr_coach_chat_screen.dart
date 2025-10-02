@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
-import '../../dtos/appsync/routine_template_dto.dart';
+import '../../dtos/db/routine_template_dto.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';

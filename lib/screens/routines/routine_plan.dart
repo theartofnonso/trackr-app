@@ -8,9 +8,8 @@ import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/appsync/routine_plan_dto.dart';
-import '../../dtos/appsync/routine_template_dto.dart';
-import '../../shared_prefs.dart';
+import '../../dtos/db/routine_plan_dto.dart';
+import '../../dtos/db/routine_template_dto.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
@@ -20,9 +19,7 @@ import '../../widgets/chip_one.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
 import '../../widgets/empty_states/not_found.dart';
 import '../../widgets/icons/custom_icon.dart';
-import '../../widgets/information_containers/information_container_with_background_image.dart';
 import '../../widgets/routine/preview/routine_template_grid_item.dart';
-import '../AI/trkr_coach_chat_screen.dart';
 
 class RoutinePlanScreen extends StatefulWidget {
   static const routeName = '/routine_plan_screen';
@@ -64,9 +61,7 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
       });
     }
 
-    final routineTemplates = exerciseAndRoutineController.templates
-        .where((template) => template.planId == plan.id)
-        .toList();
+    final routineTemplates = <RoutineTemplateDto>[];
 
     final logs = routineTemplates
         .map((template) => exerciseAndRoutineController.whereLogsWithTemplateId(
@@ -92,13 +87,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           ),
-          actions: [
-            plan.owner == SharedPrefs().userId
-                ? IconButton(
-                    onPressed: _showMenuBottomSheet,
-                    icon: FaIcon(Icons.more_vert_rounded))
-                : const SizedBox.shrink()
-          ],
         ),
         body: Container(
           height: double.infinity,
@@ -148,14 +136,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                         ),
                         CalendarLogs(
                             dateTime: _selectedCalendarDate ?? DateTime.now()),
-                        InformationContainerWithBackgroundImage(
-                          image: 'images/man_pushup.PNG',
-                          color: Colors.black,
-                          subtitle:
-                              "Need a head start on what to train? We’ve got you covered. Tap to describe your workout.",
-                          onTap: _switchToAIContext,
-                          alignmentGeometry: Alignment.center,
-                        ),
                       ],
                     ),
                     routineTemplates.isNotEmpty
@@ -191,104 +171,6 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
     setState(() {
       _selectedCalendarDate = date;
     });
-  }
-
-  void _deleteRoutinePlan({required RoutinePlanDto plan}) async {
-    try {
-      final exerciseAndRoutineController =
-          Provider.of<ExerciseAndRoutineController>(context, listen: false);
-
-      final routineTemplates = exerciseAndRoutineController.templates
-          .where((template) => template.planId == plan.id)
-          .toList();
-
-      await exerciseAndRoutineController.removePlan(planDto: plan);
-
-      for (final template in routineTemplates) {
-        final templateWithoutPlanId = template.copyWith(planId: "");
-        await exerciseAndRoutineController.updateTemplate(
-            template: templateWithoutPlanId);
-      }
-
-      if (mounted) {
-        context.pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        showSnackbar(context: context, message: "Unable to remove plan");
-      }
-    } finally {
-      _toggleLoadingState();
-    }
-  }
-
-  void _toggleLoadingState() {
-    setState(() {
-      _loading = !_loading;
-    });
-  }
-
-  void _showMenuBottomSheet() {
-    final plan = _plan;
-
-    displayBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.trash,
-              size: 16,
-              color: Colors.redAccent,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Delete",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: Colors.red)),
-            onTap: () {
-              Navigator.of(context).pop();
-
-              if (plan != null) {
-                showBottomSheetWithMultiActions(
-                    context: context,
-                    title: "Delete plan?",
-                    description: "Are you sure you want to delete this plan?",
-                    leftAction: Navigator.of(context).pop,
-                    rightAction: () {
-                      context.pop();
-                      _toggleLoadingState();
-                      _deleteRoutinePlan(plan: plan);
-                    },
-                    leftActionLabel: 'Cancel',
-                    rightActionLabel: 'Delete',
-                    isRightActionDestructive: true);
-              }
-            },
-          )
-        ]));
-  }
-
-  void _switchToAIContext() async {
-    final result = await navigateWithSlideTransition(
-        context: context,
-        child: const TRKRCoachChatScreen()) as RoutineTemplateDto?;
-    if (result != null) {
-      if (mounted) {
-        _saveTemplate(context: context, template: result);
-      }
-    }
-  }
-
-  void _saveTemplate(
-      {required BuildContext context,
-      required RoutineTemplateDto template}) async {
-    final routineTemplate = template;
-    final templateController =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    await templateController.saveTemplate(templateDto: routineTemplate);
   }
 
   void _loadData() {

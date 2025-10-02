@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
-import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/db/exercise_dto.dart';
+import 'package:tracker_app/dtos/db/routine_log_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';

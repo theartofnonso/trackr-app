@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
-import '../../../dtos/appsync/routine_plan_dto.dart';
+import '../../../dtos/db/routine_plan_dto.dart';
 import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
 import '../../icons/custom_icon.dart';

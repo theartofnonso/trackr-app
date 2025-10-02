@@ -1,8 +1,10 @@
+import 'routine_template_dto.dart';
+
 class RoutinePlanDto {
   final String id;
   final String name;
   final String notes;
-  final String owner;
+  final List<RoutineTemplateDto> templates;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -10,7 +12,7 @@ class RoutinePlanDto {
     required this.id,
     required this.name,
     required this.notes,
-    required this.owner,
+    required this.templates,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -20,7 +22,7 @@ class RoutinePlanDto {
       'id': id,
       'name': name,
       'notes': notes,
-      'owner': owner,
+      'templates': templates.map((template) => template.toJson()).toList(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -30,7 +32,7 @@ class RoutinePlanDto {
     String? id,
     String? name,
     String? notes,
-    String? owner,
+    List<RoutineTemplateDto>? templates,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -38,7 +40,7 @@ class RoutinePlanDto {
       id: id ?? this.id,
       name: name ?? this.name,
       notes: notes ?? this.notes,
-      owner: owner ?? this.owner,
+      templates: templates ?? this.templates,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -46,11 +48,14 @@ class RoutinePlanDto {
 
   @override
   String toString() {
-    return 'RoutinePlanDto{id: $id, name: $name, notes: $notes, owner: $owner, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'RoutinePlanDto{id: $id, name: $name, notes: $notes, templates: $templates, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 
   @override
   bool operator ==(Object other) {
     return other is RoutinePlanDto && other.id == id;
   }
+
+  @override
+  int get hashCode => id.hashCode;
 }

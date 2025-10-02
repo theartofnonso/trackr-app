@@ -6,10 +6,10 @@ import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
-import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/appsync/routine_plan_dto.dart';
-import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/db/exercise_dto.dart';
+import '../dtos/db/routine_log_dto.dart';
+import '../dtos/db/routine_plan_dto.dart';
+import '../dtos/db/routine_template_dto.dart';
 import '../dtos/viewmodels/past_routine_log_arguments.dart';
 import '../dtos/viewmodels/routine_log_arguments.dart';
 import '../screens/editors/past_routine_log_editor_screen.dart';

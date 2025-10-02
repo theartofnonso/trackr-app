@@ -5,7 +5,7 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/routine_preview_type_enum.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
 
-import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/db/routine_log_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/viewmodels/exercise_log_view_model.dart';
 import '../enums/template_changes_type_message_enums.dart';

@@ -18,7 +18,7 @@ import 'package:tracker_app/widgets/shareables/session_milestone_shareable.dart'
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/appsync/routine_log_dto.dart';
+import '../../dtos/db/routine_log_dto.dart';
 import '../../enums/posthog_analytics_event.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';

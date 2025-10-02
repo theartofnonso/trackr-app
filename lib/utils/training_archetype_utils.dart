@@ -1,4 +1,4 @@
-import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/db/routine_log_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/training_archetype.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';

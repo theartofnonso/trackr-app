@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
+import 'package:tracker_app/dtos/db/routine_plan_dto.dart';
 
 import '../../../colors.dart';
-import '../../../dtos/appsync/routine_template_dto.dart';
+import '../../../dtos/db/routine_template_dto.dart';
 import '../../../utils/string_utils.dart';
 import '../../icons/custom_icon.dart';
 

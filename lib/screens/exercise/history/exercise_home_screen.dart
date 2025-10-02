@@ -10,7 +10,7 @@ import 'package:tracker_app/screens/exercise/history/history_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../../colors.dart';
-import '../../../dtos/appsync/exercise_dto.dart';
+import '../../../dtos/db/exercise_dto.dart';
 import '../../../utils/dialog_utils.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/navigation_utils.dart';

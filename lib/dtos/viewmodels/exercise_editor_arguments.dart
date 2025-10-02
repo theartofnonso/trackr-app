@@ -1,4 +1,4 @@
-import '../appsync/exercise_dto.dart';
+import '../db/exercise_dto.dart';
 
 class ExerciseEditorArguments {
   final ExerciseDto exercise;

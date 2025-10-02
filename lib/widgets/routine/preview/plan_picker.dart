@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
+import 'package:tracker_app/dtos/db/routine_plan_dto.dart';
 
 import '../../../../colors.dart';
 import '../../buttons/opacity_button_widget_two.dart';

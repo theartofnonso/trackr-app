@@ -6,10 +6,10 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/repositories/mock/mock_routine_log_repository.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
-import '../dtos/appsync/routine_log_dto.dart';
-import '../dtos/appsync/routine_plan_dto.dart';
-import '../dtos/appsync/routine_template_dto.dart';
+import '../dtos/db/exercise_dto.dart';
+import '../dtos/db/routine_log_dto.dart';
+import '../dtos/db/routine_plan_dto.dart';
+import '../dtos/db/routine_template_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
 import '../logger.dart';
 import '../repositories/mock/mock_exercise_repository.dart';

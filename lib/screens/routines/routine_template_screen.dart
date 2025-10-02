@@ -1,25 +1,19 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/db/routine_template_dto.dart';
 import 'package:tracker_app/dtos/graph/chart_point_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/shared_prefs.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/appsync/routine_plan_dto.dart';
-import '../../dtos/appsync/routine_template_dto.dart';
 import '../../dtos/viewmodels/routine_log_arguments.dart';
 import '../../enums/chart_unit_enum.dart';
-import '../../enums/posthog_analytics_event.dart';
 import '../../enums/routine_editor_type_enums.dart';
-import '../../enums/routine_preview_type_enum.dart';
 import '../../utils/data_trend_utils.dart';
 import '../../utils/dialog_utils.dart';
 import '../../utils/exercise_logs_utils.dart';
@@ -27,7 +21,6 @@ import '../../utils/general_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../utils/string_utils.dart';
-import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
 import '../../widgets/calendar/calendar_logs.dart';
 import '../../widgets/chart/line_chart_widget.dart';
@@ -37,7 +30,6 @@ import '../../widgets/icons/custom_icon.dart';
 import '../../widgets/information_containers/information_container.dart';
 import '../../widgets/monthly_insights/muscle_groups_family_frequency_widget.dart';
 import '../../widgets/routine/preview/exercise_log_listview.dart';
-import '../../widgets/routine/preview/plan_picker.dart';
 
 enum _OriginalNewValues {
   originalValues(
@@ -68,8 +60,6 @@ class RoutineTemplateScreen extends StatefulWidget {
 class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   RoutineTemplateDto? _template;
 
-  bool _loading = false;
-
   RecoveryResult? _selectedMuscleAndRecovery;
 
   _OriginalNewValues _originalNewValues = _OriginalNewValues.newValues;
@@ -80,8 +70,6 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
-
-    if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
     final exerciseAndRoutineController =
         Provider.of<ExerciseAndRoutineController>(context, listen: false);
@@ -98,7 +86,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
 
     if (template == null) return const NotFound();
 
-    final plan = exerciseAndRoutineController.planWhere(id: template.planId);
+    final plan = null;
 
     final muscleGroupFamilyFrequencies =
         muscleGroupFrequency(exerciseLogs: template.exerciseTemplates);
@@ -211,24 +199,14 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             heroTag: UniqueKey,
-            onPressed: () => template.owner == SharedPrefs().userId
-                ? _launchRoutineLogEditor(muscleGroups: muscleGroups)
-                : _createTemplate(),
-            child: template.owner == SharedPrefs().userId
-                ? const FaIcon(FontAwesomeIcons.play, size: 24)
-                : const FaIcon(FontAwesomeIcons.download)),
+            onPressed: () =>
+                _launchRoutineLogEditor(muscleGroups: muscleGroups),
+            child: const FaIcon(FontAwesomeIcons.play, size: 24)),
         appBar: AppBar(
           leading: IconButton(
             icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
             onPressed: context.pop,
           ),
-          actions: [
-            template.owner == SharedPrefs().userId
-                ? IconButton(
-                    onPressed: () => _showMenuBottomSheet(planDto: plan),
-                    icon: FaIcon(Icons.more_vert_rounded))
-                : const SizedBox.shrink()
-          ],
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -309,184 +287,178 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
                       ],
                     ),
                   ),
-                  if (template.owner == SharedPrefs().userId)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 10,
-                            children: [
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 10,
-                                children: [
-                                  trendSummary.trend == Trend.none
-                                      ? const SizedBox.shrink()
-                                      : getTrendIcon(trend: trendSummary.trend),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          text: volumeInKOrM(avgVolume),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall,
-                                          children: [
-                                            TextSpan(
-                                              text: " ",
-                                            ),
-                                            TextSpan(
-                                              text: weightUnit().toUpperCase(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        "Session AVERAGE".toUpperCase(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 10,
+                          children: [
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 10,
+                              children: [
+                                trendSummary.trend == Trend.none
+                                    ? const SizedBox.shrink()
+                                    : getTrendIcon(trend: trendSummary.trend),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        text: volumeInKOrM(avgVolume),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodySmall,
+                                            .headlineSmall,
+                                        children: [
+                                          TextSpan(
+                                            text: " ",
+                                          ),
+                                          TextSpan(
+                                            text: weightUnit().toUpperCase(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Text(trendSummary.summary,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          color: isDarkMode
-                                              ? Colors.white70
-                                              : Colors.black)),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const SizedBox(height: 16),
-                              LineChartWidget(
-                                chartPoints: volumeChartPoints,
-                                periods: [],
-                                unit: ChartUnit.weight,
-                                aspectRation: 4.5,
-                                lineChartSide: LineChartSide.right,
-                                rightReservedSize: 20,
-                                hasLeftAxisTitles: false,
-                                belowBarData: false,
-                                hasRightAxisTitles: false,
-                              ),
-                            ],
-                          ),
-                          Text(
-                              "Here’s a volume trend of your ${template.name} training over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}.",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      color: isDarkMode
-                                          ? Colors.white70
-                                          : Colors.black)),
-                          const SizedBox(height: 12),
-                          InformationContainer(
-                            leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
-                            title: "Training Volume",
-                            color: isDarkMode
-                                ? darkSurfaceContainer
-                                : Colors.grey.shade200,
-                            description:
-                                "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
-                          ),
-                        ],
-                      ),
-                    ),
-                  if (template.owner == SharedPrefs().userId)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: isDarkMode
-                                ? darkSurfaceContainer
-                                : Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(radiusMD)),
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 20,
+                                    ),
+                                    Text(
+                                      "Session AVERAGE".toUpperCase(),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            Text(trendSummary.summary,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : Colors.black)),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Muscle Recovery".toUpperCase(),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                      "Delayed Onset Muscle Soreness (DOMS) refers to the muscle pain or stiffness experienced after intense physical activity. It typically develops 24 to 48 hours after exercise and can last for several days.",
+                            const SizedBox(height: 16),
+                            LineChartWidget(
+                              chartPoints: volumeChartPoints,
+                              periods: [],
+                              unit: ChartUnit.weight,
+                              aspectRation: 4.5,
+                              lineChartSide: LineChartSide.right,
+                              rightReservedSize: 20,
+                              hasLeftAxisTitles: false,
+                              belowBarData: false,
+                              hasRightAxisTitles: false,
+                            ),
+                          ],
+                        ),
+                        Text(
+                            "Here’s a volume trend of your ${template.name} training over the last ${allLogsForTemplate.length} ${pluralize(word: "session", count: allLogsForTemplate.length)}.",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: isDarkMode
+                                        ? Colors.white70
+                                        : Colors.black)),
+                        const SizedBox(height: 12),
+                        InformationContainer(
+                          leadingIcon: FaIcon(FontAwesomeIcons.weightHanging),
+                          title: "Training Volume",
+                          color: isDarkMode
+                              ? darkSurfaceContainer
+                              : Colors.grey.shade200,
+                          description:
+                              "Volume is the total amount of work done, often calculated as sets × reps × weight. Higher volume increases muscle size (hypertrophy).",
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: isDarkMode
+                              ? darkSurfaceContainer
+                              : Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(radiusMD)),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 20,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Muscle Recovery".toUpperCase(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium),
+                                const SizedBox(height: 10),
+                                Text(
+                                    "Delayed Onset Muscle Soreness (DOMS) refers to the muscle pain or stiffness experienced after intense physical activity. It typically develops 24 to 48 hours after exercise and can last for several days.",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                            fontWeight: FontWeight.w400,
+                                            color: isDarkMode
+                                                ? Colors.white70
+                                                : Colors.black)),
+                              ],
+                            ),
+                          ),
+                          if (listOfMuscleAndRecovery.isNotEmpty)
+                            Column(
+                              spacing: 10,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        spacing: 20,
+                                        children: [
+                                          SizedBox(width: 2),
+                                          ...muscleGroupsIllustrations,
+                                          SizedBox(width: 2),
+                                        ])),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Text(
+                                      selectedMuscleAndRecovery?.description ??
+                                          "",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
                                               fontWeight: FontWeight.w400,
                                               color: isDarkMode
-                                                  ? Colors.white70
+                                                  ? Colors.white
                                                   : Colors.black)),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            if (listOfMuscleAndRecovery.isNotEmpty)
-                              Column(
-                                spacing: 10,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          spacing: 20,
-                                          children: [
-                                            SizedBox(width: 2),
-                                            ...muscleGroupsIllustrations,
-                                            SizedBox(width: 2),
-                                          ])),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
-                                    child: Text(
-                                        selectedMuscleAndRecovery
-                                                ?.description ??
-                                            "",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.w400,
-                                                color: isDarkMode
-                                                    ? Colors.white
-                                                    : Colors.black)),
-                                  ),
-                                ],
-                              ),
-                          ],
-                        ),
+                        ],
                       ),
                     ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
@@ -557,45 +529,9 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         ));
   }
 
-  void _showLoadingScreen() {
-    setState(() {
-      _loading = true;
-    });
-  }
-
-  void _hideLoadingScreen() {
-    if (mounted) {
-      setState(() {
-        _loading = false;
-      });
-    }
-  }
-
   void _onSelectCalendarDateTime({required DateTime date}) {
     setState(() {
       _selectedCalendarDate = date;
-    });
-  }
-
-  void _deleteRoutine({required RoutineTemplateDto template}) async {
-    try {
-      await Provider.of<ExerciseAndRoutineController>(context, listen: false)
-          .removeTemplate(template: template);
-      if (mounted) {
-        context.pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        showSnackbar(context: context, message: "Unable to remove workout");
-      }
-    } finally {
-      _toggleLoadingState();
-    }
-  }
-
-  void _toggleLoadingState() {
-    setState(() {
-      _loading = !_loading;
     });
   }
 
@@ -609,224 +545,12 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
     }
   }
 
-  void _createTemplate({bool copy = false}) async {
-    final template = _template;
-    if (template != null) {
-      _showLoadingScreen();
-
-      try {
-        final exercises = template.exerciseTemplates.map((exerciseLog) {
-          final uncheckedSets = exerciseLog.sets
-              .map((set) => set.copyWith(checked: false))
-              .toList();
-          return exerciseLog.copyWith(sets: uncheckedSets);
-        }).toList();
-        final templateToBeCreated = RoutineTemplateDto(
-            id: "",
-            name: copy ? "Copy of ${template.name}" : template.name,
-            notes: template.notes,
-            exerciseTemplates: exercises,
-            owner: "",
-            planId: template.planId,
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now());
-
-        final createdTemplate = await Provider.of<ExerciseAndRoutineController>(
-                context,
-                listen: false)
-            .saveTemplate(templateDto: templateToBeCreated);
-        if (mounted) {
-          if (createdTemplate != null) {
-            navigateToRoutineTemplatePreview(
-                context: context, template: createdTemplate);
-          }
-        }
-      } catch (_) {
-        if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to create your template");
-        }
-      } finally {
-        _hideLoadingScreen();
-      }
-    }
-  }
-
   void _loadData() {
     final exerciseAndRoutineController =
         Provider.of<ExerciseAndRoutineController>(context, listen: false);
     _template = exerciseAndRoutineController.templateWhere(id: widget.id);
     if (_template == null) {
-      _loading = true;
-      // UI-only mode: no remote fetch, just stop loading
-      setState(() {
-        _loading = false;
-      });
-    }
-  }
-
-  void _showShareBottomSheet() {
-    final template = _template;
-
-    if (template != null) {
-      final workoutText = copyRoutineAsText(
-          routineType: RoutinePreviewType.template,
-          name: template.name,
-          notes: template.notes,
-          exerciseLogs: template.exerciseTemplates);
-
-      displayBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const FaIcon(
-                FontAwesomeIcons.copy,
-                size: 18,
-              ),
-              horizontalTitleGap: 6,
-              title: Text("Copy as Text",
-                  style: Theme.of(context).textTheme.titleMedium),
-              subtitle: Text("${template.name}..."),
-              onTap: () {
-                Posthog().capture(
-                    eventName: PostHogAnalyticsEvent
-                        .shareRoutineTemplateAsText.displayName);
-                HapticFeedback.heavyImpact();
-                final data = ClipboardData(text: workoutText);
-                Clipboard.setData(data).then((_) {
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                    showSnackbar(context: context, message: "Workout copied");
-                  }
-                });
-              },
-            ),
-          ]));
-    }
-  }
-
-  void _showMenuBottomSheet({required RoutinePlanDto? planDto}) {
-    displayBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.copy,
-              size: 18,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Copy", style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              _createTemplate(copy: true);
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.share,
-              size: 18,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Share", style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              _showShareBottomSheet();
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.solidSquarePlus,
-              size: 18,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Move to another plan",
-                style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              _showPlanPicker();
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(
-              FontAwesomeIcons.trash,
-              size: 16,
-              color: Colors.redAccent,
-            ),
-            horizontalTitleGap: 6,
-            title: Text("Delete",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: Colors.red)),
-            onTap: () {
-              Navigator.of(context).pop();
-
-              final template = _template;
-
-              if (template != null) {
-                showBottomSheetWithMultiActions(
-                    context: context,
-                    title: "Delete workout?",
-                    description: planDto != null
-                        ? "Are you sure you want to delete this workout and remove it from ${planDto.name}?"
-                        : "Are you sure you want to delete this workout?",
-                    leftAction: Navigator.of(context).pop,
-                    rightAction: () {
-                      context.pop();
-                      _toggleLoadingState();
-                      _deleteRoutine(template: template);
-                    },
-                    leftActionLabel: 'Cancel',
-                    rightActionLabel: 'Delete',
-                    isRightActionDestructive: true);
-              }
-            },
-          )
-        ]));
-  }
-
-  void _showPlanPicker() {
-    final template = _template;
-
-    final exerciseAndRoutineController =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    final plans = exerciseAndRoutineController.plans;
-
-    if (template != null) {
-      displayBottomSheet(
-        context: context,
-        child: PlanPicker(
-          title: "Move ${template.name} to . . .",
-          plans: plans,
-          onSelect: (selectedPlan) async {
-            Navigator.of(context).pop();
-
-            final templateProvider = Provider.of<ExerciseAndRoutineController>(
-                context,
-                listen: false);
-
-            final updatedRoutineTemplate =
-                template.copyWith(planId: selectedPlan.id);
-
-            await templateProvider.updateTemplate(
-                template: updatedRoutineTemplate);
-
-            if (mounted) {
-              showSnackbar(
-                  context: context,
-                  message: "Add ${template.name} to ${selectedPlan.name}");
-            }
-          },
-        ),
-      );
+      // UI-only mode: no remote fetch
     }
   }
 

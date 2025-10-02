@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
-import '../dtos/appsync/routine_log_dto.dart';
+import '../dtos/db/exercise_dto.dart';
+import '../dtos/db/routine_log_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
 import '../logger.dart';

@@ -8,7 +8,7 @@ import 'package:tracker_app/widgets/search_bar.dart';
 
 import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
-import '../../../dtos/appsync/exercise_dto.dart';
+import '../../../dtos/db/exercise_dto.dart';
 import '../../../enums/muscle_group_enums.dart';
 import '../../../utils/date_utils.dart';
 import '../../../utils/navigation_utils.dart';

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/db/exercise_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
 
@@ -104,15 +104,15 @@ class MockExerciseRepository {
     final creditSourceUri = video != null ? Uri.parse(creditSource) : null;
     final credit = json["credit"];
     return ExerciseDto(
-        id: id,
-        name: name,
-        primaryMuscleGroup: primaryMuscleGroup,
-        secondaryMuscleGroups: secondaryMuscleGroups,
-        type: ExerciseType.fromString(typeString),
-        video: videoUri,
-        description: description,
-        creditSource: creditSourceUri,
-        credit: credit,
-        owner: "");
+      id: id,
+      name: name,
+      primaryMuscleGroup: primaryMuscleGroup,
+      secondaryMuscleGroups: secondaryMuscleGroups,
+      type: ExerciseType.fromString(typeString),
+      video: videoUri,
+      description: description,
+      creditSource: creditSourceUri,
+      credit: credit,
+    );
   }
 }

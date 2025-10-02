@@ -1,9 +1,9 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
-import 'package:tracker_app/dtos/appsync/routine_log_dto.dart';
+import 'package:tracker_app/dtos/db/routine_log_dto.dart';
 
-import '../dtos/appsync/exercise_dto.dart';
+import '../dtos/db/exercise_dto.dart';
 import '../dtos/exercise_log_dto.dart';
 import '../dtos/pb_dto.dart';
 import '../dtos/set_dtos/duration_set_dto.dart';

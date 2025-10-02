@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:tracker_app/dtos/appsync/routine_plan_dto.dart';
+import 'package:tracker_app/dtos/db/routine_plan_dto.dart';
 
 class MockRoutinePlanRepository {
   List<RoutinePlanDto> _plans = [];

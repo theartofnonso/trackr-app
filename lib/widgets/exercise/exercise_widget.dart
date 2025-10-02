@@ -5,7 +5,7 @@ import 'package:tracker_app/enums/muscle_group_enums.dart';
 import 'package:tracker_app/extensions/muscle_group_extension.dart';
 import 'package:tracker_app/utils/string_utils.dart';
 
-import '../../dtos/appsync/exercise_dto.dart';
+import '../../dtos/db/exercise_dto.dart';
 
 class ExerciseWidget extends StatelessWidget {
   final ExerciseDto exerciseDto;

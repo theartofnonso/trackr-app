@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 
-import 'appsync/exercise_dto.dart';
+import 'db/exercise_dto.dart';
 
 class ExerciseLogDto {
   final String id;
