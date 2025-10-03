@@ -3,7 +3,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../colors.dart';
@@ -22,7 +21,9 @@ import '../../widgets/routine/preview/routine_plan_grid_item.dart';
 class RoutinePlansScreen extends StatefulWidget {
   static const routeName = '/routine_plans_screen';
 
-  const RoutinePlansScreen({super.key});
+  final RoutinePlanDto? plan;
+
+  const RoutinePlansScreen({super.key}) : plan = null;
 
   @override
   State<RoutinePlansScreen> createState() => _RoutinePlansScreenState();
@@ -45,19 +46,19 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
           plans.map((plan) => RoutinePlanGridItemWidget(plan: plan)).toList();
 
       return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
-              onPressed: context.pop,
-            ),
-          ),
-          body: Container(
+          body: Stack(
+        children: [
+          Container(
             height: double.infinity,
             decoration: BoxDecoration(
               color: isDarkMode ? darkBackground : Colors.white,
             ),
             child: SafeArea(
-              minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
+              minimum: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top,
+                right: 10,
+                left: 10,
+              ),
               bottom: false,
               child: Column(
                   spacing: 16,
@@ -83,7 +84,37 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                           ),
                   ]),
             ),
-          ));
+          ),
+          // Overlay close button
+          Positioned(
+            top: MediaQuery.of(context).padding.top,
+            right: 16,
+            child: Container(
+              decoration: BoxDecoration(
+                color: isDarkMode
+                    ? darkSurface.withValues(alpha: 0.9)
+                    : Colors.white.withValues(alpha: 0.9),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: FaIcon(
+                  FontAwesomeIcons.squareXmark,
+                  size: 20,
+                  color: isDarkMode ? Colors.white : Colors.black87,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ),
+        ],
+      ));
     });
   }
 

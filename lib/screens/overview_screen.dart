@@ -304,47 +304,7 @@ class _QuestionsForCoachSection extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _QuestionItem(
-            question: "Should I take any supplements for muscle growth?",
-            icon: FontAwesomeIcons.arrowRight,
-            onTap: () {
-              // Navigate to coach chat with this question
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const CoachChatScreen(),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          _QuestionItem(
-            question: "How do I know if I'm progressing?",
-            icon: FontAwesomeIcons.arrowRight,
-            onTap: () {
-              // Navigate to coach chat with this question
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const CoachChatScreen(),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          _QuestionItem(
-            question:
-                "Are free weights better than machines for building muscle?",
-            icon: FontAwesomeIcons.arrowRight,
-            onTap: () {
-              // Navigate to coach chat with this question
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const CoachChatScreen(),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          _QuestionItem(
-            question: "How can I improve my workout recovery?",
+            question: "I have a question",
             icon: FontAwesomeIcons.arrowRight,
             onTap: () {
               // Navigate to coach chat with this question
@@ -382,7 +342,6 @@ class _QuestionItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isDarkMode ? darkSurfaceVariant : Colors.white,
           borderRadius: BorderRadius.circular(radiusMD),
           border: Border.all(
             color: isDarkMode ? darkBorder : Colors.grey.shade200,

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tracker_app/colors.dart';
+import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
 import '../../dtos/chat_message_dto.dart';
 import '../../services/response_handler_service.dart';
 import '../../widgets/chat/chat_bubble_widget.dart';
 import '../../widgets/chat/loading_message_widget.dart';
-import 'workout_plan_preview_screen.dart';
 
 class CoachChatScreen extends StatefulWidget {
   static const routeName = '/routine_ai_context_screen';
@@ -26,6 +26,7 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
   final List<ChatMessageDto> _messages = [];
   late final ResponseHandlerService _responseHandler;
   Completer<void>? _cancelCompleter;
+  late ScrollController _scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +59,7 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
                                   "Please describe your workout or plan to get started with your Coach."),
                         )
                       : ListView.builder(
+                          controller: _scrollController,
                           padding: EdgeInsets.only(
                             top: MediaQuery.of(context).padding.top,
                             bottom: 8,
@@ -86,25 +88,17 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
                       Expanded(
                         child: TextField(
                           controller: _textEditingController,
-                          enabled: !_loading,
                           decoration: InputDecoration(
-                            hintText: _loading
-                                ? "Processing..."
-                                : "What do you want to train?",
+                            hintText: "What do you want to train?",
                             hintStyle: GoogleFonts.ubuntu(
-                              color: _loading
-                                  ? (isDarkMode
-                                      ? Colors.white38
-                                      : Colors.grey.shade400)
-                                  : (isDarkMode
-                                      ? Colors.white70
-                                      : Colors.grey.shade600),
+                              color: (isDarkMode
+                                  ? Colors.white70
+                                  : Colors.grey.shade600),
                             ),
                           ),
                           cursorColor:
                               isDarkMode ? darkOnSurface : Colors.black,
                           maxLines: null,
-                          showCursor: !_loading,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.sentences,
                         ),
@@ -193,6 +187,7 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
     super.initState();
     _textEditingController = TextEditingController();
     _responseHandler = ResponseHandlerService();
+    _scrollController = ScrollController();
   }
 
   void _runMessage() async {
@@ -208,6 +203,11 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
           id: DateTime.now().millisecondsSinceEpoch.toString(),
           content: userPrompt,
         ));
+      });
+
+      // Scroll to bottom after adding user message
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
       });
 
       // Create cancel completer for this request
@@ -234,6 +234,11 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
     setState(() {
       _messages.add(message);
     });
+
+    // Scroll to bottom after adding message
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   void _handleError(String errorMessage) {
@@ -244,16 +249,22 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
         content: "Something went wrong.",
       ));
     });
+
+    // Scroll to bottom after adding error message
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   void _handleMessageTap(ChatMessageDto message) {
-    if (message.type == ChatMessageType.workout ||
-        message.type == ChatMessageType.plan) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => WorkoutPlanPreviewScreen(message: message),
-        ),
-      );
+    final workout = message.workout;
+    final plan = message.plan;
+    if (message.type == ChatMessageType.workout && workout != null) {
+      // Navigate to RoutineTemplateScreen for workouts
+      navigateToRoutineTemplatePreview(context: context, template: workout);
+    } else if (message.type == ChatMessageType.plan && plan != null) {
+      // Navigate to RoutineTemplateScreen for plans (using first template)
+      navigateToRoutinePlanPreview(context: context, plan: plan);
     }
   }
 
@@ -267,10 +278,21 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
     FocusScope.of(context).unfocus();
   }
 
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
   @override
   void dispose() {
     _textEditingController.dispose();
     _responseHandler.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 }

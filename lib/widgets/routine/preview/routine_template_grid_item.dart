@@ -29,7 +29,7 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-              color: isDarkMode ? darkSurfaceContainer : Colors.grey.shade200,
+              color: isDarkMode ? darkSurface : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(radiusMD)),
           child: Column(
               spacing: 14,

@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
@@ -9,8 +8,6 @@ import 'package:tracker_app/utils/string_utils.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
 import '../../dtos/db/routine_plan_dto.dart';
-import '../../dtos/db/routine_template_dto.dart';
-import '../../utils/dialog_utils.dart';
 import '../../utils/navigation_utils.dart';
 import '../../widgets/backgrounds/trkr_loading_screen.dart';
 import '../../widgets/calendar/calendar.dart';
@@ -25,16 +22,17 @@ class RoutinePlanScreen extends StatefulWidget {
   static const routeName = '/routine_plan_screen';
 
   final String id;
+  final RoutinePlanDto? plan;
 
-  const RoutinePlanScreen({super.key, required this.id});
+  const RoutinePlanScreen({super.key, required this.id}) : plan = null;
+
+  const RoutinePlanScreen.withPlan({super.key, required this.plan}) : id = "";
 
   @override
   State<RoutinePlanScreen> createState() => _RoutinePlanScreenState();
 }
 
 class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
-  RoutinePlanDto? _plan;
-
   bool _loading = false;
 
   DateTime? _selectedCalendarDate;
@@ -46,22 +44,15 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final plan = _plan;
+    // Use plan provided directly or fallback to loaded plan
+    final plan = widget.plan;
 
     if (plan == null) return const NotFound();
 
     final exerciseAndRoutineController =
         Provider.of<ExerciseAndRoutineController>(context, listen: true);
 
-    if (exerciseAndRoutineController.errorMessage.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSnackbar(
-            context: context,
-            message: exerciseAndRoutineController.errorMessage);
-      });
-    }
-
-    final routineTemplates = <RoutineTemplateDto>[];
+    final routineTemplates = plan.templates;
 
     final logs = routineTemplates
         .map((template) => exerciseAndRoutineController.whereLogsWithTemplateId(
@@ -82,19 +73,19 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
         .expand((routineTemplate) => routineTemplate.exerciseTemplates);
 
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
-            onPressed: context.pop,
-          ),
-        ),
-        body: Container(
+        body: Stack(
+      children: [
+        Container(
           height: double.infinity,
           decoration: BoxDecoration(
             color: isDarkMode ? darkBackground : Colors.white,
           ),
           child: SafeArea(
-            minimum: const EdgeInsets.only(top: 10, right: 10, left: 10),
+            minimum: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top,
+              right: 10,
+              left: 10,
+            ),
             bottom: false,
             child: SingleChildScrollView(
               child: Column(
@@ -156,7 +147,37 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
                   ]),
             ),
           ),
-        ));
+        ),
+        // Overlay close button
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 16,
+          right: 16,
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDarkMode
+                  ? darkSurface.withValues(alpha: 0.9)
+                  : Colors.white.withValues(alpha: 0.9),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.squareXmark,
+                size: 20,
+                color: isDarkMode ? Colors.white : Colors.black87,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
+      ],
+    ));
   }
 
   void _hideLoadingScreen() {
@@ -171,17 +192,5 @@ class _RoutinePlanScreenState extends State<RoutinePlanScreen> {
     setState(() {
       _selectedCalendarDate = date;
     });
-  }
-
-  void _loadData() {
-    final exerciseAndRoutineController =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    _plan = exerciseAndRoutineController.planWhere(id: widget.id);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
   }
 }

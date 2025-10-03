@@ -153,21 +153,34 @@ final _router = GoRouter(
     GoRoute(
       path: RoutinePlansScreen.routeName,
       builder: (context, state) {
-        return RoutinePlansScreen();
+        final plan = state.extra as RoutinePlanDto?;
+        return RoutinePlanScreen(id: plan?.id ?? "");
       },
     ),
     GoRoute(
       path: RoutineTemplateScreen.routeName,
       builder: (context, state) {
         final template = state.extra as RoutineTemplateDto?;
-        return RoutineTemplateScreen(id: template?.id ?? "");
+        if (template != null) {
+          // If template is provided directly, use it
+          return RoutineTemplateScreen.withTemplate(template: template);
+        } else {
+          // Fallback to ID-based loading
+          return RoutineTemplateScreen(id: "");
+        }
       },
     ),
     GoRoute(
       path: RoutinePlanScreen.routeName,
       builder: (context, state) {
         final plan = state.extra as RoutinePlanDto?;
-        return RoutinePlanScreen(id: plan?.id ?? "");
+        if (plan != null) {
+          // If plan is provided directly, use it
+          return RoutinePlanScreen.withPlan(plan: plan);
+        } else {
+          // Fallback to ID-based loading
+          return RoutinePlanScreen(id: "");
+        }
       },
     ),
     GoRoute(

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
+import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
 import '../../../colors.dart';
@@ -126,41 +127,53 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: isDarkMode
-                    ? Colors.white10
-                    : Colors.black38, // Border color
-                width: 1.0, // Border width
-              ),
-              borderRadius:
-                  BorderRadius.circular(radiusMD), // Optional: Rounded corners
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 14,
+          if (widget.exerciseLog.sets.isEmpty)
+            Center(
+                child: const NoListEmptyState(
+                    message: "No Sets Logged", showIcon: false)),
+          if (widget.exerciseLog.sets.isNotEmpty)
+            Column(
               children: [
-                if (exerciseType == ExerciseType.weights)
-                  summarizeProgression(
-                      values: _weightsForExercise(pastSets: pastSets),
-                      context: context,
-                      textAlign: TextAlign.center)
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: isDarkMode
+                          ? Colors.white10
+                          : Colors.black38, // Border color
+                      width: 1.0, // Border width
+                    ),
+                    borderRadius: BorderRadius.circular(
+                        radiusMD), // Optional: Rounded corners
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 14,
+                    children: [
+                      if (exerciseType == ExerciseType.weights)
+                        summarizeProgression(
+                            values: _weightsForExercise(pastSets: pastSets),
+                            context: context,
+                            textAlign: TextAlign.center)
+                    ],
+                  ),
+                ),
+                switch (exerciseType) {
+                  ExerciseType.weights => DoubleSetHeader(
+                      firstLabel: weightUnit().toUpperCase(),
+                      secondLabel: 'REPS'),
+                  ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
+                  ExerciseType.duration => SingleSetHeader(label: 'TIME'),
+                },
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: SetsListview(
+                      type: exerciseType,
+                      sets: widget.exerciseLog.sets,
+                      pbs: pbs),
+                )
               ],
-            ),
-          ),
-          switch (exerciseType) {
-            ExerciseType.weights => DoubleSetHeader(
-                firstLabel: weightUnit().toUpperCase(), secondLabel: 'REPS'),
-            ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
-            ExerciseType.duration => SingleSetHeader(label: 'TIME'),
-          },
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: SetsListview(
-                type: exerciseType, sets: widget.exerciseLog.sets, pbs: pbs),
-          )
+            )
         ],
       ),
     );
