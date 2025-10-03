@@ -33,14 +33,9 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-            onPressed: Navigator.of(context).pop,
-          ),
-          title: Text("Coach Chat".toUpperCase()),
-        ),
-        body: Container(
+        body: Stack(
+      children: [
+        Container(
           decoration: BoxDecoration(
             color: isDarkMode ? darkBackground : Colors.white,
           ),
@@ -54,13 +49,19 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
                 Expanded(
                   child: _messages.isEmpty
                       ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          padding: EdgeInsets.only(
+                            left: 10.0,
+                            right: 10.0,
+                          ),
                           child: const NoListEmptyState(
                               message:
                                   "Please describe your workout or plan to get started with your Coach."),
                         )
                       : ListView.builder(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top,
+                            bottom: 8,
+                          ),
                           itemCount: _messages.length + (_loading ? 1 : 0),
                           itemBuilder: (context, index) {
                             // Show loading message at the end if loading
@@ -85,6 +86,7 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
                       Expanded(
                         child: TextField(
                           controller: _textEditingController,
+                          enabled: !_loading,
                           decoration: InputDecoration(
                             hintText: _loading
                                 ? "Processing..."
@@ -138,7 +140,37 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
               ],
             ),
           ),
-        ));
+        ),
+        // Overlay close button
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 16,
+          right: 16,
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDarkMode
+                  ? darkSurface.withValues(alpha: 0.9)
+                  : Colors.white.withValues(alpha: 0.9),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.squareXmark,
+                size: 20,
+                color: isDarkMode ? Colors.white : Colors.black87,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
+      ],
+    ));
   }
 
   void _setLoading(bool loading) {
