@@ -22,6 +22,7 @@ import '../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
 import '../widgets/calendar/calendar_logs.dart';
+import '../widgets/chat/coach_chat_widget.dart';
 import '../widgets/dividers/label_divider.dart';
 import 'AI/coach_chat_screen.dart';
 
@@ -63,40 +64,45 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final logsInLastQuarter =
         exerciseAndRoutineController.whereLogsIsWithinRange(range: lastQuarter);
 
-    return SingleChildScrollView(
-      child: Column(children: [
-        Calendar(
-            onSelectDate: _onSelectCalendarDateTime,
-            onMonthChanged: _onMonthChanged),
-        const SizedBox(height: 10),
-        CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
-        StaggeredGrid.count(
-          crossAxisCount: 4,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          children: [
-            StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: GestureDetector(
-                onTap: () => navigateToRoutineHome(context: context),
-                child: _TemplatesTile(),
-              ),
+    return Column(children: [
+      Calendar(
+          onSelectDate: _onSelectCalendarDateTime,
+          onMonthChanged: _onMonthChanged),
+      CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
+      StaggeredGrid.count(
+        crossAxisCount: 4,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        children: [
+          StaggeredGridTile.count(
+            crossAxisCellCount: 1,
+            mainAxisCellCount: 1,
+            child: GestureDetector(
+              onTap: () => navigateToRoutineTemplatesHome(context: context),
+              child: _TemplatesTile(),
             ),
-            StaggeredGridTile.count(
-              crossAxisCellCount: 1,
-              mainAxisCellCount: 1,
-              child: GestureDetector(
-                onTap: () => _showNewBottomSheet(),
-                child: _SettingsTile(),
-              ),
+          ),
+          StaggeredGridTile.count(
+            crossAxisCellCount: 1,
+            mainAxisCellCount: 1,
+            child: GestureDetector(
+              onTap: () => navigateToRoutinePlansHome(context: context),
+              child: _PlansTile(),
             ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        _QuestionsForCoachSection(),
-      ]),
-    );
+          ),
+          StaggeredGridTile.count(
+            crossAxisCellCount: 1,
+            mainAxisCellCount: 1,
+            child: GestureDetector(
+              onTap: () => _showNewBottomSheet(),
+              child: _SettingsTile(),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 10),
+      const CoachChatWidget(),
+    ]);
   }
 
   void _hideLoadingScreen() {
@@ -233,6 +239,34 @@ class _TemplatesTile extends StatelessWidget {
   }
 }
 
+class _PlansTile extends StatelessWidget {
+  const _PlansTile();
+
+  @override
+  Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
+    return Container(
+      width: 25,
+      height: 25,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+          color: isDarkMode
+              ? darkSurfaceContainer
+              : Colors.black.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(radiusMD)),
+      child: Center(
+        child: FaIcon(
+          FontAwesomeIcons.solidFolderOpen,
+          size: 28,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
 class _SettingsTile extends StatelessWidget {
   const _SettingsTile();
 
@@ -258,116 +292,5 @@ class _SettingsTile extends StatelessWidget {
             color: Colors.white,
           ),
         )));
-  }
-}
-
-class _QuestionsForCoachSection extends StatelessWidget {
-  const _QuestionsForCoachSection();
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color:
-                      isDarkMode ? darkSurfaceContainer : Colors.grey.shade300,
-                ),
-                child: Icon(
-                  Icons.person,
-                  color:
-                      isDarkMode ? darkOnSurfaceVariant : Colors.grey.shade600,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                "Questions for your Coach",
-                style: GoogleFonts.ubuntu(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: isDarkMode ? darkOnSurface : Colors.black,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _QuestionItem(
-            question: "I have a question",
-            icon: FontAwesomeIcons.arrowRight,
-            onTap: () {
-              // Navigate to coach chat with this question
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const CoachChatScreen(),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _QuestionItem extends StatelessWidget {
-  const _QuestionItem({
-    required this.question,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String question;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radiusMD),
-          border: Border.all(
-            color: isDarkMode ? darkBorder : Colors.grey.shade200,
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                question,
-                style: GoogleFonts.ubuntu(
-                  fontSize: 14,
-                  color: isDarkMode ? darkOnSurface : Colors.black87,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            FaIcon(
-              icon,
-              size: 12,
-              color: isDarkMode ? darkOnSurfaceVariant : Colors.grey.shade600,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

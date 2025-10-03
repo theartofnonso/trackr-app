@@ -5,6 +5,7 @@ import 'package:tracker_app/dtos/db/routine_plan_dto.dart';
 
 import '../../../colors.dart';
 import '../../../dtos/db/routine_template_dto.dart';
+import '../../../utils/navigation_utils.dart';
 import '../../../utils/string_utils.dart';
 import '../../icons/custom_icon.dart';
 
@@ -24,7 +25,8 @@ class RoutineTemplateGridItemWidget extends StatelessWidget {
     final exercises = template.exerciseTemplates;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => navigateToRoutineTemplatePreview(
+          context: context, template: template),
       child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16),

@@ -12,8 +12,10 @@ class CalendarLogs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    final logs = routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
+    final routineLogController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final logs =
+        routineLogController.whereLogsIsSameDay(dateTime: dateTime).toList();
     final children = logs.map((log) {
       Widget widget;
 
@@ -25,8 +27,11 @@ class CalendarLogs extends StatelessWidget {
       );
     }).toList();
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.center, spacing: 16, children:
-      children
-    );
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 10.0),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 16,
+            children: children));
   }
 }

@@ -3,33 +3,34 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/dtos/db/routine_template_dto.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/db/routine_plan_dto.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/routine/preview/routine_plan_grid_item.dart';
+import '../../widgets/routine/preview/routine_template_grid_item.dart';
 
-class RoutinePlansScreen extends StatefulWidget {
-  static const routeName = '/routine_plans_screen';
+class RoutineTemplatesScreen extends StatefulWidget {
+  static const routeName = '/routine_templates_screen';
 
-  const RoutinePlansScreen({super.key});
+  const RoutineTemplatesScreen({super.key});
 
   @override
-  State<RoutinePlansScreen> createState() => _RoutinePlansScreenState();
+  State<RoutineTemplatesScreen> createState() => _RoutineTemplatesScreenState();
 }
 
-class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
+class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
   @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
     return Consumer<ExerciseAndRoutineController>(builder: (_, provider, __) {
-      final plans = List<RoutinePlanDto>.from(provider.plans);
+      final templates = List<RoutineTemplateDto>.from(provider.templates);
 
-      final children =
-          plans.map((plan) => RoutinePlanGridItemWidget(plan: plan)).toList();
+      final children = templates
+          .map((template) => RoutineTemplateGridItemWidget(template: template))
+          .toList();
 
       return Scaffold(
           body: Stack(
@@ -65,7 +66,7 @@ class _RoutinePlansScreenState extends State<RoutinePlansScreen> {
                                   const EdgeInsets.symmetric(horizontal: 10.0),
                               child: const NoListEmptyState(
                                   message:
-                                      "It might feel quiet now, but plans created will appear here."),
+                                      "It might feel quiet now, but templates created will appear here."),
                             ),
                           ),
                   ]),

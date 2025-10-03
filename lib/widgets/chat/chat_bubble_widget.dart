@@ -7,11 +7,13 @@ import 'package:tracker_app/widgets/chat/user_message_widget.dart';
 class ChatBubbleWidget extends StatelessWidget {
   final ChatMessageDto message;
   final VoidCallback? onTap;
+  final VoidCallback? onAccept;
 
   const ChatBubbleWidget({
     super.key,
     required this.message,
     this.onTap,
+    this.onAccept,
   });
 
   @override
@@ -28,6 +30,7 @@ class ChatBubbleWidget extends StatelessWidget {
           title: message.content,
           subtitle: _getSubtitle(message),
           onTap: onTap,
+          onAccept: onAccept,
         );
     }
   }

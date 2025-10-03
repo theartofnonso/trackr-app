@@ -5,6 +5,7 @@ import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
+import 'package:tracker_app/screens/routines/routine_templates_screen.dart';
 
 import '../dtos/db/exercise_dto.dart';
 import '../dtos/db/routine_log_dto.dart';
@@ -72,8 +73,12 @@ void navigateToShareableScreen(
   context.push(RoutineLogSummaryScreen.routeName, extra: log);
 }
 
-void navigateToRoutineHome({required BuildContext context}) {
+void navigateToRoutinePlansHome({required BuildContext context}) {
   context.push(RoutinePlansScreen.routeName);
+}
+
+void navigateToRoutineTemplatesHome({required BuildContext context}) {
+  context.push(RoutineTemplatesScreen.routeName);
 }
 
 Future<void> navigateToSettings({required BuildContext context}) async {

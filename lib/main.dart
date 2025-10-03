@@ -8,6 +8,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:tracker_app/screens/routines/routine_plans_screen.dart';
+import 'package:tracker_app/screens/routines/routine_templates_screen.dart';
 import 'colors.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -30,7 +32,6 @@ import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/onboarding_flow_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
-import 'package:tracker_app/screens/routines/routine_plans_screen.dart';
 import 'package:tracker_app/screens/routines/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
@@ -144,17 +145,22 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      path: ExerciseHomeScreen.routeName,
+      path: RoutineTemplatesScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as ExerciseDto;
-        return ExerciseHomeScreen(exercise: args);
+        return RoutineTemplatesScreen();
       },
     ),
     GoRoute(
       path: RoutinePlansScreen.routeName,
       builder: (context, state) {
-        final plan = state.extra as RoutinePlanDto?;
-        return RoutinePlanScreen(id: plan?.id ?? "");
+        return RoutinePlansScreen();
+      },
+    ),
+    GoRoute(
+      path: ExerciseHomeScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as ExerciseDto;
+        return ExerciseHomeScreen(exercise: args);
       },
     ),
     GoRoute(
