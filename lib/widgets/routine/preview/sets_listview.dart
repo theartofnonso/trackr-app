@@ -23,6 +23,31 @@ class SetsListview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (sets.isEmpty) {
+      // Show default placeholder rows instead of an empty state
+      final List<Widget> placeholderRows;
+      switch (type) {
+        case ExerciseType.weights:
+          placeholderRows = const [
+            DoubleSetRow(first: "-", second: "-", pbs: []),
+          ];
+          break;
+        case ExerciseType.bodyWeight:
+          placeholderRows = const [
+            SingleSetRow(label: "-"),
+          ];
+          break;
+        case ExerciseType.duration:
+          placeholderRows = const [
+            SingleSetRow(label: "00:00:00", pbs: []),
+          ];
+          break;
+      }
+      return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(spacing: 8, children: placeholderRows));
+    }
+
     final workingSets = switch (type) {
       ExerciseType.weights => markHighestWeightSets(sets),
       ExerciseType.bodyWeight => markHighestRepsSets(sets),

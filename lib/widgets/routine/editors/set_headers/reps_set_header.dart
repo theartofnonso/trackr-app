@@ -34,12 +34,13 @@ class RepsSetHeader extends StatelessWidget {
                 textAlign: TextAlign.center),
           ),
           if (editorType == RoutineEditorMode.log)
-            const TableCell(
+            TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: FaIcon(
+                child: Center(
+                    child: FaIcon(
                   FontAwesomeIcons.check,
                   size: 12,
-                ))
+                )))
         ]),
       ],
     );

@@ -240,8 +240,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
     final exerciseLogs = context
         .select((ExerciseLogController controller) => controller.exerciseLogs);
 
-    final log = widget.log;
-
     final avgWorkoutDuration = _averageWorkoutDuration();
 
     final children = exerciseLogs.asMap().entries.map((entry) {
@@ -266,86 +264,120 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
     return PopScope(
         canPop: false,
         child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeftLong),
-                  onPressed: _discardLog),
-              title: Text(
-                log.name,
-              ),
-              actions: [
-                IconButton(
-                    key: const Key('select_exercises_in_library_btn'),
-                    onPressed: _selectExercisesInLibrary,
-                    icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
-                if (exerciseLogs.length > 1)
-                  IconButton(
-                      onPressed: () =>
-                          _reOrderExerciseLogs(exerciseLogs: exerciseLogs),
-                      icon: const FaIcon(FontAwesomeIcons.barsStaggered))
-              ],
+            body: Stack(children: [
+          Container(
+            decoration: BoxDecoration(
+              color: isDarkMode ? darkBackground : Colors.white,
             ),
-            body: Container(
+            child: SafeArea(
+              minimum: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top,
+                bottom: 20,
+              ),
+              child: Column(
+                spacing: 20,
+                children: [
+                  // Top action row replacing former AppBar actions
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            key: const Key('select_exercises_in_library_btn'),
+                            onPressed: _selectExercisesInLibrary,
+                            icon:
+                                const FaIcon(FontAwesomeIcons.solidSquarePlus)),
+                        if (exerciseLogs.length > 1)
+                          IconButton(
+                              onPressed: () => _reOrderExerciseLogs(
+                                  exerciseLogs: exerciseLogs),
+                              icon:
+                                  const FaIcon(FontAwesomeIcons.barsStaggered))
+                      ],
+                    ),
+                  ),
+                  if (widget.mode == RoutineEditorMode.log)
+                    GestureDetector(
+                      onTap: _showRoutineTimerInfo,
+                      child: Center(
+                        child: StopwatchTimer(
+                          digital: true,
+                          startTime: widget.log.startTime,
+                          textStyle: Theme.of(context).textTheme.headlineLarge,
+                          maxDuration: Duration(minutes: avgWorkoutDuration),
+                          warningThreshold: const Duration(minutes: 15),
+                        ),
+                      ),
+                    ),
+                  if (exerciseLogs.isNotEmpty)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: ListView.builder(
+                          itemCount: children.length,
+                          itemBuilder: (context, index) => children[index],
+                        ),
+                      ),
+                    ),
+                  if (exerciseLogs.isNotEmpty)
+                    SafeArea(
+                      minimum: EdgeInsets.symmetric(horizontal: 20),
+                      child: SizedBox(
+                          width: double.infinity,
+                          child: OpacityButtonWidgetTwo(
+                            buttonColor: vibrantGreen,
+                            label: widget.mode == RoutineEditorMode.log
+                                ? "Finish Session"
+                                : "Update Session",
+                            onPressed: widget.mode == RoutineEditorMode.log
+                                ? _saveLog
+                                : _updateLog,
+                          )),
+                    ),
+                  if (exerciseLogs.isEmpty)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: const NoListEmptyState(
+                            message:
+                                "Tap the + button to start adding exercises to your workout session"),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          // Overlay close button (discard)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            child: Container(
               decoration: BoxDecoration(
-                color: isDarkMode ? darkBackground : Colors.white,
+                color: isDarkMode
+                    ? darkSurface.withValues(alpha: 0.9)
+                    : Colors.white.withValues(alpha: 0.9),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: SafeArea(
-                minimum: EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  spacing: 20,
-                  children: [
-                    if (widget.mode == RoutineEditorMode.log)
-                      GestureDetector(
-                        onTap: _showRoutineTimerInfo,
-                        child: Center(
-                          child: StopwatchTimer(
-                            digital: true,
-                            startTime: widget.log.startTime,
-                            textStyle:
-                                Theme.of(context).textTheme.headlineLarge,
-                            maxDuration: Duration(minutes: avgWorkoutDuration),
-                            warningThreshold: const Duration(minutes: 15),
-                          ),
-                        ),
-                      ),
-                    if (exerciseLogs.isNotEmpty)
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: ListView.builder(
-                            itemCount: children.length,
-                            itemBuilder: (context, index) => children[index],
-                          ),
-                        ),
-                      ),
-                    if (exerciseLogs.isNotEmpty)
-                      SafeArea(
-                        minimum: EdgeInsets.symmetric(horizontal: 20),
-                        child: SizedBox(
-                            width: double.infinity,
-                            child: OpacityButtonWidgetTwo(
-                              buttonColor: vibrantGreen,
-                              label: widget.mode == RoutineEditorMode.log
-                                  ? "Finish Session"
-                                  : "Update Session",
-                              onPressed: widget.mode == RoutineEditorMode.log
-                                  ? _saveLog
-                                  : _updateLog,
-                            )),
-                      ),
-                    if (exerciseLogs.isEmpty)
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: const NoListEmptyState(
-                              message:
-                                  "Tap the + button to start adding exercises to your workout session"),
-                        ),
-                      ),
-                  ],
+              child: IconButton(
+                icon: FaIcon(
+                  FontAwesomeIcons.squareXmark,
+                  size: 20,
+                  color: isDarkMode ? Colors.white : Colors.black87,
                 ),
+                onPressed: _discardLog,
+                tooltip: 'Close',
               ),
-            )));
+            ),
+          ),
+        ])));
   }
 
   @override

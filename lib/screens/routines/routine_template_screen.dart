@@ -576,7 +576,7 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
   }
 
   void _launchRoutineLogEditor({required List<MuscleGroup> muscleGroups}) {
-    final template = _template;
+    final template = widget.template;
     if (template != null) {
       final log = template.toLog();
       final arguments =

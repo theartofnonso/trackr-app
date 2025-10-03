@@ -122,29 +122,15 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               _showShareAction(key: key);
             },
             child: const FaIcon(FontAwesomeIcons.rocket)),
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-            onPressed: context.pop,
-          ),
-          title: Text("Share".toUpperCase()),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: const FaIcon(FontAwesomeIcons.camera, size: 24),
-              onPressed: _showBottomSheet,
-            ),
-            IconButton(
-              icon: const FaIcon(Icons.copy_rounded, size: 24),
-              onPressed: _showCopyBottomSheet,
-            )
-          ],
-        ),
+        // No AppBar; overlay controls added below
         body: Container(
           decoration:
               BoxDecoration(color: isDarkMode ? darkBackground : Colors.white),
           child: SafeArea(
-            minimum: const EdgeInsets.symmetric(vertical: 10.0),
+            minimum: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 60,
+              bottom: 10,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -170,6 +156,51 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
               ],
             ),
           ),
+        ),
+      ),
+      // Overlay close and actions row
+      Positioned(
+        top: MediaQuery.of(context).padding.top + 16,
+        left: 16,
+        right: 16,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Close button
+            Container(
+              decoration: BoxDecoration(
+                color: isDarkMode
+                    ? darkSurface.withValues(alpha: 0.9)
+                    : Colors.white.withValues(alpha: 0.9),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 18),
+                color: isDarkMode ? Colors.white : Colors.black87,
+                onPressed: context.pop,
+                tooltip: 'Close',
+              ),
+            ),
+            Row(children: [
+              IconButton(
+                icon: const FaIcon(FontAwesomeIcons.camera, size: 20),
+                onPressed: _showBottomSheet,
+                tooltip: 'Choose image',
+              ),
+              IconButton(
+                icon: const FaIcon(Icons.copy_rounded, size: 20),
+                onPressed: _showCopyBottomSheet,
+                tooltip: 'Copy as text',
+              ),
+            ])
+          ],
         ),
       ),
       ConfettiWidget(

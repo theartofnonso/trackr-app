@@ -31,7 +31,6 @@ import '../../../dtos/set_dtos/reps_dto.dart';
 import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../dtos/set_dtos/weight_and_reps_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
-import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/general_utils.dart';
 import '../../../utils/one_rep_max_calculator.dart';
 import '../../buttons/opacity_button_widget_two.dart';
@@ -66,8 +65,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       _weightAndRepsControllers = [];
   List<TextEditingController> _repsControllers = [];
   List<DateTime> _durationControllers = [];
-
-  final bool _showNotes = false;
 
   SetDto? _selectedSetDto;
 
@@ -631,33 +628,6 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         readinessScore > 0 && readinessTier != RecoveryTier.optimal;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 28),
-          onPressed: context.pop,
-        ),
-        title: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      ExerciseHomeScreen(exercise: exerciseLog.exercise)));
-            },
-            child: Text(exerciseLog.exercise.name)),
-        actions: [
-          if (withWeightsOnly(type: exerciseType))
-            IconButton(
-              onPressed: _show1RMRecommendations,
-              icon: const FaIcon(FontAwesomeIcons.solidLightbulb, size: 18),
-              tooltip: 'Weights and Reps Recommendations',
-            ),
-          if (withReps(type: exerciseType))
-            IconButton(
-              onPressed: _addSet,
-              icon: const FaIcon(FontAwesomeIcons.solidSquarePlus, size: 22),
-              tooltip: 'Add new set',
-            ),
-        ],
-      ),
       floatingActionButtonLocation: !isKeyboardOpen && isLowReadiness
           ? null
           : FloatingActionButtonLocation.centerDocked,
@@ -689,128 +659,184 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
               ),
             )
           : null,
-      body: Container(
-        padding: const EdgeInsets.only(top: 20),
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: isDarkMode ? darkBackground : Colors.white,
-        ),
-        child: SafeArea(
-          bottom: false,
-          minimum: EdgeInsets.symmetric(horizontal: 10),
-          child: SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: 30),
-            child: Column(
-              spacing: 20,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 6.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Circular Timer for Duration exercises
-                      if (exerciseType == ExerciseType.duration)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: CircularTimerWidget(
-                            onTimerComplete: _onTimerComplete,
-                          ),
-                        ),
-                      switch (exerciseType) {
-                        ExerciseType.weights => WeightAndRepsSetHeader(
-                            editorType: widget.editorType,
-                            firstLabel: weightUnit().toUpperCase(),
-                            secondLabel: 'REPS',
-                          ),
-                        ExerciseType.bodyWeight => RepsSetHeader(
-                            editorType: widget.editorType,
-                          ),
-                        ExerciseType.duration => DurationSetHeader(
-                            editorType: widget.editorType,
-                          )
-                      },
-                      if (currentSets.isEmpty)
-                        Column(
-                          children: [
-                            const SizedBox(height: 10),
-                            NoListEmptyState(
-                                showIcon: false,
-                                message:
-                                    "Tap the + button to start adding sets to your exercise"),
-                          ],
-                        ),
-                      const SizedBox(height: 20),
+      body: Stack(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 20),
+            height: double.infinity,
+            decoration: BoxDecoration(
+              color: isDarkMode ? darkBackground : Colors.white,
+            ),
+            child: SafeArea(
+              bottom: false,
+              minimum: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top,
+                left: 10,
+                right: 10,
+              ),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(vertical: 60),
+                child: Column(
+                  spacing: 20,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Circular Timer for Duration exercises
+                          if (exerciseType == ExerciseType.duration)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 20.0),
+                              child: CircularTimerWidget(
+                                onTimerComplete: _onTimerComplete,
+                              ),
+                            ),
+                          switch (exerciseType) {
+                            ExerciseType.weights => WeightAndRepsSetHeader(
+                                editorType: widget.editorType,
+                                firstLabel: weightUnit().toUpperCase(),
+                                secondLabel: 'REPS',
+                              ),
+                            ExerciseType.bodyWeight => RepsSetHeader(
+                                editorType: widget.editorType,
+                              ),
+                            ExerciseType.duration => DurationSetHeader(
+                                editorType: widget.editorType,
+                              )
+                          },
+                          if (currentSets.isEmpty)
+                            Column(
+                              children: [
+                                const SizedBox(height: 10),
+                                NoListEmptyState(
+                                    showIcon: false,
+                                    message:
+                                        "Tap the + button to start adding sets to your exercise"),
+                              ],
+                            ),
+                          const SizedBox(height: 20),
 
-                      switch (exerciseType) {
-                        ExerciseType.weights => _WeightAndRepsSetListView(
-                            sets: currentSets
-                                .map((set) => set as WeightAndRepsSetDto)
-                                .toList(),
-                            updateSetCheck: _updateSetCheck,
-                            removeSet: _removeSet,
-                            updateReps: _updateReps,
-                            updateWeight: _updateWeight,
-                            controllers: _weightAndRepsControllers,
-                            onTapWeightEditor: _onTapWeightEditor,
-                            onTapRepsEditor: _onTapRepsEditor,
-                            editorType: widget.editorType,
-                          ),
-                        ExerciseType.bodyWeight => _RepsSetListView(
-                            sets: currentSets
-                                .map((set) => set as RepsSetDto)
-                                .toList(),
-                            updateSetCheck: _updateSetCheck,
-                            removeSet: _removeSet,
-                            updateReps: _updateReps,
-                            controllers: _repsControllers,
-                            onTapRepsEditor: _onTapRepsEditor,
-                            editorType: widget.editorType,
-                          ),
-                        ExerciseType.duration => _DurationSetListView(
-                            sets: currentSets
-                                .map((set) => set as DurationSetDto)
-                                .toList(),
-                            updateSetCheck: _updateSetCheck,
-                            removeSet: _removeSet,
-                            updateDuration: _updateDuration,
-                            controllers: _durationControllers,
-                            editorType: widget.editorType,
-                          ),
-                      }
-                    ],
-                  ),
+                          switch (exerciseType) {
+                            ExerciseType.weights => _WeightAndRepsSetListView(
+                                sets: currentSets
+                                    .map((set) => set as WeightAndRepsSetDto)
+                                    .toList(),
+                                updateSetCheck: _updateSetCheck,
+                                removeSet: _removeSet,
+                                updateReps: _updateReps,
+                                updateWeight: _updateWeight,
+                                controllers: _weightAndRepsControllers,
+                                onTapWeightEditor: _onTapWeightEditor,
+                                onTapRepsEditor: _onTapRepsEditor,
+                                editorType: widget.editorType,
+                              ),
+                            ExerciseType.bodyWeight => _RepsSetListView(
+                                sets: currentSets
+                                    .map((set) => set as RepsSetDto)
+                                    .toList(),
+                                updateSetCheck: _updateSetCheck,
+                                removeSet: _removeSet,
+                                updateReps: _updateReps,
+                                controllers: _repsControllers,
+                                onTapRepsEditor: _onTapRepsEditor,
+                                editorType: widget.editorType,
+                              ),
+                            ExerciseType.duration => _DurationSetListView(
+                                sets: currentSets
+                                    .map((set) => set as DurationSetDto)
+                                    .toList(),
+                                updateSetCheck: _updateSetCheck,
+                                removeSet: _removeSet,
+                                updateDuration: _updateDuration,
+                                controllers: _durationControllers,
+                                editorType: widget.editorType,
+                              ),
+                          }
+                        ],
+                      ),
+                    ),
+                    if (_errors.isNotEmpty) DepthStack(children: errorWidgets),
+                    if (isLowReadiness && widget.editorType == RoutineEditorMode.log)
+                      TransparentInformationContainerLite(
+                          content:
+                              "Tap for training recommendations tailored to your readiness.",
+                          useOpacity: true,
+                          onTap: _showDeloadSets,
+                          trailing: CustomIcon(Icons.chevron_right_rounded,
+                              color: Colors.white)),
+                    if (currentWorkingSet != null &&
+                        currentWorkingSet.isNotEmpty() &&
+                        exerciseType == ExerciseType.weights)
+                      TransparentInformationContainerLite(
+                          content:
+                              "${currentWorkingSet.summary()} is your working set.",
+                          useOpacity: true,
+                          onTap: () {
+                            showBottomSheetWithNoAction(
+                                context: context,
+                                title: "Working Sets",
+                                description:
+                                    "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements.");
+                          },
+                          trailing: CustomIcon(Icons.chevron_right_rounded,
+                              color: Colors.white)),
+                  ],
                 ),
-                if (_errors.isNotEmpty) DepthStack(children: errorWidgets),
-                if (isLowReadiness &&
-                    widget.editorType == RoutineEditorMode.log)
-                  TransparentInformationContainerLite(
-                      content:
-                          "Tap for training recommendations tailored to your readiness.",
-                      useOpacity: true,
-                      onTap: _showDeloadSets,
-                      trailing: CustomIcon(Icons.chevron_right_rounded,
-                          color: Colors.white)),
-                if (currentWorkingSet != null &&
-                    currentWorkingSet.isNotEmpty() &&
-                    exerciseType == ExerciseType.weights)
-                  TransparentInformationContainerLite(
-                      content:
-                          "${currentWorkingSet.summary()} is your working set.",
-                      useOpacity: true,
-                      onTap: () {
-                        showBottomSheetWithNoAction(
-                            context: context,
-                            title: "Working Sets",
-                            description:
-                                "Working sets are the primary, challenging sets performed after any warm-up sets. They provide the main training stimulus needed for muscle growth, strength gains, or endurance improvements.");
-                      },
-                      trailing: CustomIcon(Icons.chevron_right_rounded,
-                          color: Colors.white)),
-              ],
+              ),
             ),
           ),
-        ),
+          // Overlay close and actions row
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 12,
+            left: 12,
+            right: 12,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Close button
+                Container(
+                  decoration: BoxDecoration(
+                    color: isDarkMode
+                        ? darkSurface.withValues(alpha: 0.9)
+                        : Colors.white.withValues(alpha: 0.9),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: const FaIcon(FontAwesomeIcons.squareXmark, size: 18),
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                    onPressed: context.pop,
+                    tooltip: 'Close',
+                  ),
+                ),
+                Row(children: [
+                  if (withWeightsOnly(type: exerciseType))
+                    IconButton(
+                      onPressed: _show1RMRecommendations,
+                      icon: const FaIcon(FontAwesomeIcons.solidLightbulb,
+                          size: 18),
+                      tooltip: 'Weights and Reps Recommendations',
+                    ),
+                  if (withReps(type: exerciseType))
+                    IconButton(
+                      onPressed: _addSet,
+                      icon: const FaIcon(FontAwesomeIcons.solidSquarePlus,
+                          size: 22),
+                      tooltip: 'Add new set',
+                    ),
+                ])
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

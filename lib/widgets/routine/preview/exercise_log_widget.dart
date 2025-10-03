@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
-import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
-import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
-import '../../../colors.dart';
 import '../../../controllers/exercise_and_routine_controller.dart';
-import '../../../dtos/set_dtos/set_dto.dart';
 import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
@@ -64,9 +60,6 @@ class ExerciseLogWidget extends StatefulWidget {
 class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
     final otherSuperSet = widget.superSet;
 
     final exercise = widget.exerciseLog.exercise;
@@ -79,8 +72,7 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final pastExerciseLogs = routineLogController.whereExerciseLogsBefore(
         exercise: exercise, date: widget.exerciseLog.createdAt);
 
-    final pastSets =
-        routineLogController.wherePrevSetsForExercise(exercise: exercise);
+    routineLogController.wherePrevSetsForExercise(exercise: exercise);
 
     final pbs = calculatePBs(
         pastExerciseLogs: pastExerciseLogs,
@@ -127,62 +119,27 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
                     style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
-          if (widget.exerciseLog.sets.isEmpty)
-            Center(
-                child: const NoListEmptyState(
-                    message: "No Sets Logged", showIcon: false)),
-          if (widget.exerciseLog.sets.isNotEmpty)
-            Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: isDarkMode
-                          ? Colors.white10
-                          : Colors.black38, // Border color
-                      width: 1.0, // Border width
-                    ),
-                    borderRadius: BorderRadius.circular(
-                        radiusMD), // Optional: Rounded corners
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 14,
-                    children: [
-                      if (exerciseType == ExerciseType.weights)
-                        summarizeProgression(
-                            values: _weightsForExercise(pastSets: pastSets),
-                            context: context,
-                            textAlign: TextAlign.center)
-                    ],
-                  ),
-                ),
-                switch (exerciseType) {
-                  ExerciseType.weights => DoubleSetHeader(
-                      firstLabel: weightUnit().toUpperCase(),
-                      secondLabel: 'REPS'),
-                  ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
-                  ExerciseType.duration => SingleSetHeader(label: 'TIME'),
-                },
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: SetsListview(
-                      type: exerciseType,
-                      sets: widget.exerciseLog.sets,
-                      pbs: pbs),
-                )
-              ],
-            )
+          Column(
+            children: [
+              switch (exerciseType) {
+                ExerciseType.weights => DoubleSetHeader(
+                    firstLabel: weightUnit().toUpperCase(),
+                    secondLabel: 'REPS'),
+                ExerciseType.bodyWeight => SingleSetHeader(label: 'REPS'),
+                ExerciseType.duration => SingleSetHeader(label: 'TIME'),
+              },
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: SetsListview(
+                    type: exerciseType,
+                    sets: widget.exerciseLog.sets,
+                    pbs: pbs),
+              )
+            ],
+          )
         ],
       ),
     );
-  }
-
-  List<num> _weightsForExercise({required List<SetDto> pastSets}) {
-    return pastSets.reversed
-        .whereType<WeightAndRepsSetDto>()
-        .map((set) => set.weight)
-        .toList();
   }
 }
