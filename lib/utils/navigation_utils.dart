@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tracker_app/screens/editors/exercise_editor_screen.dart';
-import 'package:tracker_app/screens/exercise/history/exercise_home_screen.dart';
 import 'package:tracker_app/screens/logs/routine_log_summary_screen.dart';
 import 'package:tracker_app/screens/preferences/settings_screen.dart';
 import 'package:tracker_app/screens/routines/routine_plan.dart';
 import 'package:tracker_app/screens/routines/routine_templates_screen.dart';
 
-import '../dtos/db/exercise_dto.dart';
 import '../dtos/db/routine_log_dto.dart';
 import '../dtos/db/routine_plan_dto.dart';
 import '../dtos/db/routine_template_dto.dart';
@@ -16,13 +13,6 @@ import '../screens/editors/routine_log_editor_screen.dart';
 import '../screens/logs/routine_log_screen.dart';
 import '../screens/routines/routine_plans_screen.dart';
 import '../screens/routines/routine_template_screen.dart';
-
-Future<ExerciseDto?> navigateToExerciseEditor(
-    {required BuildContext context, ExerciseDto? exercise}) async {
-  final result = await context.push(ExerciseEditorScreen.routeName,
-      extra: exercise) as ExerciseDto?;
-  return result;
-}
 
 Future<void> navigateToRoutineLogEditor(
     {required BuildContext context,
@@ -61,11 +51,6 @@ void navigateToRoutineLogPreview(
     bool isEditable = true}) {
   context.push(RoutineLogScreen.routeName,
       extra: {"log": log, "showSummary": false, "isEditable": isEditable});
-}
-
-Future<void> navigateToExerciseHome(
-    {required BuildContext context, required ExerciseDto exercise}) async {
-  await context.push(ExerciseHomeScreen.routeName, extra: exercise);
 }
 
 void navigateToShareableScreen(

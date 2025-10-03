@@ -13,13 +13,11 @@ import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/extensions/duration_extension.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
 import 'package:tracker_app/utils/exercise_logs_utils.dart';
-import 'package:tracker_app/utils/routine_editors_utils.dart';
 import 'package:tracker_app/widgets/routine/editors/exercise_log_list_item.dart';
 import 'package:tracker_app/widgets/timers/stopwatch_timer.dart';
 
 import '../../colors.dart';
 import '../../controllers/exercise_and_routine_controller.dart';
-import '../../dtos/db/exercise_dto.dart';
 import '../../enums/routine_editor_type_enums.dart';
 import '../../utils/date_utils.dart';
 import '../../utils/notifications_utils.dart';
@@ -44,44 +42,6 @@ class RoutineLogEditorScreen extends StatefulWidget {
 class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
     with WidgetsBindingObserver {
   late Function _onDisposeCallback;
-
-  void _selectExercisesInLibrary() async {
-    final controller =
-        Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises =
-        controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
-
-    showExercisesInLibrary(
-        context: context,
-        exercisesToExclude: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          final onlyExercise = selectedExercises.first;
-          final pastSets =
-              Provider.of<ExerciseAndRoutineController>(context, listen: false)
-                  .whereRecentSetsForExercise(exercise: onlyExercise);
-          controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
-        });
-  }
-
-  void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
-    final controller =
-        Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises =
-        controller.exerciseLogs.map((procedure) => procedure.exercise).toList();
-
-    showExercisesInLibrary(
-        context: context,
-        exercisesToExclude: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          final pastSets = Provider.of<ExerciseAndRoutineController>(context,
-                  listen: false)
-              .whereRecentSetsForExercise(exercise: selectedExercises.first);
-          controller.replaceExerciseLog(
-              oldExerciseId: oldExerciseLog.id,
-              newExercise: selectedExercises.first,
-              pastSets: pastSets);
-        });
-  }
 
   RoutineLogDto _routineLog() {
     final exerciseLogController =
@@ -255,8 +215,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
         onRemoveLog: () {
           exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
         },
-        onReplaceLog: () =>
-            _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
         isLastItem: isLastItem,
       );
     }).toList();
@@ -283,11 +241,6 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(
-                            key: const Key('select_exercises_in_library_btn'),
-                            onPressed: _selectExercisesInLibrary,
-                            icon:
-                                const FaIcon(FontAwesomeIcons.solidSquarePlus)),
                         if (exerciseLogs.length > 1)
                           IconButton(
                               onPressed: () => _reOrderExerciseLogs(
@@ -404,8 +357,10 @@ class _RoutineLogEditorScreenState extends State<RoutineLogEditorScreen>
     final exerciseLogs = widget.mode == RoutineEditorMode.log
         ? widget.log.exerciseLogs.map((exerciseLog) {
             if (!widget.cached) {
-              final pastSets = exerciseAndRoutineController
-                  .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
+              final pastSets =
+                  exerciseAndRoutineController.whereRecentSetsForExercise(
+                      exercise: exerciseLog
+                          .exercise); // Finds sets by exercise name from workout logs
               final uncheckedSets =
                   pastSets.map((set) => set.copyWith(checked: false)).toList();
 

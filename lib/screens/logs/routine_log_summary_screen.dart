@@ -75,7 +75,9 @@ class _RoutineLogSummaryScreenState extends State<RoutineLogSummaryScreen> {
     for (final exerciseLog in updatedLog.exerciseLogs) {
       final pastExerciseLogs =
           exerciseAndRoutineController.whereExerciseLogsBefore(
-              exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+              exercise: exerciseLog.exercise,
+              date: exerciseLog
+                  .createdAt); // Finds exercise logs by name from workout logs
       final pbs = calculatePBs(
           pastExerciseLogs: pastExerciseLogs,
           exerciseType: exerciseLog.exercise.type,

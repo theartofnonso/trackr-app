@@ -80,145 +80,224 @@ class _SettingsScreenState extends State<SettingsScreen>
         : "Apple Sign in";
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeftLong, size: 28),
-          onPressed: context.pop,
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: isDarkMode ? darkBackground : Colors.white,
-        ),
-        child: SafeArea(
-          minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (Platform.isIOS)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              LabelDivider(
-                                label: "Notifications",
-                                labelColor:
-                                    isDarkMode ? darkOnSurface : Colors.black,
-                                dividerColor: isDarkMode
-                                    ? darkDivider
-                                    : Colors.grey.shade300,
-                                fontSize: 14,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                  "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
-                                  textAlign: TextAlign.start,
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: isDarkMode ? darkBackground : Colors.white,
+            ),
+            child: SafeArea(
+              minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (Platform.isIOS)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 24.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Settings",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyMedium
+                                      .displaySmall
                                       ?.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          color: isDarkMode
-                                              ? darkOnSurfaceVariant
-                                              : Colors.black)),
-                            ]),
-                      ),
-                      ListTile(
-                        onTap: _turnOnNotification,
-                        dense: true,
-                        horizontalTitleGap: 0,
-                        leading: Text(
-                            _notificationEnabled
-                                ? "Notification is on"
-                                : "Turn on notifications",
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: isDarkMode
+                                        fontWeight: FontWeight.w700,
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        height: 0.9,
+                                      ),
+                                ),
+                                Text(
+                                  "& Account",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        height: 0.9,
+                                      ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "Manage your settings here",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : Colors.black54,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  LabelDivider(
+                                    label: "Notifications",
+                                    labelColor: isDarkMode
                                         ? darkOnSurface
-                                        : Colors.black)),
-                        trailing: FaIcon(
-                          FontAwesomeIcons.solidBell,
-                          size: 14,
-                        ),
+                                        : Colors.black,
+                                    dividerColor: isDarkMode
+                                        ? darkDivider
+                                        : Colors.grey.shade300,
+                                    fontSize: 14,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                      "Allow us to remind you about long-running workouts if you’ve become distracted. We’ll also send reminders on your training days.",
+                                      textAlign: TextAlign.start,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              color: isDarkMode
+                                                  ? darkOnSurfaceVariant
+                                                  : Colors.black)),
+                                ]),
+                          ),
+                          ListTile(
+                            onTap: _turnOnNotification,
+                            dense: true,
+                            horizontalTitleGap: 0,
+                            leading: Text(
+                                _notificationEnabled
+                                    ? "Notification is on"
+                                    : "Turn on notifications",
+                                textAlign: TextAlign.start,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: isDarkMode
+                                            ? darkOnSurface
+                                            : Colors.black)),
+                            trailing: FaIcon(
+                              FontAwesomeIcons.solidBell,
+                              size: 14,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ListTile(
-                  tileColor: Colors.transparent,
-                  title: Text("Weight",
-                      style: Theme.of(context).textTheme.titleMedium),
-                  subtitle: Text("Choose kg or lbs"),
-                  trailing: CupertinoSlidingSegmentedControl<WeightUnit>(
-                    backgroundColor:
-                        isDarkMode ? darkSurfaceVariant : Colors.grey.shade400,
-                    thumbColor:
-                        isDarkMode ? darkSurfaceContainer : Colors.white,
-                    groupValue: _weightUnit,
-                    children: {
-                      WeightUnit.kg: SizedBox(
-                          width: 30,
-                          child: Text(WeightUnit.kg.display,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center)),
-                      WeightUnit.lbs: SizedBox(
-                          width: 30,
-                          child: Text(WeightUnit.lbs.display,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center)),
-                    },
-                    onValueChanged: (WeightUnit? value) {
-                      if (value != null) {
-                        setState(() {
-                          _weightUnit = value;
-                        });
-                        toggleWeightUnit(unit: value);
-                      }
-                    },
-                  ),
+                    ListTile(
+                      tileColor: Colors.transparent,
+                      title: Text("Weight",
+                          style: Theme.of(context).textTheme.titleMedium),
+                      subtitle: Text("Choose kg or lbs"),
+                      trailing: CupertinoSlidingSegmentedControl<WeightUnit>(
+                        backgroundColor: isDarkMode
+                            ? darkSurfaceVariant
+                            : Colors.grey.shade400,
+                        thumbColor:
+                            isDarkMode ? darkSurfaceContainer : Colors.white,
+                        groupValue: _weightUnit,
+                        children: {
+                          WeightUnit.kg: SizedBox(
+                              width: 30,
+                              child: Text(WeightUnit.kg.display,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  textAlign: TextAlign.center)),
+                          WeightUnit.lbs: SizedBox(
+                              width: 30,
+                              child: Text(WeightUnit.lbs.display,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  textAlign: TextAlign.center)),
+                        },
+                        onValueChanged: (WeightUnit? value) {
+                          if (value != null) {
+                            setState(() {
+                              _weightUnit = value;
+                            });
+                            toggleWeightUnit(unit: value);
+                          }
+                        },
+                      ),
+                    ),
+                    ListTile(
+                        onTap: _sendFeedback,
+                        leading: FaIcon(FontAwesomeIcons.solidPaperPlane,
+                            color: isDarkMode
+                                ? darkOnSurfaceVariant
+                                : Colors.black38),
+                        title: Text("Feedback",
+                            style: Theme.of(context).textTheme.titleMedium),
+                        subtitle: Text("help us improve")),
+                    ListTile(
+                        onTap: _logout,
+                        leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
+                            color: isDarkMode
+                                ? darkOnSurfaceVariant
+                                : Colors.black38),
+                        title: Text("Logout",
+                            style: Theme.of(context).textTheme.titleMedium),
+                        subtitle: Text(userEmail)),
+                    ListTile(
+                        onTap: _delete,
+                        leading: FaIcon(FontAwesomeIcons.xmark,
+                            color: isDarkMode
+                                ? darkOnSurfaceVariant
+                                : Colors.black38),
+                        title: Text("Delete Account",
+                            style: Theme.of(context).textTheme.titleMedium),
+                        subtitle: Text(userEmail)),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Text(_appVersion,
+                          style: Theme.of(context).textTheme.bodySmall),
+                    ),
+                  ],
                 ),
-                ListTile(
-                    onTap: _sendFeedback,
-                    leading: FaIcon(FontAwesomeIcons.solidPaperPlane,
-                        color:
-                            isDarkMode ? darkOnSurfaceVariant : Colors.black38),
-                    title: Text("Feedback",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text("help us improve")),
-                ListTile(
-                    onTap: _logout,
-                    leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
-                        color:
-                            isDarkMode ? darkOnSurfaceVariant : Colors.black38),
-                    title: Text("Logout",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text(userEmail)),
-                ListTile(
-                    onTap: _delete,
-                    leading: FaIcon(FontAwesomeIcons.xmark,
-                        color:
-                            isDarkMode ? darkOnSurfaceVariant : Colors.black38),
-                    title: Text("Delete Account",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text(userEmail)),
-                const SizedBox(height: 20),
-                Center(
-                  child: Text(_appVersion,
-                      style: Theme.of(context).textTheme.bodySmall),
+              ),
+            ),
+            // Overlay close button
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top,
+            right: 16,
+            child: Container(
+              decoration: BoxDecoration(
+                color: isDarkMode
+                    ? darkSurface.withValues(alpha: 0.9)
+                    : Colors.white.withValues(alpha: 0.9),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: FaIcon(
+                  FontAwesomeIcons.squareXmark,
+                  size: 20,
+                  color: isDarkMode ? Colors.white : Colors.black87,
                 ),
-              ],
+                onPressed: () => Navigator.of(context).pop(),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -240,9 +319,9 @@ class _SettingsScreenState extends State<SettingsScreen>
   void _sendFeedback() async {
     final Uri emailUri = Uri(
       scheme: 'mailto',
-      path: 'hello@trkr.fit', // Replace with the recipient's email
+      path: 'nonso@ware.health', // Replace with the recipient's email
       queryParameters: {
-        'subject': 'Feedback for TRNR', // Set the email subject
+        'subject': 'Feedback for Trainer', // Set the email subject
       },
     );
 

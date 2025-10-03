@@ -122,7 +122,7 @@ class InteractiveMessageWidget extends StatelessWidget {
                     GestureDetector(
                       onTap: onAccept,
                       child: Text(
-                        'Accept & Save',
+                        'Save',
                         style: GoogleFonts.ubuntu(
                           color: isDarkMode ? Colors.white : Colors.black,
                           fontSize: 14,

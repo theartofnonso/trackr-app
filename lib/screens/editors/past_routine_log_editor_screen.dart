@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
 import 'package:tracker_app/controllers/exercise_log_controller.dart';
-import 'package:tracker_app/dtos/db/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/routine_editor_type_enums.dart';
 import 'package:tracker_app/utils/dialog_utils.dart';
@@ -14,11 +13,10 @@ import '../../colors.dart';
 import '../../dtos/db/routine_log_dto.dart';
 import '../../dtos/set_dtos/set_dto.dart';
 import '../../dtos/set_dtos/weight_and_reps_dto.dart';
-import '../../utils/routine_editors_utils.dart';
 import '../../utils/routine_utils.dart';
 import '../../widgets/buttons/opacity_button_widget_two.dart';
 import '../../widgets/empty_states/no_list_empty_state.dart';
-import '../../widgets/routine/editors/exercise_log_grid_item.dart';
+import '../../widgets/routine/editors/exercise_log_list_item.dart';
 import '../../widgets/weight_plate_calculator.dart';
 
 class PastRoutineLogEditorScreen extends StatefulWidget {
@@ -43,44 +41,6 @@ class _PastRoutineLogEditorScreenState
   final _minimisedExerciseLogCards = <String>[];
 
   SetDto? _selectedSetDto;
-
-  void _selectExercisesInLibrary() async {
-    final controller =
-        Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises =
-        controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
-
-    showExercisesInLibrary(
-        context: context,
-        exercisesToExclude: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          final onlyExercise = selectedExercises.first;
-          final pastSets =
-              Provider.of<ExerciseAndRoutineController>(context, listen: false)
-                  .whereRecentSetsForExercise(exercise: onlyExercise);
-          controller.addExerciseLog(exercise: onlyExercise, pastSets: pastSets);
-        });
-  }
-
-  void _showReplaceExercisePicker({required ExerciseLogDto oldExerciseLog}) {
-    final controller =
-        Provider.of<ExerciseLogController>(context, listen: false);
-    final excludeExercises =
-        controller.exerciseLogs.map((exercise) => exercise.exercise).toList();
-
-    showExercisesInLibrary(
-        context: context,
-        exercisesToExclude: excludeExercises,
-        onSelected: (List<ExerciseDto> selectedExercises) {
-          final pastSets = Provider.of<ExerciseAndRoutineController>(context,
-                  listen: false)
-              .whereRecentSetsForExercise(exercise: selectedExercises.first);
-          controller.replaceExerciseLog(
-              oldExerciseId: oldExerciseLog.id,
-              newExercise: selectedExercises.first,
-              pastSets: pastSets);
-        });
-  }
 
   bool _validateRoutineTemplateInputs() {
     final exerciseProviders =
@@ -203,17 +163,14 @@ class _PastRoutineLogEditorScreenState
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
 
     final children = exerciseLogs.map((exerciseLog) {
-      return ExerciseLogGridItemWidget(
+      return ExerciseLogListItemWidget(
         editorType: RoutineEditorMode.edit,
-        isPastRoutine: true,
         exerciseLogDto: exerciseLog,
         superSet: whereOtherExerciseInSuperSet(
             firstExercise: exerciseLog, exercises: exerciseLogs),
         onRemoveLog: () {
           exerciseLogController.removeExerciseLog(logId: exerciseLog.id);
         },
-        onReplaceLog: () =>
-            _showReplaceExercisePicker(oldExerciseLog: exerciseLog),
       );
     }).toList();
 
@@ -225,9 +182,6 @@ class _PastRoutineLogEditorScreenState
                 icon: const FaIcon(FontAwesomeIcons.arrowLeftLong),
                 onPressed: _checkForUnsavedChanges),
             actions: [
-              IconButton(
-                  onPressed: _selectExercisesInLibrary,
-                  icon: const FaIcon(FontAwesomeIcons.solidSquarePlus)),
               if (exerciseLogs.length > 1)
                 IconButton(
                     onPressed: () =>
@@ -370,9 +324,11 @@ class _PastRoutineLogEditorScreenState
     final exercises = widget.log.exerciseLogs;
     if (exercises.isNotEmpty) {
       final updatedExerciseLogs = exercises.map((exerciseLog) {
-        final previousSets =
-            Provider.of<ExerciseAndRoutineController>(context, listen: false)
-                .whereRecentSetsForExercise(exercise: exerciseLog.exercise);
+        final previousSets = Provider.of<ExerciseAndRoutineController>(context,
+                listen: false)
+            .whereRecentSetsForExercise(
+                exercise: exerciseLog
+                    .exercise); // Finds sets by exercise name from workout logs
         if (previousSets.isNotEmpty) {
           final unCheckedSets = previousSets
               .take(exerciseLog.sets.length)

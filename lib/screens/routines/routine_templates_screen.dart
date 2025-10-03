@@ -21,6 +21,16 @@ class RoutineTemplatesScreen extends StatefulWidget {
 
 class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Ensure fresh data is loaded from SQLite
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ExerciseAndRoutineController>(context, listen: false)
+          .refreshData();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
@@ -33,24 +43,70 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
           .toList();
 
       return Scaffold(
-          body: Stack(
-        children: [
-          Container(
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: isDarkMode ? darkBackground : Colors.white,
-            ),
-            child: SafeArea(
-              minimum: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top,
-                right: 10,
-                left: 10,
+        body: Stack(
+          children: [
+            Container(
+              height: double.infinity,
+              decoration: BoxDecoration(
+                color: isDarkMode ? darkBackground : Colors.white,
               ),
-              bottom: false,
-              child: Column(
+              child: SafeArea(
+                minimum: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
+                  right: 10,
+                  left: 10,
+                ),
+                bottom: false,
+                child: Column(
                   spacing: 16,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Header section
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Workout",
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color:
+                                      isDarkMode ? Colors.white : Colors.black,
+                                  height: 0.9,
+                                ),
+                          ),
+                          Text(
+                            "Templates",
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color:
+                                      isDarkMode ? Colors.white : Colors.black,
+                                  height: 0.9,
+                                ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "See your workout templates here",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(
+                                  color: isDarkMode
+                                      ? Colors.white70
+                                      : Colors.black54,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
                     children.isNotEmpty
                         ? Expanded(
                             child: GridView.count(
@@ -69,39 +125,41 @@ class _RoutineTemplatesScreenState extends State<RoutineTemplatesScreen> {
                                       "It might feel quiet now, but templates created will appear here."),
                             ),
                           ),
-                  ]),
-            ),
-          ),
-          // Overlay close button
-          Positioned(
-            top: MediaQuery.of(context).padding.top,
-            right: 16,
-            child: Container(
-              decoration: BoxDecoration(
-                color: isDarkMode
-                    ? darkSurface.withValues(alpha: 0.9)
-                    : Colors.white.withValues(alpha: 0.9),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.squareXmark,
-                  size: 20,
-                  color: isDarkMode ? Colors.white : Colors.black87,
+                  ],
                 ),
-                onPressed: () => Navigator.of(context).pop(),
               ),
             ),
-          ),
-        ],
-      ));
+            // Overlay close button
+            Positioned(
+              top: MediaQuery.of(context).padding.top,
+              right: 16,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDarkMode
+                      ? darkSurface.withValues(alpha: 0.9)
+                      : Colors.white.withValues(alpha: 0.9),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  icon: FaIcon(
+                    FontAwesomeIcons.squareXmark,
+                    size: 20,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
     });
   }
 }

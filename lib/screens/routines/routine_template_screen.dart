@@ -61,8 +61,6 @@ class RoutineTemplateScreen extends StatefulWidget {
 }
 
 class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
-  RoutineTemplateDto? _template;
-
   RecoveryResult? _selectedMuscleAndRecovery;
 
   _OriginalNewValues _originalNewValues = _OriginalNewValues.newValues;
@@ -192,7 +190,8 @@ class _RoutineTemplateScreenState extends State<RoutineTemplateScreen> {
         ? template.exerciseTemplates.map((exerciseTemplate) {
             final pastSets =
                 exerciseAndRoutineController.whereRecentSetsForExercise(
-                    exercise: exerciseTemplate.exercise);
+                    exercise: exerciseTemplate
+                        .exercise); // Finds sets by exercise name from workout logs
             final uncheckedSets =
                 pastSets.map((set) => set.copyWith(checked: false)).toList();
             return exerciseTemplate.copyWith(sets: uncheckedSets);

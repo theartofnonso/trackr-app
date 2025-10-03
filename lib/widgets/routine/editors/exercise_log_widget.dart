@@ -155,7 +155,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _addSet() {
     final pastSets =
         Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .whereRecentSetsForExercise(exercise: _exerciseLog.exercise);
+            .whereRecentSetsForExercise(
+                exercise: _exerciseLog
+                    .exercise); // Finds sets by exercise name from workout logs
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: _exerciseLog.id, pastSets: pastSets);
     _loadControllers();
@@ -171,7 +173,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     // Add a new set with the timer duration
     final pastSets =
         Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .whereRecentSetsForExercise(exercise: _exerciseLog.exercise);
+            .whereRecentSetsForExercise(
+                exercise: _exerciseLog
+                    .exercise); // Finds sets by exercise name from workout logs
 
     Provider.of<ExerciseLogController>(context, listen: false)
         .addSet(exerciseLogId: _exerciseLog.id, pastSets: pastSets);
@@ -200,7 +204,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       {required int index, required double weight, required SetDto setDto}) {
     final previousSets =
         Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
+            .wherePrevSetsForExercise(
+                exercise: _exerciseLog
+                    .exercise); // Finds sets by exercise name from workout logs
 
     final previousWeights =
         previousSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
@@ -224,7 +230,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
       {required int index, required int reps, required SetDto setDto}) {
     final previousSets =
         Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
+            .wherePrevSetsForExercise(
+                exercise: _exerciseLog
+                    .exercise); // Finds sets by exercise name from workout logs
 
     final previousReps = previousSets
         .map((set) => switch (_exerciseLog.exercise.type) {
@@ -320,7 +328,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _loadWeightAndRepsControllers({required List<SetDto> sets}) {
     final previousSets =
         Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
+            .wherePrevSetsForExercise(
+                exercise: _exerciseLog
+                    .exercise); // Finds sets by exercise name from workout logs
 
     final previousWeights =
         previousSets.map((set) => (set as WeightAndRepsSetDto).weight).toList();
@@ -355,7 +365,9 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
   void _loadRepsControllers({required List<SetDto> sets}) {
     final previousSets =
         Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .wherePrevSetsForExercise(exercise: _exerciseLog.exercise);
+            .wherePrevSetsForExercise(
+                exercise: _exerciseLog
+                    .exercise); // Finds sets by exercise name from workout logs
 
     final previousReps = previousSets
         .map((set) => switch (_exerciseLog.exercise.type) {
@@ -545,7 +557,8 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
     final currentSets = exerciseLog.sets;
 
     final previousSets = exerciseAndRoutineController.wherePrevSetsForExercise(
-        exercise: exerciseLog.exercise);
+        exercise: exerciseLog
+            .exercise); // Finds sets by exercise name from workout logs
 
     final currentWorkingSets = currentSets
         .workingSets(exerciseType)

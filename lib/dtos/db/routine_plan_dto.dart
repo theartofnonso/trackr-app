@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'routine_template_dto.dart';
 
 class RoutinePlanDto {
@@ -26,6 +27,38 @@ class RoutinePlanDto {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
+  }
+
+  /// Converts to database row format (matches Supabase schema)
+  Map<String, dynamic> toDatabaseRow() {
+    return {
+      'id': id,
+      'owner': null, // No owner in offline mode
+      'data': toJsonString(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Converts from database row format (matches Supabase schema)
+  factory RoutinePlanDto.fromDatabaseRow(Map<String, dynamic> row) {
+    final data = jsonDecode(row['data'] as String) as Map<String, dynamic>;
+
+    return RoutinePlanDto(
+      id: row['id'] as String,
+      name: data['name'] as String? ?? '',
+      notes: data['notes'] as String? ?? '',
+      templates: (data['templates'] as List<dynamic>? ?? [])
+          .map((templateJson) => RoutineTemplateDto.fromJson(templateJson))
+          .toList(),
+      createdAt: DateTime.parse(row['created_at'] as String),
+      updatedAt: DateTime.parse(row['updated_at'] as String),
+    );
+  }
+
+  /// Converts to JSON string for database storage
+  String toJsonString() {
+    return jsonEncode(toJson());
   }
 
   factory RoutinePlanDto.fromJson(Map<String, dynamic> json) {

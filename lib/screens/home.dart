@@ -54,9 +54,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   Future<void> _loadAppData() async {
     // Simple one-time loads for UI-only mode
-    final controller =
-        Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    await controller.loadLocalExercises();
+    // Exercises are now embedded in workouts, no separate loading needed
     setState(() {});
   }
 

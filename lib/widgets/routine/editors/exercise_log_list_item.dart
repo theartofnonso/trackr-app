@@ -5,6 +5,7 @@ import '../../../colors.dart';
 import '../../../dtos/exercise_log_dto.dart';
 import '../../../enums/routine_editor_type_enums.dart';
 import '../../../utils/navigation_utils.dart';
+import '../pickers/workout_template_picker.dart';
 
 class ExerciseLogListItemWidget extends StatelessWidget {
   final ExerciseLogDto exerciseLogDto;
@@ -70,16 +71,31 @@ class ExerciseLogListItemWidget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            exerciseLogDto.exercise.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color:
-                                      isDarkMode ? darkOnSurface : Colors.black,
-                                ),
+                          GestureDetector(
+                            onTap: () {
+                              showWorkoutTemplatePicker(
+                                context: context,
+                                exerciseName: exerciseLogDto.exercise.name,
+                                title:
+                                    "Workouts with ${exerciseLogDto.exercise.name}",
+                              );
+                            },
+                            child: Text(
+                              exerciseLogDto.exercise.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: isDarkMode
+                                        ? darkOnSurface
+                                        : Colors.black,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: isDarkMode
+                                        ? darkOnSurface
+                                        : Colors.black,
+                                  ),
+                            ),
                           ),
                           const SizedBox(height: 2),
                           Text(
@@ -165,11 +181,6 @@ class ExerciseLogListItemWidget extends StatelessWidget {
     }
   }
 
-  void _navigateToExerciseEditor(BuildContext context) {
-    final exercise = exerciseLogDto.exercise;
-    navigateToExerciseEditor(context: context, exercise: exercise);
-  }
-
   void _navigateToExerciseLogEditor(BuildContext context) {
     navigateWithSlideTransition(
         context: context,
@@ -204,16 +215,6 @@ class ExerciseLogListItemWidget extends StatelessWidget {
                 color: isDarkMode ? darkBorder : Colors.grey.shade400,
                 borderRadius: BorderRadius.circular(2),
               ),
-            ),
-
-            // Menu items
-            ListTile(
-              leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 16),
-              title: const Text("Edit Exercise"),
-              onTap: () {
-                Navigator.pop(context);
-                _navigateToExerciseEditor(context);
-              },
             ),
             ListTile(
               leading:

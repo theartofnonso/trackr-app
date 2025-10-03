@@ -6,11 +6,11 @@ import 'package:tracker_app/enums/exercise_type_enums.dart';
 import 'package:tracker_app/widgets/routine/preview/sets_listview.dart';
 
 import '../../../controllers/exercise_and_routine_controller.dart';
-import '../../../screens/exercise/history/exercise_home_screen.dart';
 import '../../../utils/exercise_logs_utils.dart';
 import '../../../utils/general_utils.dart';
 import '../preview/set_headers/double_set_header.dart';
 import '../preview/set_headers/single_set_header.dart';
+import '../pickers/workout_template_picker.dart';
 
 enum StrengthStatus {
   improving(
@@ -70,9 +70,12 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
         Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final pastExerciseLogs = routineLogController.whereExerciseLogsBefore(
-        exercise: exercise, date: widget.exerciseLog.createdAt);
+        exercise: exercise,
+        date: widget.exerciseLog
+            .createdAt); // Finds exercise logs by name from workout logs
 
-    routineLogController.wherePrevSetsForExercise(exercise: exercise);
+    routineLogController.wherePrevSetsForExercise(
+        exercise: exercise); // Finds sets by exercise name from workout logs
 
     final pbs = calculatePBs(
         pastExerciseLogs: pastExerciseLogs,
@@ -92,9 +95,11 @@ class _ExerciseLogWidgetState extends State<ExerciseLogWidget> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                ExerciseHomeScreen(exercise: widget.exerciseLog.exercise)));
+        showWorkoutTemplatePicker(
+          context: context,
+          exerciseName: exercise.name,
+          title: "Workouts with ${exercise.name}",
+        );
       },
       child: Column(
         spacing: 12,

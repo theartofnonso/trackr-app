@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/enums/exercise_type_enums.dart';
@@ -59,6 +60,43 @@ class RoutineLogDto {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
+  }
+
+  /// Converts to database row format (matches Supabase schema)
+  Map<String, dynamic> toDatabaseRow() {
+    return {
+      'id': id,
+      'template_id': templateId,
+      'data': toJsonString(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Converts from database row format (matches Supabase schema)
+  factory RoutineLogDto.fromDatabaseRow(Map<String, dynamic> row) {
+    final data = jsonDecode(row['data'] as String) as Map<String, dynamic>;
+
+    return RoutineLogDto(
+      id: row['id'] as String,
+      templateId: row['template_id'] as String,
+      name: data['name'] as String? ?? '',
+      notes: data['notes'] as String? ?? '',
+      summary: data['summary'] as String?,
+      startTime: DateTime.parse(data['startTime'] as String),
+      endTime: DateTime.parse(data['endTime'] as String),
+      exerciseLogs: (data['exercises'] as List<dynamic>? ?? [])
+          .map((exerciseJson) => ExerciseLogDto.fromJson(json: exerciseJson))
+          .toList(),
+      readinessScore: data['readiness'] as int? ?? 0,
+      createdAt: DateTime.parse(row['created_at'] as String),
+      updatedAt: DateTime.parse(row['updated_at'] as String),
+    );
+  }
+
+  /// Converts to JSON string for database storage
+  String toJsonString() {
+    return jsonEncode(toJson());
   }
 
   factory RoutineLogDto.fromJson(Map<String, dynamic> json) {

@@ -4,7 +4,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/enums/muscle_group_enums.dart';
-import 'package:tracker_app/repositories/mock/mock_routine_log_repository.dart';
+import 'package:tracker_app/repositories/routine_log_repository.dart';
+import 'package:tracker_app/repositories/routine_plan_repository.dart';
+import 'package:tracker_app/repositories/routine_template_repository.dart';
 
 import '../dtos/db/exercise_dto.dart';
 import '../dtos/db/routine_log_dto.dart';
@@ -12,9 +14,6 @@ import '../dtos/db/routine_plan_dto.dart';
 import '../dtos/db/routine_template_dto.dart';
 import '../dtos/set_dtos/set_dto.dart';
 import '../logger.dart';
-import '../repositories/mock/mock_exercise_repository.dart';
-import '../repositories/mock/mock_routine_plan_repository.dart';
-import '../repositories/mock/mock_routine_template_repository.dart';
 
 class ExerciseAndRoutineController extends ChangeNotifier {
   bool isLoading = false;
@@ -22,92 +21,171 @@ class ExerciseAndRoutineController extends ChangeNotifier {
 
   final logger = getLogger(className: "ExerciseAndRoutineController");
 
-  late MockExerciseRepository _exerciseRepository;
-  late MockRoutineTemplateRepository _templateRepository;
-  late MockRoutinePlanRepository _planRepository;
-  late MockRoutineLogRepository _logRepository;
+  late RoutineTemplateRepository _templateRepository;
+  late RoutinePlanRepository _planRepository;
+  late RoutineLogRepository _logRepository;
+
+  // Data storage
+  List<RoutineTemplateDto> _templates = [];
+  List<RoutinePlanDto> _plans = [];
+  List<RoutineLogDto> _logs = [];
 
   ExerciseAndRoutineController(
-      {required MockExerciseRepository exerciseRepository,
-      required MockRoutineTemplateRepository templateRepository,
-      required MockRoutinePlanRepository planRepository,
-      required MockRoutineLogRepository logRepository}) {
-    _exerciseRepository = exerciseRepository;
+      {required RoutineTemplateRepository templateRepository,
+      required RoutinePlanRepository planRepository,
+      required RoutineLogRepository logRepository}) {
     _templateRepository = templateRepository;
     _planRepository = planRepository;
     _logRepository = logRepository;
-  }
 
-  UnmodifiableListView<ExerciseDto> get exercises =>
-      _exerciseRepository.exercises;
+    // Load initial data
+    _loadInitialData();
+  }
 
   UnmodifiableListView<RoutineTemplateDto> get templates =>
-      _templateRepository.templates;
+      UnmodifiableListView(_templates);
 
-  UnmodifiableListView<RoutinePlanDto> get plans => _planRepository.plans;
+  UnmodifiableListView<RoutinePlanDto> get plans =>
+      UnmodifiableListView(_plans);
 
-  UnmodifiableListView<RoutineLogDto> get logs => _logRepository.logs;
+  UnmodifiableListView<RoutineLogDto> get logs => UnmodifiableListView(_logs);
 
+  // Simplified getters for now - these would need to be implemented based on your needs
   UnmodifiableMapView<String, List<ExerciseLogDto>>
-      get exerciseLogsByExerciseId => _logRepository.exerciseLogsByExerciseId;
+      get exerciseLogsByExerciseId => UnmodifiableMapView({});
 
   UnmodifiableMapView<MuscleGroup, List<ExerciseLogDto>>
-      get exerciseLogsByMuscleGroup => _logRepository.exerciseLogsByMuscleGroup;
+      get exerciseLogsByMuscleGroup => UnmodifiableMapView({});
 
-  /// Exercises
-
-  Future<void> loadLocalExercises() async {
-    await _exerciseRepository.loadLocalExercises();
+  Future<void> _loadInitialData() async {
+    await Future.wait([
+      _loadTemplates(),
+      _loadPlans(),
+      _loadLogs(),
+    ]);
   }
 
-  // Streams removed in UI-only mode
+  /// Public method to refresh all data from SQLite
+  Future<void> refreshData() async {
+    await _loadInitialData();
+  }
 
-  Future<void> saveExercise({required ExerciseDto exerciseDto}) async {
-    isLoading = true;
+  Future<void> _loadTemplates() async {
     try {
-      // In-memory only for UI mode
-      // No-op: Exercises are local assets plus in-memory user exercises
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-      logger.e("Error saving exercise", error: e);
-    } finally {
-      isLoading = false;
-      errorMessage = "";
+      _templates = await _templateRepository.getTemplates();
       notifyListeners();
+    } catch (e) {
+      logger.e("Error loading templates: $e");
     }
   }
 
-  Future<void> updateExercise({required ExerciseDto exercise}) async {
-    isLoading = true;
+  Future<void> _loadPlans() async {
     try {
-      // No-op in demo mode
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-      logger.e("Error updating exercise", error: e);
-    } finally {
-      isLoading = false;
-      errorMessage = "";
+      _plans = await _planRepository.getPlans();
       notifyListeners();
+    } catch (e) {
+      logger.e("Error loading plans: $e");
     }
   }
 
-  Future<void> removeExercise({required ExerciseDto exercise}) async {
-    isLoading = true;
+  Future<void> _loadLogs() async {
     try {
-      // No-op in demo mode
-    } catch (e) {
-      errorMessage = "Oops! Something went wrong. Please try again later.";
-      logger.e("Error removing exercise", error: e);
-    } finally {
-      isLoading = false;
-      errorMessage = "";
+      _logs = await _logRepository.getLogs();
       notifyListeners();
+    } catch (e) {
+      logger.e("Error loading logs: $e");
     }
   }
 
-  /// Plans
+  /// Find exercise logs by name from workout logs
+  List<ExerciseLogDto> whereExerciseLogsBefore(
+      {required ExerciseDto exercise, required DateTime date}) {
+    final List<ExerciseLogDto> matchingLogs = [];
 
-  // Streams removed
+    for (final log in _logs) {
+      for (final exerciseLog in log.exerciseLogs) {
+        if (exerciseLog.exercise.name.toLowerCase() ==
+                exercise.name.toLowerCase() &&
+            exerciseLog.createdAt.isBefore(date)) {
+          matchingLogs.add(exerciseLog);
+        }
+      }
+    }
+
+    return matchingLogs;
+  }
+
+  /// Find recent sets for an exercise by name from workout logs
+  List<SetDto> whereRecentSetsForExercise({required ExerciseDto exercise}) {
+    final List<MapEntry<SetDto, DateTime>> recentSetsWithDates = [];
+
+    for (final log in _logs) {
+      for (final exerciseLog in log.exerciseLogs) {
+        if (exerciseLog.exercise.name.toLowerCase() ==
+            exercise.name.toLowerCase()) {
+          for (final set in exerciseLog.sets) {
+            recentSetsWithDates.add(MapEntry(set, exerciseLog.createdAt));
+          }
+        }
+      }
+    }
+
+    // Sort by exercise log creation date (most recent first) and take the most recent sets
+    recentSetsWithDates.sort((a, b) => b.value.compareTo(a.value));
+    return recentSetsWithDates.take(10).map((entry) => entry.key).toList();
+  }
+
+  /// Find previous sets for an exercise by name from workout logs
+  List<SetDto> wherePrevSetsForExercise(
+      {required ExerciseDto exercise, int? take}) {
+    final List<MapEntry<SetDto, DateTime>> previousSetsWithDates = [];
+
+    for (final log in _logs) {
+      for (final exerciseLog in log.exerciseLogs) {
+        if (exerciseLog.exercise.name.toLowerCase() ==
+            exercise.name.toLowerCase()) {
+          for (final set in exerciseLog.sets) {
+            previousSetsWithDates.add(MapEntry(set, exerciseLog.createdAt));
+          }
+        }
+      }
+    }
+
+    // Sort by exercise log creation date (most recent first)
+    previousSetsWithDates.sort((a, b) => b.value.compareTo(a.value));
+
+    // Return the specified number of sets, or all if take is null
+    final sets = previousSetsWithDates.map((entry) => entry.key).toList();
+    return take != null ? sets.take(take).toList() : sets;
+  }
+
+  /// Find workout templates that contain a specific exercise by name
+  /// If exerciseName is empty, returns all templates
+  List<RoutineTemplateDto> findTemplatesContainingExercise(
+      {required String exerciseName}) {
+    if (exerciseName.isEmpty) {
+      // Return all templates sorted by creation date (most recent first)
+      final allTemplates = List<RoutineTemplateDto>.from(_templates);
+      allTemplates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return allTemplates;
+    }
+
+    final List<RoutineTemplateDto> matchingTemplates = [];
+
+    for (final template in _templates) {
+      for (final exerciseTemplate in template.exerciseTemplates) {
+        if (exerciseTemplate.exercise.name.toLowerCase() ==
+            exerciseName.toLowerCase()) {
+          matchingTemplates.add(template);
+          break; // Found this template, no need to check other exercises
+        }
+      }
+    }
+
+    // Sort by creation date (most recent first)
+    matchingTemplates.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return matchingTemplates;
+  }
 
   Future<RoutinePlanDto?> savePlan({required RoutinePlanDto planDto}) async {
     RoutinePlanDto? savedPlan;
@@ -210,8 +288,7 @@ class ExerciseAndRoutineController extends ChangeNotifier {
       {required RoutineLogDto logDto, DateTime? datetime}) async {
     RoutineLogDto? savedLog;
     try {
-      savedLog =
-          await _logRepository.saveLog(logDto: logDto, datetime: datetime);
+      savedLog = await _logRepository.saveLog(logDto: logDto);
     } catch (e) {
       errorMessage = "Oops! Something went wrong. Please try again later.";
       logger.e("Error saving log exercise", error: e);
@@ -243,96 +320,113 @@ class ExerciseAndRoutineController extends ChangeNotifier {
     }
   }
 
-  /// Logs Helper methods
+  /// Logs Helper methods - Simplified versions using in-memory data
 
   RoutineLogDto? logWhereId({required String id}) {
-    return _logRepository.logWhereId(id: id);
+    try {
+      return _logs.firstWhere((log) => log.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   RoutineLogDto? whereLogIsSameDay({required DateTime dateTime}) {
-    return _logRepository.whereLogIsSameDay(dateTime: dateTime);
+    try {
+      return _logs.firstWhere((log) =>
+          log.startTime.year == dateTime.year &&
+          log.startTime.month == dateTime.month &&
+          log.startTime.day == dateTime.day);
+    } catch (e) {
+      return null;
+    }
   }
 
   RoutineLogDto? whereLogIsSameMonth({required DateTime dateTime}) {
-    return _logRepository.whereLogIsSameMonth(dateTime: dateTime);
+    try {
+      return _logs.firstWhere((log) =>
+          log.startTime.year == dateTime.year &&
+          log.startTime.month == dateTime.month);
+    } catch (e) {
+      return null;
+    }
   }
 
   RoutineLogDto? whereLogIsSameYear({required DateTime dateTime}) {
-    return _logRepository.whereLogIsSameYear(dateTime: dateTime);
+    try {
+      return _logs.firstWhere((log) => log.startTime.year == dateTime.year);
+    } catch (e) {
+      return null;
+    }
   }
 
   List<RoutineLogDto> whereLogsIsSameDay({required DateTime dateTime}) {
-    return _logRepository.whereLogsIsSameDay(dateTime: dateTime);
+    return _logs
+        .where((log) =>
+            log.startTime.year == dateTime.year &&
+            log.startTime.month == dateTime.month &&
+            log.startTime.day == dateTime.day)
+        .toList();
   }
 
   List<RoutineLogDto> whereLogsIsSameMonth({required DateTime dateTime}) {
-    return _logRepository.whereLogsIsSameMonth(dateTime: dateTime);
+    return _logs
+        .where((log) =>
+            log.startTime.year == dateTime.year &&
+            log.startTime.month == dateTime.month)
+        .toList();
   }
 
   List<RoutineLogDto> whereLogsIsSameYear({required DateTime dateTime}) {
-    return _logRepository.whereLogsIsSameYear(dateTime: dateTime);
+    return _logs.where((log) => log.startTime.year == dateTime.year).toList();
   }
 
   List<RoutineLogDto> whereLogsIsWithinRange({required DateTimeRange range}) {
-    return _logRepository.whereLogsIsWithinRange(range: range);
+    return _logs
+        .where((log) =>
+            log.startTime.isAfter(range.start) &&
+            log.startTime.isBefore(range.end))
+        .toList();
   }
 
   List<RoutineLogDto> whereLogsWithTemplateId({required String templateId}) {
-    return _logRepository.whereLogsWithTemplateId(templateId: templateId);
+    return _logs.where((log) => log.templateId == templateId).toList();
   }
 
   List<RoutineLogDto> whereLogsWithTemplateName(
       {required String templateName}) {
-    return _logRepository.whereLogsWithTemplateName(templateName: templateName);
+    return _logs.where((log) => log.name == templateName).toList();
   }
 
   List<RoutineLogDto> whereRoutineLogsBefore(
       {required String templateId, required DateTime datetime}) {
-    return _logRepository.whereRoutineLogsBefore(
-        templateId: templateId, date: datetime);
-  }
-
-  List<ExerciseLogDto> whereExerciseLogsBefore(
-      {required ExerciseDto exercise, required DateTime date}) {
-    return _logRepository.whereExerciseLogsBefore(
-        exercise: exercise, date: date);
-  }
-
-  List<SetDto> whereRecentSetsForExercise({required ExerciseDto exercise}) {
-    return _logRepository.whereRecentSetsForExercise(exercise: exercise);
-  }
-
-  List<SetDto> wherePrevSetsForExercise(
-      {required ExerciseDto exercise, int? take}) {
-    return _logRepository.wherePrevSetsForExercise(
-        exercise: exercise, take: take);
-  }
-
-  List<SetDto> wherePrevSetsGroupForIndex(
-      {required ExerciseDto exercise, required int index, int? take}) {
-    return _logRepository.wherePrevSetsGroupForIndex(
-        exercise: exercise, index: index, take: take);
-  }
-
-  /// Exercise Helpers methods
-  ExerciseDto? whereExercise({required String exerciseId}) {
-    return _exerciseRepository.whereExercise(exerciseId: exerciseId);
+    return _logs
+        .where((log) =>
+            log.templateId == templateId && log.startTime.isBefore(datetime))
+        .toList();
   }
 
   /// Template Helpers methods
   RoutineTemplateDto? templateWhere({required String id}) {
-    return _templateRepository.templateWhere(id: id);
+    try {
+      return _templates.firstWhere((template) => template.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Plan Helpers methods
   RoutinePlanDto? planWhere({required String id}) {
-    return _planRepository.planWhere(id: id);
+    try {
+      return _plans.firstWhere((plan) => plan.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   void clear() {
-    _exerciseRepository.clear();
-    _templateRepository.clear();
-    _logRepository.clear();
+    _templates.clear();
+    _plans.clear();
+    _logs.clear();
     notifyListeners();
   }
 }

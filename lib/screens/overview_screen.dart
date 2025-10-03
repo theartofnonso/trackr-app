@@ -3,28 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/utils/dialog_utils.dart';
-import 'package:tracker_app/screens/editors/past_routine_log_editor_screen.dart';
 
 import '../controllers/exercise_and_routine_controller.dart';
-import '../dtos/db/routine_log_dto.dart';
-import '../dtos/db/routine_template_dto.dart';
-import '../dtos/viewmodels/routine_log_arguments.dart';
-import '../enums/routine_editor_type_enums.dart';
 import '../utils/date_utils.dart';
-import '../utils/general_utils.dart';
 import '../utils/navigation_utils.dart';
-import '../widgets/ai_widgets/trkr_coach_text_widget.dart';
 import '../widgets/backgrounds/trkr_loading_screen.dart';
 import '../widgets/calendar/calendar.dart';
 import '../widgets/calendar/calendar_logs.dart';
 import '../widgets/chat/coach_chat_widget.dart';
-import '../widgets/dividers/label_divider.dart';
-import 'AI/coach_chat_screen.dart';
 
 enum TrainingAndVolume {
   training,
@@ -94,7 +83,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
             crossAxisCellCount: 1,
             mainAxisCellCount: 1,
             child: GestureDetector(
-              onTap: () => _showNewBottomSheet(),
+              onTap: () => navigateToSettings(context: context),
               child: _SettingsTile(),
             ),
           ),
@@ -110,93 +99,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
       setState(() {
         _loading = false;
       });
-    }
-  }
-
-  void _showNewBottomSheet() {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    displayBottomSheet(
-        context: context,
-        child: Column(children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.play, size: 18),
-            horizontalTitleGap: 6,
-            title: Text("Log new session",
-                style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              logEmptyRoutine(context: context);
-            },
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const FaIcon(FontAwesomeIcons.clockRotateLeft, size: 18),
-            horizontalTitleGap: 6,
-            title: Text("Log past session",
-                style: Theme.of(context).textTheme.bodyLarge),
-            onTap: () {
-              Navigator.of(context).pop();
-              showDatetimeRangePicker(
-                  context: context,
-                  onChangedDateTimeRange: (DateTimeRange datetimeRange) {
-                    Navigator.of(context).pop();
-                    final logName =
-                        "${timeOfDay(datetime: datetimeRange.start)} Session";
-                    final log = RoutineLogDto(
-                        id: "",
-                        templateId: '',
-                        name: logName,
-                        exerciseLogs: [],
-                        notes: "",
-                        startTime: datetimeRange.start,
-                        endTime: datetimeRange.end,
-                        createdAt: datetimeRange.start,
-                        updatedAt: datetimeRange.end);
-                    navigateWithSlideTransition(
-                        context: context,
-                        child: PastRoutineLogEditorScreen(log: log));
-                  });
-            },
-          ),
-          const SizedBox(height: 10),
-          LabelDivider(
-            label: "Don't know what to train?",
-            labelColor: isDarkMode ? darkOnSurfaceVariant : Colors.black,
-            dividerColor: darkDivider,
-          ),
-          const SizedBox(height: 6),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            horizontalTitleGap: 10,
-            title: TRKRCoachTextWidget("Describe your workout",
-                style: GoogleFonts.ubuntu(
-                    color: vibrantGreen,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16)),
-            onTap: () {
-              Navigator.of(context).pop();
-              _switchToAIContext();
-            },
-          ),
-        ]));
-  }
-
-  void _switchToAIContext() async {
-    final result = await navigateWithSlideTransition(
-        context: context,
-        child: const CoachChatScreen()) as RoutineTemplateDto?;
-    if (result != null) {
-      if (mounted) {
-        final log = result.toLog();
-        final arguments =
-            RoutineLogArguments(log: log, editorMode: RoutineEditorMode.log);
-        if (mounted) {
-          navigateToRoutineLogEditor(context: context, arguments: arguments);
-        }
-      }
     }
   }
 

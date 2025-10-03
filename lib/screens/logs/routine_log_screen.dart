@@ -93,7 +93,9 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     final pbs = updatedLog.exerciseLogs.map((exerciseLog) {
       final pastExerciseLogs =
           exerciseAndRoutineController.whereExerciseLogsBefore(
-              exercise: exerciseLog.exercise, date: exerciseLog.createdAt);
+              exercise: exerciseLog.exercise,
+              date: exerciseLog
+                  .createdAt); // Finds exercise logs by name from workout logs
 
       return calculatePBs(
           pastExerciseLogs: loggedExercises(exerciseLogs: pastExerciseLogs),
@@ -344,13 +346,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
     navigateToShareableScreen(context: context, log: log);
   }
 
-  void _showLoadingScreen() {
-    if (!mounted) return;
-    setState(() {
-      _loading = true;
-    });
-  }
-
   void _hideLoadingScreen() {
     if (mounted) {
       setState(() {
@@ -371,7 +366,7 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
 
   void _editLog() async {
     final log = _log;
-    print('log: $log');
+    // print('log: $log'); // Removed for production
     if (log != null) {
       final copyOfLog = log.copyWith();
       final arguments = RoutineLogArguments(
@@ -389,44 +384,6 @@ class _RoutineLogScreenState extends State<RoutineLogScreen> {
         }
       }
     }
-  }
-
-  void _doDeleteLog() async {
-    final log = _log;
-    if (log != null) {
-      try {
-        await Provider.of<ExerciseAndRoutineController>(context, listen: false)
-            .removeLog(log: log);
-        if (mounted) {
-          context.pop();
-        }
-      } catch (_) {
-        if (mounted) {
-          showSnackbar(
-              context: context,
-              message: "Oops, we are unable to delete this log");
-        }
-      } finally {
-        _hideLoadingScreen();
-      }
-    }
-  }
-
-  void _deleteLog() {
-    Navigator.of(context).pop(); // Close the previous BottomSheet
-    showBottomSheetWithMultiActions(
-        context: context,
-        title: "Delete log?",
-        description: "Are you sure you want to delete this log?",
-        leftAction: Navigator.of(context).pop,
-        rightAction: () {
-          Navigator.of(context).pop(); // Close current BottomSheet
-          _showLoadingScreen();
-          _doDeleteLog();
-        },
-        leftActionLabel: 'Cancel',
-        rightActionLabel: 'Delete',
-        isRightActionDestructive: true);
   }
 
   TrendSummary _analyzeWeeklyTrends({required List<double> volumes}) {

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:tracker_app/dtos/db/routine_log_dto.dart';
 
 import '../exercise_log_dto.dart';
@@ -29,6 +30,38 @@ class RoutineTemplateDto {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
+  }
+
+  /// Converts to database row format (matches Supabase schema)
+  Map<String, dynamic> toDatabaseRow() {
+    return {
+      'id': id,
+      'owner': null, // No owner in offline mode
+      'data': toJsonString(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Converts from database row format (matches Supabase schema)
+  factory RoutineTemplateDto.fromDatabaseRow(Map<String, dynamic> row) {
+    final data = jsonDecode(row['data'] as String) as Map<String, dynamic>;
+
+    return RoutineTemplateDto(
+      id: row['id'] as String,
+      name: data['name'] as String? ?? '',
+      notes: data['notes'] as String? ?? '',
+      exerciseTemplates: (data['exercises'] as List<dynamic>? ?? [])
+          .map((exerciseJson) => ExerciseLogDto.fromJson(json: exerciseJson))
+          .toList(),
+      createdAt: DateTime.parse(row['created_at'] as String),
+      updatedAt: DateTime.parse(row['updated_at'] as String),
+    );
+  }
+
+  /// Converts to JSON string for database storage
+  String toJsonString() {
+    return jsonEncode(toJson());
   }
 
   factory RoutineTemplateDto.fromJson(Map<String, dynamic> json) {
