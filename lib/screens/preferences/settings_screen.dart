@@ -1,6 +1,5 @@
 import 'dart:io';
 
-// Removed Amplify usage
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,8 +10,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
-// Removed GraphQL delete mutations for UI-only mode
 import 'package:tracker_app/screens/request_screens/notifications_request.dart';
+import 'package:tracker_app/screens/auth/auth_screen.dart';
+import 'package:tracker_app/services/supabase_service.dart';
+import 'package:tracker_app/services/sync_service.dart';
 import 'package:tracker_app/shared_prefs.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
@@ -61,6 +62,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen>
     with WidgetsBindingObserver {
   bool _loading = false;
+  bool _isAuthenticated = false;
 
   late WeightUnit _weightUnit;
 
@@ -75,9 +77,12 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     if (_loading) return TRKRLoadingScreen(action: _hideLoadingScreen);
 
-    final userEmail = SharedPrefs().userEmail.isNotEmpty
-        ? SharedPrefs().userEmail
-        : "Apple Sign in";
+    // Get email from Supabase if authenticated, otherwise fallback to SharedPrefs
+    final supabaseEmail = SupabaseService.instance.currentUserEmail;
+    final userEmail = supabaseEmail ??
+        (SharedPrefs().userEmail.isNotEmpty
+            ? SharedPrefs().userEmail
+            : "Not signed in");
 
     return Scaffold(
       body: Stack(
@@ -242,14 +247,31 @@ class _SettingsScreenState extends State<SettingsScreen>
                             style: Theme.of(context).textTheme.titleMedium),
                         subtitle: Text("help us improve")),
                     ListTile(
-                        onTap: _logout,
-                        leading: FaIcon(FontAwesomeIcons.arrowRightFromBracket,
+                        onTap: _handleAuthAction,
+                        leading: FaIcon(
+                            _isAuthenticated
+                                ? FontAwesomeIcons.arrowRightFromBracket
+                                : FontAwesomeIcons.cloudArrowUp,
                             color: isDarkMode
                                 ? darkOnSurfaceVariant
                                 : Colors.black38),
-                        title: Text("Logout",
+                        title: Text(
+                            _isAuthenticated ? "Logout" : "Sign in to sync",
                             style: Theme.of(context).textTheme.titleMedium),
-                        subtitle: Text(userEmail)),
+                        subtitle: Text(_isAuthenticated
+                            ? userEmail
+                            : "Sync your workouts to the cloud")),
+                    // Sync button (only shown when authenticated)
+                    if (_isAuthenticated)
+                      ListTile(
+                          onTap: _syncData,
+                          leading: FaIcon(FontAwesomeIcons.arrowsRotate,
+                              color: isDarkMode
+                                  ? darkOnSurfaceVariant
+                                  : Colors.black38),
+                          title: Text("Sync now",
+                              style: Theme.of(context).textTheme.titleMedium),
+                          subtitle: Text("Sync your workouts to the cloud")),
                     ListTile(
                         onTap: _delete,
                         leading: FaIcon(FontAwesomeIcons.xmark,
@@ -361,6 +383,68 @@ class _SettingsScreenState extends State<SettingsScreen>
     });
   }
 
+  void _checkAuthStatus() {
+    setState(() {
+      _isAuthenticated = SupabaseService.instance.isAuthenticated;
+    });
+  }
+
+  void _handleAuthAction() async {
+    if (_isAuthenticated) {
+      _logout();
+    } else {
+      _showSignInPrompt();
+    }
+  }
+
+  void _showSignInPrompt() {
+    showBottomSheetWithMultiActions(
+        context: context,
+        title: "Sign in to sync?",
+        description:
+            "Sign in with your email to sync your workouts to the cloud and access them from any device.",
+        leftAction: Navigator.of(context).pop,
+        rightAction: () async {
+          Navigator.of(context).pop();
+          // Navigate to auth screen
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AuthScreen(
+                onAuthSuccess: () {
+                  // Refresh auth status when user signs in
+                  _checkAuthStatus();
+                },
+              ),
+            ),
+          );
+        },
+        leftActionLabel: 'Not now',
+        rightActionLabel: 'Sign in',
+        isRightActionDestructive: false);
+  }
+
+  void _syncData() async {
+    _showLoadingScreen();
+    try {
+      await SyncService.instance.syncAll();
+      _hideLoadingScreen();
+      if (mounted) {
+        showSnackbar(
+          context: context,
+          message: "Workouts synced successfully!",
+        );
+      }
+    } catch (e) {
+      _hideLoadingScreen();
+      if (mounted) {
+        showSnackbar(
+          context: context,
+          message: "Sync failed: ${e.toString()}",
+        );
+      }
+    }
+  }
+
   void _logout() async {
     showBottomSheetWithMultiActions(
         context: context,
@@ -381,20 +465,49 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   void _delete() async {
+    // Check if user is authenticated
+    if (!SupabaseService.instance.isAuthenticated) {
+      showSnackbar(
+        context: context,
+        message: "No account to delete. You are not signed in.",
+      );
+      return;
+    }
+
+    final userEmail = SupabaseService.instance.currentUserEmail ?? "Unknown";
+
     showBottomSheetWithMultiActions(
         context: context,
         title: "Delete account?",
         description:
-            "Are you sure you want to delete your account? This action cannot be undone.",
+            "Are you sure you want to delete your account ($userEmail)? This action cannot be undone and will permanently remove all your data.",
         leftAction: Navigator.of(context).pop,
         rightAction: () async {
           Navigator.of(context).pop();
           _showLoadingScreen();
 
-          _hideLoadingScreen();
-          _clearAppData();
-          if (mounted) {
-            context.go('/'); // Replace '/welcome' with your initial route
+          try {
+            // Delete the user account from Supabase
+            await SupabaseService.instance.deleteUserAccount();
+
+            _hideLoadingScreen();
+            _clearAppData();
+
+            if (mounted) {
+              showSnackbar(
+                context: context,
+                message: "Account deleted successfully",
+              );
+              context.go('/');
+            }
+          } catch (e) {
+            _hideLoadingScreen();
+            if (mounted) {
+              showSnackbar(
+                context: context,
+                message: "Failed to delete account: ${e.toString()}",
+              );
+            }
           }
         },
         leftActionLabel: 'Cancel',
@@ -418,6 +531,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     _weightUnit = WeightUnit.fromString(SharedPrefs().weightUnit);
     _getAppVersion();
     _checkNotificationPermission();
+    _checkAuthStatus();
   }
 
   @override

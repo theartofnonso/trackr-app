@@ -16,6 +16,7 @@ class ChatMessageDto {
   final DateTime timestamp;
   final RoutineTemplateDto? workout;
   final RoutinePlanDto? plan;
+  final Map<String, dynamic>? metadata;
 
   ChatMessageDto({
     required this.id,
@@ -24,6 +25,7 @@ class ChatMessageDto {
     required this.timestamp,
     this.workout,
     this.plan,
+    this.metadata,
   });
 
   ChatMessageDto.user({
@@ -79,4 +81,58 @@ class ChatMessageDto {
           content: content,
           timestamp: DateTime.now(),
         );
+
+  /// Convert from Supabase row format
+  factory ChatMessageDto.fromSupabaseRow(Map<String, dynamic> row) {
+    final metadata = row['metadata'] != null
+        ? Map<String, dynamic>.from(row['metadata'] as Map)
+        : null;
+
+    RoutineTemplateDto? workout;
+    RoutinePlanDto? plan;
+
+    if (metadata != null) {
+      if (metadata['workout'] != null) {
+        workout = RoutineTemplateDto.fromJson(metadata['workout']);
+      }
+      if (metadata['plan'] != null) {
+        plan = RoutinePlanDto.fromJson(metadata['plan']);
+      }
+    }
+
+    return ChatMessageDto(
+      id: row['id'] as String,
+      type: ChatMessageType.values.firstWhere(
+        (e) => e.name == row['type'] as String,
+      ),
+      content: row['content'] as String,
+      timestamp: DateTime.parse(row['created_at'] as String),
+      workout: workout,
+      plan: plan,
+      metadata: metadata,
+    );
+  }
+
+  /// Convert to Supabase row format
+  Map<String, dynamic> toSupabaseRow() {
+    final metadata = <String, dynamic>{};
+
+    if (workout != null) {
+      metadata['workout'] = workout!.toJson();
+    }
+    if (plan != null) {
+      metadata['plan'] = plan!.toJson();
+    }
+    if (this.metadata != null) {
+      metadata.addAll(this.metadata!);
+    }
+
+    return {
+      'id': id,
+      'content': content,
+      'type': type.name,
+      'created_at': timestamp.toIso8601String(),
+      'metadata': metadata.isNotEmpty ? metadata : null,
+    };
+  }
 }

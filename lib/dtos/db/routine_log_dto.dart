@@ -73,6 +73,18 @@ class RoutineLogDto {
     };
   }
 
+  /// Converts to Supabase row format with owner
+  Map<String, dynamic> toSupabaseRow(String ownerId) {
+    return {
+      'id': id,
+      'template_id': templateId,
+      'owner': ownerId,
+      'data': toJsonString(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
+
   /// Converts from database row format (matches Supabase schema)
   factory RoutineLogDto.fromDatabaseRow(Map<String, dynamic> row) {
     final data = jsonDecode(row['data'] as String) as Map<String, dynamic>;

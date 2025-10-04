@@ -32,6 +32,8 @@ import 'package:tracker_app/screens/routines/routine_plan.dart';
 import 'package:tracker_app/screens/routines/routine_template_screen.dart';
 import 'package:tracker_app/shared_prefs.dart';
 import 'package:tracker_app/utils/theme/theme.dart';
+import 'package:tracker_app/controllers/chat_controller.dart';
+import 'package:tracker_app/services/supabase_service.dart';
 
 //
 import 'dtos/db/routine_plan_dto.dart';
@@ -61,6 +63,8 @@ void main() async {
   // Firebase removed - no Firebase services used in UI-only mode
 
   await SharedPrefs().init();
+  // Initialize Supabase
+  await SupabaseService.initialize();
 
   await initializeDateFormatting();
 
@@ -102,6 +106,8 @@ void main() async {
       ChangeNotifierProvider<ExerciseLogController>(
           create: (BuildContext context) =>
               ExerciseLogController(ExerciseLogRepository())),
+      ChangeNotifierProvider<ChatController>(
+          create: (BuildContext context) => ChatController()),
     ], child: const MyApp())),
   );
 }

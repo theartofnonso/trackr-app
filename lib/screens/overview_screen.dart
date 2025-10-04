@@ -53,45 +53,55 @@ class _OverviewScreenState extends State<OverviewScreen> {
     final logsInLastQuarter =
         exerciseAndRoutineController.whereLogsIsWithinRange(range: lastQuarter);
 
-    return Column(children: [
-      Calendar(
-          onSelectDate: _onSelectCalendarDateTime,
-          onMonthChanged: _onMonthChanged),
-      CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
-      StaggeredGrid.count(
-        crossAxisCount: 4,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        children: [
-          StaggeredGridTile.count(
-            crossAxisCellCount: 1,
-            mainAxisCellCount: 1,
-            child: GestureDetector(
-              onTap: () => navigateToRoutineTemplatesHome(context: context),
-              child: _TemplatesTile(),
+    return GestureDetector(
+      onTap: () {
+        // Dismiss keyboard when tapping anywhere on the screen
+        FocusScope.of(context).unfocus();
+      },
+      onPanStart: (_) {
+        // Dismiss keyboard when starting to scroll/pan
+        FocusScope.of(context).unfocus();
+      },
+      child: Column(children: [
+        Calendar(
+            onSelectDate: _onSelectCalendarDateTime,
+            onMonthChanged: _onMonthChanged),
+        CalendarLogs(dateTime: _selectedCalendarDate ?? DateTime.now()),
+        StaggeredGrid.count(
+          crossAxisCount: 4,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          children: [
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: GestureDetector(
+                onTap: () => navigateToRoutineTemplatesHome(context: context),
+                child: _TemplatesTile(),
+              ),
             ),
-          ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 1,
-            mainAxisCellCount: 1,
-            child: GestureDetector(
-              onTap: () => navigateToRoutinePlansHome(context: context),
-              child: _PlansTile(),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: GestureDetector(
+                onTap: () => navigateToRoutinePlansHome(context: context),
+                child: _PlansTile(),
+              ),
             ),
-          ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 1,
-            mainAxisCellCount: 1,
-            child: GestureDetector(
-              onTap: () => navigateToSettings(context: context),
-              child: _SettingsTile(),
+            StaggeredGridTile.count(
+              crossAxisCellCount: 1,
+              mainAxisCellCount: 1,
+              child: GestureDetector(
+                onTap: () => navigateToSettings(context: context),
+                child: _SettingsTile(),
+              ),
             ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 10),
-      const CoachChatWidget(),
-    ]);
+          ],
+        ),
+        const SizedBox(height: 10),
+        const CoachChatWidget(),
+      ]),
+    );
   }
 
   void _hideLoadingScreen() {

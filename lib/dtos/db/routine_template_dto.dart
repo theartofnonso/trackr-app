@@ -36,7 +36,18 @@ class RoutineTemplateDto {
   Map<String, dynamic> toDatabaseRow() {
     return {
       'id': id,
-      'owner': null, // No owner in offline mode
+      'owner': null, // Will be set by Supabase service
+      'data': toJsonString(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Converts to Supabase row format with owner
+  Map<String, dynamic> toSupabaseRow(String ownerId) {
+    return {
+      'id': id,
+      'owner': ownerId,
       'data': toJsonString(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),

@@ -9,6 +9,7 @@ import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
 import '../../controllers/exercise_and_routine_controller.dart';
+import '../../controllers/chat_controller.dart';
 import '../../dtos/chat_message_dto.dart';
 import '../../services/response_handler_service.dart';
 import 'chat_bubble_widget.dart';
@@ -24,7 +25,6 @@ class CoachChatWidget extends StatefulWidget {
 class _CoachChatWidgetState extends State<CoachChatWidget> {
   bool _loading = false;
   late TextEditingController _textEditingController;
-  final List<ChatMessageDto> _messages = [];
   late final ResponseHandlerService _responseHandler;
   Completer<void>? _cancelCompleter;
   late ScrollController _scrollController;
@@ -34,115 +34,122 @@ class _CoachChatWidgetState extends State<CoachChatWidget> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Chat Messages
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: isDarkMode ? darkBackground : Colors.white,
-              ),
-              child: _messages.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: const NoListEmptyState(
-                        showIcon: false,
-                        message:
-                            "Ask your coach anything about training, nutrition, or fitness goals.",
-                      ),
-                    )
-                  : ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.all(8),
-                      itemCount: _messages.length + (_loading ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        // Show loading message at the end if loading
-                        if (index == _messages.length && _loading) {
-                          return const LoadingMessageWidget();
-                        }
-
-                        final message = _messages[index];
-                        return ChatBubbleWidget(
-                          message: message,
-                          onTap: () => _handleMessageTap(message),
-                          onAccept: () => _handleMessageAccept(message),
-                        );
-                      },
-                    ),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Input Container
-          Container(
-            constraints: const BoxConstraints(
-              minHeight: 56,
-              maxHeight: 120,
-            ),
-            decoration: BoxDecoration(
-              color: isDarkMode ? darkSurface : Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(28),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                      hintText: "Ask anything",
-                      hintStyle: GoogleFonts.ubuntu(
-                        color:
-                            isDarkMode ? Colors.white60 : Colors.grey.shade600,
-                        fontSize: 16,
-                      ),
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
-                      ),
-                      filled: false,
-                    ),
-                    cursorColor: isDarkMode ? Colors.white : Colors.black,
-                    maxLines: null,
-                    minLines: 1,
-                    keyboardType: TextInputType.multiline,
-                    textCapitalization: TextCapitalization.sentences,
-                    enabled: !_loading,
-                  ),
-                ),
-                Container(
-                  width: 56,
-                  height: 56,
+    return Consumer<ChatController>(
+      builder: (context, chatController, child) {
+        return Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Chat Messages
+              Expanded(
+                child: Container(
                   decoration: BoxDecoration(
-                    color: _loading
-                        ? Colors.red.withValues(alpha: 0.8)
-                        : (isDarkMode
-                            ? vibrantGreen.withValues(alpha: 0.1)
-                            : vibrantGreen.withValues(alpha: 0.4)),
-                    borderRadius: BorderRadius.circular(28),
+                    color: isDarkMode ? darkBackground : Colors.white,
                   ),
-                  child: IconButton(
-                    onPressed: _loading ? _cancelRequest : _runMessage,
-                    icon: FaIcon(
-                      _loading
-                          ? FontAwesomeIcons.stop
-                          : FontAwesomeIcons.rocket,
-                      size: 20,
-                      color: _loading ? Colors.white : null,
-                    ),
-                  ),
+                  child: chatController.messages.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: const NoListEmptyState(
+                            showIcon: false,
+                            message:
+                                "Ask your coach anything about training, nutrition, or fitness goals.",
+                          ),
+                        )
+                      : ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.all(8),
+                          itemCount: chatController.messages.length +
+                              (_loading ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            // Show loading message at the end if loading
+                            if (index == chatController.messages.length &&
+                                _loading) {
+                              return const LoadingMessageWidget();
+                            }
+
+                            final message = chatController.messages[index];
+                            return ChatBubbleWidget(
+                              message: message,
+                              onTap: () => _handleMessageTap(message),
+                              onAccept: () => _handleMessageAccept(message),
+                            );
+                          },
+                        ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 12),
+
+              // Input Container
+              Container(
+                constraints: const BoxConstraints(
+                  minHeight: 56,
+                  maxHeight: 120,
+                ),
+                decoration: BoxDecoration(
+                  color: isDarkMode ? darkSurface : Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _textEditingController,
+                        decoration: InputDecoration(
+                          hintText: "Ask anything",
+                          hintStyle: GoogleFonts.ubuntu(
+                            color: isDarkMode
+                                ? Colors.white60
+                                : Colors.grey.shade600,
+                            fontSize: 16,
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
+                          filled: false,
+                        ),
+                        cursorColor: isDarkMode ? Colors.white : Colors.black,
+                        maxLines: null,
+                        minLines: 1,
+                        keyboardType: TextInputType.multiline,
+                        textCapitalization: TextCapitalization.sentences,
+                        enabled: !_loading,
+                      ),
+                    ),
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: _loading
+                            ? Colors.red.withValues(alpha: 0.8)
+                            : (isDarkMode
+                                ? vibrantGreen.withValues(alpha: 0.1)
+                                : vibrantGreen.withValues(alpha: 0.4)),
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: IconButton(
+                        onPressed: _loading ? _cancelRequest : _runMessage,
+                        icon: FaIcon(
+                          _loading
+                              ? FontAwesomeIcons.stop
+                              : FontAwesomeIcons.rocket,
+                          size: 20,
+                          color: _loading ? Colors.white : null,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
-          const SizedBox(height: 20),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -167,6 +174,14 @@ class _CoachChatWidgetState extends State<CoachChatWidget> {
     _textEditingController = TextEditingController();
     _responseHandler = ResponseHandlerService();
     _scrollController = ScrollController();
+
+    // Load existing messages from ChatController
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chatController =
+          Provider.of<ChatController>(context, listen: false);
+      chatController.loadMessages();
+      chatController.startListening();
+    });
   }
 
   void _runMessage() async {
@@ -177,12 +192,13 @@ class _CoachChatWidgetState extends State<CoachChatWidget> {
       _clearTextEditing();
 
       // Add user message to chat
-      setState(() {
-        _messages.add(ChatMessageDto.user(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          content: userPrompt,
-        ));
-      });
+      final chatController =
+          Provider.of<ChatController>(context, listen: false);
+      final userMessage = ChatMessageDto.user(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        content: userPrompt,
+      );
+      await chatController.addMessage(userMessage);
 
       // Scroll to bottom after adding user message
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -207,12 +223,11 @@ class _CoachChatWidgetState extends State<CoachChatWidget> {
     }
   }
 
-  void _handleApiResponse(ChatMessageDto message) {
+  void _handleApiResponse(ChatMessageDto message) async {
     _setLoading(false);
 
-    setState(() {
-      _messages.add(message);
-    });
+    final chatController = Provider.of<ChatController>(context, listen: false);
+    await chatController.addMessage(message);
 
     // Scroll to bottom after adding message
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -220,14 +235,15 @@ class _CoachChatWidgetState extends State<CoachChatWidget> {
     });
   }
 
-  void _handleError(String errorMessage) {
+  void _handleError(String errorMessage) async {
     _setLoading(false);
-    setState(() {
-      _messages.add(ChatMessageDto.general(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: "Something went wrong.",
-      ));
-    });
+
+    final chatController = Provider.of<ChatController>(context, listen: false);
+    final errorMessageDto = ChatMessageDto.general(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      content: "Something went wrong.",
+    );
+    await chatController.addMessage(errorMessageDto);
 
     // Scroll to bottom after adding error message
     WidgetsBinding.instance.addPostFrameCallback((_) {

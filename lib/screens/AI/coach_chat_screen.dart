@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/utils/navigation_utils.dart';
 import 'package:tracker_app/widgets/empty_states/no_list_empty_state.dart';
 
+import '../../controllers/chat_controller.dart';
 import '../../dtos/chat_message_dto.dart';
 import '../../services/response_handler_service.dart';
 import '../../widgets/chat/chat_bubble_widget.dart';
@@ -23,7 +25,6 @@ class CoachChatScreen extends StatefulWidget {
 class _CoachChatScreenState extends State<CoachChatScreen> {
   bool _loading = false;
   late TextEditingController _textEditingController;
-  final List<ChatMessageDto> _messages = [];
   late final ResponseHandlerService _responseHandler;
   Completer<void>? _cancelCompleter;
   late ScrollController _scrollController;
@@ -33,138 +34,144 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
-    return Scaffold(
-        body: Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: isDarkMode ? darkBackground : Colors.white,
-          ),
-          child: SafeArea(
-            bottom: false,
-            minimum: EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Chat Messages
-                Expanded(
-                  child: _messages.isEmpty
-                      ? Padding(
-                          padding: EdgeInsets.only(
-                            left: 10.0,
-                            right: 10.0,
-                          ),
-                          child: const NoListEmptyState(
-                              message:
-                                  "Please describe your workout or plan to get started with your Coach."),
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top,
-                            bottom: 8,
-                          ),
-                          itemCount: _messages.length + (_loading ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            // Show loading message at the end if loading
-                            if (index == _messages.length && _loading) {
-                              return const LoadingMessageWidget();
-                            }
-
-                            final message = _messages[index];
-                            return ChatBubbleWidget(
-                              message: message,
-                              onTap: () => _handleMessageTap(message),
-                            );
-                          },
-                        ),
-                ),
-                const SizedBox(height: 10),
-                SafeArea(
-                  minimum: EdgeInsets.symmetric(horizontal: 5),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _textEditingController,
-                          decoration: InputDecoration(
-                            hintText: "What do you want to train?",
-                            hintStyle: GoogleFonts.ubuntu(
-                              color: (isDarkMode
-                                  ? Colors.white70
-                                  : Colors.grey.shade600),
-                            ),
-                          ),
-                          cursorColor:
-                              isDarkMode ? darkOnSurface : Colors.black,
-                          maxLines: null,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.sentences,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: _loading ? _cancelRequest : _runMessage,
-                        icon: Container(
-                          width: 50,
-                          height: 50,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: _loading
-                                ? Colors.red.withValues(alpha: 0.8)
-                                : (isDarkMode
-                                    ? vibrantGreen.withValues(alpha: 0.1)
-                                    : vibrantGreen.withValues(alpha: 0.4)),
-                            borderRadius: BorderRadius.circular(radiusMD),
-                          ),
-                          child: Center(
-                            child: FaIcon(
-                              _loading
-                                  ? FontAwesomeIcons.stop
-                                  : FontAwesomeIcons.rocket,
-                              size: 20,
-                              color: _loading ? Colors.white : null,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Overlay close button
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 16,
-          right: 16,
-          child: Container(
-            decoration: BoxDecoration(
-              color: isDarkMode
-                  ? darkSurface.withValues(alpha: 0.9)
-                  : Colors.white.withValues(alpha: 0.9),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.squareXmark,
-                size: 20,
-                color: isDarkMode ? Colors.white : Colors.black87,
+    return Consumer<ChatController>(
+      builder: (context, chatController, child) {
+        return Scaffold(
+            body: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: isDarkMode ? darkBackground : Colors.white,
               ),
-              onPressed: () => Navigator.of(context).pop(),
+              child: SafeArea(
+                bottom: false,
+                minimum: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Chat Messages
+                    Expanded(
+                      child: chatController.messages.isEmpty
+                          ? Padding(
+                              padding: EdgeInsets.only(
+                                left: 10.0,
+                                right: 10.0,
+                              ),
+                              child: const NoListEmptyState(
+                                  message:
+                                      "Please describe your workout or plan to get started with your Coach."),
+                            )
+                          : ListView.builder(
+                              controller: _scrollController,
+                              padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).padding.top,
+                                bottom: 8,
+                              ),
+                              itemCount: chatController.messages.length +
+                                  (_loading ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                // Show loading message at the end if loading
+                                if (index == chatController.messages.length &&
+                                    _loading) {
+                                  return const LoadingMessageWidget();
+                                }
+
+                                final message = chatController.messages[index];
+                                return ChatBubbleWidget(
+                                  message: message,
+                                  onTap: () => _handleMessageTap(message),
+                                );
+                              },
+                            ),
+                    ),
+                    const SizedBox(height: 10),
+                    SafeArea(
+                      minimum: EdgeInsets.symmetric(horizontal: 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _textEditingController,
+                              decoration: InputDecoration(
+                                hintText: "What do you want to train?",
+                                hintStyle: GoogleFonts.ubuntu(
+                                  color: (isDarkMode
+                                      ? Colors.white70
+                                      : Colors.grey.shade600),
+                                ),
+                              ),
+                              cursorColor:
+                                  isDarkMode ? darkOnSurface : Colors.black,
+                              maxLines: null,
+                              keyboardType: TextInputType.text,
+                              textCapitalization: TextCapitalization.sentences,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: _loading ? _cancelRequest : _runMessage,
+                            icon: Container(
+                              width: 50,
+                              height: 50,
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: _loading
+                                    ? Colors.red.withValues(alpha: 0.8)
+                                    : (isDarkMode
+                                        ? vibrantGreen.withValues(alpha: 0.1)
+                                        : vibrantGreen.withValues(alpha: 0.4)),
+                                borderRadius: BorderRadius.circular(radiusMD),
+                              ),
+                              child: Center(
+                                child: FaIcon(
+                                  _loading
+                                      ? FontAwesomeIcons.stop
+                                      : FontAwesomeIcons.rocket,
+                                  size: 20,
+                                  color: _loading ? Colors.white : null,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
-    ));
+            // Overlay close button
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              right: 16,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDarkMode
+                      ? darkSurface.withValues(alpha: 0.9)
+                      : Colors.white.withValues(alpha: 0.9),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  icon: FaIcon(
+                    FontAwesomeIcons.squareXmark,
+                    size: 20,
+                    color: isDarkMode ? Colors.white : Colors.black87,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ),
+          ],
+        ));
+      },
+    );
   }
 
   void _setLoading(bool loading) {
@@ -188,6 +195,14 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
     _textEditingController = TextEditingController();
     _responseHandler = ResponseHandlerService();
     _scrollController = ScrollController();
+
+    // Load existing messages from ChatController
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chatController =
+          Provider.of<ChatController>(context, listen: false);
+      chatController.loadMessages();
+      chatController.startListening();
+    });
   }
 
   void _runMessage() async {
@@ -198,12 +213,13 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
       _clearTextEditing();
 
       // Add user message to chat
-      setState(() {
-        _messages.add(ChatMessageDto.user(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          content: userPrompt,
-        ));
-      });
+      final chatController =
+          Provider.of<ChatController>(context, listen: false);
+      final userMessage = ChatMessageDto.user(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        content: userPrompt,
+      );
+      await chatController.addMessage(userMessage);
 
       // Scroll to bottom after adding user message
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -228,12 +244,11 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
     }
   }
 
-  void _handleApiResponse(ChatMessageDto message) {
+  void _handleApiResponse(ChatMessageDto message) async {
     _setLoading(false);
 
-    setState(() {
-      _messages.add(message);
-    });
+    final chatController = Provider.of<ChatController>(context, listen: false);
+    await chatController.addMessage(message);
 
     // Scroll to bottom after adding message
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -241,14 +256,15 @@ class _CoachChatScreenState extends State<CoachChatScreen> {
     });
   }
 
-  void _handleError(String errorMessage) {
+  void _handleError(String errorMessage) async {
     _setLoading(false);
-    setState(() {
-      _messages.add(ChatMessageDto.general(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: "Something went wrong.",
-      ));
-    });
+
+    final chatController = Provider.of<ChatController>(context, listen: false);
+    final errorMessageDto = ChatMessageDto.general(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      content: "Something went wrong.",
+    );
+    await chatController.addMessage(errorMessageDto);
 
     // Scroll to bottom after adding error message
     WidgetsBinding.instance.addPostFrameCallback((_) {
