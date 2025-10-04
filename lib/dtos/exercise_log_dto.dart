@@ -2,17 +2,13 @@ import 'dart:convert';
 
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 
-import '../utils/exercise_logs_utils.dart';
-import 'appsync/exercise_dto.dart';
+import 'db/exercise_dto.dart';
 
 class ExerciseLogDto {
   final String id;
   final String? routineLogId;
   final String superSetId;
   final ExerciseDto exercise;
-  final int maxReps;
-  final int minReps;
-  final String notes;
   final List<SetDto> sets;
   final DateTime createdAt;
 
@@ -21,9 +17,6 @@ class ExerciseLogDto {
       required this.routineLogId,
       required this.superSetId,
       required this.exercise,
-      this.maxReps = 0,
-      this.minReps = 0,
-      required this.notes,
       required this.sets,
       required this.createdAt});
 
@@ -33,9 +26,6 @@ class ExerciseLogDto {
     return {
       "superSetId": superSetId,
       "exercise": exercise.toJson(),
-      "minReps": minReps,
-      "maxReps": maxReps,
-      "notes": notes,
       "sets": setJsons,
     };
   }
@@ -45,9 +35,6 @@ class ExerciseLogDto {
     String? routineLogId,
     String? superSetId,
     ExerciseDto? exercise,
-    int? minReps,
-    int? maxReps,
-    String? notes,
     List<SetDto>? sets,
     DateTime? createdAt,
   }) {
@@ -56,59 +43,51 @@ class ExerciseLogDto {
       routineLogId: routineLogId ?? this.routineLogId,
       superSetId: superSetId ?? this.superSetId,
 
-      // If a new ExerciseDto is provided, copy it deeply.
-      // Otherwise, copy the existing ExerciseDto if it is not null.
-      exercise: exercise != null
-          ? exercise.copyWith()
-          : this.exercise.copyWith(),
-
-      minReps: minReps ?? this.minReps,
-      maxReps: maxReps ?? this.maxReps,
-      notes: notes ?? this.notes,
-
-      // Deep copy for the list of SetDto items.
-      sets: sets != null
-          ? sets.map((s) => s.copyWith()).toList()
-          : this.sets.map((s) => s.copyWith()).toList(),
+      // Only deep copy if new values are provided
+      exercise: exercise ?? this.exercise,
+      sets: sets ?? this.sets,
 
       createdAt: createdAt ?? this.createdAt,
     );
   }
 
-  factory ExerciseLogDto.fromJson({String? routineLogId, DateTime? createdAt, required Map<String, dynamic> json}) {
+  factory ExerciseLogDto.fromJson(
+      {String? routineLogId,
+      DateTime? createdAt,
+      required Map<String, dynamic> json}) {
+    final id = json["id"] ?? "";
     final superSetId = json["superSetId"] ?? "";
     final exerciseJson = json["exercise"];
     final exercise = ExerciseDto.fromJson(exerciseJson);
-    final notes = json["notes"] ?? "";
     final setsInJsons = json["sets"] as List<dynamic>;
     List<SetDto> sets = [];
     if (setsInJsons.isNotEmpty && setsInJsons.first is String) {
-      sets = setsInJsons.map((json) => SetDto.fromJson(jsonDecode(json), exerciseType: exercise.type)).toList();
+      sets = setsInJsons
+          .map((json) => SetDto.fromJson(jsonDecode(json),
+              exerciseType: exercise.type,
+              datetime: createdAt ?? DateTime.now()))
+          .toList();
     } else {
-      sets = setsInJsons.map((json) => SetDto.fromJson(json, exerciseType: exercise.type)).toList();
+      sets = setsInJsons
+          .map((json) => SetDto.fromJson(json,
+              exerciseType: exercise.type,
+              datetime: createdAt ?? DateTime.now()))
+          .toList();
     }
 
-    final minReps = json["minReps"] ?? 0;
-    final maxReps = json["maxReps"] ?? 0;
-
     final exerciseLog = ExerciseLogDto(
-        id: exercise.id,
+        id: id,
         routineLogId: routineLogId,
         superSetId: superSetId,
         exercise: exercise,
-        notes: notes,
         sets: sets,
-        minReps: minReps,
-        maxReps: maxReps,
         createdAt: createdAt ?? DateTime.now());
 
-    final repRange = getRepRange(exerciseLog: exerciseLog);
-
-    return exerciseLog.copyWith(minReps: repRange.$1, maxReps: repRange.$2);
+    return exerciseLog;
   }
 
   @override
   String toString() {
-    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, notes: $notes, minReps: $minReps, maxReps: $maxReps, sets: $sets, createdAt: $createdAt}';
+    return 'ExerciseLogDto{id: $id, routineLogId: $routineLogId, superSetId: $superSetId, exercise: $exercise, sets: $sets, createdAt: $createdAt}';
   }
 }

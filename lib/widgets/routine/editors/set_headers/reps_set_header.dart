@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
 
@@ -28,15 +29,18 @@ class RepsSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text("REPS", style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
+            child: Text("REPS",
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center),
           ),
           if (editorType == RoutineEditorMode.log)
-            const TableCell(
+            TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Icon(
-                  Icons.check,
+                child: Center(
+                    child: FaIcon(
+                  FontAwesomeIcons.check,
                   size: 12,
-                ))
+                )))
         ]),
       ],
     );

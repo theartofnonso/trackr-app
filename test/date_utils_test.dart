@@ -53,6 +53,7 @@ void main() {
     final end = DateTime(2023, 1, 31);
     final weeks = generateWeeksInRange(range: DateTimeRange(start: start, end: end));
 
+
     // The first week should start Monday, December 26, 2022 and run to Sunday, January 1, 2023
     expect(weeks.first.start, DateTime(2022, 12, 26));
     expect(weeks.first.end, DateTime(2023, 1, 1));
@@ -62,9 +63,8 @@ void main() {
     expect(weeks[1].start, DateTime(2023, 1, 2));
     expect(weeks[1].end, DateTime(2023, 1, 8));
 
-    // The last week should not extend beyond 2023-01-31
-    final lastWeek = weeks.last;
-    expect(!lastWeek.end.isAfter(end), true);
+    // The last week should extend beyond 2023-01-31
+    expect(weeks.last.end, DateTime(2023, 2, 5));
   });
 
   test('Generates month ranges correctly', () {

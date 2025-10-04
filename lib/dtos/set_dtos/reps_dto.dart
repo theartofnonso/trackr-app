@@ -1,41 +1,75 @@
-
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
-
 import '../../enums/exercise_type_enums.dart';
 
 class RepsSetDto extends SetDto {
-  final int _reps;
+  final int reps;
 
-  const RepsSetDto({required reps, super.checked = false, super.rpeRating = 4})
-      : _reps = reps;
+  const RepsSetDto({
+    required this.reps,
+    super.checked = false,
+    super.isWorkingSet = false,
+    required super.dateTime,
+  });
 
-  int get reps => _reps;
+  factory RepsSetDto.defaultSet() => RepsSetDto(
+        reps: 0,
+        dateTime: DateTime.now(),
+      );
+
+  factory RepsSetDto.fromJson(Map<String, dynamic> json,
+      {required DateTime dateTime}) {
+    return RepsSetDto(
+      reps: (json['reps'] as num).toInt(),
+      checked: json['checked'] as bool? ?? false,
+      isWorkingSet: json['isWorkingSet'] as bool? ?? false,
+      dateTime: json['dateTime'] != null
+          ? DateTime.parse(json['dateTime'] as String)
+          : dateTime,
+    );
+  }
 
   @override
   ExerciseType get type => ExerciseType.bodyWeight;
 
   @override
-  RepsSetDto copyWith({int? reps, bool? checked, int? rpeRating}) {
-    return RepsSetDto(reps: reps ?? _reps, checked: checked ?? super.checked, rpeRating: rpeRating ?? super.rpeRating);
+  bool isEmpty() => reps == 0;
+
+  @override
+  bool isNotEmpty() => reps > 0;
+
+  @override
+  RepsSetDto copyWith({
+    int? reps,
+    bool? checked,
+    bool? isWorkingSet,
+    DateTime? dateTime,
+  }) {
+    return RepsSetDto(
+      reps: reps ?? this.reps,
+      checked: checked ?? this.checked,
+      isWorkingSet: isWorkingSet ?? this.isWorkingSet,
+      dateTime: dateTime ?? this.dateTime,
+    );
   }
 
   @override
-  bool isEmpty() {
-    return _reps == 0;
+  String summary() => 'x$reps';
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      "reps": reps,
+      "checked": checked,
+      "isWorkingSet": isWorkingSet,
+      "dateTime": dateTime.toIso8601String(),
+    };
   }
 
   @override
-  bool isNotEmpty() {
-    return _reps > 0;
-  }
-
-  @override
-  String summary() {
-    return "x$reps";
-  }
-
-  @override
-  String toString() {
-    return 'RepsSetDTO{reps: $_reps, checked: ${super.checked}, type: $type, rpeRating: ${super.rpeRating}';
-  }
+  String toString() => 'RepsSetDto('
+      'reps: $reps, '
+      'checked: $checked, '
+      'isWorkingSet: $isWorkingSet, '
+      'dateTime: $dateTime'
+      ')';
 }

@@ -1,46 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:tracker_app/enums/activity_type_enums.dart';
-import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/extensions/duration_extension.dart';
-import 'package:tracker_app/utils/general_utils.dart';
-import 'package:tracker_app/utils/navigation_utils.dart';
-import 'package:tracker_app/utils/routine_utils.dart';
-import 'package:tracker_app/widgets/forms/create_routine_user_profile_widget.dart';
-import 'package:tracker_app/widgets/dividers/label_divider.dart';
 import 'package:tracker_app/widgets/timers/datetime_picker.dart';
 import 'package:tracker_app/widgets/timers/datetime_range_picker.dart';
 
 import '../colors.dart';
-import '../controllers/activity_log_controller.dart';
-import '../controllers/routine_user_controller.dart';
-import '../dtos/appsync/activity_log_dto.dart';
-import '../screens/editors/activity_editor_screen.dart';
+import '../widgets/ai_widgets/trkr_coach_widget.dart';
 import '../widgets/buttons/opacity_button_widget.dart';
-import '../widgets/timers/hour_timer_picker.dart';
 import '../widgets/timers/time_picker.dart';
 
-void showSnackbar({required BuildContext context, required Widget icon, required String message}) {
+void showSnackbar({required BuildContext context, required String message}) {
   Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
   final isDarkMode = systemBrightness == Brightness.dark;
 
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: isDarkMode ? sapphireDark80 : Colors.grey.shade200,
+      backgroundColor: isDarkMode ? darkSurface : Colors.grey.shade200,
       behavior: SnackBarBehavior.fixed,
       content: Row(
         children: [
-          icon,
+          TRKRCoachWidget(),
           const SizedBox(
             width: 10,
           ),
           Expanded(
             child: Text(
               message,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style:
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
             ),
           ),
         ],
@@ -50,7 +35,6 @@ void showSnackbar({required BuildContext context, required Widget icon, required
 Future<void> displayBottomSheet(
     {required BuildContext context,
     required Widget child,
-    Gradient? gradient,
     double? height,
     enabledDrag = true,
     bool isDismissible = true,
@@ -65,23 +49,22 @@ Future<void> displayBottomSheet(
       enableDrag: enabledDrag,
       backgroundColor: Colors.transparent,
       context: context,
-      builder: (BuildContext context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: height,
-                width: double.infinity,
-                padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: BoxDecoration(
-                    color: isDarkMode ? sapphireDark80 : Colors.grey.shade100,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    gradient: isDarkMode ? themeGradient(context: context) : null),
-                child: SafeArea(child: child),
-              ),
-            ],
+      builder: (BuildContext context) => SafeArea(
+            minimum: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: height,
+                  width: double.infinity,
+                  padding: padding ?? const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                      color: isDarkMode ? darkSurface : Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(radiusLG)),
+                  child: SafeArea(child: child),
+                ),
+              ],
+            ),
           ));
 }
 
@@ -94,33 +77,32 @@ void displayTimePicker(
   displayBottomSheet(
       height: 240,
       context: context,
-      child: TimePicker(mode: mode, initialDuration: initialDuration, onDurationChanged: onChangedDuration));
+      child: TimePicker(
+          mode: mode,
+          initialDuration: initialDuration,
+          onDurationChanged: onChangedDuration));
 }
 
-void showHourTimerPicker(
+void showDateTimePicker(
     {required BuildContext context,
-    required Duration initialDuration,
-    required void Function(Duration duration) onChangedDuration}) {
+    DateTime? initialDateTime,
+    required void Function(DateTime datetime) onChangedDateTime,
+    CupertinoDatePickerMode? mode}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       height: 240,
       context: context,
-      child: HourTimerPicker(
-          initialDuration: initialDuration,
-          onSelect: (Duration duration) {
-            onChangedDuration(duration);
-          }));
-}
-
-void showDateTimePicker({required BuildContext context, required void Function(DateTime datetime) onChangedDateTime}) {
-  FocusScope.of(context).unfocus();
-  displayBottomSheet(height: 240, context: context, child: DatetimePicker(onSelect: onChangedDateTime));
+      child: DatetimePicker(
+          onSelect: onChangedDateTime,
+          initialDateTime: initialDateTime,
+          mode: mode));
 }
 
 void showDatetimeRangePicker(
     {required BuildContext context,
     DateTimeRange? initialDateTimeRange,
-    required void Function(DateTimeRange datetimeRange) onChangedDateTimeRange}) {
+    required void Function(DateTimeRange datetimeRange)
+        onChangedDateTimeRange}) {
   FocusScope.of(context).unfocus();
   displayBottomSheet(
       context: context,
@@ -131,141 +113,23 @@ void showDatetimeRangePicker(
       isScrollControlled: true);
 }
 
-void showActivityBottomSheet({required BuildContext context, required ActivityLogDto activity}) {
-  Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-  final isDarkMode = systemBrightness == Brightness.dark;
-
-  final activityType = ActivityType.fromJson(activity.name);
-
-  final image = activityType.image;
-
-  final routineUserController = Provider.of<RoutineUserController>(context, listen: false);
-
-  final calories = calculateCalories(
-      duration: activity.duration(), bodyWeight: routineUserController.weight(), activity: activity.activityType);
-
+void showBottomSheetWithNoAction(
+    {required BuildContext context,
+    required String title,
+    required String description,
+    TextStyle? textStyle}) {
   displayBottomSheet(
       context: context,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          children: [
-            image != null
-                ? Image.asset(
-                    'icons/$image.png',
-                    fit: BoxFit.contain,
-                    height: 24,
-                    color: isDarkMode ? Colors.white : Colors.black, // Adjust the height as needed
-                  )
-                : FaIcon(
-                    activityType.icon,
-                  ),
-            const SizedBox(
-              width: 8,
-            ),
-            Text(activity.nameOrSummary.toUpperCase(), style: Theme.of(context).textTheme.titleMedium),
-          ],
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        Text("You completed ${activity.duration().hmsAnalog()} of ${activity.nameOrSummary}",
-            style: Theme.of(context).textTheme.bodyMedium),
-        const SizedBox(
-          height: 6,
-        ),
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            const FaIcon(
-              FontAwesomeIcons.calendarDay,
-              size: 12,
-            ),
-            const SizedBox(width: 4),
-            Text(activity.createdAt.formattedDayMonthTime(),
-                style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start),
-            const SizedBox(width: 12),
-            const FaIcon(
-              FontAwesomeIcons.fire,
-              size: 12,
-            ),
-            const SizedBox(width: 4),
-            Text("$calories calories", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start),
-          ],
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        LabelDivider(
-            label: "Want to change activity?".toUpperCase(),
-            labelColor: isDarkMode ? Colors.white70 : Colors.black,
-            dividerColor: sapphireLighter),
+        Text(title,
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.start),
         const SizedBox(
           height: 4,
         ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const FaIcon(FontAwesomeIcons.penToSquare, size: 18),
-          horizontalTitleGap: 6,
-          title: Text("Edit"),
-          onTap: () {
-            Navigator.of(context).pop();
-            navigateWithSlideTransition(context: context, child: ActivityEditorScreen(activityLogDto: activity));
-          },
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: const FaIcon(
-            FontAwesomeIcons.trash,
-            size: 18,
-            color: Colors.red,
-          ),
-          horizontalTitleGap: 6,
-          title:
-              Text("Delete", style: GoogleFonts.ubuntu(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 16)),
-          onTap: () {
-            Navigator.of(context).pop(); // Close the previous BottomSheet
-            showBottomSheetWithMultiActions(
-                context: context,
-                title: "Delete activity?",
-                description: "Are you sure you want to delete this activity?",
-                leftAction: context.pop,
-                rightAction: () {
-                  Navigator.pop(context); // Close current BottomSheet
-                  Provider.of<ActivityLogController>(context, listen: false).removeLog(log: activity);
-                },
-                leftActionLabel: 'Cancel',
-                rightActionLabel: 'Delete',
-                isRightActionDestructive: true);
-          },
-        ),
-      ]));
-}
-
-void showCreateProfileBottomSheet({required BuildContext context}) {
-  showModalBottomSheet(
-      isScrollControlled: true,
-      isDismissible: true,
-      useSafeArea: true,
-      context: context,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: const CreateRoutineUserProfileWidget(),
-        );
-      });
-}
-
-void showBottomSheetWithNoAction({required BuildContext context, required String title, required String description}) {
-  displayBottomSheet(
-      context: context,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title, style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.start),
-        const SizedBox(
-          height: 4,
-        ),
-        Text(description, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.start)
+        Text(description,
+            style: textStyle ?? Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.start)
       ]));
 }
 
@@ -286,19 +150,25 @@ void showBottomSheetWithMultiActions(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.start),
-          Text(description, style: Theme.of(context).textTheme.titleSmall, textAlign: TextAlign.start),
+          Text(title,
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.start),
+          Text(description,
+              style: Theme.of(context).textTheme.titleSmall,
+              textAlign: TextAlign.start),
           const SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.start, children: [
             OpacityButtonWidget(
                 onPressed: leftAction,
                 label: leftActionLabel,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10)),
             const SizedBox(width: 10),
             OpacityButtonWidget(
                 onPressed: rightAction,
                 label: rightActionLabel,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 buttonColor: vibrantGreen)
           ])
         ],

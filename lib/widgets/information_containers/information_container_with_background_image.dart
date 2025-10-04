@@ -1,57 +1,114 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../colors.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class BackgroundInformationContainer extends StatelessWidget {
-  final String content;
-  final Color? containerColor;
-  final TextStyle? textStyle;
+/// ---------------------------------------------------------------------------
+///  MembershipPromoCard
+/// ---------------------------------------------------------------------------
+///  Screenshot‑style promotional banner:
+///    • Background image (full‑bleed) with dark bottom gradient
+///    • Headline + body copy in the foreground (bottom‑left)
+///    • Chevron‑right icon in the foreground (bottom‑right)
+///    • Rounded corners, subtle drop‑shadow, tap callback
+/// ---------------------------------------------------------------------------
+class InformationContainerWithBackgroundImage extends StatelessWidget {
+  const InformationContainerWithBackgroundImage({
+    super.key,
+    required this.image,
+    required this.subtitle,
+    this.onTap,
+    required this.color,
+    this.height = 160,
+    this.alignmentGeometry,
+  });
+
+  /// Background image (use AssetImage, NetworkImage, etc.).
   final String image;
 
-  const BackgroundInformationContainer({super.key, required this.content, this.containerColor, this.textStyle, required this.image});
+  /// Descriptive copy under the headline.
+  final String subtitle;
+
+  /// Called when the user taps anywhere on the card.
+  final VoidCallback? onTap;
+
+  /// Fixed height of the card; width stretches to parent.
+  final double height;
+
+  final Color color;
+
+  final AlignmentGeometry? alignmentGeometry;
 
   @override
   Widget build(BuildContext context) {
+    final callback = onTap;
 
-    final color = containerColor ?? sapphireDark;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5),
-      child: SizedBox(
-        height: 80,
-        child: Stack(children: [
-          Image.asset(
-            image,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            alignment: Alignment.center,
-          ),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  color,
-                  color,
-                  color.withValues(alpha:0.4),
-                  sapphireLighter.withValues(alpha:0.5),
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(radiusLG),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // 1️⃣ Background image
+            Image.asset(
+              image,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              alignment: alignmentGeometry ?? Alignment.topCenter,
+            ),
+            // 2️⃣ Gradient overlay (transparent → dark)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      color, // semi‑opaque dark
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Text column expands; arrow stays fixed size.
+                  Expanded(
+                    child: Text(
+                      subtitle,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        height: 1.8,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ),
+                  if (callback != null)
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.only(bottom: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(radiusLG),
+                      ),
+                      child: const FaIcon(
+                        Icons.chevron_right_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    )
                 ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Center(
-              child: Text(content,
-                  style: textStyle ??
-                      GoogleFonts.ubuntu(
-                          fontSize: 12, height: 1.4, color: containerColor ?? Colors.white, fontWeight: FontWeight.w500)),
-            ),
-          )
-        ]),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:logger/logger.dart';
 
-
 class AppLogger extends PrettyPrinter{
   final String className;
   final String correlationId;

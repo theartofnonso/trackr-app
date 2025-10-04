@@ -1,215 +1,294 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tracker_app/colors.dart';
 import 'package:tracker_app/controllers/exercise_and_routine_controller.dart';
+import 'package:tracker_app/dtos/db/routine_log_dto.dart';
 import 'package:tracker_app/extensions/datetime/datetime_extension.dart';
-import 'package:tracker_app/shared_prefs.dart';
-
-import '../../controllers/activity_log_controller.dart';
-
-GlobalKey calendarKey = GlobalKey();
+import 'package:tracker_app/utils/date_utils.dart';
 
 class _DateViewModel {
   final DateTime dateTime;
   final DateTime selectedDateTime;
   final bool hasRoutineLog;
-  final bool hasActivityLog;
 
   _DateViewModel(
       {required this.dateTime,
       required this.selectedDateTime,
-      this.hasRoutineLog = false,
-      this.hasActivityLog = false});
-
-  @override
-  String toString() {
-    return '_DateViewModel{dateTime: $dateTime, selectedDateTime: $selectedDateTime, hasLog: $hasRoutineLog, hasActivityLog: $hasActivityLog}';
-  }
+      this.hasRoutineLog = false});
 }
 
-class Calendar extends StatefulWidget {
-  final void Function(DateTime dateTime)? onSelectDate;
-  final DateTime dateTime;
-  final bool forceDarkMode;
-  final bool minimiseCalendar;
+const int _kMonthOrigin = 1000;
 
+/// A plug‑and‑play calendar widget that shows the current week by default and toggles
+/// to a month grid on tap of the header. No external [DateTime] dependency required.
+class Calendar extends StatefulWidget {
   const Calendar(
-      {super.key,
-      this.onSelectDate,
-      required this.dateTime,
-      this.forceDarkMode = false,
-      this.minimiseCalendar = false});
+      {super.key, this.onSelectDate, this.logs, this.onMonthChanged});
+
+  /// Fired whenever the user selects a day.
+  final void Function(DateTime dateTime)? onSelectDate;
+  final void Function(DateTimeRange range)? onMonthChanged; // Add this
+
+  final List<RoutineLogDto>? logs;
 
   @override
   State<Calendar> createState() => _CalendarState();
 }
 
-class _CalendarState extends State<Calendar> {
-  DateTime _currentDate = DateTime.now();
+class _CalendarState extends State<Calendar>
+    with SingleTickerProviderStateMixin {
+  late final DateTime
+      _anchor; // today without the time component – used as the origin for paging maths
+  late DateTime _selected;
+  late DateTime _focused;
+  late final PageController _monthCtl;
+  bool _expanded = false;
 
-  void _selectDate(DateTime dateTime) {
-    final onSelectDate = widget.onSelectDate;
-    if (onSelectDate != null) {
-      onSelectDate(dateTime);
-    }
-    setState(() {
-      _currentDate = dateTime;
+  late int _currentMonthWeeks;
+
+  // ───────────────────────────  Lifecycle  ────────────────────────────
+
+  @override
+  void initState() {
+    super.initState();
+    _anchor = DateTime.now().withoutTime();
+    _selected = _anchor;
+    _focused = _selected;
+    _monthCtl = PageController(initialPage: _kMonthOrigin);
+    _currentMonthWeeks = _calculateWeeksInMonth(_focused);
+
+    // Trigger initial month range
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final start = DateTime(_focused.year, _focused.month, 1);
+      final end = DateTime(_focused.year, _focused.month + 1, 0);
+      widget.onMonthChanged?.call(DateTimeRange(start: start, end: end));
     });
   }
 
-  List<_DateViewModel?> _generateDates() {
-    final startDate = widget.dateTime;
+  // ───────────────────────────  Helpers  ────────────────────────────
 
-    int year = startDate.year;
-    int month = startDate.month;
-    int daysInMonth = DateTime(year, month + 1, 0).day;
-
-    DateTime firstDayOfMonth = DateTime(year, month, 1);
-    DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
-
-    List<_DateViewModel?> datesInMonths = [];
-
-    // Add padding to start of month
-    final isFirstDayNotMonday = firstDayOfMonth.weekday > 1;
-    if (isFirstDayNotMonday) {
-      final precedingDays = firstDayOfMonth.weekday - 1;
-      final emptyDated = List.filled(precedingDays, null);
-      datesInMonths.addAll(emptyDated);
-    }
-
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
-
-    final monthlyRoutineLogs = (routineLogController.logs
-            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
-
-    final monthlyActivityLogs = (activityLogController.logs
-            .where((log) => log.createdAt.isBetweenInclusive(from: firstDayOfMonth, to: lastDayOfMonth)))
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
-
-    // Add remainder dates
-    for (int day = 1; day <= daysInMonth; day++) {
-      final date = DateTime(year, month, day);
-      final hasRoutineLog = monthlyRoutineLogs.contains(date);
-      final hasActivityLog = monthlyActivityLogs.contains(date);
-      datesInMonths.add(_DateViewModel(
-          dateTime: date,
-          selectedDateTime: _currentDate.withoutTime(),
-          hasRoutineLog: hasRoutineLog,
-          hasActivityLog: hasActivityLog));
-    }
-
-    // Add padding to end of month
-    final isLastDayNotSunday = lastDayOfMonth.weekday < 7;
-    if (isLastDayNotSunday) {
-      final succeedingDays = 7 - lastDayOfMonth.weekday;
-      final emptyDated = List.filled(succeedingDays, null);
-      datesInMonths.addAll(emptyDated);
-    }
-
-    return datesInMonths;
+  int _calculateWeeksInMonth(DateTime month) {
+    final firstDay = DateTime(month.year, month.month, 1);
+    final lastDay = DateTime(month.year, month.month + 1, 0);
+    final leadingNulls = firstDay.weekday - 1; // Monday‑based week
+    final totalDays = leadingNulls + lastDay.day;
+    return (totalDays / 7).ceil();
   }
 
-  List<_DateViewModel?> _generateWeekDates() {
-    // 1. Identify the "base" date for the calendar
-    //    Here, we use widget.dateTime (the same reference your _generateDates uses).
-    final baseDate = DateTime.now().withoutTime();
+  DateTime _mondayOf(DateTime d) => d.subtract(Duration(days: d.weekday - 1));
 
-    // 2. Determine the first day of this week (assuming Monday as weekday=1)
-    //    If you're using Sunday as start, adjust accordingly.
-    final dayOfWeek = baseDate.weekday; // Monday = 1, Sunday = 7 in Dart
-    final difference = dayOfWeek - 1; // if Monday => 0, Tuesday => 1, etc.
-    final startOfWeek = baseDate.subtract(Duration(days: difference));
+  DateTime _monthByIndex(int pageIndex) =>
+      DateTime(_anchor.year, _anchor.month + (pageIndex - _kMonthOrigin), 1);
 
-    // 3. Calculate the end of this current week (6 days after start)
-    final endOfWeek = startOfWeek.add(const Duration(days: 6));
-
-    // 4. Retrieve logs from your controllers for only this 7-day range
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
-    final activityLogController = Provider.of<ActivityLogController>(context, listen: false);
-
-    final weeklyRoutineLogs = routineLogController.logs
-        .where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek))
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
-
-    final weeklyActivityLogs = activityLogController.logs
-        .where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek))
-        .map((log) => DateTime(log.createdAt.year, log.createdAt.month, log.createdAt.day));
-
-    // 5. Build the list of exactly 7 date entries for the current week
-    final datesInWeek = <_DateViewModel?>[];
-
-    for (int i = 0; i < 7; i++) {
-      final currentDate = startOfWeek.add(Duration(days: i));
-      final hasRoutineLog = weeklyRoutineLogs.contains(currentDate);
-      final hasActivityLog = weeklyActivityLogs.contains(currentDate);
-
-      datesInWeek.add(
-        _DateViewModel(
-          dateTime: currentDate,
-          selectedDateTime: _currentDate.withoutTime(), // or whatever your "selected" logic is
-          hasRoutineLog: hasRoutineLog,
-          hasActivityLog: hasActivityLog,
-        ),
-      );
-    }
-
-    return datesInWeek;
+  void _onDateTap(DateTime d) {
+    setState(() => _selected = d);
+    widget.onSelectDate?.call(d);
   }
+
+  void _toggleView() => setState(() {
+        _expanded = !_expanded;
+        if (!_expanded) {
+          _focused = _anchor; // header shows the current month
+          widget.onMonthChanged?.call(thisMonthDateRange());
+        }
+      });
+
+  // ───────────────────────────  Build  ──────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark || widget.forceDarkMode;
-
-    final dates = widget.minimiseCalendar ? _generateWeekDates() : _generateDates();
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SharedPrefs().showCalendarDates
-            ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: _CalendarHeader(
-                  isDarkMode: isDarkMode,
-                ),
-              )
-            : const SizedBox(height: 8),
-        _Month(dates: dates, selectedDateTime: _currentDate.withoutTime(), onTap: _selectDate, isDarkMode: isDarkMode),
+        _CalendarTitleHeader(
+          date: _focused,
+          isExpanded: _expanded,
+          onToggle: _toggleView,
+          isDarkMode: isDark,
+        ),
+        const SizedBox(height: 10),
+        const _CalendarHeader(),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          alignment: Alignment.topCenter,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              const double rowHeight =
+                  60.0; // Adjust based on your item height + spacing
+              final int rowCount = _expanded ? _currentMonthWeeks : 1;
+              final double height = rowHeight * rowCount;
+
+              return SizedBox(
+                height: height,
+                child: _expanded
+                    ? _buildMonthPager(isDark)
+                    : _buildWeekGrid(isDark),
+              );
+            },
+          ),
+        )
       ],
+    );
+  }
+
+  // Week pager  ──────────────────────────────────────────────────────
+
+// ─── ❸: new helper – a fixed grid for the current week ──────────────
+  Widget _buildWeekGrid(bool isDark) {
+    final monday = _mondayOf(_anchor); // always anchor‑week
+    final days = List.generate(7, (i) => monday.add(Duration(days: i)));
+    final logs =
+        widget.logs ?? context.read<ExerciseAndRoutineController>().logs;
+
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(), // <— not scrollable
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+        childAspectRatio: 1,
+      ),
+      itemCount: 7,
+      itemBuilder: (_, i) {
+        final d = days[i];
+        final has = logs.any((l) => l.createdAt.isSameDayMonthYear(d));
+        return _Day(
+          dateTime: d,
+          selected: d.isSameDayMonthYear(_selected),
+          currentDate: d.isSameDayMonthYear(DateTime.now()),
+          hasRoutineLog: has,
+          onTap: _onDateTap,
+          isDarkMode: isDark,
+        );
+      },
+    );
+  }
+
+  // Month pager  ─────────────────────────────────────────────────────
+
+  Widget _buildMonthPager(bool isDark) {
+    return PageView.builder(
+      controller: _monthCtl,
+      onPageChanged: (page) {
+        final newMonth = _monthByIndex(page);
+        setState(() {
+          _focused = newMonth;
+          _currentMonthWeeks = _calculateWeeksInMonth(newMonth);
+        });
+
+        // Calculate month boundaries and trigger callback
+        final start = DateTime(newMonth.year, newMonth.month, 1);
+        final end = DateTime(newMonth.year, newMonth.month + 1, 0);
+        widget.onMonthChanged?.call(DateTimeRange(start: start, end: end));
+      },
+      itemBuilder: (_, page) {
+        final monthStart = _monthByIndex(page);
+        final grid = _generateMonthDates(monthStart);
+        return _Month(
+          dates: grid,
+          selectedDateTime: _selected,
+          onTap: _onDateTap,
+          isDarkMode: isDark,
+        );
+      },
+    );
+  }
+
+  // Utilities to build month grid  ───────────────────────────────────
+
+  List<_DateViewModel?> _generateMonthDates(DateTime monthStart) {
+    final first = DateTime(monthStart.year, monthStart.month, 1);
+    final last = DateTime(monthStart.year, monthStart.month + 1, 0);
+    final logs = widget.logs ??
+        context.read<ExerciseAndRoutineController>().logs.where(
+            (l) => l.createdAt.isBetweenInclusive(from: first, to: last));
+
+    final List<_DateViewModel?> out = [];
+    for (int i = 1; i < first.weekday; i++) {
+      out.add(null);
+    }
+    for (int d = 1; d <= last.day; d++) {
+      final date = DateTime(monthStart.year, monthStart.month, d);
+      final has = logs.any((l) => l.createdAt.isSameDayMonthYear(date));
+      out.add(_DateViewModel(
+          dateTime: date, selectedDateTime: _selected, hasRoutineLog: has));
+    }
+    while (out.length % 7 != 0) {
+      out.add(null);
+    }
+    return out;
+  }
+}
+
+class _CalendarTitleHeader extends StatelessWidget {
+  final DateTime date;
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  final bool isDarkMode;
+
+  const _CalendarTitleHeader({
+    required this.date,
+    required this.isExpanded,
+    required this.onToggle,
+    required this.isDarkMode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onToggle,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            DateFormat('MMMM yyyy').format(date),
+            style: GoogleFonts.ubuntu(
+              color: isDarkMode ? darkOnSurface : Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          const Spacer(),
+          FaIcon(
+            isExpanded ? Icons.expand_less : Icons.expand_more,
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _CalendarHeader extends StatelessWidget {
-  final bool isDarkMode;
-
-  const _CalendarHeader({required this.isDarkMode});
+  const _CalendarHeader();
 
   @override
   Widget build(BuildContext context) {
-    final List<String> daysOfWeek = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
 
     return SizedBox(
-        height: 25,
-        child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 7,
-            childAspectRatio: 1, // for square shape
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemCount: daysOfWeek.length, // Just an example to vary the number of squares
-          itemBuilder: (context, index) {
-            return Text(daysOfWeek[index],
-                style:
-                    Theme.of(context).textTheme.bodyMedium?.copyWith(color: isDarkMode ? Colors.white : Colors.black),
-                textAlign: TextAlign.center);
-          },
-        ));
+      height: 25,
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          childAspectRatio: 1,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: 7,
+        itemBuilder: (_, index) => Text(
+          ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][index],
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: isDarkMode ? darkOnSurfaceVariant : Colors.black54),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 }
 
@@ -219,41 +298,35 @@ class _Month extends StatelessWidget {
   final void Function(DateTime dateTime) onTap;
   final bool isDarkMode;
 
-  const _Month({required this.dates, required this.selectedDateTime, required this.onTap, required this.isDarkMode});
+  const _Month(
+      {required this.dates,
+      required this.selectedDateTime,
+      required this.onTap,
+      required this.isDarkMode});
 
   @override
   Widget build(BuildContext context) {
-    final datesWidgets = dates.map((date) {
-      if (date == null) {
-        return const SizedBox();
-      } else {
-        return _Day(
-          dateTime: date.dateTime,
-          onTap: onTap,
-          selected: date.dateTime.isSameDayMonthYear(selectedDateTime),
-          currentDate: date.dateTime.isSameDayMonthAndYear(DateTime.now()),
-          hasRoutineLog: date.hasRoutineLog,
-          hasActivityLog: date.hasActivityLog,
-          isDarkMode: isDarkMode,
-        );
-      }
-    }).toList();
-
     return GridView.builder(
-      shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      // to disable GridView's scrolling
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        childAspectRatio: 1, // for square shape
+        childAspectRatio: 1,
         crossAxisSpacing: 4.0,
         mainAxisSpacing: 4.0,
       ),
-      itemCount: datesWidgets.length,
-      // Just an example to vary the number of squares
-      itemBuilder: (context, index) {
-        return datesWidgets[index];
-      },
+      itemCount: dates.length,
+      itemBuilder: (_, index) => dates[index] == null
+          ? const SizedBox()
+          : _Day(
+              dateTime: dates[index]!.dateTime,
+              selected:
+                  dates[index]!.dateTime.isSameDayMonthYear(selectedDateTime),
+              currentDate:
+                  dates[index]!.dateTime.isSameDayMonthYear(DateTime.now()),
+              hasRoutineLog: dates[index]!.hasRoutineLog,
+              onTap: onTap,
+              isDarkMode: isDarkMode,
+            ),
     );
   }
 }
@@ -262,50 +335,35 @@ class _Day extends StatelessWidget {
   final DateTime dateTime;
   final bool selected;
   final bool hasRoutineLog;
-  final bool hasActivityLog;
   final bool currentDate;
   final void Function(DateTime dateTime) onTap;
   final bool isDarkMode;
 
-  const _Day(
-      {required this.dateTime,
-      required this.selected,
-      required this.currentDate,
-      required this.onTap,
-      this.hasRoutineLog = false,
-      this.hasActivityLog = false,
-      required this.isDarkMode});
+  const _Day({
+    required this.dateTime,
+    required this.selected,
+    required this.currentDate,
+    required this.onTap,
+    this.hasRoutineLog = false,
+    required this.isDarkMode,
+  });
 
-  Color _getBackgroundColor({required bool isDarkMode}) {
-    if (hasRoutineLog) {
-      return isDarkMode && SharedPrefs().showCalendarDates ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen;
-    }
-    if (hasActivityLog) {
-      return isDarkMode && SharedPrefs().showCalendarDates
-          ? Colors.greenAccent.withValues(alpha: 0.1)
-          : Colors.greenAccent;
-    } else {
-      return isDarkMode ? sapphireDark80.withValues(alpha: 0.5) : Colors.grey.shade200;
-    }
-  }
+  Color _getBackgroundColor() => hasRoutineLog
+      ? (isDarkMode ? vibrantGreen.withValues(alpha: 0.1) : vibrantGreen)
+      : (isDarkMode
+          ? darkSurface.withValues(alpha: 0.5)
+          : Colors.grey.shade200);
 
-  Color _getTextColor({required bool isDarkMode}) {
-    if (hasRoutineLog) {
-      return isDarkMode ? vibrantGreen : Colors.black;
-    }
-    if (hasActivityLog) {
-      return isDarkMode ? Colors.greenAccent : Colors.black;
-    } else {
-      return isDarkMode ? Colors.white : Colors.black;
-    }
-  }
+  Color _getTextColor() => hasRoutineLog
+      ? (isDarkMode ? vibrantGreen : Colors.black)
+      : (isDarkMode ? darkOnSurface : Colors.black);
 
   Border? _dateBorder() {
     if (selected) {
-      return Border.all(color: Colors.blueGrey, width: 2.0);
-    } else if (currentDate) {
-      return Border.all(color: Colors.grey, width: 2.0);
+      return Border.all(
+          color: isDarkMode ? darkOnSurface : Colors.black, width: 2);
     }
+    if (currentDate) return Border.all(color: Colors.grey, width: 2);
     return null;
   }
 
@@ -316,22 +374,23 @@ class _Day extends StatelessWidget {
       child: Container(
         padding: selected ? const EdgeInsets.all(2) : null,
         decoration: BoxDecoration(
-          border: _dateBorder(),
-          borderRadius: BorderRadius.circular(2),
-        ),
+            border: _dateBorder(),
+            borderRadius: BorderRadius.circular(radiusSM)),
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: _getBackgroundColor(isDarkMode: isDarkMode),
-            borderRadius: BorderRadius.circular(2),
+            color: _getBackgroundColor(),
+            borderRadius: BorderRadius.circular(radiusXS),
           ),
-          child: SharedPrefs().showCalendarDates
-              ? Center(
-                  child: Text("${dateTime.day}",
-                      style: GoogleFonts.ubuntu(
-                          fontSize: 16, fontWeight: FontWeight.bold, color: _getTextColor(isDarkMode: isDarkMode))),
-                )
-              : SizedBox.shrink(),
+          child: Center(
+            child: Text(
+              "${dateTime.day}",
+              style: GoogleFonts.ubuntu(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: _getTextColor()),
+            ),
+          ),
         ),
       ),
     );

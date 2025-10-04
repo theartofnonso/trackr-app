@@ -17,29 +17,37 @@ class LogStreakChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final routineLogController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final dateRange = theLastYearDateTimeRange();
 
-    final logs = routineLogController.whereLogsIsWithinRange(range: dateRange).toList();
+    final logs =
+        routineLogController.whereLogsIsWithinRange(range: dateRange).toList();
 
-    final weeksInLastYear = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
+    final weeksInLastQuarter = generateWeeksInRange(range: dateRange)
+        .reversed
+        .take(13)
+        .toList()
+        .reversed;
 
     List<String> months = [];
     List<int> days = [];
-    for (final week in weeksInLastYear) {
+    for (final week in weeksInLastQuarter) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
-      final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
-      final routineLogsByDay = groupBy(logsForTheWeek, (log) => log.createdAt.withoutTime().day);
+      final logsForTheWeek = logs.where((log) =>
+          log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+      final routineLogsByDay =
+          groupBy(logsForTheWeek, (log) => log.createdAt.withoutTime().day);
       days.add(routineLogsByDay.length);
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final chartPoints = days.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    final chartPoints = days
+        .mapIndexed((index, value) =>
+            ChartPointDto(x: index.toDouble(), y: value.toDouble()))
+        .toList();
 
     final trendSummary = _analyzeWeeklyTrends(daysTrained: days);
 
@@ -50,7 +58,9 @@ class LogStreakChart extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 10,
           children: [
-            trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
+            trendSummary.trend == Trend.none
+                ? const SizedBox.shrink()
+                : getTrendIcon(trend: trendSummary.trend),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,7 +92,7 @@ class LogStreakChart extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                ?.copyWith(fontWeight: FontWeight.w400)),
         const SizedBox(height: 30),
         LineChartWidget(
           chartPoints: chartPoints,
@@ -102,7 +112,8 @@ class LogStreakChart extends StatelessWidget {
       return TrendSummary(
         trend: Trend.none,
         average: 0,
-        summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!",
+        summary:
+            "🤔 No training data available yet. Log some sessions to start tracking your progress!",
       );
     }
 
@@ -113,19 +124,21 @@ class LogStreakChart extends StatelessWidget {
       return TrendSummary(
         trend: Trend.none,
         average: 0,
-        summary: "🌟 You’ve logged your first week: $singleWeek day(s) of training."
+        summary:
+            "🌟 You’ve logged your first week: $singleWeek day(s) of training."
             " Great job! Log more weeks to identify trends over time.",
       );
     }
 
     // 3. Now we can safely do sublist & reduce because we have at least 2 entries
-    final previousVolumes = daysTrained.sublist(0, daysTrained.length - 1);
-    final averageOfPrevious = (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length).round();
+    final previousDays = daysTrained.sublist(0, daysTrained.length - 1);
+    final averageOfPrevious =
+        (previousDays.reduce((a, b) => a + b) / previousDays.length).round();
 
     // 4. Identify the last week's days trained
-    final lastWeekVolume = daysTrained.last;
+    final recentWeekDays = daysTrained.last;
 
-    if (lastWeekVolume == 0) {
+    if (recentWeekDays == 0) {
       return TrendSummary(
         trend: Trend.none,
         average: averageOfPrevious,
@@ -135,11 +148,12 @@ class LogStreakChart extends StatelessWidget {
     }
 
     // 5. Compare the last week's volume to the average of previous weeks
-    final difference = lastWeekVolume - averageOfPrevious;
+    final difference = recentWeekDays - averageOfPrevious;
     final differenceIsZero = (difference == 0);
 
     final bool averageIsZero = (averageOfPrevious == 0);
-    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
+    final double percentageChange =
+        averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
 
     // 6. Decide the trend
     const threshold = 5; // ±5% threshold
@@ -160,7 +174,8 @@ class LogStreakChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.up,
           average: averageOfPrevious,
-          summary: "🌟🌟 You're training $diffAbs more ${pluralize(word: 'day', count: diffAbs)} than your average!"
+          summary:
+              "🌟🌟 You're training $diffAbs more ${pluralize(word: 'day', count: diffAbs)} than your weekly average!"
               " Keep it going—you’re building solid habits!",
         );
 
@@ -168,13 +183,14 @@ class LogStreakChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.down,
           average: averageOfPrevious,
-          summary: "📉 You're training $diffAbs ${pluralize(word: 'day', count: diffAbs)} lesser than your average."
+          summary:
+              "📉 You're training $diffAbs ${pluralize(word: 'day', count: diffAbs)} lesser than your weekly average."
               " Consider your schedule, rest, or motivation to stay on track.",
         );
 
       case Trend.stable:
         final summary = differenceIsZero
-            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            ? "🌟 You've matched your weekly average! Stay consistent to see long-term progress."
             : "🔄 Your training days only varied by about $diffAbs compared to your average."
                 " Keep refining your routine for ongoing consistency!";
         return TrendSummary(

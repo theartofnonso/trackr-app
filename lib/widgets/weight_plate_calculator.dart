@@ -32,7 +32,8 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
               child: OpacityCircleButtonWidget(
                   padding: EdgeInsets.all(16),
                   onPressed: () => _onSelectPlate(newPlate: plate),
-                  buttonColor: _getPlate(plate: plate) != null ? vibrantGreen : null,
+                  buttonColor:
+                      _getPlate(plate: plate) != null ? vibrantGreen : null,
                   label: "${weightWithConversion(value: plate.weight)}"),
             ))
         .toList();
@@ -48,9 +49,11 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
             ))
         .toList();
 
-    final weightSuggestions = _findClosestWeightCombination(targetWeight: widget.target);
+    final weightSuggestions =
+        _findClosestWeightCombination(targetWeight: widget.target);
 
-    final plateSuggestions = weightSuggestions.map((weight) => _PlatesEnum.fromDouble(weight));
+    final plateSuggestions =
+        weightSuggestions.map((weight) => _PlatesEnum.fromDouble(weight));
 
     final weightEstimate = (weightSuggestions.sum * 2) + _selectedBar.weight;
 
@@ -61,60 +64,72 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("${weightWithConversion(value: widget.target)}${weightLabel()}".toUpperCase(),
-              textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineLarge),
+          Text(
+              "${weightWithConversion(value: widget.target)}${weightUnit()}"
+                  .toUpperCase(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(
             height: 2,
           ),
           Text("Target Weight".toUpperCase(),
-              textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(
-            height: 18,
-          ),
-          _Bar(
-            bar: _selectedBar,
-            plates: plateSuggestions.sorted((a, b) => b.weight.compareTo(a.weight)),
+              textAlign: TextAlign.start,
+              style: Theme.of(context).textTheme.bodyMedium),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: _Bar(
+              bar: _selectedBar,
+              plates: plateSuggestions
+                  .sorted((a, b) => b.weight.compareTo(a.weight)),
+            ),
           ),
           if (_selectedPlates.isNotEmpty && !isExact)
             Padding(
-              padding: const EdgeInsets.only(top: 14, bottom: 2),
+              padding: const EdgeInsets.only(bottom: 14),
               child: Text(
-                  "Closest estimate is ${weightWithConversion(value: weightEstimate)}${weightLabel()}".toUpperCase(),
+                  "Closest estimate is ${weightWithConversion(value: weightEstimate)}${weightUnit()}"
+                      .toUpperCase(),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium),
             ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: LabelDivider(
-                label: "Available Weights (${weightLabel()})".toUpperCase(),
+                label: "Available Weights (${weightUnit()})".toUpperCase(),
                 labelColor: isDarkMode ? Colors.white70 : Colors.black,
-                dividerColor: sapphireLighter),
+                dividerColor: darkDivider),
           ),
+          const SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
-              children: [SizedBox(width: 16), ...plates, SizedBox(width: 16)],
+              children: plates,
             ),
           ),
+          const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: LabelDivider(
-              label: "Available Bar (${weightLabel()})".toUpperCase(),
+              label: "Available Bar (${weightUnit()})".toUpperCase(),
               labelColor: isDarkMode ? Colors.white70 : Colors.black,
-              dividerColor: sapphireLighter,
+              dividerColor: darkDivider,
               leftToRight: true,
             ),
           ),
+          const SizedBox(height: 6),
           SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(children: [SizedBox(width: 16), ...bars, SizedBox(width: 16)])),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(children: bars)),
         ],
       ),
     );
   }
 
   void _onSelectPlate({required _PlatesEnum newPlate}) {
-    final oldPlate = _selectedPlates.firstWhereOrNull((previousPlate) => previousPlate.weight == newPlate.weight);
+    final oldPlate = _selectedPlates.firstWhereOrNull(
+        (previousPlate) => previousPlate.weight == newPlate.weight);
     setState(() {
       if (oldPlate != null) {
         _selectedPlates.remove(oldPlate);
@@ -131,7 +146,8 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
   }
 
   _PlatesEnum? _getPlate({required _PlatesEnum plate}) =>
-      _selectedPlates.firstWhereOrNull((previousPlate) => previousPlate.weight == plate.weight);
+      _selectedPlates.firstWhereOrNull(
+          (previousPlate) => previousPlate.weight == plate.weight);
 
   List<double> _findClosestWeightCombination({required double targetWeight}) {
     // Calculate the weight needed for one side
@@ -144,7 +160,8 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
     double bestSum = 0;
 
     // Recursive function to find the best combination
-    void findCombination(List<double> currentCombination, double currentSum, int index) {
+    void findCombination(
+        List<double> currentCombination, double currentSum, int index) {
       if (currentSum > halfTargetWeight) return;
 
       if (currentSum > bestSum) {
@@ -154,7 +171,8 @@ class _WeightCalculatorState extends State<WeightPlateCalculator> {
 
       for (int i = index; i < _selectedPlates.length; i++) {
         currentCombination.add(_selectedPlates[i].weight);
-        findCombination(currentCombination, currentSum + _selectedPlates[i].weight, i);
+        findCombination(
+            currentCombination, currentSum + _selectedPlates[i].weight, i);
         currentCombination.removeLast();
       }
     }
@@ -173,7 +191,6 @@ class _Bar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(children: [
@@ -185,19 +202,19 @@ class _Bar extends StatelessWidget {
             child: Center(
               child: Text("${weightWithConversion(value: bar.weight)}",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold)),
+                  style: GoogleFonts.ubuntu(
+                      fontSize: 12,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold)),
             )),
-        Container(width: 15, height: 40, color: sapphireDark),
+        Container(width: 15, height: 40, color: darkSurface),
         ...plates.map((plate) => _Plate(plate: plate)),
         Container(
             width: 10,
             height: 20,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(5),
-                bottomRight: Radius.circular(5),
-              ),
               color: Colors.grey.shade400,
+              borderRadius: BorderRadius.circular(radiusSM),
             )),
         SizedBox(width: 16)
       ]),
@@ -218,11 +235,15 @@ class _Plate extends StatelessWidget {
       width: plate.width,
       height: plate.height,
       margin: EdgeInsets.only(right: 3),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6), color: sapphireDark),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(radiusSM), color: darkSurface),
       child: Center(
         child: Text("${weightWithConversion(value: plate.weight)}",
             textAlign: TextAlign.center,
-            style: GoogleFonts.ubuntu(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w600)),
+            style: GoogleFonts.ubuntu(
+                fontSize: 12,
+                color: Colors.white70,
+                fontWeight: FontWeight.w600)),
       ),
     );
   }
@@ -242,7 +263,8 @@ enum _PlatesEnum {
   final double height;
   final double width;
 
-  const _PlatesEnum({required this.weight, required this.height, required this.width});
+  const _PlatesEnum(
+      {required this.weight, required this.height, required this.width});
 
   static _PlatesEnum fromDouble(double weight) {
     return _PlatesEnum.values.firstWhere((value) => value.weight == weight);
@@ -254,8 +276,7 @@ enum _BarsEnum {
   fifteen(weight: 15),
   ten(weight: 10),
   five(weight: 5),
-  sevenFive(weight: 7.5),
-  zero(weight: 0.0);
+  sevenFive(weight: 7.5);
 
   final double weight;
 

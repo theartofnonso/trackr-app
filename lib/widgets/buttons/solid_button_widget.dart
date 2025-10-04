@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 
 class SolidButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
@@ -29,11 +30,14 @@ class SolidButtonWidget extends StatelessWidget {
     return TextButton(
         style: ButtonStyle(
           visualDensity: visualDensity,
-          backgroundColor: WidgetStateProperty.all(buttonColor ?? Colors.transparent),
-          shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+          backgroundColor:
+              WidgetStateProperty.all(buttonColor ?? Colors.transparent),
+          shape: WidgetStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radiusMD))),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-              return Colors.black.withValues(alpha: 0.3); // Defer to the widget's default.
+              return Colors.black
+                  .withValues(alpha: 0.3); // Defer to the widget's default.
             },
           ),
         ),
@@ -47,13 +51,17 @@ class SolidButtonWidget extends StatelessWidget {
               Text(loading ? loadingLabel : label,
                   textAlign: TextAlign.start,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: textColor ?? (isDarkMode ? Colors.white : Colors.black))),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: textColor ??
+                          (isDarkMode ? darkOnSurface : Colors.black))),
               loading
                   ? const Padding(
                       padding: EdgeInsets.only(left: 6.0),
-                      child: SizedBox(height: 10, width: 10, child: CircularProgressIndicator(strokeWidth: 2)),
+                      child: SizedBox(
+                          height: 10,
+                          width: 10,
+                          child: CircularProgressIndicator(strokeWidth: 2)),
                     )
                   : const SizedBox.shrink()
             ],

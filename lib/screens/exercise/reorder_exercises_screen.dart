@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tracker_app/utils/general_utils.dart';
 
+import '../../colors.dart';
 import '../../dtos/exercise_log_dto.dart';
 
 class ReOrderExercisesScreen extends StatefulWidget {
@@ -39,6 +39,9 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
+    final isDarkMode = systemBrightness == Brightness.dark;
+
     final widgets = _exercises
         .mapIndexed((index, exercise) => ListTile(
               key: Key("$index"),
@@ -60,7 +63,8 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
         actions: [
           _hasReOrdered
               ? IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
+                  icon:
+                      const FaIcon(FontAwesomeIcons.solidSquareCheck, size: 28),
                   onPressed: _saveReOrdering,
                 )
               : const SizedBox.shrink(),
@@ -70,14 +74,15 @@ class _ReOrderExercisesScreenState extends State<ReOrderExercisesScreen> {
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          gradient: themeGradient(context: context),
+          color: isDarkMode ? darkBackground : Colors.white,
         ),
         child: SafeArea(
           minimum: const EdgeInsets.all(10.0),
           child: ReorderableListView(
               buildDefaultDragHandles: true,
               children: widgets,
-              onReorder: (int oldIndex, int newIndex) => _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
+              onReorder: (int oldIndex, int newIndex) =>
+                  _reOrderProcedures(oldIndex: oldIndex, newIndex: newIndex)),
         ),
       ),
     );

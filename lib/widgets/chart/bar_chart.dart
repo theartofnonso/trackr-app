@@ -54,7 +54,9 @@ class CustomBarChart extends StatelessWidget {
                 drawVerticalLine: false,
                 checkToShowHorizontalLine: (value) => true,
                 getDrawingHorizontalLine: (value) => FlLine(
-                  color: isDarkMode ? Colors.white.withValues(alpha: 0.1) : Colors.grey.shade200,
+                  color: isDarkMode
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.grey.shade200,
                   strokeWidth: 0.5,
                 ),
               ),
@@ -65,7 +67,8 @@ class CustomBarChart extends StatelessWidget {
           )
         : Center(
             child: FaIcon(FontAwesomeIcons.chartSimple,
-                color: isDarkMode ? sapphireDark : Colors.grey.shade400, size: 120));
+                color: isDarkMode ? darkSurfaceContainer : Colors.grey.shade400,
+                size: 120));
   }
 
   BarTouchData get barTouchData => BarTouchData(
@@ -120,22 +123,25 @@ class CustomBarChart extends StatelessWidget {
         show: false,
       );
 
-  List<BarChartGroupData> barGroups({required bool isDarkMode}) => chartPoints.mapIndexed((index, point) {
+  List<BarChartGroupData> barGroups({required bool isDarkMode}) =>
+      chartPoints.mapIndexed((index, point) {
         return BarChartGroupData(
           x: point.x.toInt(),
           barRods: [
             BarChartRodData(
-                borderRadius: BorderRadius.circular(2),
                 width: barWidth(length: chartPoints.length),
                 toY: point.y.toDouble(),
-                color: barColors?[index] ?? (isDarkMode ? Colors.white : Colors.black))
+                borderRadius: BorderRadius.circular(radiusXS),
+                color: barColors?[index] ??
+                    (isDarkMode ? darkOnSurface : Colors.black))
           ],
           showingTooltipIndicators: showTopTitles ? [0] : null,
         );
       }).toList();
 
   Widget _leftTitleWidgets(double value, TitleMeta meta) {
-    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
+    final style = GoogleFonts.ubuntu(
+        fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
 
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.fromTitleMeta(meta, enabled: false),
@@ -152,8 +158,10 @@ class CustomBarChart extends StatelessWidget {
   }
 
   Widget _bottomTitleWidgets(double value, TitleMeta meta) {
-    final modifiedDateTimes = periods.length == 1 ? [...periods, ...periods] : periods;
-    final style = GoogleFonts.ubuntu(fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
+    final modifiedDateTimes =
+        periods.length == 1 ? [...periods, ...periods] : periods;
+    final style = GoogleFonts.ubuntu(
+        fontWeight: FontWeight.w500, fontSize: 9, color: Colors.grey.shade600);
     return SideTitleWidget(
       fitInside: SideTitleFitInsideData.disable(),
       meta: meta,

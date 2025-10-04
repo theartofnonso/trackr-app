@@ -21,10 +21,8 @@ class VolumeChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
-    final isDarkMode = systemBrightness == Brightness.dark;
-
-    final routineLogController = Provider.of<ExerciseAndRoutineController>(context, listen: false);
+    final routineLogController =
+        Provider.of<ExerciseAndRoutineController>(context, listen: false);
 
     final dateRange = theLastYearDateTimeRange();
 
@@ -33,14 +31,19 @@ class VolumeChart extends StatelessWidget {
         .map((log) => routineWithLoggedExercises(log: log))
         .toList();
 
-    final weeksInLastYear = generateWeeksInRange(range: dateRange).reversed.take(13).toList().reversed;
+    final weeksInLastQuarter = generateWeeksInRange(range: dateRange)
+        .reversed
+        .take(13)
+        .toList()
+        .reversed;
 
     List<String> months = [];
     List<double> volumes = [];
-    for (final week in weeksInLastYear) {
+    for (final week in weeksInLastQuarter) {
       final startOfWeek = week.start;
       final endOfWeek = week.end;
-      final logsForTheWeek = logs.where((log) => log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
+      final logsForTheWeek = logs.where((log) =>
+          log.createdAt.isBetweenInclusive(from: startOfWeek, to: endOfWeek));
       final values = logsForTheWeek
           .expand((log) => log.exerciseLogs)
           .expand((exerciseLog) => exerciseLog.sets)
@@ -57,8 +60,10 @@ class VolumeChart extends StatelessWidget {
       months.add(startOfWeek.abbreviatedMonth());
     }
 
-    final chartPoints =
-        volumes.mapIndexed((index, value) => ChartPointDto(index.toDouble(), value.toDouble())).toList();
+    final chartPoints = volumes
+        .mapIndexed((index, value) =>
+            ChartPointDto(x: index.toDouble(), y: value.toDouble()))
+        .toList();
 
     final trendSummary = _analyzeWeeklyTrends(volumes: volumes);
 
@@ -69,7 +74,9 @@ class VolumeChart extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 10,
           children: [
-            trendSummary.trend == Trend.none ? const SizedBox.shrink() : getTrendIcon(trend: trendSummary.trend),
+            trendSummary.trend == Trend.none
+                ? const SizedBox.shrink()
+                : getTrendIcon(trend: trendSummary.trend),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,7 +89,7 @@ class VolumeChart extends StatelessWidget {
                         text: " ",
                       ),
                       TextSpan(
-                        text: weightLabel().toUpperCase(),
+                        text: weightUnit().toUpperCase(),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -101,7 +108,7 @@ class VolumeChart extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w400, color: isDarkMode ? Colors.white70 : Colors.black)),
+                ?.copyWith(fontWeight: FontWeight.w400)),
         const SizedBox(height: 20),
         LineChartWidget(
           chartPoints: chartPoints,
@@ -121,32 +128,34 @@ class VolumeChart extends StatelessWidget {
       return TrendSummary(
         trend: Trend.none,
         average: 0,
-        summary: "🤔 No training data available yet. Log some sessions to start tracking your progress!",
+        summary:
+            "🤔 No training data available yet. Log some sessions to start tracking your progress!",
       );
     }
 
     // 2. If there's only one volume, we can’t calculate “previous average”.
     //    So just return a simple summary here.
     if (volumes.length == 1) {
-      final singleVolume = volumes.first;
       // Here, “averageOfPrevious” doesn’t exist because there is no previous session.
       // So we can safely set it to 0 or the same singleVolume—whichever you prefer.
       return TrendSummary(
         trend: Trend.none,
         average: 0, // No previous sessions
-        summary: "🌟 You've logged your first week's volume ($singleVolume). "
+        summary: "🌟 You've logged your first week's volume. "
             "Great job! Keep logging more data to see trends over time.",
       );
     }
 
     // 3. At this point, volumes.length >= 2, so we can safely do sublist and reduce
     final previousVolumes = volumes.sublist(0, volumes.length - 1);
-    final averageOfPrevious = (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length).round();
+    final averageOfPrevious =
+        (previousVolumes.reduce((a, b) => a + b) / previousVolumes.length)
+            .round();
 
     // 4. Identify the most recent volume
-    final lastWeekVolume = volumes.last;
+    final recentWeekVolume = volumes.last;
 
-    if (lastWeekVolume == 0) {
+    if (recentWeekVolume == 0) {
       return TrendSummary(
         trend: Trend.none,
         average: averageOfPrevious,
@@ -156,12 +165,13 @@ class VolumeChart extends StatelessWidget {
     }
 
     // 5. Compare last week's volume to the average of previous volumes
-    final difference = lastWeekVolume - averageOfPrevious;
+    final difference = recentWeekVolume - averageOfPrevious;
     final differenceIsZero = difference == 0;
 
     // If the average is zero, treat it as a special case for percentage change
     final bool averageIsZero = averageOfPrevious == 0;
-    final double percentageChange = averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
+    final double percentageChange =
+        averageIsZero ? 100.0 : (difference / averageOfPrevious) * 100;
 
     // 6. Decide the trend
     const threshold = 5; // ±5% threshold
@@ -182,7 +192,8 @@ class VolumeChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.up,
           average: averageOfPrevious,
-          summary: "🌟🌟 This week's volume is $variation higher than your average. "
+          summary:
+              "🌟🌟 This week's volume is $variation higher than your weekly average. "
               "Awesome job building momentum!",
         );
 
@@ -190,13 +201,14 @@ class VolumeChart extends StatelessWidget {
         return TrendSummary(
           trend: Trend.down,
           average: averageOfPrevious,
-          summary: "📉 This week's volume is $variation lower than your average. "
+          summary:
+              "📉 This week's volume is $variation lower than your weekly average. "
               "Consider extra rest, checking your technique, or planning a deload.",
         );
 
       case Trend.stable:
         final summary = differenceIsZero
-            ? "🌟 You've matched your average exactly! Stay consistent to see long-term progress."
+            ? "🌟 You've matched your weekly average! Stay consistent to see long-term progress."
             : "🔄 Your volume changed by about $variation compared to your average. "
                 "A great chance to refine your form and maintain consistency.";
         return TrendSummary(

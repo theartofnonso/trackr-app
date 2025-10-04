@@ -18,74 +18,81 @@ class SessionMilestoneShareable extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: RepaintBoundary(
-          key: sessionMilestoneGlobalKey,
-          child: Container(
-            decoration: BoxDecoration(
-              image: imageFile != null
-                  ? DecorationImage(
-                      image: imageFile.image,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter,
-                    )
-                  : null,
-              gradient: imageFile == null
-                  ? const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        sapphireDark80,
-                        sapphireDark,
-                      ],
-                    )
-                  : null,
-            ),
-            child: Stack(alignment: Alignment.center, fit: StackFit.expand, children: [
-              if (imageFile != null)
-                Positioned.fill(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
+      child: RepaintBoundary(
+        key: sessionMilestoneGlobalKey,
+        child: Container(
+          decoration: BoxDecoration(
+            image: imageFile != null
+                ? DecorationImage(
+                    image: imageFile.image,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                  )
+                : null,
+            gradient: imageFile == null
+                ? const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      sapphireDark.withValues(alpha: 0.4),
-                      sapphireDark,
+                      darkSurfaceContainer,
+                      darkSurface,
                     ],
+                  )
+                : null,
+          ),
+          child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.expand,
+              children: [
+                if (imageFile != null)
+                  Positioned.fill(
+                      child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        darkSurface.withValues(alpha: 0.4),
+                        darkSurface,
+                      ],
+                    )),
                   )),
-                )),
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const FaIcon(FontAwesomeIcons.award, color: vibrantGreen, size: 40),
-                    const SizedBox(height: 20),
-                    Text(label,
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w900)),
-                    Text("Session".toUpperCase(),
-                        style: GoogleFonts.ubuntu(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                  ]),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20.0, bottom: 20),
-                  child: Row(
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Spacer(),
-                      Image.asset(
-                        'images/trkr.png',
-                        fit: BoxFit.contain,
-                        height: 8, // Adjust the height as needed
-                      )
-                    ],
+                      const FaIcon(FontAwesomeIcons.award,
+                          color: vibrantGreen, size: 40),
+                      const SizedBox(height: 20),
+                      Text(label,
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900)),
+                      Text("Session".toUpperCase(),
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
+                    ]),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Spacer(),
+                        Image.asset(
+                          'images/framer_logo.png',
+                          fit: BoxFit.cover,
+                          height: 30, // Adjust the height as needed
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ]),
-          ),
+              ]),
         ),
       ),
     );

@@ -13,7 +13,10 @@ class SharedPrefs {
   }
 
   void clear() {
-    _sharedPrefs?.clear();
+    remove(key: _weightUnitKey);
+    remove(key: _userIdKey);
+    remove(key: _userEmailKey);
+    remove(key: routineLogKey);
   }
 
   void remove({required String key}) {
@@ -31,24 +34,6 @@ class SharedPrefs {
 
   set weightUnit(String value) {
     _sharedPrefs?.setString(_weightUnitKey, value);
-  }
-
-  /// Show calendar dates
-  final String _showCalendarDatesKey = "show_calendar_dates_key";
-
-  bool get showCalendarDates => _sharedPrefs?.getBool(_showCalendarDatesKey) ?? true;
-
-  set showCalendarDates(bool value) {
-    _sharedPrefs?.setBool(_showCalendarDatesKey, value);
-  }
-
-  /// Show calendar
-  final String _minimiseCalendarKey = "minimise_calendar_key";
-
-  bool get minimiseCalendar => _sharedPrefs?.getBool(_minimiseCalendarKey) ?? false;
-
-  set minimiseCalendar(bool value) {
-    _sharedPrefs?.setBool(_minimiseCalendarKey, value);
   }
 
   /// First launch flag

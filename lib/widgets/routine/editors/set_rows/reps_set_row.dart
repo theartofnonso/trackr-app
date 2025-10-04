@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../colors.dart';
 import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
 
@@ -22,7 +23,8 @@ class RepsSetRow extends StatelessWidget {
     required this.onCheck,
     required this.controller,
     required this.onChangedReps,
-    required this.onTapRepsEditor, required this.editorType,
+    required this.onTapRepsEditor,
+    required this.editorType,
   });
 
   @override
@@ -33,8 +35,9 @@ class RepsSetRow extends StatelessWidget {
     int reps = (setDto).reps;
 
     return Table(
-      border:
-          TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.black38, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(
+          color: isDarkMode ? darkBorder : Colors.black38,
+          borderRadius: BorderRadius.circular(radiusSM)),
       columnWidths: <int, TableColumnWidth>{
         0: const FixedColumnWidth(50),
         1: const FlexColumnWidth(1),
@@ -52,6 +55,7 @@ class RepsSetRow extends StatelessWidget {
               onChanged: onChangedReps,
               onTap: onTapRepsEditor,
               controller: controller,
+              maxLength: 2,
             ),
           ),
           if (editorType == RoutineEditorMode.log)

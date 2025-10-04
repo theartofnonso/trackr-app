@@ -9,7 +9,8 @@ class SetCheckButton extends StatelessWidget {
   final SetDto setDto;
   final void Function() onCheck;
 
-  const SetCheckButton({super.key, required this.setDto, required this.onCheck});
+  const SetCheckButton(
+      {super.key, required this.setDto, required this.onCheck});
 
   void _handleOnCheck() {
     HapticFeedback.heavyImpact();
@@ -22,8 +23,8 @@ class SetCheckButton extends StatelessWidget {
       onTap: _handleOnCheck,
       child: Center(
         child: FaIcon(
-          setDto.checked ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.solidSquareCheck,
-          color: setDto.checked ? vibrantGreen : sapphireDark,
+          FontAwesomeIcons.solidSquareCheck,
+          color: setDto.checked ? vibrantGreen : darkBorder,
           size: 30,
         ),
       ),

@@ -11,7 +11,11 @@ class CSearchBar extends StatelessWidget {
   final TextEditingController controller;
 
   const CSearchBar(
-      {super.key, required this.onChanged, required this.onClear, required this.hintText, required this.controller});
+      {super.key,
+      required this.onChanged,
+      required this.onClear,
+      required this.hintText,
+      required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +32,13 @@ class CSearchBar extends StatelessWidget {
           )
         ],
         hintText: hintText,
-        hintStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white70)),
-        textStyle: WidgetStatePropertyAll<TextStyle>(GoogleFonts.ubuntu(color: Colors.white)),
-        backgroundColor: WidgetStatePropertyAll<Color>(sapphireDark),
+        hintStyle: WidgetStatePropertyAll<TextStyle>(
+            GoogleFonts.ubuntu(color: Colors.white70)),
+        textStyle: WidgetStatePropertyAll<TextStyle>(
+            GoogleFonts.ubuntu(color: Colors.white)),
+        backgroundColor: WidgetStatePropertyAll<Color>(darkSurface),
         shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(radiusMD),
         )));
   }
 }

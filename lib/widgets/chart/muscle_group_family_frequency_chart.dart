@@ -4,12 +4,15 @@ import '../../colors.dart';
 import '../../enums/muscle_group_enums.dart';
 
 class MuscleGroupFamilyFrequencyChart extends StatelessWidget {
-  final Map<MuscleGroupFamily, double> frequencyData;
+  final Map<MuscleGroup, double> frequencyData;
   final bool minimized;
   final bool forceDarkMode;
 
   const MuscleGroupFamilyFrequencyChart(
-      {super.key, required this.frequencyData, this.minimized = false, this.forceDarkMode = false});
+      {super.key,
+      required this.frequencyData,
+      this.minimized = false,
+      this.forceDarkMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +26,25 @@ class MuscleGroupFamilyFrequencyChart extends StatelessWidget {
 
 class _HorizontalBarChart extends StatelessWidget {
   final bool minimized;
-  final Map<MuscleGroupFamily, double> frequencyData;
+  final Map<MuscleGroup, double> frequencyData;
   final bool forceDarkMode;
 
-  const _HorizontalBarChart({required this.frequencyData, required this.minimized, required this.forceDarkMode});
+  const _HorizontalBarChart(
+      {required this.frequencyData,
+      required this.minimized,
+      required this.forceDarkMode});
 
   @override
   Widget build(BuildContext context) {
-    final entries = (minimized ? frequencyData.entries.take(3) : frequencyData.entries).toList();
+    final entries =
+        (minimized ? frequencyData.entries.take(3) : frequencyData.entries)
+            .toList();
 
     final children = entries
-        .map((entry) => _LinearBar(muscleGroupFamily: entry.key, frequency: entry.value, forceDarkMode: forceDarkMode))
+        .map((entry) => _LinearBar(
+            muscleGroupFamily: entry.key,
+            frequency: entry.value,
+            forceDarkMode: forceDarkMode))
         .toList();
 
     return Column(spacing: 8, children: children);
@@ -41,11 +52,14 @@ class _HorizontalBarChart extends StatelessWidget {
 }
 
 class _LinearBar extends StatelessWidget {
-  final MuscleGroupFamily muscleGroupFamily;
+  final MuscleGroup muscleGroupFamily;
   final double frequency;
   final bool forceDarkMode;
 
-  const _LinearBar({required this.muscleGroupFamily, required this.frequency, required this.forceDarkMode});
+  const _LinearBar(
+      {required this.muscleGroupFamily,
+      required this.frequency,
+      required this.forceDarkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +69,9 @@ class _LinearBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 10, right: 6, left: 8, bottom: 10),
       decoration: BoxDecoration(
-        color: isDarkMode || forceDarkMode ? Colors.black12 : Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(5),
+        color:
+            isDarkMode || forceDarkMode ? Colors.black12 : Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(radiusXS),
       ),
       child: Row(
         children: [
@@ -66,23 +81,23 @@ class _LinearBar extends StatelessWidget {
               children: [
                 LinearProgressIndicator(
                   value: frequency,
-                  backgroundColor: isDarkMode || forceDarkMode ? sapphireDark80 : Colors.grey.shade400,
-                  color: isDarkMode || forceDarkMode ? Colors.white : Colors.black,
+                  backgroundColor: isDarkMode || forceDarkMode
+                      ? darkSurfaceContainer
+                      : Colors.grey.shade400,
+                  color:
+                      isDarkMode || forceDarkMode ? Colors.white : Colors.black,
                   minHeight: 25,
-                  borderRadius: BorderRadius.circular(3.0), // Border r
+                  // Border r
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(muscleGroupFamily.name.toUpperCase(),
                       style: isDarkMode || forceDarkMode
-                          ? Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.black, fontWeight: FontWeight.w700)
-                          : Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.white, fontWeight: FontWeight.w700)),
+                          ? Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.black, fontWeight: FontWeight.w700)
+                          : Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700)),
                 )
               ],
             ),
@@ -92,11 +107,10 @@ class _LinearBar extends StatelessWidget {
             width: 35,
             child: Text("${(frequency * 100).round()}%",
                 style: isDarkMode || forceDarkMode
-                    ? Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w700)
-                    : Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.black, fontWeight: FontWeight.w700)),
+                    ? Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.w700)
+                    : Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.w700)),
           ),
         ],
       ),

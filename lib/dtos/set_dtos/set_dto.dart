@@ -1,4 +1,3 @@
-
 import 'package:tracker_app/dtos/set_dtos/reps_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 
@@ -7,13 +6,19 @@ import 'duration_set_dto.dart';
 
 abstract class SetDto {
   final bool _isChecked;
-  final int _rpeRating;
+  final bool _isWorkingSet;
+  final DateTime _dateTime;
 
-  const SetDto({required bool checked, int rpeRating = 4}) : _isChecked = checked, _rpeRating = rpeRating;
+  const SetDto({bool checked = false, isWorkingSet = false, required dateTime})
+      : _isChecked = checked,
+        _isWorkingSet = isWorkingSet,
+        _dateTime = dateTime;
 
   bool get checked => _isChecked;
 
-  int get rpeRating => _rpeRating;
+  bool get isWorkingSet => _isWorkingSet;
+
+  DateTime get dateTime => _dateTime;
 
   ExerciseType get type;
 
@@ -21,40 +26,51 @@ abstract class SetDto {
 
   bool isNotEmpty();
 
-  SetDto copyWith({bool? checked, int? rpeRating});
+  SetDto copyWith({bool? checked});
 
   String summary();
 
   Map<String, dynamic> toJson() {
-    if (this is WeightAndRepsSetDto) {
-      final weightAndRepSet = this as WeightAndRepsSetDto;
-      return {"value1": weightAndRepSet.weight, "value2": weightAndRepSet.reps, "checked": checked, "rpeRating": rpeRating};
-    } else if (this is RepsSetDto) {
-      final repSet = this as RepsSetDto;
-      return {"value1": 0, "value2": repSet.reps, "checked": checked, "rpeRating": rpeRating};
-    } else {
-      final durationSet = this as DurationSetDto;
-      return {"value1": 0, "value2": durationSet.duration.inMilliseconds, "checked": checked, "rpeRating": rpeRating};
-    }
+    // This method should be overridden by concrete implementations
+    // to avoid type checking overhead
+    throw UnimplementedError(
+        'toJson must be implemented by concrete SetDto classes');
   }
 
-  factory SetDto.fromJson(Map<String, dynamic> json, {required ExerciseType exerciseType}) {
-    final value1 = json["value1"] as num;
-    final value2 = json["value2"] as num;
-    final checked = json["checked"] as bool;
-    final rpeRating = json["rpeRating"] as int? ?? 4;
+  factory SetDto.fromJson(Map<String, dynamic> json,
+      {required ExerciseType exerciseType, required DateTime datetime}) {
+    final checked = json["checked"] as bool? ?? false;
+    final isWorkingSet = json["isWorkingSet"] as bool? ?? false;
+    final dateTime = json["dateTime"] != null
+        ? DateTime.parse(json["dateTime"] as String)
+        : datetime;
+
     return switch (exerciseType) {
-      ExerciseType.weights => WeightAndRepsSetDto(weight: value1.toDouble(), reps: value2.toInt(), checked: checked, rpeRating: rpeRating),
-      ExerciseType.bodyWeight => RepsSetDto(reps: value2, checked: checked, rpeRating: rpeRating),
-      ExerciseType.duration => DurationSetDto(duration: Duration(milliseconds: value2.toInt()), checked: checked, rpeRating: rpeRating),
+      ExerciseType.weights => WeightAndRepsSetDto(
+          weight: (json["weight"] as num?)?.toDouble() ?? 0.0,
+          reps: (json["reps"] as num?)?.toInt() ?? 0,
+          checked: checked,
+          isWorkingSet: isWorkingSet,
+          dateTime: dateTime),
+      ExerciseType.bodyWeight => RepsSetDto(
+          reps: (json["reps"] as num?)?.toInt() ?? 0,
+          checked: checked,
+          isWorkingSet: isWorkingSet,
+          dateTime: dateTime),
+      ExerciseType.duration => DurationSetDto(
+          duration:
+              Duration(milliseconds: (json["duration"] as num?)?.toInt() ?? 0),
+          checked: checked,
+          isWorkingSet: isWorkingSet,
+          dateTime: dateTime),
     };
   }
 
   factory SetDto.newType({required ExerciseType type}) {
     return switch (type) {
-      ExerciseType.weights => WeightAndRepsSetDto(weight: 0, reps: 0),
-      ExerciseType.bodyWeight => RepsSetDto(reps: 0),
-      ExerciseType.duration => DurationSetDto(duration: Duration.zero),
+      ExerciseType.weights => WeightAndRepsSetDto.defaultSet(),
+      ExerciseType.bodyWeight => RepsSetDto.defaultSet(),
+      ExerciseType.duration => DurationSetDto.defaultSet(),
     };
   }
 }

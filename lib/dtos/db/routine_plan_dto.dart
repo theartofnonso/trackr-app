@@ -1,0 +1,128 @@
+import 'dart:convert';
+import 'routine_template_dto.dart';
+
+class RoutinePlanDto {
+  final String id;
+  final String name;
+  final String notes;
+  final List<RoutineTemplateDto> templates;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  RoutinePlanDto({
+    required this.id,
+    required this.name,
+    required this.notes,
+    required this.templates,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'notes': notes,
+      'templates': templates.map((template) => template.toJson()).toList(),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Converts to database row format (matches Supabase schema)
+  Map<String, dynamic> toDatabaseRow() {
+    return {
+      'id': id,
+      'owner': null, // No owner in offline mode
+      'data': toJsonString(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Converts to Supabase row format with owner
+  Map<String, dynamic> toSupabaseRow(String ownerId) {
+    return {
+      'id': id,
+      'owner': ownerId,
+      'data': toJsonString(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Converts from database row format (matches Supabase schema)
+  factory RoutinePlanDto.fromDatabaseRow(Map<String, dynamic> row) {
+    final data = jsonDecode(row['data'] as String) as Map<String, dynamic>;
+
+    return RoutinePlanDto(
+      id: row['id'] as String,
+      name: data['name'] as String? ?? '',
+      notes: data['notes'] as String? ?? '',
+      templates: (data['templates'] as List<dynamic>? ?? [])
+          .map((templateJson) => RoutineTemplateDto.fromJson(templateJson))
+          .toList(),
+      createdAt: DateTime.parse(row['created_at'] as String),
+      updatedAt: DateTime.parse(row['updated_at'] as String),
+    );
+  }
+
+  /// Converts to JSON string for database storage
+  String toJsonString() {
+    return jsonEncode(toJson());
+  }
+
+  factory RoutinePlanDto.fromJson(Map<String, dynamic> json) {
+    final id = json['id'] ?? '';
+    final name = json['name'] ?? '';
+    final notes = json['notes'] ?? '';
+    final templatesJson = json['templates'] as List<dynamic>? ?? [];
+    final templates = templatesJson
+        .map((templateJson) => RoutineTemplateDto.fromJson(templateJson))
+        .toList();
+    final createdAt =
+        DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String());
+    final updatedAt =
+        DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String());
+
+    return RoutinePlanDto(
+      id: id,
+      name: name,
+      notes: notes,
+      templates: templates,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
+  RoutinePlanDto copyWith({
+    String? id,
+    String? name,
+    String? notes,
+    List<RoutineTemplateDto>? templates,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return RoutinePlanDto(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      notes: notes ?? this.notes,
+      templates: templates ?? this.templates,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'RoutinePlanDto{id: $id, name: $name, notes: $notes, templates: $templates, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RoutinePlanDto && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+}

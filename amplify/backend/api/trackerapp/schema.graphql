@@ -18,6 +18,21 @@ type RoutineUser
   updatedAt: AWSDateTime!
 }
 
+type RoutinePlan
+     @model
+     @auth(
+        rules: [
+          { allow: owner},
+          { allow: public, operations: [read], provider: iam }
+        ]
+     ) {
+  id: ID!
+  owner: String
+  data: AWSJSON!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
 type RoutineTemplate
      @model
      @auth(
@@ -52,34 +67,6 @@ type RoutineLog
         queryField: "routineLogByDate"
         sortKeyFields: ["createdAt"]
       )
-}
-
-type ActivityLog
-     @model
-     @auth(
-        rules: [
-           { allow: owner },
-        ]
-     ) {
-  id: ID!
-  owner: String
-  data: AWSJSON!
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-}
-
-type RecoveryLog
-     @model
-     @auth(
-        rules: [
-           { allow: owner },
-        ]
-     ) {
-  id: ID!
-  owner: String
-  data: AWSJSON!
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
 }
 
 type Exercise

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../colors.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/double_textfield.dart';
 import 'package:tracker_app/widgets/routine/editors/textfields/int_textfield.dart';
@@ -27,7 +28,8 @@ class WeightsAndRepsSetRow extends StatelessWidget {
     required this.onChangedWeight,
     required this.onTapWeightEditor,
     required this.onTapRepsEditor,
-    required this.controllers, required this.editorType,
+    required this.controllers,
+    required this.editorType,
   });
 
   @override
@@ -39,20 +41,21 @@ class WeightsAndRepsSetRow extends StatelessWidget {
     int reps = setDto.reps;
 
     return Table(
-      border:
-          TableBorder.all(color: isDarkMode ? Colors.white10 : Colors.black38, borderRadius: BorderRadius.circular(5)),
+      border: TableBorder.all(
+          color: isDarkMode ? darkBorder : Colors.black38,
+          borderRadius: BorderRadius.circular(radiusSM)),
       columnWidths: editorType == RoutineEditorMode.edit
           ? <int, TableColumnWidth>{
-        0: const FixedColumnWidth(50),
-        1: const FlexColumnWidth(1),
-        2: const FlexColumnWidth(1),
-      }
+              0: const FixedColumnWidth(50),
+              1: const FlexColumnWidth(1),
+              2: const FlexColumnWidth(1),
+            }
           : <int, TableColumnWidth>{
-        0: const FixedColumnWidth(50),
-        1: const FlexColumnWidth(1),
-        2: const FlexColumnWidth(1),
-        3: const FixedColumnWidth(60),
-      },
+              0: const FixedColumnWidth(50),
+              1: const FlexColumnWidth(1),
+              2: const FlexColumnWidth(1),
+              3: const FixedColumnWidth(60),
+            },
       children: [
         TableRow(children: [
           TableCell(
@@ -74,6 +77,7 @@ class WeightsAndRepsSetRow extends StatelessWidget {
               onChanged: onChangedReps,
               onTap: onTapRepsEditor,
               controller: controllers.$2,
+              maxLength: 2,
             ),
           ),
           if (editorType == RoutineEditorMode.log)

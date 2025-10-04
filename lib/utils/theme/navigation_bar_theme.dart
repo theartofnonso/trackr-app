@@ -13,8 +13,8 @@ class TRKRNavigationBarTheme {
 
   static NavigationBarThemeData darkTheme = NavigationBarThemeData(
     indicatorColor: Colors.transparent,
-    backgroundColor: sapphireDark80,
-    surfaceTintColor: Colors.black,
+    backgroundColor: darkSurface,
+    surfaceTintColor: darkBackground,
     overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
   );
 }

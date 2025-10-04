@@ -7,7 +7,7 @@ import 'package:tracker_app/widgets/information_containers/information_container
 
 import '../../strings/datetime_range_picker_strings.dart';
 import '../buttons/opacity_button_widget.dart';
-import '../buttons/solid_button_widget.dart';
+import '../buttons/opacity_button_widget_two.dart';
 
 class DateTimeRangePicker extends StatefulWidget {
   final DateTimeRange? initialDateTimeRange;
@@ -28,6 +28,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
 
   @override
   Widget build(BuildContext context) {
+
     final errorMessage = _validateDate();
 
     return SingleChildScrollView(
@@ -38,7 +39,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
               title: Text("Start Time"),
               trailing: SizedBox(
                 width: 150,
-                child: SolidButtonWidget(
+                child: OpacityButtonWidget(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     onPressed: () {
                       setState(() {
@@ -46,8 +47,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                         _showEndDateTimeRange = false;
                       });
                     },
-                    buttonColor: _showStartDateTimeRange ? vibrantGreen : sapphireDark80,
-                    textColor: _showStartDateTimeRange ? sapphireDark : Colors.white,
+                    buttonColor: _showStartDateTimeRange ? vibrantGreen : null,
                     label: _startDateTime.formattedDayMonthTime()),
               )),
           if (_showStartDateTimeRange)
@@ -66,7 +66,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
               title: Text("End Time"),
               trailing: SizedBox(
                 width: 150,
-                child: SolidButtonWidget(
+                child: OpacityButtonWidget(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     onPressed: () {
                       setState(() {
@@ -74,8 +74,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                         _showEndDateTimeRange = !_showEndDateTimeRange;
                       });
                     },
-                    buttonColor: _showEndDateTimeRange ? vibrantGreen : sapphireDark80,
-                    textColor: _showEndDateTimeRange ? sapphireDark : Colors.white,
+                    buttonColor: _showEndDateTimeRange ? vibrantGreen : null,
                     label: _endDateTime.formattedDayMonthTime()),
               )),
           if (_showEndDateTimeRange)
@@ -97,19 +96,17 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                 child: errorMessage != null
                     ? Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: InformationContainerLite(content: errorMessage, color: Colors.orange),
+                        child: InformationContainerLite(content: errorMessage, color: Colors.orange, useOpacity: true),
                       )
                     : SizedBox(
                         width: double.infinity,
-                        height: 45,
-                        child: OpacityButtonWidget(
+                        child: OpacityButtonWidgetTwo(
                             onPressed: () {
                               final range = DateTimeRange(start: _startDateTime, end: _endDateTime);
                               widget.onSelectRange(range);
                             },
                             label: "Log ${_calculateDuration().hmsAnalog()} session",
-                            buttonColor: vibrantGreen,
-                            padding: const EdgeInsets.all(10.0)),
+                            buttonColor: vibrantGreen,),
                       )),
           ),
         ],

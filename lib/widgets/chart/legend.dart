@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../colors.dart';
 
 class Legend extends StatelessWidget {
   final Color color;
@@ -23,7 +24,7 @@ class Legend extends StatelessWidget {
           height: 15,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(radiusXS),
           ),
         ),
         const SizedBox(width: 6),
@@ -35,18 +36,25 @@ class Legend extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: title,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontWeight: FontWeight.w600),
                   children: <TextSpan>[
                     TextSpan(
                       text: suffix,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
               ),
             ),
             const SizedBox(width: 6),
-            Text(subTitle.toUpperCase(), style: Theme.of(context).textTheme.bodySmall),
+            Text(subTitle.toUpperCase(),
+                style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ],

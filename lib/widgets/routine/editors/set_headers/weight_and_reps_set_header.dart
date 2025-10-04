@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../enums/routine_editor_type_enums.dart';
 
@@ -8,7 +9,10 @@ class WeightAndRepsSetHeader extends StatelessWidget {
   final String secondLabel;
 
   const WeightAndRepsSetHeader(
-      {super.key, required this.firstLabel, required this.secondLabel, required this.editorType});
+      {super.key,
+      required this.firstLabel,
+      required this.secondLabel,
+      required this.editorType});
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +37,24 @@ class WeightAndRepsSetHeader extends StatelessWidget {
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(firstLabel, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
+            child: Text(firstLabel,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center),
           ),
           TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Text(secondLabel, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
+            child: Text(secondLabel,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center),
           ),
           if (editorType == RoutineEditorMode.log)
-            const TableCell(
+            TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
-                child: Icon(
-                  Icons.check,
+                child: Center(
+                    child: FaIcon(
+                  FontAwesomeIcons.check,
                   size: 12,
-                ))
+                )))
         ]),
       ],
     );

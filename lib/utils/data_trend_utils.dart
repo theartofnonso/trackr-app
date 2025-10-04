@@ -47,3 +47,4 @@ class _RegressionResult {
 
   _RegressionResult(this.slope, this.average);
 }
+

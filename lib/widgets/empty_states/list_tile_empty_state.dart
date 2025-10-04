@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import '../../colors.dart';
 
 class ListTileEmptyState extends StatelessWidget {
-
   const ListTileEmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     Brightness systemBrightness = MediaQuery.of(context).platformBrightness;
     final isDarkMode = systemBrightness == Brightness.dark;
 
@@ -19,16 +17,15 @@ class ListTileEmptyState extends StatelessWidget {
             width: 160,
             height: 10,
             decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark : Colors.grey.shade600,
-              borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
+              color: isDarkMode ? darkSurfaceContainer : Colors.grey.shade600,
+              borderRadius: BorderRadius.circular(radiusMD),
             )),
         const SizedBox(height: 5),
         Container(
             width: 100,
             height: 10,
             decoration: BoxDecoration(
-              color: isDarkMode ? sapphireDark : Colors.grey.shade600,
-              borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
+              color: isDarkMode ? darkSurfaceContainer : Colors.grey.shade600,
             ))
       ],
     );

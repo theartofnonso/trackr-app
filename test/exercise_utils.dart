@@ -1,5 +1,5 @@
 // Helper function to create a mock ExerciseDto with a specified primary muscle group and optional secondary muscle groups.
-import 'package:tracker_app/dtos/appsync/exercise_dto.dart';
+import 'package:tracker_app/dtos/db/exercise_dto.dart';
 import 'package:tracker_app/dtos/exercise_log_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/set_dto.dart';
 import 'package:tracker_app/dtos/set_dtos/weight_and_reps_dto.dart';
@@ -19,7 +19,6 @@ ExerciseDto makeExercise({
     type: type,
     primaryMuscleGroup: primary,
     secondaryMuscleGroups: secondary,
-    owner: '',
   );
 }
 
@@ -27,15 +26,19 @@ ExerciseDto makeExercise({
 ExerciseLogDto makeLog({
   required ExerciseDto exercise,
   DateTime? createdAt,
-  List<SetDto> sets = const [WeightAndRepsSetDto(weight: 10, reps: 12, checked: true)],
+  List<SetDto> sets = const [],
 }) {
   return ExerciseLogDto(
     id: exercise.id,
     exercise: exercise,
-    sets: sets,
+    sets: sets.isNotEmpty
+        ? sets
+        : [
+            WeightAndRepsSetDto(
+                weight: 10, reps: 12, checked: true, dateTime: createdAt)
+          ],
     createdAt: createdAt ?? DateTime.now(),
     routineLogId: 'routine1',
     superSetId: '',
-    notes: '',
   );
 }

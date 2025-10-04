@@ -1,4 +1,4 @@
-String capitalizeFirstLetter(String text) {
+String capitalizeFirstLetter({required String text}) {
   return text
       .split(' ')
       .map((word) => word.isNotEmpty ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}' : word)
@@ -69,4 +69,16 @@ String listWithAnd({required List<String> strings}) {
     final lastItem = strings.last;
     return '$allButLast & $lastItem';
   }
+}
+
+String substringByLength({required String text, required int length}) {
+  // Handle null text or non-positive length in a way that suits your needs
+  if (text.isEmpty || length <= 0) {
+    return '';
+  }
+
+  // Return the substring up to length if text is longer, else return text
+  return text.length > length
+      ? text.substring(0, length)
+      : text;
 }

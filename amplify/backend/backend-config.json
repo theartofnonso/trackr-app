@@ -73,7 +73,9 @@
         "signupAttributes": [
           "EMAIL"
         ],
-        "socialProviders": [],
+        "socialProviders": [
+          "APPLE"
+        ],
         "usernameAttributes": [
           "EMAIL"
         ],
